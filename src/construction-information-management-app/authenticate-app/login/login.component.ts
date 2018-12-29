@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import {AuthService} from '../../../shared/service/auth.service';
 
 @Component({
     selector: 'cim-login-app',
@@ -12,9 +13,15 @@ export class LoginComponent {
         userName: new FormControl(''),
         password: new FormControl(''),
     });
+    private authService: AuthService;
+
+    constructor (authService: AuthService) {
+        this.authService = authService;
+    }
 
     public onSubmit() {
         console.log('submit form');
+        debugger;
     }
 
 }
