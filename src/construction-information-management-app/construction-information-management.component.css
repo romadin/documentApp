@@ -1,0 +1,13 @@
+.main-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.main-container > div.body {
+    padding: 25px 50px;
+}
+
+.main-container > div.body > cim-login-app {
+    flex: 1;
+}

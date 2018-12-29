@@ -3,11 +3,11 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import 'hammerjs';
 
 import { environment } from './environments/environment';
-import { AuthenticateAppModule } from './authenticate-app/authenticate-app.module';
+import { RootModule } from './construction-information-management-app/root.module';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AuthenticateAppModule)
+platformBrowserDynamic().bootstrapModule(RootModule)
   .catch(err => console.error(err));
