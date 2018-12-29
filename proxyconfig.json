@@ -1,0 +1,7 @@
+{
+    "/api": {
+        "target": "http://api.romario",
+        "secure": false,
+        "changeOrigin": true
+    }
+}
