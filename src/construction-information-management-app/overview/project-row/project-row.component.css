@@ -1,0 +1,14 @@
+mat-card.projectRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border: solid 1px #cecece;
+    border-bottom: none;
+    cursor: pointer;
+}
+mat-card.projectRow.mat-card:hover {
+    background: #f7f7f7;
+}
+mat-card-actions.actionButton {
+    display: inline;
+}

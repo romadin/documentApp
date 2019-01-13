@@ -4,9 +4,14 @@ import { ApiService } from '../../service/api.service';
 import { Project } from './project.model';
 import { ApiProjectResponse } from './api-project.interface';
 
+interface ProjectCache {
+    [id: number]: Project;
+}
+
 @Injectable()
 export class ProjectService {
     private apiService: ApiService;
+    private projectsCache: ProjectCache = {};
 
     constructor(apiService: ApiService) {
         this.apiService = apiService;
@@ -18,10 +23,26 @@ export class ProjectService {
                 const projects = [];
 
                 apiResponse.forEach((item) => {
-                    projects.push(this.makeProject(item));
+                    const project = this.makeProject(item);
+                    this.projectsCache[ project.getId() ] = project;
+                    projects.push(project);
                 });
 
                 resolve(projects);
+            }, (error) => {
+                resolve(error.error);
+            });
+        });
+    }
+
+    public getProject(id: number): Promise<Project> {
+        if (this.projectsCache.hasOwnProperty(id)) {
+            return Promise.resolve(this.projectsCache[id]);
+        }
+
+        return new Promise<Project>((resolve) => {
+            this.apiService.get('/projects/' + id, {format: 'json'}).subscribe((apiResponse: ApiProjectResponse) => {
+                resolve(this.makeProject(apiResponse));
             }, (error) => {
                 resolve(error.error);
             });
