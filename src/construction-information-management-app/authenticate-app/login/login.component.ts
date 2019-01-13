@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import {AuthService} from '../../../shared/service/auth.service';
+import { AuthService } from '../../../shared/service/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'cim-login-app',
@@ -10,18 +11,32 @@ import {AuthService} from '../../../shared/service/auth.service';
 
 export class LoginComponent {
     public userForm: FormGroup = new FormGroup({
-        userName: new FormControl(''),
+        email: new FormControl(''),
         password: new FormControl(''),
     });
-    private authService: AuthService;
 
-    constructor (authService: AuthService) {
+    private authService: AuthService;
+    private router: Router;
+
+    constructor (authService: AuthService, router: Router) {
         this.authService = authService;
+        this.router = router;
     }
 
     public onSubmit() {
+        const email = this.userForm.controls.email.value;
+
+        this.authService.AuthenticateUser(
+            email, this.userForm.controls.password.value
+        ).then((value) => {
+            if (value === true) {
+                // redirect to projects page
+                this.router.navigate(['overview']);
+            } else {
+                alert('wrong credentials');
+            }
+        });
         console.log('submit form');
-        debugger;
     }
 
 }

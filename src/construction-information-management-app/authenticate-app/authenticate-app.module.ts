@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 
-import { LoginComponent } from './login/login.component';
+import { AuthService } from '../../shared/service/auth.service';
 
 @NgModule({
     declarations : [
-        LoginComponent
     ],
-    providers: [],
+    providers: [ AuthService ],
 })
 export class AuthenticateAppModule { }

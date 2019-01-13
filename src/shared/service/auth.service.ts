@@ -1,21 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { ApiAuthResponse } from '../../construction-information-management-app/authenticate-app/interfaces/api-auth.interface';
+import { ApiService } from './api.service';
 
 @Injectable()
 export class AuthService {
-    private http: HttpClient;
+    private apiService: ApiService;
 
-    constructor(http: HttpClient) {
-        this.http = http;
+    constructor(apiService: ApiService) {
+        this.apiService = apiService;
     }
 
-    public userLogin(userName: string, password: string) {
+    /**
+     * login a user with the given data.
+     */
+    public AuthenticateUser(userName: string, password: string): Promise<boolean | string> {
 
-        this.http.post('/api/authenticate', {
-            userName: userName,
+        const body = {
+            email: userName,
             password: password
-        }).subscribe((value) => {
-            console.log(value);
+        };
+
+        return new Promise((resolve) => {
+            this.apiService.postAuthenticate( '/authenticate', body).subscribe((value: ApiAuthResponse) => {
+                resolve(true);
+            },  (error) => {
+                resolve(error.error);
+            });
         });
     }
 
