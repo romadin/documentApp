@@ -4,7 +4,7 @@ import {
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
-    MatFormFieldModule,
+    MatFormFieldModule, MatIconModule,
     MatInputModule,
     MatToolbarModule,
 } from '@angular/material';
@@ -18,6 +18,7 @@ import {
         MatInputModule,
         MatToolbarModule,
         MatCardModule,
+        MatIconModule,
     ]
 })
 export class MaterialModule { }

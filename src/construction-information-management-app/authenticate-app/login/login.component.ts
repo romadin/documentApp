@@ -36,7 +36,6 @@ export class LoginComponent {
                 alert('wrong credentials');
             }
         });
-        console.log('submit form');
     }
 
 }

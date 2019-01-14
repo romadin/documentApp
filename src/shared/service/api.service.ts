@@ -3,11 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiAuthResponse } from '../../construction-information-management-app/authenticate-app/interfaces/api-auth.interface';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ApiService {
     private token: ApiAuthResponse;
-    private APIURL = 'http://api.romario:8000';
+    private APIURL = 'http://ec2-35-176-59-239.eu-west-2.compute.amazonaws.com';
     private http: HttpClient;
 
     constructor(http: HttpClient) {

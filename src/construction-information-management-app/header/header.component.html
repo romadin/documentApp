@@ -1,3 +1,19 @@
-<mat-toolbar>
-  <span> BIM App</span>
+<mat-toolbar class="headerToolbar">
+    <span>
+        <button mat-icon-button *ngIf="actionBack.show">
+            <mat-icon aria-label="Icon" (click)="actionBack.onClick()">
+                {{ actionBack.iconName }}
+            </mat-icon>
+        </button>
+    </span>
+    <span> BIM App</span>
+    <span class="actions" *ngIf="actions.length > 0">
+        <ng-template ngFor let-action [ngForOf]="actions">
+            <button mat-icon-button *ngIf="action.show" >
+                <mat-icon aria-label="Icon"  (click)="action.onClick()">
+                    {{ action.iconName }}
+                </mat-icon>
+            </button>
+        </ng-template>
+    </span>
 </mat-toolbar>
