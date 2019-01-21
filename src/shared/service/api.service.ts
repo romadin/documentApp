@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 @Injectable()
 export class ApiService {
     private token: ApiAuthResponse;
-    private APIURL = 'http://ec2-35-176-59-239.eu-west-2.compute.amazonaws.com';
+    private APIURL = environment.APIURL;
     private http: HttpClient;
 
     constructor(http: HttpClient) {

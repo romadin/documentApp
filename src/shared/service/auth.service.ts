@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ApiAuthResponse } from '../../construction-information-management-app/authenticate-app/interfaces/api-auth.interface';
 import { ApiService } from './api.service';
+import { UserService } from '../packages/user-package/user.service';
 
 @Injectable()
 export class AuthService {
     private apiService: ApiService;
 
-    constructor(apiService: ApiService) {
+    constructor(apiService: ApiService, private userService: UserService) {
         this.apiService = apiService;
     }
 
@@ -22,6 +23,7 @@ export class AuthService {
 
         return new Promise((resolve) => {
             this.apiService.postAuthenticate( '/authenticate', body).subscribe((value: ApiAuthResponse) => {
+                this.userService.getUserById(value.user_id).subscribe(user => this.userService.setCurrentUser(user));
                 resolve(true);
             },  (error) => {
                 resolve(error.error);

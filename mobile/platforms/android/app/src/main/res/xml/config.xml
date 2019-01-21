@@ -13,6 +13,7 @@
         Apache Cordova Team
     </author>
     <content src="index.html" />
+    <allow-navigation href="http://ec2-35-176-59-239.eu-west-2.compute.amazonaws.com/*" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />

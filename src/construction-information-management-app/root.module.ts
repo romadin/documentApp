@@ -18,9 +18,12 @@ import { ProjectRowComponent } from './overview/project-row/project-row.componen
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { DocumentOverviewComponent } from './document-overview/document-overview.component';
 import { FolderRowComponent } from './project-detail/folder-row/folder-row.component';
+import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
+import { UserService } from '../shared/packages/user-package/user.service';
+import { RoleService } from '../shared/packages/role-package/role.service';
 
 const appRoutes: Routes = [
-    { path: 'login', component: LoginComponent },
+    { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
     { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
     { path: 'project/:id', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ]  },
     {
@@ -50,7 +53,7 @@ const appRoutes: Routes = [
         HttpClientModule,
         RouterModule,
     ],
-    providers: [ AuthService, ApiService, ProjectService, CanActivateLoggedIn ],
+    providers: [ AuthService, ApiService, ProjectService, UserService, RoleService, CanActivateLoggedIn, CanActivateAlreadyLoggedIn ],
     bootstrap: [ ConstructionInformationManagementComponent ]
 })
 export class RootModule { }

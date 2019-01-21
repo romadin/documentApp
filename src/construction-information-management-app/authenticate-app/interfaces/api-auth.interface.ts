@@ -1,4 +1,4 @@
 export interface ApiAuthResponse {
     token: string;
-    userId: number;
+    user_id: number;
 }

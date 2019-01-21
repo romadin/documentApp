@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { UserService } from '../../shared/packages/user-package/user.service';
+import { User } from '../../shared/packages/user-package/user.model';
 
 interface HeaderAction {
     onClick: (item?) => void;
     iconName: string;
     name: string;
     show: boolean;
+    needsAdmin: boolean;
     location?: Location;
     urlGroup?: UrlGroup;
 }
@@ -23,22 +26,23 @@ export class HeaderComponent implements OnInit {
     public actions: HeaderAction[] = [];
     public actionBack: HeaderAction;
     public routHistory: NavigationEnd[] = [];
-    public currentRoute: NavigationEnd;
+    public currentUser: User;
 
 
     constructor(
         private location: Location,
-        private router: Router
+        private router: Router,
+        private userService: UserService
     ) {
         this.defineActions();
     }
 
     ngOnInit() {
+        // track if url changes
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routHistory.push(navigation);
             this.determineBackAction(this.routHistory);
             this.determineActions(navigation);
-            console.log(navigation);
         });
     }
 
@@ -51,6 +55,7 @@ export class HeaderComponent implements OnInit {
             iconName: 'arrow_back_ios',
             name: 'back',
             show: false,
+            needsAdmin: false,
         };
         const addProject: HeaderAction = {
             onClick: () => {
@@ -59,22 +64,34 @@ export class HeaderComponent implements OnInit {
             iconName: 'add',
             name: 'addProject',
             show: false,
+            needsAdmin: true,
             urlGroup: '/overview',
         };
         this.actions.push(addProject);
     }
 
     private determineActions(navigation: NavigationEnd): void {
-        this.actions.forEach(( action: HeaderAction ) => {
-            action.show = action.urlGroup === navigation.url;
-        });
+        if ( navigation.url !== '/login' ) {
+            this.userService.getCurrentUser().subscribe((user: User) => {
+                this.currentUser = user;
+                if ( user.getRole() ) {
+                    this.actions.forEach(( action: HeaderAction ) => {
+                        if ( action.urlGroup === navigation.url && action.needsAdmin ) {
+                            action.show = user.getRole().getName() === 'admin';
+                        } else {
+                            action.show = action.urlGroup === navigation.url;
+                        }
+                    });
+                }
+            });
+        }
     }
 
     private determineBackAction(routHistory: NavigationEnd[]) {
-        if (routHistory.length > 1 ) {
+        if ( routHistory.length > 1 ) {
             this.actionBack.show = true;
         }
-        if (this.routHistory[0].url === this.routHistory[this.routHistory.length - 1].url) {
+        if ( this.routHistory[0].url === this.routHistory[this.routHistory.length - 1].url ) {
             this.actionBack.show = false;
         }
     }

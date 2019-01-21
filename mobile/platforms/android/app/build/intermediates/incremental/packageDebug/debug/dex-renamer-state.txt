@@ -1,4 +1,4 @@
-#Mon Jan 14 14:44:56 CET 2019
+#Wed Jan 16 14:38:58 CET 2019
 base.0=C\:\\wamp64\\www\\documentApp\\mobile\\platforms\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex
