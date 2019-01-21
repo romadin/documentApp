@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Project } from './project.model';
@@ -12,27 +13,31 @@ interface ProjectCache {
 export class ProjectService {
     private apiService: ApiService;
     private projectsCache: ProjectCache = {};
+    private allProjectSubject: BehaviorSubject<Project[]> = new BehaviorSubject([]);
 
     constructor(apiService: ApiService) {
         this.apiService = apiService;
     }
 
-    public getProjects(): Promise<Project[]> {
-        return new Promise<Project[]>((resolve) => {
-            this.apiService.get('/projects', {format: 'json'}).subscribe((apiResponse: ApiProjectResponse[]) => {
-                const projects = [];
+    public getProjects(): Subject<Project[]> {
+        if ( !this.objectIsEmpty(this.projectsCache) ) {
+            this.allProjectSubject.next(Object.values(this.projectsCache));
+            return this.allProjectSubject;
+        }
 
-                apiResponse.forEach((item) => {
-                    const project = this.makeProject(item);
-                    this.projectsCache[ project.getId() ] = project;
-                    projects.push(project);
-                });
+        this.apiService.get('/projects', {format: 'json'}).subscribe((apiResponse: ApiProjectResponse[]) => {
+            const projects = [];
 
-                resolve(projects);
-            }, (error) => {
-                resolve(error.error);
+            apiResponse.forEach((item) => {
+                const project = this.makeProject(item);
+                this.projectsCache[ project.getId() ] = project;
+                projects.push(project);
             });
+            this.allProjectSubject.next(projects);
+        }, (error) => {
+            this.allProjectSubject.error(error);
         });
+        return this.allProjectSubject;
     }
 
     public getProject(id: number): Promise<Project> {
@@ -49,6 +54,36 @@ export class ProjectService {
         });
     }
 
+    public postProject(data: { name: string } ): Promise<Project> {
+        return new Promise<Project>((resolve) => {
+            this.apiService.post('/projects', data, ).subscribe((apiResponse: ApiProjectResponse) => {
+                const newProject = this.makeProject(apiResponse);
+                this.projectsCache[ newProject.getId() ] = newProject;
+
+                this.allProjectSubject.next(Object.values(this.projectsCache));
+                resolve(newProject);
+            }, (error) => {
+                resolve(error.error);
+            });
+        });
+    }
+
+    public deleteProject(id: number): void {
+        this.apiService.delete('/projects/' + id, {}).subscribe((apiResponse: ApiProjectResponse[]) => {
+            const projects: Project[] = [];
+
+            apiResponse.forEach((item) => {
+                const project = this.makeProject(item);
+                this.projectsCache[ project.getId() ] = project;
+                projects.push(project);
+            });
+
+            this.allProjectSubject.next(projects);
+        }, (error) => {
+            this.allProjectSubject.error(error);
+        });
+    }
+
     private makeProject(apiResponse: ApiProjectResponse): Project {
         const project: Project = new Project();
 
@@ -58,5 +93,14 @@ export class ProjectService {
         project.setActionListId(apiResponse.actionListId);
 
         return project;
+    }
+
+    private objectIsEmpty(object: any): boolean {
+        for (const key in object ) {
+            if (object.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

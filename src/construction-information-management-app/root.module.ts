@@ -21,6 +21,7 @@ import { FolderRowComponent } from './project-detail/folder-row/folder-row.compo
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
 import { UserService } from '../shared/packages/user-package/user.service';
 import { RoleService } from '../shared/packages/role-package/role.service';
+import { ProjectPopupComponent } from './popups/project-popup/project-popup.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
@@ -44,6 +45,7 @@ const appRoutes: Routes = [
         ProjectDetailComponent,
         DocumentOverviewComponent,
         FolderRowComponent,
+        ProjectPopupComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),
@@ -54,6 +56,7 @@ const appRoutes: Routes = [
         RouterModule,
     ],
     providers: [ AuthService, ApiService, ProjectService, UserService, RoleService, CanActivateLoggedIn, CanActivateAlreadyLoggedIn ],
+    entryComponents: [ ProjectPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]
 })
 export class RootModule { }

@@ -3,7 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
     MatButtonModule,
     MatCardModule,
-    MatCheckboxModule,
+    MatCheckboxModule, MatDialogModule,
     MatFormFieldModule, MatIconModule,
     MatInputModule,
     MatToolbarModule,
@@ -19,6 +19,7 @@ import {
         MatToolbarModule,
         MatCardModule,
         MatIconModule,
+        MatDialogModule,
     ]
 })
 export class MaterialModule { }

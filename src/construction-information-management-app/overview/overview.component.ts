@@ -16,7 +16,7 @@ export class OverviewComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.projectService.getProjects().then((projects: Project[]) => {
+        this.projectService.getProjects().subscribe((projects: Project[]) => {
             this.projects = projects;
         });
     }

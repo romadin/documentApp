@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { MatDialog } from '@angular/material';
 import { filter } from 'rxjs/operators';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
+import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
 
 interface HeaderAction {
     onClick: (item?) => void;
@@ -27,9 +29,12 @@ export class HeaderComponent implements OnInit {
     public actionBack: HeaderAction;
     public routHistory: NavigationEnd[] = [];
     public currentUser: User;
+    public dialogName = 'testing the name';
+    public animal = 'Lion';
 
 
     constructor(
+        public dialog: MatDialog,
         private location: Location,
         private router: Router,
         private userService: UserService
@@ -58,9 +63,7 @@ export class HeaderComponent implements OnInit {
             needsAdmin: false,
         };
         const addProject: HeaderAction = {
-            onClick: () => {
-                console.log('add project');
-            },
+            onClick: this.openDialog.bind(this),
             iconName: 'add',
             name: 'addProject',
             show: false,
@@ -94,6 +97,19 @@ export class HeaderComponent implements OnInit {
         if ( this.routHistory[0].url === this.routHistory[this.routHistory.length - 1].url ) {
             this.actionBack.show = false;
         }
+    }
+
+    private openDialog(): void {
+        const dialogRef = this.dialog.open(ProjectPopupComponent, {
+            width: '250px',
+            data: {name: this.dialogName, animal: this.animal}
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            console.log(result);
+            this.animal = result;
+        });
     }
 
 }

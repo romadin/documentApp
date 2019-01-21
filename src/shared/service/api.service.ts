@@ -20,7 +20,7 @@ export class ApiService {
     }
 
     public post(path: string, body: any): Observable<any> {
-        return this.http.post(this.APIURL + path, body, { params: { token: this.token.token }});
+        return this.http.post(this.APIURL + path, body, { params: { token: this.token.token, format: 'json' }});
     }
 
     public get(path: string, params: any): Observable<any> {
@@ -28,6 +28,13 @@ export class ApiService {
         Object.assign( paramObject.params, params );
 
         return this.http.get(this.APIURL + path, paramObject );
+    }
+
+    public delete(path: string, params: any): Observable<any> {
+        const paramObject = { params: { token: this.token.token }};
+        Object.assign( paramObject.params, params );
+
+        return this.http.delete(this.APIURL + path, params);
     }
 
     public tokenExist(): boolean {
