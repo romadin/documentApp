@@ -1,12 +1,12 @@
-<h1 mat-dialog-title>Voeg een project toe</h1>
+<h1 mat-dialog-title>{{ data.title }}</h1>
 <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
     <div mat-dialog-content>
         <mat-form-field>
-            <input matInput placeholder="Project naam" formControlName="projectName">
+            <input matInput placeholder="{{ data.placeHolder }}" formControlName="projectName">
         </mat-form-field>
     </div>
     <div mat-dialog-actions>
         <button mat-button (click)="onNoClick()">Annuleren</button>
-        <button mat-raised-button type="submit">Voeg toe</button>
+        <button mat-raised-button type="submit">{{ data.submitButton }}</button>
     </div>
 </form>

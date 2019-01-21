@@ -3,9 +3,10 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog } from '@angular/material';
 import { filter } from 'rxjs/operators';
+
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
-import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
+import { DialogData, ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
 
 interface HeaderAction {
     onClick: (item?) => void;
@@ -101,8 +102,12 @@ export class HeaderComponent implements OnInit {
 
     private openDialog(): void {
         const dialogRef = this.dialog.open(ProjectPopupComponent, {
-            width: '250px',
-            data: {name: this.dialogName, animal: this.animal}
+            width: '400px',
+            data: {
+                title: 'Voeg een project toe',
+                placeholder: 'Project naam',
+                submitButton: 'Voeg toe',
+            }
         });
 
         dialogRef.afterClosed().subscribe(result => {

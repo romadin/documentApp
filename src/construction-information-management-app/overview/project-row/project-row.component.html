@@ -4,6 +4,10 @@
     </mat-card-header>
 
     <mat-card-actions class="actionButton">
-        <button mat-button> <i class="material-icons"> arrow_right </i> </button>
+        <div class="actionsEditDelete">
+            <i class="material-icons" (click)="editProject($event, project.getId())"> edit </i>
+            <i class="material-icons" (click)="deleteProject($event, project.getId())"> delete_forever </i>
+        </div>
+        <i class="material-icons"> arrow_right </i>
     </mat-card-actions>
 </mat-card>

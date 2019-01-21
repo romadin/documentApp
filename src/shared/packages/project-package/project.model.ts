@@ -1,3 +1,5 @@
+import { ApiProjectResponse } from './api-project.interface';
+
 export class Project {
     private _id: number;
     private _name: string;
@@ -38,6 +40,13 @@ export class Project {
 
     public setActionListId(value: number) {
         this._actionListId = value;
+    }
+
+    public update(data: ApiProjectResponse): void {
+        this.setId(data.id);
+        this.setName(data.name);
+        this.setAgendaId(data.agendaId);
+        this.setActionListId(data.actionListId);
     }
 
 }

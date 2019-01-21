@@ -32,9 +32,9 @@ export class ApiService {
 
     public delete(path: string, params: any): Observable<any> {
         const paramObject = { params: { token: this.token.token }};
-        Object.assign( paramObject.params, params );
+        Object.assign( params, paramObject.params );
 
-        return this.http.delete(this.APIURL + path, params);
+        return this.http.delete(this.APIURL + path, paramObject);
     }
 
     public tokenExist(): boolean {

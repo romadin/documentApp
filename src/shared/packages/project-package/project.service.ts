@@ -68,17 +68,35 @@ export class ProjectService {
         });
     }
 
+    public updateProject(data: { name: string }, id: number ): Promise<Project> {
+        return new Promise<Project>((resolve) => {
+            this.apiService.post('/projects/' + id, data, ).subscribe((apiResponse: ApiProjectResponse) => {
+                console.log(apiResponse);
+                this.projectsCache[id].update(apiResponse);
+                this.allProjectSubject.next(Object.values(this.projectsCache));
+                resolve(this.projectsCache[id]);
+            }, (error) => {
+                this.allProjectSubject.error(error);
+                resolve(error.error);
+            });
+        });
+    }
+
     public deleteProject(id: number): void {
         this.apiService.delete('/projects/' + id, {}).subscribe((apiResponse: ApiProjectResponse[]) => {
-            const projects: Project[] = [];
+            if (this.projectsCache.hasOwnProperty(id) ) {
+                delete this.projectsCache[id];
+            }
 
             apiResponse.forEach((item) => {
+                if (this.projectsCache.hasOwnProperty(item.id) ) {
+                    return;
+                }
                 const project = this.makeProject(item);
                 this.projectsCache[ project.getId() ] = project;
-                projects.push(project);
             });
 
-            this.allProjectSubject.next(projects);
+            this.allProjectSubject.next(Object.values(this.projectsCache));
         }, (error) => {
             this.allProjectSubject.error(error);
         });

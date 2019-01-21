@@ -4,8 +4,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 
 export interface DialogData {
-    animal: string;
-    name: string;
+    title: string;
+    placeholder: string;
+    submitButton: string;
+    id?: number;
 }
 
 @Component({
@@ -30,8 +32,14 @@ export class ProjectPopupComponent {
     public onSubmit() {
         const projectName = this.projectForm.controls.projectName.value;
 
-        this.projectService.postProject({ name: projectName }).then((value) => {
-            this.dialogRef.close(value);
-        });
+        if (this.data.id) {
+            this.projectService.updateProject({ name: projectName }, this.data.id).then((value) => {
+                this.dialogRef.close(value);
+            });
+        } else {
+            this.projectService.postProject({ name: projectName }).then((value) => {
+                this.dialogRef.close(value);
+            });
+        }
     }
 }

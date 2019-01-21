@@ -12,3 +12,9 @@ mat-card.projectRow.mat-card:hover {
 mat-card-actions.actionButton {
     display: inline;
 }
+mat-card-actions.actionButton > .actionsEditDelete {
+    display: inline;
+}
+mat-card-actions.actionButton > .actionsEditDelete > i.material-icons {
+    font-size: 20px;
+}
