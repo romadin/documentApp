@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-form-field>
+            <input matInput placeholder="Voornaam" formControlName="firstName" required>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="Tussenvoegsel" formControlName="insertion">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput placeholder="Achternaam" formControlName="lastName" required>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="email" matInput placeholder="Email" formControlName="email" required>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="text" matInput placeholder="Functie" formControlName="function" required>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="password" matInput placeholder="Wachtwoord" formControlName="password" required>
+        </mat-form-field>
+        <mat-selection-list #shoes>
+            <h4> Kies project </h4>
+            <mat-list-option *ngFor="let project of allProjects" (click)="onProjectSelect(project)">
+                {{ project.getName() }}
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">Annuleren</button>
+        <button mat-raised-button type="submit">{{ data.submitButton }}</button>
+    </div>
+</form>
