@@ -4,5 +4,20 @@ export interface ApiUserResponse {
     insertion: string | null;
     lastName: string;
     email: string;
-    role_id: number;
+    function: string;
+    role: ApiRoleResponse;
+}
+
+export interface UserBody {
+    firstName: string;
+    insertion: string | null;
+    lastName: string;
+    email: string;
+    password: string;
+    projectsId: string[];
+}
+
+export interface ApiRoleResponse {
+    id: number;
+    name: string;
 }

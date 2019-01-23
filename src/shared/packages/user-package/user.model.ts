@@ -3,9 +3,10 @@ import { Role } from '../role-package/role.model';
 export class User {
     private _id: number;
     private _firstName: string;
-    private _insertion: string;
+    private _insertion: string | null;
     private _lastName: string;
     private _email: string;
+    private _function: string;
     private _role: Role;
 
     public constructor() {
@@ -28,11 +29,11 @@ export class User {
         this._firstName = value;
     }
 
-    public getInsertion(): string {
+    public getInsertion(): string | null {
         return this._insertion;
     }
 
-    public setInsertion(value: string) {
+    public setInsertion(value: string | null) {
         this._insertion = value;
     }
 
@@ -52,15 +53,26 @@ export class User {
         this._email = value;
     }
 
+    public getFunction(): string {
+        return this._function;
+    }
+
+    public setFunction(workFunction: string): void {
+        this._function = workFunction;
+    }
+
     public getRole(): Role {
         return this._role;
     }
 
-    public setRole(value: Role) {
-        this._role = value;
+    public setRole(role: Role) {
+        this._role = role;
     }
 
     public getFullName(): string {
-        return this._firstName + ' ' + this._insertion !== '' ? this._insertion + ' ' + this._lastName : this._lastName;
+        if (this.getInsertion()) {
+            return this.getFirstName() + ' ' + this.getInsertion() + ' ' + this.getLastName();
+        }
+        return this.getFirstName() + ' ' + this.getLastName();
     }
 }

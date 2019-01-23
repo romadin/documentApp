@@ -56,15 +56,16 @@ export class ProjectService {
 
     public postProject(data: { name: string } ): Promise<Project> {
         return new Promise<Project>((resolve) => {
-            this.apiService.post('/projects', data, ).subscribe((apiResponse: ApiProjectResponse) => {
-                const newProject = this.makeProject(apiResponse);
-                this.projectsCache[ newProject.getId() ] = newProject;
+            this.apiService.post('/projects', data, { template: 'default'} )
+                .subscribe((apiResponse: ApiProjectResponse) => {
+                    const newProject = this.makeProject(apiResponse);
+                    this.projectsCache[ newProject.getId() ] = newProject;
 
-                this.allProjectSubject.next(Object.values(this.projectsCache));
-                resolve(newProject);
-            }, (error) => {
-                resolve(error.error);
-            });
+                    this.allProjectSubject.next(Object.values(this.projectsCache));
+                    resolve(newProject);
+                }, (error) => {
+                    resolve(error.error);
+                });
         });
     }
 

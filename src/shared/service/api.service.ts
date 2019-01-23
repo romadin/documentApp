@@ -19,8 +19,13 @@ export class ApiService {
         return this.http.post(this.APIURL + path, body).pipe(map(response => this.token = <ApiAuthResponse>response ));
     }
 
-    public post(path: string, body: any): Observable<any> {
-        return this.http.post(this.APIURL + path, body, { params: { token: this.token.token, format: 'json' }});
+    public post(path: string, body: any, params?: any): Observable<any> {
+        const paramObject = { params: { token: this.token.token, format: 'json'}};
+        if ( params ) {
+            Object.assign( paramObject.params, params );
+        }
+
+        return this.http.post(this.APIURL + path, body, paramObject);
     }
 
     public get(path: string, params: any): Observable<any> {

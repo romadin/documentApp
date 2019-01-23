@@ -27,7 +27,7 @@
         </mat-selection-list>
     </div>
     <div mat-dialog-actions>
-        <button mat-button (click)="onNoClick()">Annuleren</button>
+        <button mat-button (click)="onNoClick($event)">Annuleren</button>
         <button mat-raised-button type="submit">{{ data.submitButton }}</button>
     </div>
 </form>

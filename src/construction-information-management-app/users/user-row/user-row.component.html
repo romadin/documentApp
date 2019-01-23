@@ -1,0 +1,15 @@
+<mat-card class="userRow">
+    <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title> {{ user.getFullName() }}</mat-card-title>
+        <mat-card-subtitle> {{ user.getFunction() }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-actions class="actionButton">
+        <div class="actionsEditDelete">
+            <i class="material-icons" (click)="editUser($event, user.getId())"> edit </i>
+            <i class="material-icons" (click)="deleteUser($event, user.getId())"> delete_forever </i>
+        </div>
+        <i class="material-icons"> arrow_right </i>
+    </mat-card-actions>
+</mat-card>

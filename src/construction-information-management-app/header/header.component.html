@@ -9,11 +9,34 @@
     <span> BIM App</span>
     <span class="actions" *ngIf="actions.length > 0">
         <ng-template ngFor let-action [ngForOf]="actions">
-            <button mat-icon-button *ngIf="action.show && currentUser" >
-                <mat-icon aria-label="Icon"  (click)="action.onClick()">
-                    {{ action.iconName }}
-                </mat-icon>
-            </button>
+            <div *ngIf="action.name !== 'menu'; then actionBlock; else showMenuBlock"></div>
+
+            <ng-template #actionBlock>
+                <button mat-icon-button *ngIf="action.show && currentUser" >
+                    <mat-icon aria-label="Icon"  (click)="action.onClick()">
+                        {{ action.iconName }}
+                    </mat-icon>
+                </button>
+            </ng-template>
+
+            <ng-template #showMenuBlock>
+                <button mat-icon-button *ngIf="action.show && currentUser" [matMenuTriggerFor]="menu" >
+                    <mat-icon aria-label="Icon"  (click)="action.onClick()">
+                        {{ action.iconName }}
+                    </mat-icon>
+                </button>
+            </ng-template>
         </ng-template>
+
+        <mat-menu #menu="matMenu">
+            <ng-template ngFor let-menuAction [ngForOf]="menuActions">
+                <button mat-menu-item *ngIf="menuAction.show && currentUser" (click)="menuAction.onClick()">
+                    <mat-icon aria-label="Icon" >
+                        {{ menuAction.iconName }}
+                    </mat-icon>
+                    <span>{{ menuAction.name }}</span>
+                </button>
+            </ng-template>
+        </mat-menu>
     </span>
 </mat-toolbar>

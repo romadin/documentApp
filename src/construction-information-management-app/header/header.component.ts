@@ -6,7 +6,8 @@ import { filter } from 'rxjs/operators';
 
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
-import { DialogData, ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
+import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
+import { UserPopupComponent } from '../popups/user-popup/user-popup.component';
 
 interface HeaderAction {
     onClick: (item?) => void;
@@ -28,11 +29,9 @@ type UrlGroup = '/overview';
 export class HeaderComponent implements OnInit {
     public actions: HeaderAction[] = [];
     public actionBack: HeaderAction;
+    public menuActions: HeaderAction[] = [];
     public routHistory: NavigationEnd[] = [];
     public currentUser: User;
-    public dialogName = 'testing the name';
-    public animal = 'Lion';
-
 
     constructor(
         public dialog: MatDialog,
@@ -50,6 +49,7 @@ export class HeaderComponent implements OnInit {
             this.determineBackAction(this.routHistory);
             this.determineActions(navigation);
         });
+        this.defineMenuActions();
     }
 
     private defineActions(): void {
@@ -64,23 +64,51 @@ export class HeaderComponent implements OnInit {
             needsAdmin: false,
         };
         const addProject: HeaderAction = {
-            onClick: this.openDialog.bind(this),
+            onClick: this.openDialogAddProject.bind(this),
             iconName: 'add',
             name: 'addProject',
             show: false,
             needsAdmin: true,
             urlGroup: '/overview',
         };
-        this.actions.push(addProject);
+        const menu = {
+            onClick: () => { },
+            iconName: 'menu',
+            name: 'menu',
+            show: false,
+            needsAdmin: true,
+        };
+        this.actions.push(addProject, menu);
+    }
+
+    private defineMenuActions(): void {
+        const addUser: HeaderAction = {
+            onClick: this.openDialogAddUser.bind(this),
+            iconName: 'person_add',
+            name: 'Gebruiker toevoegen',
+            show: true,
+            needsAdmin: true,
+        };
+        const showUsers: HeaderAction = {
+            onClick: () => {
+                this.router.navigate(['gebruikers']);
+            },
+            iconName: 'group',
+            name: 'Gebruikers',
+            show: true,
+            needsAdmin: true,
+        };
+
+        this.menuActions.push(addUser, showUsers);
     }
 
     private determineActions(navigation: NavigationEnd): void {
         if ( navigation.url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
-                if ( user.getRole() ) {
+                if ( user && user.getRole() ) {
                     this.actions.forEach(( action: HeaderAction ) => {
-                        if ( action.urlGroup === navigation.url && action.needsAdmin ) {
+                        if ( !action.urlGroup && action.needsAdmin || action.urlGroup === navigation.url && action.needsAdmin ) {
                             action.show = user.getRole().getName() === 'admin';
                         } else {
                             action.show = action.urlGroup === navigation.url;
@@ -95,12 +123,13 @@ export class HeaderComponent implements OnInit {
         if ( routHistory.length > 1 ) {
             this.actionBack.show = true;
         }
+        // login page
         if ( this.routHistory[0].url === this.routHistory[this.routHistory.length - 1].url ) {
             this.actionBack.show = false;
         }
     }
 
-    private openDialog(): void {
+    private openDialogAddProject(): void {
         const dialogRef = this.dialog.open(ProjectPopupComponent, {
             width: '400px',
             data: {
@@ -111,10 +140,24 @@ export class HeaderComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
-            console.log(result);
-            this.animal = result;
         });
     }
+
+    private openDialogAddUser(): void {
+        console.log('open');
+        const dialogRef = this.dialog.open(UserPopupComponent, {
+            width: '400px',
+            data: {
+                title: 'Voeg een gebruiker toe',
+                placeholder: 'Project naam',
+                submitButton: 'Voeg toe',
+            }
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('close element');
+        });
+
+    }
+
 
 }

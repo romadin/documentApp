@@ -1,0 +1,20 @@
+mat-card.userRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border: solid 1px #cecece;
+    border-bottom: none;
+    cursor: pointer;
+}
+mat-card.userRow.mat-card:hover {
+    background: #f7f7f7;
+}
+mat-card-actions.actionButton {
+    display: inline;
+}
+mat-card-actions.actionButton > .actionsEditDelete {
+    display: inline;
+}
+mat-card-actions.actionButton > .actionsEditDelete > i.material-icons {
+    font-size: 20px;
+}

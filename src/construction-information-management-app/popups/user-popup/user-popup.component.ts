@@ -40,7 +40,9 @@ export class UserPopupComponent {
         });
     }
 
-    onNoClick(): void {
+    onNoClick(event: MouseEvent): void {
+        event.preventDefault();
+        event.stopPropagation();
         this.dialogRef.close();
     }
 
