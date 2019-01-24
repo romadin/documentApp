@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../../service/api.service';
-import { User } from './user.model';
-import { ApiUserResponse, UserBody } from './api-user.interface';
-import { RoleService } from '../role-package/role.service';
-import { Role } from '../role-package/role.model';
 import { BehaviorSubject, Subject } from 'rxjs';
+
+import { ApiUserResponse, UserBody } from './api-user.interface';
+import { ApiService } from '../../service/api.service';
+import { RoleService } from '../role-package/role.service';
+import { User } from './user.model';
 
 interface UserCache {
     [id: number]: User;

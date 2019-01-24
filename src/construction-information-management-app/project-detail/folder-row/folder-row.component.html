@@ -1,3 +1,16 @@
-<p>
-  folder-row works!
-</p>
+<div class="folderWrapper">
+    <div class="header">
+        <i class="material-icons"> folder_open </i>
+        <h3> {{ folder.getName()}}</h3>
+    </div>
+    <div class="actions">
+        <label class="switch" *ngIf="folderEditable()">
+            <input type="checkbox" checked>
+            <span class="slider round">
+                <span class="on">AAN</span>
+                <span class="off">UIT</span>
+            </span>
+        </label>
+        <i class="material-icons"> arrow_right </i>
+    </div>
+</div>

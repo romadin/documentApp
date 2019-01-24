@@ -1,3 +1,5 @@
-<p *ngIf="project">
-  project-detail works! {{ project.getName() }}
-</p>
+<div *ngIf="folders">
+  <cim-folder-row *ngFor="let folder of folders"
+                   [folder]="folder">
+  </cim-folder-row>
+</div>

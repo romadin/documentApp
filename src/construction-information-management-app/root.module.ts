@@ -26,6 +26,7 @@ import { UserPopupComponent } from './popups/user-popup/user-popup.component';
 import { UsersOverviewComponent } from './users/users-overview.component';
 import { CanActivateAdminUser } from '../can-activate/CanActivateAdminUser';
 import { UserRowComponent } from './users/user-row/user-row.component';
+import { FolderService } from '../shared/packages/folder-package/folder.service';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
@@ -63,7 +64,13 @@ const appRoutes: Routes = [
         HttpClientModule,
         RouterModule,
     ],
-    providers: [ AuthService, ApiService, ProjectService, UserService, RoleService,
+    providers: [
+        AuthService,
+        ApiService,
+        ProjectService,
+        UserService,
+        RoleService,
+        FolderService,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]
