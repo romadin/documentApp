@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ProjectService } from '../../shared/packages/project-package/project.service';
-import { Folder } from '../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../shared/packages/folder-package/folder.service';
+import { Folder } from '../../shared/packages/folder-package/folder.model';
+import { UserService } from '../../shared/packages/user-package/user.service';
+import { User } from '../../shared/packages/user-package/user.model';
 
 @Component({
     selector: 'cim-project-detail',
@@ -13,18 +14,24 @@ import { FolderService } from '../../shared/packages/folder-package/folder.servi
 
 export class ProjectDetailComponent implements OnInit {
     public folders: Folder[];
+    public currentUser: User;
+    public folderUrlToRedirect: string;
 
-    constructor(projectService: ProjectService,
-                router: Router,
+    constructor(private router: Router,
                 private activatedRoute: ActivatedRoute,
-                private folderService: FolderService ) { }
+                private folderService: FolderService,
+                private userService: UserService) {
+        this.folderUrlToRedirect = '/folder/';
+    }
 
     ngOnInit() {
-        this.activatedRoute.params.subscribe(params => {
-            this.folderService.getFoldersByProject(parseInt(params.id, 10)).subscribe(folders => {
-                console.log(folders);
-                this.folders = folders;
-            });
+        const projectId = this.activatedRoute.snapshot.paramMap.get('id');
+
+        this.userService.getCurrentUser().subscribe((user: User) => {
+            this.currentUser = user;
+        });
+        this.folderService.getFoldersByProject(parseInt(projectId, 10)).subscribe(folders => {
+            this.folders = folders;
         });
     }
 

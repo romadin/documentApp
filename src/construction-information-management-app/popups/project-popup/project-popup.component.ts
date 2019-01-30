@@ -37,7 +37,7 @@ export class ProjectPopupComponent {
                 this.dialogRef.close(value);
             });
         } else {
-            this.projectService.postProject({ name: projectName }).then((value) => {
+            this.projectService.postProjectWithDefaultTemplate({ name: projectName }).then((value) => {
                 this.dialogRef.close(value);
             });
         }

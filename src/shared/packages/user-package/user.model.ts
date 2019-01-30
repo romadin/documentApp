@@ -75,4 +75,8 @@ export class User {
         }
         return this.getFirstName() + ' ' + this.getLastName();
     }
+
+    public isAdmin(): boolean {
+        return this.getRole().getName() === 'admin';
+    }
 }

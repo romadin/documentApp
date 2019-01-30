@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
+
+import { FolderService } from '../../../shared/packages/folder-package/folder.service';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
+import { User } from '../../../shared/packages/user-package/user.model';
 
 @Component({
   selector: 'cim-folder-row',
@@ -7,10 +10,16 @@ import { Folder } from '../../../shared/packages/folder-package/folder.model';
   styleUrls: ['./folder-row.component.css']
 })
 export class FolderRowComponent {
-    private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     @Input() public folder: Folder;
+    @Input() public currentUser: User;
+    @Input() public redirectUrl: string;
 
-    constructor() { }
+    private editableFolders = ['BIM Regisseur', 'BIM Manager'];
+    private timerId: number;
+
+    constructor(private folderService: FolderService) {
+    }
+
 
     public folderEditable(): boolean {
         const folder = this.editableFolders.find( (folderName) => {
@@ -19,4 +28,14 @@ export class FolderRowComponent {
         return folder !== undefined;
     }
 
+    public toggleFolderOn(turnOn: boolean): void {
+        this.folder.setOn(turnOn);
+
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+        }
+        this.timerId = setTimeout(() => {
+            this.folderService.postFolder({turnOn: turnOn}, this.folder.getId());
+        }, 1000);
+    }
 }

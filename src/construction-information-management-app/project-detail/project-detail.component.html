@@ -1,5 +1,7 @@
-<div *ngIf="folders">
-  <cim-folder-row *ngFor="let folder of folders"
-                   [folder]="folder">
-  </cim-folder-row>
+<div *ngIf="folders && currentUser">
+    <cim-folder-row *ngFor="let folder of folders"
+                    [folder]="folder"
+                    [currentUser]="currentUser"
+                    [redirectUrl]="folderUrlToRedirect + folder.getId()">
+    </cim-folder-row>
 </div>

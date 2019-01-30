@@ -27,11 +27,16 @@ import { UsersOverviewComponent } from './users/users-overview.component';
 import { CanActivateAdminUser } from '../can-activate/CanActivateAdminUser';
 import { UserRowComponent } from './users/user-row/user-row.component';
 import { FolderService } from '../shared/packages/folder-package/folder.service';
+import { FolderComponent } from './folder/folder.component';
+import { DocumentService } from '../shared/packages/document-package/document.service';
+import { DocumentRowComponent } from './folder/document-row/document-row.component';
+import { DocumentIconService } from '../shared/packages/document-package/document-icon.service';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
     { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
     { path: 'project/:id', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ]  },
+    { path: 'folder/:id', component: FolderComponent, canActivate: [ CanActivateLoggedIn ]  },
     { path: 'gebruikers', component: UsersOverviewComponent, canActivate: [ CanActivateAdminUser ]  },
     {
         path: '',
@@ -55,6 +60,8 @@ const appRoutes: Routes = [
         UserPopupComponent,
         UsersOverviewComponent,
         UserRowComponent,
+        FolderComponent,
+        DocumentRowComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),
@@ -71,6 +78,8 @@ const appRoutes: Routes = [
         UserService,
         RoleService,
         FolderService,
+        DocumentService,
+        DocumentIconService,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]

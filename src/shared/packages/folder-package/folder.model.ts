@@ -5,6 +5,7 @@ export class Folder {
     private _projectId: number;
     private _isOn: boolean;
     private _documents: number;
+    private _subFolders: Folder[] = [];
 
     public constructor() {
         //
@@ -48,6 +49,18 @@ export class Folder {
 
     public setDocuments(value: number) {
         this._documents = value;
+    }
+
+    public getSubFolders(): Folder[] {
+        return this._subFolders;
+    }
+
+    public setSubFolder(subFolder: Folder) {
+        this._subFolders.push(subFolder);
+    }
+
+    public setSubFolders(subFolders: Folder[]) {
+        this._subFolders = subFolders;
     }
 
     public update(data): void {

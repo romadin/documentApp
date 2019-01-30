@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 
-import { ApiService } from '../../service/api.service';
 import { Project } from './project.model';
 import { ApiProjectResponse } from './api-project.interface';
+import { ApiService } from '../../service/api.service';
 
 interface ProjectCache {
     [id: number]: Project;
@@ -55,6 +55,22 @@ export class ProjectService {
     }
 
     public postProject(data: { name: string } ): Promise<Project> {
+        return new Promise<Project>((resolve) => {
+            this.apiService.post('/projects', data).subscribe((apiResponse: ApiProjectResponse) => {
+                    const newProject = this.makeProject(apiResponse);
+                    this.projectsCache[ newProject.getId() ] = newProject;
+                    this.allProjectSubject.next(Object.values(this.projectsCache));
+                    resolve(newProject);
+                }, (error) => {
+                    resolve(error.error);
+                });
+        });
+    }
+
+    /**
+     * Doing a post project but this call does also do folders and documents. That is the default template.
+     */
+    public postProjectWithDefaultTemplate(data: { name: string } ): Promise<Project> {
         return new Promise<Project>((resolve) => {
             this.apiService.post('/projects', data, { template: 'default'} )
                 .subscribe((apiResponse: ApiProjectResponse) => {
