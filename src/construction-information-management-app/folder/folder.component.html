@@ -1,0 +1,11 @@
+<div *ngIf="subFolders && documents.length > 0 && currentUser">
+    <cim-folder-row *ngFor="let folder of subFolders"
+                    [folder]="folder"
+                    [currentUser]="currentUser"
+                    [redirectUrl]="subFolderRedirectUrl + folder.getId()">
+    </cim-folder-row>
+    <cim-document-row *ngFor="let document of documents"
+                    [document]="document"
+                    [currentUser]="currentUser">
+  </cim-document-row>
+</div>
