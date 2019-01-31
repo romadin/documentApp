@@ -4,6 +4,7 @@ import { Folder } from '../folder-package/folder.model';
 
 export class Document {
     private _id: number;
+    private _originalName: string;
     private _name: string;
     private _content: string;
     private _parentFolders: BehaviorSubject<Folder[]>;
@@ -16,6 +17,14 @@ export class Document {
 
     set id(value: number) {
         this._id = value;
+    }
+
+    get originalName(): string {
+        return this._originalName;
+    }
+
+    set originalName(value: string) {
+        this._originalName = value;
     }
 
     get name(): string {
@@ -40,5 +49,9 @@ export class Document {
 
     set parentFolders(value: BehaviorSubject<Folder[]>) {
         this._parentFolders = value;
+    }
+
+    public getName(): string {
+        return this.name === null ? this.originalName : this.name;
     }
 }

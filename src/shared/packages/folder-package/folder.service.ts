@@ -65,7 +65,7 @@ export class FolderService {
         this.apiService.get('/folders/' + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(folderResponse));
         }, (error) => {
-            throw error(error.error);
+            throw new Error(error.error);
         });
 
         return folder;
@@ -80,7 +80,7 @@ export class FolderService {
             }
             folder.next(this.makeFolder(foldersResponse));
         }, (error) => {
-            throw error(error.error);
+            throw new Error(error.error);
         });
 
         return folder;

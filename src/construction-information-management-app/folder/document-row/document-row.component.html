@@ -1,7 +1,7 @@
-<div class="DocumentWrapper">
+<div class="DocumentWrapper" (click)="editDocument()">
     <div class="header">
         <i class="material-icons"> {{ iconName }} </i>
-        <h3> {{ document.name }}</h3>
+        <h3> {{ document.getName() }}</h3>
     </div>
     <div class="actions">
         <i class="material-icons"> arrow_right </i>

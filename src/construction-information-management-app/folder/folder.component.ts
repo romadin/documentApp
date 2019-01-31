@@ -18,6 +18,7 @@ export class FolderComponent implements OnInit {
     public subFolders: Folder[];
     public currentUser: User;
     public subFolderRedirectUrl: string;
+    public documentToEdit: Document;
 
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
@@ -35,10 +36,17 @@ export class FolderComponent implements OnInit {
             this.subFolders = folder.getSubFolders();
         });
         this.documentService.getDocuments(folderId).subscribe((documents: Document[]) => {
-            console.log(documents);
             this.documents = documents;
         });
-
     }
 
+    public onActivateDocument(document: Document) {
+        this.documentToEdit = document;
+    }
+
+    public onDocumentEditClose(closeForm: boolean) {
+        if (closeForm) {
+            this.documentToEdit = null;
+        }
+    }
 }

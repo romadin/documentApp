@@ -1,11 +1,20 @@
-<div *ngIf="subFolders && documents.length > 0 && currentUser">
-    <cim-folder-row *ngFor="let folder of subFolders"
-                    [folder]="folder"
-                    [currentUser]="currentUser"
-                    [redirectUrl]="subFolderRedirectUrl + folder.getId()">
-    </cim-folder-row>
-    <cim-document-row *ngFor="let document of documents"
-                    [document]="document"
-                    [currentUser]="currentUser">
-  </cim-document-row>
+<div class="wrapper" *ngIf="subFolders && documents.length > 0 && currentUser">
+    <div class="overview">
+        <cim-folder-row *ngFor="let folder of subFolders"
+                        [folder]="folder"
+                        [currentUser]="currentUser"
+                        [redirectUrl]="subFolderRedirectUrl + folder.getId()">
+        </cim-folder-row>
+        <cim-document-row *ngFor="let document of documents"
+                          [document]="document"
+                          [currentUser]="currentUser"
+                          (activatedDocument)="onActivateDocument($event)">
+        </cim-document-row>
+    </div>
+    <div class="editDocument" *ngIf="documentToEdit">
+        <cim-document-detail
+                [document]="documentToEdit"
+                (closeEditForm)="onDocumentEditClose($event)">
+        </cim-document-detail>
+    </div>
 </div>

@@ -1,0 +1,12 @@
+div.wrapper {
+    display: flex;
+}
+
+div.wrapper > div.overview {
+    flex: 1;
+    margin-right: 25px;
+}
+
+div.wrapper > div.editDocument {
+    flex: 1;
+}
