@@ -15,10 +15,13 @@ import { User } from '../../shared/packages/user-package/user.model';
 })
 export class FolderComponent implements OnInit {
     public documents: Document[];
+    public currentFolder: Folder;
+    public mainFolder: Folder;
     public subFolders: Folder[];
     public currentUser: User;
     public subFolderRedirectUrl: string;
     public documentToEdit: Document;
+    public showAddItemList: boolean;
 
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
@@ -33,15 +36,19 @@ export class FolderComponent implements OnInit {
             this.currentUser = user;
         });
         this.folderService.getFolder(folderId).subscribe((folder: Folder) => {
+            this.currentFolder = folder;
+            this.folderService.getMainFolderFromProject(folder.getProjectId()).subscribe((mainFolder: Folder) => {
+                this.mainFolder = mainFolder;
+            });
+
             this.subFolders = folder.getSubFolders();
         });
-        this.documentService.getDocuments(folderId).subscribe((documents: Document[]) => {
-            this.documents = documents;
-        });
+        this.setDocuments(folderId);
     }
 
-    public onActivateDocument(document: Document) {
+    public onDocumentEdit(document: Document) {
         this.documentToEdit = document;
+        this.showAddItemList = false;
     }
 
     public onDocumentEditClose(closeForm: boolean) {
@@ -49,4 +56,26 @@ export class FolderComponent implements OnInit {
             this.documentToEdit = null;
         }
     }
+
+    public onItemsAdded(folder: Folder): void {
+        this.setDocuments(folder.getId());
+        this.showAddItemList = false;
+    }
+
+    public onAddItemsCancel(cancelList: boolean) {
+        this.showAddItemList = cancelList;
+    }
+
+    public addItem(e: MouseEvent) {
+        e.stopPropagation();
+        this.documentToEdit = null;
+        this.showAddItemList = true;
+    }
+
+    private setDocuments(folderId: number) {
+        this.documentService.getDocuments(folderId).subscribe((documents: Document[]) => {
+            this.documents = documents;
+        });
+    }
+
 }

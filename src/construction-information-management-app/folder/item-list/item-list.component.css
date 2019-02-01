@@ -1,40 +1,32 @@
-div.wrapper {
-    display: flex;
-    justify-content: center;
-}
-
-div.addItem {
+div.listWrapper {
     box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-direction: column;
     border: solid 1px #cecece;
     border-bottom: none;
     cursor: pointer;
-    padding: 16px 30px;;
+    padding: 16px;
     border-radius: 4px;
     background: #fff;
     color: rgba(0,0,0,.87);
     transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
-    margin-right: 25px;
 }
 
-div.addItem:hover {
-    background: #f7f7f7;
+div.listWrapper > .header > h3 {
+    margin: 0;
+}
+mat-selection-list.mat-selection-list.mat-list-base.ng-star-inserted {
+    width: 100%;
 }
 
-div.addItem > i.material-icons {
+div.content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+div.content > i.material-icons {
     margin-right: 10px;
-}
-
-div.wrapper > div.overview {
-    flex: 5;
-    margin-right: 25px;
-}
-
-div.wrapper > div.editDocument {
-    flex: 4;
-}
-div.wrapper > div.addItemList {
-    flex: 1;
 }

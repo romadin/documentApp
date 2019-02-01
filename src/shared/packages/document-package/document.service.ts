@@ -3,8 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 
 import { Document } from './document.model';
 import { ApiDocResponse, DocPostData } from './api-document.interface';
-import { Folder } from '../folder-package/folder.model';
-import { FolderService } from '../folder-package/folder.service';
 import { ApiService } from '../../service/api.service';
 
 interface DocumentsByProjectCache {
@@ -20,24 +18,23 @@ export class DocumentService {
     private documentsByFolderCache: DocumentsByProjectCache = {};
     private documentsCache: DocumentsCache = {};
 
-    constructor(private apiService: ApiService, private folderService: FolderService) { }
+    constructor(private apiService: ApiService) { }
 
     public getDocuments(folderId: number): BehaviorSubject<Document[]> {
         const documents: BehaviorSubject<Document[]> = new BehaviorSubject([]);
         const params = { folderId: folderId, template: 'default' };
 
-        if ( this.documentsByFolderCache[folderId] ) {
-            documents.next(this.documentsByFolderCache[folderId]);
-            return documents;
-        }
 
         this.apiService.get('/documents', params).subscribe((documentsResponse: ApiDocResponse[]) => {
                 const documentsContainer: Document[] = [];
 
                 documentsResponse.forEach((documentResponse: ApiDocResponse) => {
+                    if (this.documentsCache[documentResponse.id]) {
+                        documentsContainer.push(this.documentsCache[documentResponse.id]);
+                        return;
+                    }
                     const document = this.makeDocument(documentResponse);
                     documentsContainer.push(document);
-                    this.setCacheDocumentsByFolderId(document, folderId);
                 });
 
                 documents.next(documentsContainer);
@@ -67,41 +64,24 @@ export class DocumentService {
         document.name = data.name;
 
         const newFolderIds = data.foldersId.filter((folderId) => {
-            return document.parentFolders.getValue().find((folder) => folderId !== folder.getId());
+            return document.parentFolders.find((id) => folderId !== id);
         });
 
         if ( newFolderIds ) {
-            const parentFolders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
-            const folders: Folder[] = document.parentFolders.getValue();
-
             newFolderIds.forEach((folderId) => {
-                this.folderService.getFolder(folderId).subscribe((parentFolder: Folder) => {
-                    folders.push(parentFolder);
-                });
+                document.parentFolders.push(folderId);
             });
-            parentFolders.next(folders);
-            document.parentFolders = parentFolders;
         }
     }
 
     private makeDocument(data: ApiDocResponse): Document {
-        const parentFolders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
-        const folderContainer: Folder[] = [];
         const doc = new Document();
 
         doc.id = data.id;
         doc.originalName = data.originalName;
         doc.name = data.name;
         doc.content = data.content;
-
-        data.foldersId.forEach((folderId) => {
-            this.folderService.getFolder(folderId).subscribe((parentFolder: Folder) => {
-                folderContainer.push(parentFolder);
-            });
-        });
-
-        parentFolders.next(folderContainer);
-        doc.parentFolders = parentFolders;
+        doc.parentFolders = data.foldersId;
 
         this.documentsCache[doc.id] = doc;
         return doc;

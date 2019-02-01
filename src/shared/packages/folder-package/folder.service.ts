@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { find, map } from 'rxjs/operators';
 
 import { Folder } from './folder.model';
 import { ApiFolderResponse, FolderPostData } from './api-folder.interface';
 import { ApiService } from '../../service/api.service';
+import { DocumentService } from '../document-package/document.service';
+import { Document} from '../document-package/document.model';
 
 interface FoldersByProjectCache {
     [projectId: number]: Folder[];
@@ -18,7 +21,7 @@ export class FolderService {
     private foldersByProjectCache: FoldersByProjectCache = {};
     private foldersCache: FoldersCache = {};
 
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService, private documentService: DocumentService) { }
 
     public getFoldersByProject(projectId: number): BehaviorSubject<Folder[]> {
         const folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
@@ -86,12 +89,40 @@ export class FolderService {
         return folder;
     }
 
-    public makeFolder(folderData) {
+    public postFolderLinkItems(id: number, items): Subject<Folder> {
+        const folder: Subject<Folder> = new Subject();
+        const documentsId: number[] = [];
+        items.forEach((item) => {
+            // @todo need to remove the if, when i can link folders to folders.
+            if (item instanceof Document) {
+                documentsId.push(item.id);
+            }
+        });
+        const body = {documentsId: documentsId};
+        this.apiService.post('/folders/' + id + '/documents', body).subscribe((foldersResponse: ApiFolderResponse) => {
+            if (this.foldersCache[id]) {
+                return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
+            }
+            folder.next(this.makeFolder(foldersResponse));
+        }, (error) => {
+            throw new Error(error.error);
+        });
+        return folder;
+    }
+
+    public getMainFolderFromProject(projectId: number) {
+        return this.getFoldersByProject(projectId).pipe(map(folders => folders.find(folder => folder.getIsMainFolder())));
+    }
+
+    public makeFolder(folderData: ApiFolderResponse) {
         const folder = new Folder();
         folder.setId(folderData.id);
         folder.setName(folderData.name);
         folder.setProjectId(folderData.projectId);
         folder.setOn(folderData.on);
+        folder.setIsMainFolder(folderData.isMain);
+
+        folder.setDocuments(this.documentService.getDocuments(folderData.id).pipe(map((documents) => documents )));
 
         this.foldersCache[folder.getId()] = folder;
         return folder;
@@ -103,5 +134,10 @@ export class FolderService {
         } else {
             this.foldersByProjectCache[folder.getProjectId()] = [folder];
         }
+    }
+
+    private updateFolder(folder: Folder, response: ApiFolderResponse) {
+        folder.setDocuments(this.documentService.getDocuments(folder.getId()).pipe(map((documents) => documents )));
+        return folder;
     }
 }

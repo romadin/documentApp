@@ -35,11 +35,11 @@ import { UserRowComponent } from './users/user-row/user-row.component';
 import { FolderComponent } from './folder/folder.component';
 import { DocumentRowComponent } from './folder/document-row/document-row.component';
 import { DocumentDetailComponent } from './folder/document-detail/document-detail.component';
-import { DocumentOverviewComponent } from './document-overview/document-overview.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { FolderRowComponent } from './project-detail/folder-row/folder-row.component';
 import { OverviewComponent } from './overview/overview.component';
 import { ProjectRowComponent } from './overview/project-row/project-row.component';
+import { ItemListComponent } from './folder/item-list/item-list.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
@@ -63,7 +63,6 @@ const appRoutes: Routes = [
         OverviewComponent,
         ProjectRowComponent,
         ProjectDetailComponent,
-        DocumentOverviewComponent,
         FolderRowComponent,
         ProjectPopupComponent,
         UserPopupComponent,
@@ -72,6 +71,7 @@ const appRoutes: Routes = [
         FolderComponent,
         DocumentRowComponent,
         DocumentDetailComponent,
+        ItemListComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),

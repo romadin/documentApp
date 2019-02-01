@@ -1,5 +1,5 @@
-<div class="wrapper" *ngIf="subFolders && documents.length > 0 && currentUser">
-    <div class="overview">
+<div class="wrapper" *ngIf="currentUser">
+    <div class="overview" *ngIf="subFolders.length > 0 || documents.length > 0">
         <cim-folder-row *ngFor="let folder of subFolders"
                         [folder]="folder"
                         [currentUser]="currentUser"
@@ -8,13 +8,28 @@
         <cim-document-row *ngFor="let document of documents"
                           [document]="document"
                           [currentUser]="currentUser"
-                          (activatedDocument)="onActivateDocument($event)">
+                          (activatedDocument)="onDocumentEdit($event)">
         </cim-document-row>
     </div>
-    <div class="editDocument" *ngIf="documentToEdit">
+    <div class="editDocument" *ngIf="documentToEdit && currentUser.isAdmin()">
         <cim-document-detail
                 [document]="documentToEdit"
                 (closeEditForm)="onDocumentEditClose($event)">
         </cim-document-detail>
     </div>
+    <div class="addItemList" *ngIf="showAddItemList && mainFolder && currentFolder">
+        <cim-item-list
+                [mainFolder]="mainFolder"
+                [currentFolder]="currentFolder"
+                (cancelAddItems)="onAddItemsCancel($event)"
+                (saveItemsDone)="onItemsAdded($event)"
+        >
+        </cim-item-list>
+    </div>
 </div>
+<ng-container *ngIf="!showAddItemList">
+    <div class="addItem" (click)="addItem($event)">
+        <i class="material-icons"> add </i>
+        Voeg een document of een folder toe.
+    </div>
+</ng-container>

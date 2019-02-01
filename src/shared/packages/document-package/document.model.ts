@@ -1,13 +1,9 @@
-import { BehaviorSubject } from 'rxjs';
-
-import { Folder } from '../folder-package/folder.model';
-
 export class Document {
     private _id: number;
     private _originalName: string;
     private _name: string;
     private _content: string;
-    private _parentFolders: BehaviorSubject<Folder[]>;
+    private _parentFolders: number[];
 
     constructor() {}
 
@@ -43,11 +39,11 @@ export class Document {
         this._content = value;
     }
 
-    get parentFolders(): BehaviorSubject<Folder[]> {
+    get parentFolders(): number[] {
         return this._parentFolders;
     }
 
-    set parentFolders(value: BehaviorSubject<Folder[]>) {
+    set parentFolders(value: number[]) {
         this._parentFolders = value;
     }
 
