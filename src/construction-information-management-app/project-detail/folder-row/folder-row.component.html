@@ -1,11 +1,11 @@
-<div class="folderWrapper" *ngIf="currentUser.isAdmin() || folder.getIsOn() === true" routerLink="{{redirectUrl}}">
+<div class="folderWrapper" *ngIf="currentUser.isAdmin() || folder.getIsOn() === true" (click)="redirectToFolder($event)">
     <div class="header">
         <i class="material-icons"> folder_open </i>
         <h3> {{ folder.getName()}}</h3>
     </div>
     <div class="actions">
-        <label class="switch" *ngIf="folderEditable()">
-            <input type="checkbox" [checked]="folder.getIsOn()" (click)="toggleFolderOn(!folder.getIsOn())">
+        <label class="switch" *ngIf="folderEditable()" (click)="toggleFolderOn($event, !folder.getIsOn())">
+            <input type="checkbox" [checked]="folder.getIsOn()">
             <span class="slider round">
                 <span class="on">AAN</span>
                 <span class="off">UIT</span>

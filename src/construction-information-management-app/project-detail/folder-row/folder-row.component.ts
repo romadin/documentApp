@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { FolderService } from '../../../shared/packages/folder-package/folder.service';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'cim-folder-row',
@@ -17,7 +18,7 @@ export class FolderRowComponent {
     private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     private timerId: number;
 
-    constructor(private folderService: FolderService) {
+    constructor(private folderService: FolderService, private router: Router) {
     }
 
 
@@ -28,7 +29,15 @@ export class FolderRowComponent {
         return folder !== undefined;
     }
 
-    public toggleFolderOn(turnOn: boolean): void {
+    public redirectToFolder(e: MouseEvent) {
+        e.stopPropagation();
+        e.preventDefault();
+        this.router.navigate([this.redirectUrl]);
+    }
+
+    public toggleFolderOn(e: MouseEvent, turnOn: boolean): void {
+        e.preventDefault();
+        e.stopPropagation();
         this.folder.setOn(turnOn);
 
         if (this.timerId) {
