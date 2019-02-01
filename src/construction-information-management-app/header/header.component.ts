@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit {
         const addProject: HeaderAction = {
             onClick: this.openDialogAddProject.bind(this),
             iconName: 'add',
-            name: 'addProject',
+            name: 'Project toevoegen',
             show: false,
             needsAdmin: true,
             urlGroup: '/overview',

@@ -63,7 +63,7 @@ export class FolderComponent implements OnInit {
     }
 
     public onAddItemsCancel(cancelList: boolean) {
-        this.showAddItemList = cancelList;
+        this.showAddItemList = !cancelList;
     }
 
     public addItem(e: MouseEvent) {
@@ -77,5 +77,4 @@ export class FolderComponent implements OnInit {
             this.documents = documents;
         });
     }
-
 }

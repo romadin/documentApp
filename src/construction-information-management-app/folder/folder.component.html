@@ -22,12 +22,11 @@
                 [mainFolder]="mainFolder"
                 [currentFolder]="currentFolder"
                 (cancelAddItems)="onAddItemsCancel($event)"
-                (saveItemsDone)="onItemsAdded($event)"
-        >
+                (saveItemsDone)="onItemsAdded($event)">
         </cim-item-list>
     </div>
 </div>
-<ng-container *ngIf="!showAddItemList">
+<ng-container *ngIf="!showAddItemList && currentUser && currentUser.isAdmin() && currentFolder && !currentFolder.getIsMainFolder()">
     <div class="addItem" (click)="addItem($event)">
         <i class="material-icons"> add </i>
         Voeg een document of een folder toe.

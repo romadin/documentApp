@@ -12,11 +12,14 @@
             <div *ngIf="action.name !== 'menu'; then actionBlock; else showMenuBlock"></div>
 
             <ng-template #actionBlock>
-                <button mat-icon-button *ngIf="action.show && currentUser" >
-                    <mat-icon aria-label="Icon"  (click)="action.onClick()">
-                        {{ action.iconName }}
-                    </mat-icon>
-                </button>
+                    <button mat-stroked-button *ngIf="action.show && currentUser" (click)="action.onClick()">
+                    <span> {{ action.name }}</span>
+                        <mat-icon aria-label="Icon" >
+                            {{ action.iconName }}
+                        </mat-icon>
+                    </button>
+                <!--<div class="buttonWrapper" *ngIf="action.show && currentUser" (click)="action.onClick()">-->
+                <!--</div>-->
             </ng-template>
 
             <ng-template #showMenuBlock>

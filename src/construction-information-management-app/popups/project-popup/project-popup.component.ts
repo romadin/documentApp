@@ -25,7 +25,9 @@ export class ProjectPopupComponent {
         @Inject(MAT_DIALOG_DATA) public data: DialogData,
         private projectService: ProjectService) {}
 
-    onNoClick(): void {
+    onNoClick(e: MouseEvent): void {
+        e.preventDefault();
+        e.stopPropagation();
         this.dialogRef.close();
     }
 
