@@ -1,10 +1,20 @@
 <div class="wrapper" *ngIf="currentUser">
     <div class="overview" *ngIf="items && items.length > 0">
-        <ng-container *ngFor="let item of items">
+        <ng-container *ngFor="let item of items; let itemIndex = index">
+            <div class="partnersWrapper" *ngIf="itemIndex === 1" (click)="showAllPartners($event)">
+                <div class="header">
+                    <i class="material-icons"> people </i>
+                    <h3> Partners</h3>
+                </div>
+                <div class="actions">
+                    <i class="material-icons"> arrow_right </i>
+                </div>
+            </div>
             <div *ngIf="item.constructor.name === 'Folder' ; then folderBlock; else documentBlock"></div>
             <ng-template #folderBlock>
                 <cim-folder-row [folder]="item"
-                                [currentUser]="currentUser">
+                                [currentUser]="currentUser"
+                                (sendDocumentToFolder)="onDocumentEdit($event)">
                 </cim-folder-row>
             </ng-template>
 
@@ -21,6 +31,11 @@
                 [document]="documentToEdit"
                 (closeEditForm)="onDocumentEditClose($event)">
         </cim-document-detail>
+    </div>
+    <div class="partners" *ngIf="!documentToEdit && partnerIsOpen">
+        <cim-partners
+                [projectId]="documentToEdit">
+        </cim-partners>
     </div>
     <div class="addItemList" *ngIf="showAddItemList && mainFolder && currentFolder">
         <cim-item-list

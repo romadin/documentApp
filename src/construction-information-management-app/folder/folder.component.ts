@@ -7,8 +7,6 @@ import { DocumentService } from '../../shared/packages/document-package/document
 import { Document } from '../../shared/packages/document-package/document.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
-import { BehaviorSubject, forkJoin, interval, of } from 'rxjs';
-import { delay, take } from 'rxjs/operators';
 
 @Component({
   selector: 'cim-folder',
@@ -25,6 +23,7 @@ export class FolderComponent implements OnInit {
     public documentToEdit: Document;
     public showAddItemList: boolean;
     public items: (Document | Folder)[];
+    public partnerIsOpen = false;
 
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
@@ -40,10 +39,8 @@ export class FolderComponent implements OnInit {
         });
         this.getItems(folderId).then((items: (Document | Folder)[]) => {
             this.items = items;
-            console.log(this.items);
         });
 
-        // this.getDocumentsFromFolder(folderId);
     }
 
     public onDocumentEdit(document: Document) {
@@ -68,8 +65,14 @@ export class FolderComponent implements OnInit {
 
     public addItem(e: MouseEvent) {
         e.stopPropagation();
-        this.documentToEdit = null;
+        this.documentToEdit = undefined;
         this.showAddItemList = true;
+    }
+
+    public showAllPartners($event) {
+        console.log('showwwwing the partners');
+        this.documentToEdit = undefined;
+        this.partnerIsOpen = true;
     }
 
     private getItems(folderId: number): Promise<(Document | Folder)[]> {

@@ -38,3 +38,40 @@ div.wrapper > div.editDocument {
 div.wrapper > div.addItemList {
     flex: 1;
 }
+div.wrapper > div.overview > div.partnersWrapper {
+
+}
+div.wrapper > div.overview > div.partnersWrapper {
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: solid 1px #cecece;
+    border-bottom: none;
+    cursor: pointer;
+    padding: 16px;
+    border-radius: 4px;
+    background: #fff;
+    color: rgba(0,0,0,.87);
+    transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+div.wrapper > div.overview > div.partnersWrapper:hover {
+    background: #f7f7f7;
+}
+
+div.wrapper > div.overview > div.partnersWrapper > .header {
+    display: flex;
+}
+
+div.wrapper > div.overview > div.partnersWrapper > .header > h3 {
+    margin: 0;
+}
+div.wrapper > div.overview > div.partnersWrapper > .header > .material-icons {
+    margin-right: 18px;
+}
+
+div.wrapper > div.overview > div.partnersWrapper > .actions {
+    display: flex;
+    align-items: center;
+}
