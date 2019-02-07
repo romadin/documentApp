@@ -4,6 +4,7 @@ export interface ApiDocResponse {
     name: string;
     content: string | null;
     foldersId: number[];
+    order: number;
 }
 
 export interface DocPostData {

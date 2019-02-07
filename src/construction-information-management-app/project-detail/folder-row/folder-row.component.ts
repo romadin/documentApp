@@ -14,6 +14,8 @@ export class FolderRowComponent {
     @Input() public folder: Folder;
     @Input() public currentUser: User;
     @Input() public redirectUrl: string;
+    public showDocuments = false;
+    panelOpenState = false;
 
     private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     private timerId: number;
@@ -29,10 +31,15 @@ export class FolderRowComponent {
         return folder !== undefined;
     }
 
-    public redirectToFolder(e: MouseEvent) {
+    public redirectToFolderOrShowDocs(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.router.navigate([this.redirectUrl]);
+        if (this.redirectUrl) {
+            this.router.navigate([this.redirectUrl]);
+            return;
+        }
+
+
     }
 
     public toggleFolderOn(e: MouseEvent, turnOn: boolean): void {

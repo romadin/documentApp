@@ -1,10 +1,11 @@
 export interface ApiFolderResponse {
     id: number;
     name: string;
-    projectId: number;
+    projectId: number | null;
     on: boolean;
-    parentFolderId: number;
+    subFolders: null | ApiFolderResponse[];
     isMain: boolean;
+    order: number;
 }
 
 export interface FolderPostData {

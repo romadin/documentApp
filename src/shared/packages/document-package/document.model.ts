@@ -4,6 +4,7 @@ export class Document {
     private _name: string;
     private _content: string;
     private _parentFolders: number[];
+    private _order: number;
 
     constructor() {}
 
@@ -45,6 +46,14 @@ export class Document {
 
     set parentFolders(value: number[]) {
         this._parentFolders = value;
+    }
+
+    get order(): number {
+        return this._order;
+    }
+
+    set order(value: number) {
+        this._order = value;
     }
 
     public getName(): string {

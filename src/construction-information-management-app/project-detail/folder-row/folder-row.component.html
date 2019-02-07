@@ -1,16 +1,38 @@
-<div class="folderWrapper" *ngIf="currentUser.isAdmin() || folder.getIsOn() === true" (click)="redirectToFolder($event)">
-    <div class="header">
-        <i class="material-icons"> folder_open </i>
-        <h3> {{ folder.getName()}}</h3>
-    </div>
-    <div class="actions">
-        <label class="switch" *ngIf="folderEditable()" (click)="toggleFolderOn($event, !folder.getIsOn())">
-            <input type="checkbox" [checked]="folder.getIsOn()">
-            <span class="slider round">
+<div *ngIf="folder.getProjectId() !== null ; then folderBlock; else subFolderBlock"></div>
+<ng-template #folderBlock>
+    <div class="folderWrapper" *ngIf="currentUser.isAdmin() || folder.getIsOn() === true" (click)="redirectToFolderOrShowDocs($event)">
+        <div class="header">
+            <i class="material-icons"> folder_open </i>
+            <h3> {{ folder.getName()}}</h3>
+        </div>
+        <div class="actions">
+            <label class="switch" *ngIf="folderEditable()" (click)="toggleFolderOn($event, !folder.getIsOn())">
+                <input type="checkbox" [checked]="folder.getIsOn()">
+                <span class="slider round">
                 <span class="on">AAN</span>
                 <span class="off">UIT</span>
             </span>
-        </label>
-        <i class="material-icons"> arrow_right </i>
+            </label>
+            <i class="material-icons"> arrow_right </i>
+        </div>
     </div>
-</div>
+</ng-template>
+
+<ng-template #subFolderBlock>
+    <div class="folderToggleDocument">
+        <mat-accordion *ngIf="currentUser.isAdmin() || folder.getIsOn() === true">
+            <mat-expansion-panel class="toggleRow">
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="toggleTitle">
+                        <i class="material-icons"> folder_open </i>
+                        <h3> {{ folder.getName()}} </h3>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div> hello there</div>
+                <div> Again </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</ng-template>
+

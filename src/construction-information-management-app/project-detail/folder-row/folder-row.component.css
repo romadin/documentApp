@@ -33,6 +33,22 @@ div.folderWrapper > .actions {
     align-items: center;
 }
 
+/* This is for the subFolder block */
+mat-panel-title.toggleTitle {
+    align-items: center;
+}
+mat-panel-title.toggleTitle > .material-icons {
+    margin-right: 18px;
+}
+div.folderToggleDocument > mat-accordion > .toggleRow {
+    border: solid 1px #cecece;
+    border-bottom: none;
+}
+div.folderToggleDocument > mat-accordion > .toggleRow > mat-expansion-panel-header {
+    padding: 4px 25px 4px 16px;
+}
+/* end */
+
 .switch {
     position: relative;
     display: inline-block;

@@ -82,6 +82,7 @@ export class DocumentService {
         doc.name = data.name;
         doc.content = data.content;
         doc.parentFolders = data.foldersId;
+        doc.order = data.order;
 
         this.documentsCache[doc.id] = doc;
         return doc;

@@ -33,24 +33,11 @@ export class FolderService {
 
         this.apiService.get('/folders', {projectId: projectId}).subscribe((foldersResponse: ApiFolderResponse[]) => {
             const mainFolders: Folder[] = [];
-            const subFolders: { [parentFolder: number]: Folder[] } = {};
             foldersResponse.forEach((folderResponse) => {
                 const folder = this.makeFolder(folderResponse);
-
-                if ( folderResponse.parentFolderId ) {
-                    subFolders[folderResponse.parentFolderId] ?
-                        subFolders[folderResponse.parentFolderId].push(folder) : subFolders[folderResponse.parentFolderId] = [folder];
-                    return;
-                }
                 this.setFoldersByProjectCache(folder);
                 mainFolders.push(folder);
             });
-
-            for (const key in subFolders ) {
-                if ( subFolders.hasOwnProperty(key) ) {
-                    this.foldersCache[key].setSubFolders(subFolders[key]);
-                }
-            }
 
             folders.next(mainFolders);
         });
@@ -60,6 +47,7 @@ export class FolderService {
 
     public getFolder(id: number): BehaviorSubject<Folder> {
         const folder: BehaviorSubject<Folder> = new BehaviorSubject(null);
+        console.log(id);
 
         if ( this.foldersCache[id] ) {
             folder.next(this.foldersCache[id]);
@@ -121,6 +109,15 @@ export class FolderService {
         folder.setProjectId(folderData.projectId);
         folder.setOn(folderData.on);
         folder.setIsMainFolder(folderData.isMain);
+
+        folder.order = folderData.order;
+
+        // check if sub folders exist then set the sub folder.
+        if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
+            folderData.subFolders.forEach((subFolderResponse) => {
+                folder.setSubFolder(this.makeFolder(subFolderResponse));
+            });
+        }
 
         folder.setDocuments(this.documentService.getDocuments(folderData.id).pipe(map((documents) => documents )));
 

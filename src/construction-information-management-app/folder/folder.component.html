@@ -1,15 +1,20 @@
 <div class="wrapper" *ngIf="currentUser">
-    <div class="overview" *ngIf="subFolders.length > 0 || documents.length > 0">
-        <cim-folder-row *ngFor="let folder of subFolders"
-                        [folder]="folder"
-                        [currentUser]="currentUser"
-                        [redirectUrl]="subFolderRedirectUrl + folder.getId()">
-        </cim-folder-row>
-        <cim-document-row *ngFor="let document of documents"
-                          [document]="document"
-                          [currentUser]="currentUser"
-                          (activatedDocument)="onDocumentEdit($event)">
-        </cim-document-row>
+    <div class="overview" *ngIf="items && items.length > 0">
+        <ng-container *ngFor="let item of items">
+            <div *ngIf="item.constructor.name === 'Folder' ; then folderBlock; else documentBlock"></div>
+            <ng-template #folderBlock>
+                <cim-folder-row [folder]="item"
+                                [currentUser]="currentUser">
+                </cim-folder-row>
+            </ng-template>
+
+            <ng-template #documentBlock>
+                <cim-document-row [document]="item"
+                                  [currentUser]="currentUser"
+                                  (activatedDocument)="onDocumentEdit($event)">
+                </cim-document-row>
+            </ng-template>
+        </ng-container>
     </div>
     <div class="editDocument" *ngIf="documentToEdit && currentUser.isAdmin()">
         <cim-document-detail

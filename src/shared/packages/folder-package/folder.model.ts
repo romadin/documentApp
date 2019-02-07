@@ -9,6 +9,7 @@ export class Folder {
     private _documents: Observable<Document[]>;
     private _subFolders: Folder[] = [];
     private _isMain: boolean;
+    private _order: number;
 
     public constructor() {
         //
@@ -72,6 +73,15 @@ export class Folder {
 
     setIsMainFolder(value: boolean) {
         this._isMain = value;
+    }
+
+
+    get order(): number {
+        return this._order;
+    }
+
+    set order(value: number) {
+        this._order = value;
     }
 
     public update(data): void {
