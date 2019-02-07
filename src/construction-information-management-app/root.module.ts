@@ -42,12 +42,16 @@ import { ProjectRowComponent } from './overview/project-row/project-row.componen
 import { ItemListComponent } from './folder/item-list/item-list.component';
 import { PartnersComponent } from './folder/partners/partners.component';
 import { UserDetailComponent } from './users/user-detail/user-detail.component';
+import { ActionListComponent } from './action-list/action-list.component';
+import { ItemComponent } from './action-list/item/item.component';
+import { ItemDetailComponent } from './action-list/item-detail/item-detail.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
     { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
     { path: 'project/:id', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ]  },
     { path: 'folder/:id', component: FolderComponent, canActivate: [ CanActivateLoggedIn ]  },
+    { path: 'actionList/:id', component: ActionListComponent, canActivate: [ CanActivateLoggedIn ]  },
     { path: 'gebruikers', component: UsersOverviewComponent, canActivate: [ CanActivateAdminUser ]  },
     {
         path: '',
@@ -76,6 +80,9 @@ const appRoutes: Routes = [
         ItemListComponent,
         PartnersComponent,
         UserDetailComponent,
+        ActionListComponent,
+        ItemComponent,
+        ItemDetailComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),
