@@ -6,6 +6,7 @@ export interface ApiUserResponse {
     email: string;
     function: string;
     role: ApiRoleResponse;
+    projectsId: number[];
 }
 
 export interface UserBody {

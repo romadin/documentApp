@@ -1,21 +1,24 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+
 
 import { FolderService } from '../../../shared/packages/folder-package/folder.service';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
-import { Router } from '@angular/router';
+import { Document } from '../../../shared/packages/document-package/document.model';
 
 @Component({
   selector: 'cim-folder-row',
   templateUrl: './folder-row.component.html',
   styleUrls: ['./folder-row.component.css']
 })
-export class FolderRowComponent {
+export class FolderRowComponent implements OnInit {
     @Input() public folder: Folder;
     @Input() public currentUser: User;
     @Input() public redirectUrl: string;
-    public showDocuments = false;
-    panelOpenState = false;
+    @Output() public sendDocumentToFolder: EventEmitter<Document> = new EventEmitter<Document>();
+
+    public documents: Document[];
 
     private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     private timerId: number;
@@ -23,6 +26,11 @@ export class FolderRowComponent {
     constructor(private folderService: FolderService, private router: Router) {
     }
 
+    public ngOnInit(): void {
+        this.folder.getDocuments().subscribe((documents) => {
+            this.documents = documents;
+        });
+    }
 
     public folderEditable(): boolean {
         const folder = this.editableFolders.find( (folderName) => {
@@ -53,5 +61,9 @@ export class FolderRowComponent {
         this.timerId = setTimeout(() => {
             this.folderService.postFolder({turnOn: turnOn}, this.folder.getId());
         }, 1000);
+    }
+
+    public sendOnDocumentEdit(document: Document): void {
+        this.sendDocumentToFolder.emit(document);
     }
 }

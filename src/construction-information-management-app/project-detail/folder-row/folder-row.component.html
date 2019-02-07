@@ -6,12 +6,12 @@
             <h3> {{ folder.getName()}}</h3>
         </div>
         <div class="actions">
-            <label class="switch" *ngIf="folderEditable()" (click)="toggleFolderOn($event, !folder.getIsOn())">
+            <label class="switch" *ngIf="folderEditable() && currentUser.isAdmin()" (click)="toggleFolderOn($event, !folder.getIsOn())">
                 <input type="checkbox" [checked]="folder.getIsOn()">
                 <span class="slider round">
-                <span class="on">AAN</span>
-                <span class="off">UIT</span>
-            </span>
+                    <span class="on">AAN</span>
+                    <span class="off">UIT</span>
+                </span>
             </label>
             <i class="material-icons"> arrow_right </i>
         </div>
@@ -19,7 +19,7 @@
 </ng-template>
 
 <ng-template #subFolderBlock>
-    <div class="folderToggleDocument">
+    <div class="folderToggleDocument" *ngIf="documents">
         <mat-accordion *ngIf="currentUser.isAdmin() || folder.getIsOn() === true">
             <mat-expansion-panel class="toggleRow">
                 <mat-expansion-panel-header>
@@ -29,8 +29,12 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <div> hello there</div>
-                <div> Again </div>
+                <cim-document-row *ngFor="let document of documents"
+                                  [document]="document"
+                                  [currentUser]="currentUser"
+                                  (activatedDocument)="sendOnDocumentEdit($event)"
+                >
+                </cim-document-row>
             </mat-expansion-panel>
         </mat-accordion>
     </div>

@@ -8,6 +8,7 @@ export class User {
     private _email: string;
     private _function: string;
     private _role: Role;
+    private _projectsId: number[];
 
     public constructor() {
         //
@@ -67,6 +68,14 @@ export class User {
 
     public setRole(role: Role) {
         this._role = role;
+    }
+
+    get projectsId(): number[] {
+        return this._projectsId;
+    }
+
+    set projectsId(value: number[]) {
+        this._projectsId = value;
     }
 
     public getFullName(): string {

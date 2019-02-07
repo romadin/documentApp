@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material';
 
 import { Project } from '../../../shared/packages/project-package/project.model';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
+import { User } from '../../../shared/packages/user-package/user.model';
+import { UserService } from '../../../shared/packages/user-package/user.service';
 import { ProjectPopupComponent } from '../../popups/project-popup/project-popup.component';
 
 @Component({
@@ -12,11 +14,16 @@ import { ProjectPopupComponent } from '../../popups/project-popup/project-popup.
 })
 export class ProjectRowComponent implements OnInit {
     @Input() project: Project;
+    public currentUser: User;
 
     constructor(public dialog: MatDialog,
-                private projectService: ProjectService) { }
+                private projectService: ProjectService,
+                private userService: UserService) { }
 
     ngOnInit() {
+        this.userService.getCurrentUser().subscribe((user: User) => {
+            this.currentUser = user;
+        });
     }
 
     public editProject(event: MouseEvent, id: number): void {
@@ -36,6 +43,14 @@ export class ProjectRowComponent implements OnInit {
         event.preventDefault();
         event.stopPropagation();
         this.projectService.deleteProject(id);
+    }
+
+    public userHasProject(): boolean {
+        const user = this.currentUser.projectsId.find((projectId) => {
+            return projectId === this.project.getId();
+        });
+
+        return !!user;
     }
 
 

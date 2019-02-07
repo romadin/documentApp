@@ -21,12 +21,13 @@ export class UserService {
         this.apiService = apiService;
     }
 
-    public getUsers(): BehaviorSubject<User[]> {
+    public getUsers(options?): BehaviorSubject<User[]> {
+        const params = options ? options : {};
         if (Object.values(this.userCache).length === this.allUsers.getValue().length) {
             return this.allUsers;
         }
 
-        this.apiService.get('/users', {}).subscribe((usersResponse: ApiUserResponse[]) => {
+        this.apiService.get('/users', params).subscribe((usersResponse: ApiUserResponse[]) => {
             const usersArray: User[] = [];
 
             usersResponse.forEach((user) => {
@@ -79,6 +80,7 @@ export class UserService {
         user.setEmail(value.email);
         user.setFunction(value.function);
         user.setRole(this.roleService.makeRole(value.role));
+        user.projectsId = value.projectsId;
 
         this.userCache[user.getId()] = user;
         return user;
