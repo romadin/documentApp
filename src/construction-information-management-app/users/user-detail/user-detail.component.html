@@ -1,0 +1,39 @@
+<div class="detailWrapper" *ngIf="projects">
+    <mat-card class="editDocument">
+        <h3 class="title">Partners</h3>
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <mat-card-content class="content">
+                <div mat-dialog-content class="formFields">
+                    <h3> {{ user.getFullName() }} </h3>
+                    <mat-form-field>
+                        <input matInput placeholder="Voornaam" formControlName="firstName" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Tussenvoegsel" formControlName="insertion">
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input matInput placeholder="Achternaam" formControlName="lastName" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input type="email" matInput placeholder="Email" formControlName="email" required>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <input type="text" matInput placeholder="Functie" formControlName="function" required>
+                    </mat-form-field>
+                </div>
+                <div class="projectsWrapper">
+                    <h3> Projecten </h3>
+                    <div class="projectContent" *ngFor="let project of projects">
+                        <label> Project: </label>
+                        <span> {{ project.getName() }} </span>
+                        <div class="divider"></div>
+                    </div>
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="onCloseDetailView($event)">Annuleren</button>
+                <button mat-raised-button type="submit">Opslaan</button>
+            </mat-card-actions>
+        </form>
+    </mat-card>
+</div>

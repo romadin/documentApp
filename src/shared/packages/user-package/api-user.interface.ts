@@ -18,6 +18,14 @@ export interface UserBody {
     projectsId: string[];
 }
 
+export interface EditUserBody {
+    firstName: string;
+    insertion: string | null;
+    lastName: string;
+    email: string;
+    projectsId?: string[];
+}
+
 export interface ApiRoleResponse {
     id: number;
     name: string;

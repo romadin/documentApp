@@ -11,14 +11,24 @@ export class PartnersComponent implements OnInit {
     @Input() public projectId: number;
 
     public users: User[];
+    public userToEdit: User;
 
     constructor(private userService: UserService) { }
 
     ngOnInit() {
         this.userService.getUsers({projectId: this.projectId}).subscribe((users: User[]) => {
             this.users = users;
-            console.log(this.users);
         });
+    }
+
+    public onEditUser(user: User) {
+        this.userToEdit = user;
+    }
+
+    public closeUserDetailView(closeView: boolean) {
+        if (closeView) {
+            this.userToEdit = undefined;
+        }
     }
 
 }

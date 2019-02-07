@@ -32,8 +32,7 @@
                 <cim-document-row *ngFor="let document of documents"
                                   [document]="document"
                                   [currentUser]="currentUser"
-                                  (activatedDocument)="sendOnDocumentEdit($event)"
-                >
+                                  (activatedDocument)="sendOnDocumentEdit($event)">
                 </cim-document-row>
             </mat-expansion-panel>
         </mat-accordion>

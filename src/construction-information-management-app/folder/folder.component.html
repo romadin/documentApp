@@ -34,7 +34,7 @@
     </div>
     <div class="partners" *ngIf="!documentToEdit && partnerIsOpen">
         <cim-partners
-                [projectId]="documentToEdit">
+                [projectId]="currentFolder.getProjectId()">
         </cim-partners>
     </div>
     <div class="addItemList" *ngIf="showAddItemList && mainFolder && currentFolder">

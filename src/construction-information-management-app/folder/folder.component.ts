@@ -69,8 +69,9 @@ export class FolderComponent implements OnInit {
         this.showAddItemList = true;
     }
 
-    public showAllPartners($event) {
-        console.log('showwwwing the partners');
+    public showAllPartners(event: MouseEvent) {
+        event.stopPropagation();
+        event.preventDefault();
         this.documentToEdit = undefined;
         this.partnerIsOpen = true;
     }

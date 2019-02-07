@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 
-import { ApiUserResponse, UserBody } from './api-user.interface';
+import { ApiUserResponse, EditUserBody, UserBody } from './api-user.interface';
 import { ApiService } from '../../service/api.service';
 import { RoleService } from '../role-package/role.service';
 import { User } from './user.model';
@@ -62,6 +62,15 @@ export class UserService {
         return subject;
     }
 
+    public editUser( user: User, body: EditUserBody): Subject<User> {
+        const subject: Subject<User> = new Subject();
+        this.apiService.post('/users/' + user.getId(), body).subscribe((value: ApiUserResponse) => {
+            this.updateUser(user, value);
+            subject.next(user);
+        });
+        return subject;
+    }
+
     public getCurrentUser(): BehaviorSubject<User> {
         return this.currentUser;
     }
@@ -84,5 +93,15 @@ export class UserService {
 
         this.userCache[user.getId()] = user;
         return user;
+    }
+
+    private updateUser(user: User, value: ApiUserResponse): void {
+        user.setId(value.id);
+        user.setFirstName(value.firstName);
+        user.setInsertion(value.insertion);
+        user.setLastName(value.lastName);
+        user.setEmail(value.email);
+        user.setFunction(value.function);
+        user.projectsId = value.projectsId;
     }
 }

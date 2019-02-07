@@ -1,4 +1,4 @@
-<mat-card class="userRow">
+<mat-card class="userRow" (click)="editUser($event)">
     <mat-card-header>
         <div mat-card-avatar class="example-header-image"></div>
         <mat-card-title> {{ user.getFullName() }}</mat-card-title>
@@ -7,8 +7,8 @@
 
     <mat-card-actions class="actionButton">
         <div class="actionsEditDelete">
-            <i class="material-icons" (click)="editUser($event, user.getId())"> edit </i>
-            <i class="material-icons" (click)="deleteUser($event, user.getId())"> delete_forever </i>
+            <i class="material-icons" (click)="editUser($event)"> edit </i>
+            <i class="material-icons" (click)="deleteUser($event)"> delete_forever </i>
         </div>
         <i class="material-icons"> arrow_right </i>
     </mat-card-actions>

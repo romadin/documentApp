@@ -75,3 +75,11 @@ div.wrapper > div.overview > div.partnersWrapper > .actions {
     display: flex;
     align-items: center;
 }
+
+div.wrapper > div.partners {
+    display: flex;
+    flex: 5;
+}
+div.wrapper > div.partners > cim-partners {
+    width: 100%;
+}

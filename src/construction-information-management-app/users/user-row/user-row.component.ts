@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { User } from '../../../shared/packages/user-package/user.model';
 
@@ -9,14 +9,17 @@ import { User } from '../../../shared/packages/user-package/user.model';
 })
 export class UserRowComponent {
     @Input() public user: User;
+    @Output() public userToEdit: EventEmitter<User> = new EventEmitter<User>();
 
     constructor() { }
 
-    public editUser (event: MouseEvent, id: number) {
-        console.log('edit user');
+    public editUser (event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.userToEdit.emit(this.user);
     }
 
-    public deleteUser (event: MouseEvent, id: number) {
+    public deleteUser (event: MouseEvent) {
         console.log('delete user');
     }
 }

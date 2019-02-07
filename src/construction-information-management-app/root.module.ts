@@ -41,6 +41,7 @@ import { OverviewComponent } from './overview/overview.component';
 import { ProjectRowComponent } from './overview/project-row/project-row.component';
 import { ItemListComponent } from './folder/item-list/item-list.component';
 import { PartnersComponent } from './folder/partners/partners.component';
+import { UserDetailComponent } from './users/user-detail/user-detail.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
@@ -74,6 +75,7 @@ const appRoutes: Routes = [
         DocumentDetailComponent,
         ItemListComponent,
         PartnersComponent,
+        UserDetailComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),

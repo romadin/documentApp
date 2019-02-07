@@ -47,7 +47,6 @@ export class FolderService {
 
     public getFolder(id: number): BehaviorSubject<Folder> {
         const folder: BehaviorSubject<Folder> = new BehaviorSubject(null);
-        console.log(id);
 
         if ( this.foldersCache[id] ) {
             folder.next(this.foldersCache[id]);
