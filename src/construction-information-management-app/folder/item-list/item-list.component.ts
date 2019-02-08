@@ -55,7 +55,6 @@ export class ItemListComponent implements OnInit {
         e.stopPropagation();
         e.preventDefault();
         this.folderService.postFolderLinkItems(this.currentFolder.getId(), this.itemsSelected).subscribe((folder) => {
-            console.log(folder);
             this.saveItemsDone.emit(folder);
         });
     }

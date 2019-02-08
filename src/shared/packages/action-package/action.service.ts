@@ -50,9 +50,9 @@ export class ActionService {
 
         this.apiService.post('/actions', data).subscribe((actionResponse: ApiActionResponse) => {
             newAction = this.makeAction(actionResponse);
-            const actions = this.actionsByProject[newAction.id].getValue();
+            const actions = this.actionsByProject[newAction.projectId].getValue();
             actions.push(newAction);
-            this.actionsByProject[newAction.id].next(actions);
+            this.actionsByProject[newAction.projectId].next(actions);
             action.next(newAction);
         }, (error) => {
             throw error.error;

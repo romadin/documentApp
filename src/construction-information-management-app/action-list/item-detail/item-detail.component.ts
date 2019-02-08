@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { Action } from '../../../shared/packages/action-package/action.model';
@@ -10,13 +10,14 @@ interface Status {
 }
 
 @Component({
-  selector: 'cim-item-detail',
+  selector: 'cim-action-item-detail',
   templateUrl: './item-detail.component.html',
   styleUrls: ['./item-detail.component.css']
 })
 export class ItemDetailComponent implements OnInit {
     @Input() projectId: number;
     @Input() action: Action | null;
+    @Output() closeEdit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public actionForm: FormGroup = new FormGroup({
         code: new FormControl(),
@@ -29,7 +30,7 @@ export class ItemDetailComponent implements OnInit {
         isDone: new FormControl(),
     });
     public selectedStatus: Status;
-    public statusToSelect = [{ name: 'in behandeling', value: 0 }, {name: 'klaar', value: 1 }];
+    public statusToSelect = [{ name: 'in behandeling', value: false }];
 
     constructor(private actionService: ActionService) { }
 
@@ -51,7 +52,14 @@ export class ItemDetailComponent implements OnInit {
             isDone: this.selectedStatus.value
         };
         this.actionService.postAction(data).subscribe((newAction: Action) => {
+            this.closeEdit.emit(true);
         });
+    }
+
+    public onCancel(e: MouseEvent): void {
+        e.preventDefault();
+        e.stopPropagation();
+        this.closeEdit.emit(true);
     }
 
     public onStatusSelect(status: Status): void {

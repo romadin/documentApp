@@ -88,7 +88,6 @@ export class ProjectService {
     public updateProject(data: { name: string }, id: number ): Promise<Project> {
         return new Promise<Project>((resolve) => {
             this.apiService.post('/projects/' + id, data, ).subscribe((apiResponse: ApiProjectResponse) => {
-                console.log(apiResponse);
                 this.projectsCache[id].update(apiResponse);
                 this.allProjectSubject.next(Object.values(this.projectsCache));
                 resolve(this.projectsCache[id]);

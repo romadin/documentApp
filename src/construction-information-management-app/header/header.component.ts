@@ -144,7 +144,6 @@ export class HeaderComponent implements OnInit {
     }
 
     private openDialogAddUser(): void {
-        console.log('open');
         const dialogRef = this.dialog.open(UserPopupComponent, {
             width: '400px',
             data: {
@@ -154,7 +153,6 @@ export class HeaderComponent implements OnInit {
             }
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log('close element');
         });
 
     }

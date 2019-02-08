@@ -73,4 +73,8 @@ export class Action {
     set projectId(value: number) {
         this._projectId = value;
     }
+
+    get status(): string {
+        return this.isDone ? 'Klaar' : 'In behandeling';
+    }
 }

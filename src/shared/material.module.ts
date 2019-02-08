@@ -5,7 +5,7 @@ import {
     MatCardModule,
     MatCheckboxModule, MatDialogModule, MatExpansionModule,
     MatFormFieldModule, MatIconModule,
-    MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatSelectModule,
+    MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatSelectModule, MatTableModule,
     MatToolbarModule,
 } from '@angular/material';
 
@@ -25,6 +25,7 @@ import {
         MatOptionModule,
         MatListModule,
         MatExpansionModule,
+        MatTableModule,
     ]
 })
 export class MaterialModule { }
