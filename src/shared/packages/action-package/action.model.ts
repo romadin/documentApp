@@ -1,10 +1,12 @@
 export class Action {
     private _id: number;
+    private _code: string;
     private _description: string;
     private _actionHolder: string;
-    private _week: string;
-    private _status: string;
+    private _week: number;
+    private _isDone: string;
     private _comments: string;
+    private _projectId: number;
 
     constructor() {}
 
@@ -14,6 +16,14 @@ export class Action {
 
     set id(value: number) {
         this._id = value;
+    }
+
+    get code(): string {
+        return this._code;
+    }
+
+    set code(value: string) {
+        this._code = value;
     }
 
     get description(): string {
@@ -32,20 +42,20 @@ export class Action {
         this._actionHolder = value;
     }
 
-    get week(): string {
+    get week(): number {
         return this._week;
     }
 
-    set week(value: string) {
+    set week(value: number) {
         this._week = value;
     }
 
-    get status(): string {
-        return this._status;
+    get isDone(): string {
+        return this._isDone;
     }
 
-    set status(value: string) {
-        this._status = value;
+    set isDone(value: string) {
+        this._isDone = value;
     }
 
     get comments(): string {
@@ -54,5 +64,13 @@ export class Action {
 
     set comments(value: string) {
         this._comments = value;
+    }
+
+    get projectId(): number {
+        return this._projectId;
+    }
+
+    set projectId(value: number) {
+        this._projectId = value;
     }
 }

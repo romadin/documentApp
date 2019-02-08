@@ -276,7 +276,7 @@ var cordova = {
      */
     callbackError: function (callbackId, args) {
         // TODO: Deprecate callbackSuccess and callbackError in favour of callbackFromNative.
-        // Derive success from status.
+        // Derive success from isDone.
         cordova.callbackFromNative(callbackId, false, args.status, [args.message], args.keepCallback);
     },
 

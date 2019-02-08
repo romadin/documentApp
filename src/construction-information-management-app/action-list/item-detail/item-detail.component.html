@@ -1,3 +1,33 @@
-<p>
-  item-detail works!
-</p>
+<h1> Voeg een actie toe</h1>
+<form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
+  <div mat-dialog-content>
+    <mat-form-field>
+      <input matInput placeholder="Aktie code" formControlName="code" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="General info" formControlName="general" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Omschrijving" formControlName="description">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Aktie houder" formControlName="actionHolder" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="number" matInput placeholder="Week" formControlName="week" required>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="text" matInput placeholder="Aantekeningen" formControlName="comments" required>
+    </mat-form-field>
+    <mat-selection-list #shoes>
+      <h4> Kies project </h4>
+      <mat-list-option *ngFor="let status of statusToSelect" (click)="onStatusSelect(status)">
+        {{ status.name }}
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick($event)">Annuleren</button>
+    <button mat-raised-button type="submit"> Toevoegen </button>
+  </div>
+</form>

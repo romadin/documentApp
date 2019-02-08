@@ -7,6 +7,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { MaterialModule } from '../shared/material.module';
 
+// can Activate checks
 import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
 import { CanActivateAdminUser } from '../can-activate/CanActivateAdminUser';
@@ -20,6 +21,7 @@ import { RoleService } from '../shared/packages/role-package/role.service';
 import { FolderService } from '../shared/packages/folder-package/folder.service';
 import { DocumentService } from '../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../shared/packages/document-package/document-icon.service';
+import { ActionService } from '../shared/packages/action-package/action.service';
 
 // popup components
 import { ProjectPopupComponent } from './popups/project-popup/project-popup.component';
@@ -103,6 +105,7 @@ const appRoutes: Routes = [
         FolderService,
         DocumentService,
         DocumentIconService,
+        ActionService,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]

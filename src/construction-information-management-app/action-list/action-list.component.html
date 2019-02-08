@@ -1,3 +1,13 @@
-<p>
-  action-list works!
-</p>
+<div class="actionListWrapper" *ngIf="actions">
+    <div class="addActionButton" (click)="showActionEditor($event)">
+        + add Action
+    </div>
+    <span *ngFor="let action of actions">
+        {{action.description}}
+        {{action.actionHolder}}
+    </span>
+    <cim-item-detail *ngIf="showItemDetail"
+                     [action]="actionToEdit"
+                     [projectId]="projectId">
+    </cim-item-detail>
+</div>
