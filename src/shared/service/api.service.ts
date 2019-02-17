@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { ApiAuthResponse } from '../../construction-information-management-app/authenticate-app/interfaces/api-auth.interface';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { User } from '../packages/user-package/user.model';
+import { UserService } from '../packages/user-package/user.service';
 
 @Injectable()
 export class ApiService {
@@ -13,6 +15,14 @@ export class ApiService {
 
     constructor(http: HttpClient) {
         this.http = http;
+
+        const user: User = JSON.parse(localStorage.getItem('currentUser'));
+        if ( localStorage.getItem('token') && user ) {
+            this.token = {
+                token: localStorage.getItem('token'),
+                user_id: user.id,
+            };
+        }
     }
 
     public postAuthenticate(path: string, body: any): Observable<ApiAuthResponse> {

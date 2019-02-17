@@ -19,6 +19,10 @@ export class UserService {
 
     constructor(apiService: ApiService, private roleService: RoleService) {
         this.apiService = apiService;
+        const user: ApiUserResponse = JSON.parse(localStorage.getItem('currentUser'));
+        if ( user ) {
+            this.setCurrentUser(this.makeUser(user));
+        }
     }
 
     public getUsers(options?): BehaviorSubject<User[]> {
@@ -47,6 +51,10 @@ export class UserService {
             return subject;
         }
         this.apiService.get('/users/' + id, {}).subscribe((value: ApiUserResponse) => {
+            /** We do the check here because the first user we are getting is the user trying to log in.  */
+            if ( ! localStorage.getItem('currentUser')) {
+                localStorage.setItem('currentUser', JSON.stringify(value));
+            }
             subject.next(this.makeUser(value));
         });
 
@@ -64,7 +72,7 @@ export class UserService {
 
     public editUser( user: User, body: EditUserBody): Subject<User> {
         const subject: Subject<User> = new Subject();
-        this.apiService.post('/users/' + user.getId(), body).subscribe((value: ApiUserResponse) => {
+        this.apiService.post('/users/' + user.id, body).subscribe((value: ApiUserResponse) => {
             this.updateUser(user, value);
             subject.next(user);
         });
@@ -80,28 +88,27 @@ export class UserService {
     }
 
     public makeUser(value: ApiUserResponse): User {
-
         const user = new User();
-        user.setId(value.id);
-        user.setFirstName(value.firstName);
-        user.setInsertion(value.insertion);
-        user.setLastName(value.lastName);
-        user.setEmail(value.email);
-        user.setFunction(value.function);
-        user.setRole(this.roleService.makeRole(value.role));
+        user.id = value.id;
+        user.firstName = value.firstName;
+        user.insertion = value.insertion;
+        user.lastName = value.lastName;
+        user.email = value.email;
+        user.function = value.function;
+        user.role = this.roleService.makeRole(value.role);
         user.projectsId = value.projectsId;
 
-        this.userCache[user.getId()] = user;
+        this.userCache[user.id] = user;
         return user;
     }
 
     private updateUser(user: User, value: ApiUserResponse): void {
-        user.setId(value.id);
-        user.setFirstName(value.firstName);
-        user.setInsertion(value.insertion);
-        user.setLastName(value.lastName);
-        user.setEmail(value.email);
-        user.setFunction(value.function);
+        user.id = value.id;
+        user.firstName = value.firstName;
+        user.insertion = value.insertion;
+        user.lastName = value.lastName;
+        user.email = value.email;
+        user.function = value.function;
         user.projectsId = value.projectsId;
     }
 }

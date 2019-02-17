@@ -23,7 +23,10 @@ export class AuthService {
 
         return new Promise((resolve) => {
             this.apiService.postAuthenticate( '/authenticate', body).subscribe((value: ApiAuthResponse) => {
-                this.userService.getUserById(value.user_id).subscribe(user => this.userService.setCurrentUser(user));
+                this.userService.getUserById(value.user_id).subscribe(user => {
+                    this.userService.setCurrentUser(user);
+                    localStorage.setItem('token', value.token);
+                });
                 resolve(true);
             },  (error) => {
                 resolve(error.error);

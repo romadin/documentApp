@@ -106,10 +106,10 @@ export class HeaderComponent implements OnInit {
         if ( navigation.url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
-                if ( user && user.getRole() ) {
+                if ( user && user.role ) {
                     this.actions.forEach(( action: HeaderAction ) => {
                         if ( !action.urlGroup && action.needsAdmin || action.urlGroup === navigation.url && action.needsAdmin ) {
-                            action.show = user.getRole().getName() === 'admin';
+                            action.show = user.role.getName() === 'admin';
                         } else {
                             action.show = action.urlGroup === navigation.url;
                         }

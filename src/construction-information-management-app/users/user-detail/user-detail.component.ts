@@ -50,11 +50,11 @@ export class UserDetailComponent implements OnInit {
     }
 
     private setFormValue() {
-        this.userForm.controls.firstName.setValue(this.user.getFirstName());
-        this.userForm.controls.insertion.setValue(this.user.getInsertion());
-        this.userForm.controls.lastName.setValue(this.user.getLastName());
-        this.userForm.controls.email.setValue(this.user.getEmail());
-        this.userForm.controls.function.setValue(this.user.getFunction());
+        this.userForm.controls.firstName.setValue(this.user.firstName);
+        this.userForm.controls.insertion.setValue(this.user.insertion);
+        this.userForm.controls.lastName.setValue(this.user.lastName);
+        this.userForm.controls.email.setValue(this.user.email);
+        this.userForm.controls.function.setValue(this.user.function);
     }
 
     private getLinkedProjects(): Promise<Project>[] {

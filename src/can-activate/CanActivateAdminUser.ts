@@ -15,7 +15,7 @@ export class CanActivateAdminUser implements CanActivate {
 
     public canActivate(): Observable<boolean | UrlTree> | boolean {
         return this.userService.getCurrentUser().pipe(map((user: User) => {
-            if ( user && user.getRole().getName() === 'admin') {
+            if ( user && user.role.getName() === 'admin') {
                 return true;
             }
             return this.router.parseUrl('/overview');

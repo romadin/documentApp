@@ -14,60 +14,60 @@ export class User {
         //
     }
 
-    public getId(): number {
+    get id(): number {
         return this._id;
     }
 
-    public setId(value: number) {
+    set id(value: number) {
         this._id = value;
     }
 
-    public getFirstName(): string {
+    get firstName(): string {
         return this._firstName;
     }
 
-    public setFirstName(value: string) {
+    set firstName(value: string) {
         this._firstName = value;
     }
 
-    public getInsertion(): string | null {
+    get insertion(): string | null {
         return this._insertion;
     }
 
-    public setInsertion(value: string | null) {
+    set insertion(value: string | null) {
         this._insertion = value;
     }
 
-    public getLastName(): string {
+    get lastName(): string {
         return this._lastName;
     }
 
-    public setLastName(value: string) {
+    set lastName(value: string) {
         this._lastName = value;
     }
 
-    public getEmail(): string {
+    get email(): string {
         return this._email;
     }
 
-    public setEmail(value: string) {
+    set email(value: string) {
         this._email = value;
     }
 
-    public getFunction(): string {
+    get function(): string {
         return this._function;
     }
 
-    public setFunction(workFunction: string): void {
-        this._function = workFunction;
+    set function(value: string) {
+        this._function = value;
     }
 
-    public getRole(): Role {
+    get role(): Role {
         return this._role;
     }
 
-    public setRole(role: Role) {
-        this._role = role;
+    set role(value: Role) {
+        this._role = value;
     }
 
     get projectsId(): number[] {
@@ -79,13 +79,13 @@ export class User {
     }
 
     public getFullName(): string {
-        if (this.getInsertion()) {
-            return this.getFirstName() + ' ' + this.getInsertion() + ' ' + this.getLastName();
+        if (this.insertion) {
+            return this.firstName + ' ' + this.insertion + ' ' + this.lastName;
         }
-        return this.getFirstName() + ' ' + this.getLastName();
+        return this.firstName + ' ' + this.lastName;
     }
 
     public isAdmin(): boolean {
-        return this.getRole().getName() === 'admin';
+        return this.role.getName() === 'admin';
     }
 }
