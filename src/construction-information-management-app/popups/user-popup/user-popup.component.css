@@ -1,3 +1,24 @@
+form > div.formWrapper {
+    display: flex;
+}
+form > div.formWrapper > div.mat-dialog-content {
+    margin-right: 10px;
+    flex: 1;
+}
+
+form > div.formWrapper > mat-selection-list {
+    flex: 1;
+    padding: 0;
+}
+
+form > div.formWrapper > mat-selection-list > mat-list-option {
+    border-bottom: solid 1px #cecece;
+}
+
+form > div.formWrapper > mat-selection-list > h4 {
+    margin: 0;
+}
+
 mat-form-field.mat-form-field {
     width: 100%;
 }

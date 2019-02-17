@@ -60,7 +60,7 @@ export class FolderRowComponent implements OnInit {
         }
         this.timerId = setTimeout(() => {
             this.folderService.postFolder({turnOn: turnOn}, this.folder.getId());
-        }, 1000);
+        }, 500);
     }
 
     public sendOnDocumentEdit(document: Document): void {

@@ -145,7 +145,7 @@ export class HeaderComponent implements OnInit {
 
     private openDialogAddUser(): void {
         const dialogRef = this.dialog.open(UserPopupComponent, {
-            width: '400px',
+            width: '600px',
             data: {
                 title: 'Voeg een gebruiker toe',
                 placeholder: 'Project naam',

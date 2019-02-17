@@ -1,13 +1,7 @@
 <div class="detailWrapper">
-    <h3> Voeg een actie toe</h3>
+    <h3> {{action ? 'Actie bewerken' : 'Voeg een actie toe'}} </h3>
     <form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
         <div mat-dialog-content>
-            <mat-form-field>
-                <input matInput placeholder="Aktie code" formControlName="code" required>
-            </mat-form-field>
-            <mat-form-field>
-                <input matInput placeholder="General info" formControlName="general" required>
-            </mat-form-field>
             <mat-form-field>
                 <input matInput placeholder="Omschrijving" formControlName="description">
             </mat-form-field>
@@ -18,18 +12,12 @@
                 <input type="number" matInput placeholder="Week" formControlName="week" required>
             </mat-form-field>
             <mat-form-field>
-                <input type="text" matInput placeholder="Aantekeningen" formControlName="comments" required>
+                <input type="text" matInput placeholder="Opmerkingen" formControlName="comments" required>
             </mat-form-field>
-            <mat-selection-list #shoes>
-                <h4> Actie Status </h4>
-                <mat-list-option *ngFor="let status of statusToSelect" (click)="onStatusSelect(status)">
-                    {{ status.name }}
-                </mat-list-option>
-            </mat-selection-list>
         </div>
         <div mat-dialog-actions>
             <button mat-button (click)="onCancel($event)">Annuleren</button>
-            <button mat-raised-button type="submit"> Toevoegen </button>
+            <button mat-raised-button type="submit"> {{action ? 'Opslaan' : 'Toevoegen'}} </button>
         </div>
     </form>
 </div>

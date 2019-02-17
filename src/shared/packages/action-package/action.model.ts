@@ -1,10 +1,12 @@
+import { ApiActionEditPostData } from './api-action.interface';
+
 export class Action {
     private _id: number;
-    private _code: string;
+    private _code: number;
     private _description: string;
     private _actionHolder: string;
     private _week: number;
-    private _isDone: string;
+    private _isDone: boolean;
     private _comments: string;
     private _projectId: number;
 
@@ -18,11 +20,11 @@ export class Action {
         this._id = value;
     }
 
-    get code(): string {
+    get code(): number {
         return this._code;
     }
 
-    set code(value: string) {
+    set code(value: number) {
         this._code = value;
     }
 
@@ -50,11 +52,11 @@ export class Action {
         this._week = value;
     }
 
-    get isDone(): string {
+    get isDone(): boolean {
         return this._isDone;
     }
 
-    set isDone(value: string) {
+    set isDone(value: boolean) {
         this._isDone = value;
     }
 
@@ -76,5 +78,13 @@ export class Action {
 
     get status(): string {
         return this.isDone ? 'Klaar' : 'In behandeling';
+    }
+
+    public update(data: ApiActionEditPostData): void {
+        for ( const key in data ) {
+            if (data.hasOwnProperty(key)) {
+                this[key] = data[key];
+            }
+        }
     }
 }

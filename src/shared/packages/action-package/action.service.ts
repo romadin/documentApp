@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Action } from './action.model';
-import { ApiActionNewPostData, ApiActionResponse } from './api-action.interface';
+import { ApiActionEditPostData, ApiActionNewPostData, ApiActionResponse } from './api-action.interface';
 
 interface ActionCache {
     [id: number]: Action;
@@ -58,6 +58,14 @@ export class ActionService {
             throw error.error;
         });
 
+        return action;
+    }
+
+    public editAction(action: Action, data: ApiActionEditPostData): Action {
+        this.apiService.post('/actions/' + action.id, data).subscribe((actionResponse: ApiActionResponse) => {
+        }, (error) => {
+            throw error.error;
+        });
         return action;
     }
 

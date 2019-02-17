@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute,  } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTable, MatTableDataSource } from '@angular/material';
+import { MatTable  } from '@angular/material';
 
 import { ActionService } from '../../shared/packages/action-package/action.service';
 import { Action } from '../../shared/packages/action-package/action.model';
+import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
 
 @Component({
   selector: 'cim-action-list',
@@ -17,15 +18,17 @@ export class ActionListComponent implements OnInit {
     public actionToEdit: Action;
     public showItemDetail = false;
     public projectId: number;
-    public displayedColumns: string[] = ['code', 'description', 'actionHolder', 'status'];
-    selection = new SelectionModel<Action>(true, []);
+    public displayedColumns: string[] = ['code', 'description', 'actionHolder', 'week', 'status'];
+    public selection = new SelectionModel<Action>(true, []);
+
+    private timerId: number;
 
     constructor(private actionService: ActionService, private activatedRoute: ActivatedRoute ) { }
 
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
         this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
-            if (actions.length > 0) {
+            if (actions.length > 0 && this.table) {
                 this.table.renderRows();
             }
             this.actions = actions;
@@ -39,6 +42,9 @@ export class ActionListComponent implements OnInit {
 
     public editItem(event: MouseEvent, action: Action): void {
         event.stopPropagation();
+
+        this.actionToEdit = action;
+        this.showItemDetail = true;
     }
 
     public OnCloseDetail(closeEdit: boolean): void {
@@ -47,9 +53,18 @@ export class ActionListComponent implements OnInit {
     }
 
 
-    public changeActionStatus(e: MouseEvent): void {
+    public changeActionStatus(e: MouseEvent, action: Action): void {
         e.preventDefault();
         e.stopPropagation();
-        // @todo save action change with a time out.
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+        }
+        this.timerId = setTimeout(() => {
+            action.isDone = !action.isDone;
+            const postData: ApiActionEditPostData  = {
+                isDone: action.isDone
+            };
+            this.actionService.editAction(action, postData);
+        }, 500);
     }
 }

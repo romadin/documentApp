@@ -76,6 +76,10 @@ export class FolderComponent implements OnInit {
         this.partnerIsOpen = true;
     }
 
+    public checkItemIsFolder(item): boolean {
+        return item instanceof Folder;
+    }
+
     private getItems(folderId: number): Promise<(Document | Folder)[]> {
         return new Promise((resolve) => {
             this.folderService.getFolder(folderId).subscribe((folder: Folder) => {

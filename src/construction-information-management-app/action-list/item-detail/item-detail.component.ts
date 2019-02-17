@@ -20,14 +20,11 @@ export class ItemDetailComponent implements OnInit {
     @Output() closeEdit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public actionForm: FormGroup = new FormGroup({
-        code: new FormControl(),
         description: new FormControl(),
-        general: new FormControl(),
         actionHolder: new FormControl(),
         week: new FormControl(),
         comments: new FormControl(),
         projectId: new FormControl(),
-        isDone: new FormControl(),
     });
     public selectedStatus: Status;
     public statusToSelect = [{ name: 'in behandeling', value: false }];
@@ -42,15 +39,19 @@ export class ItemDetailComponent implements OnInit {
 
     public onSubmit() {
         const data =  {
-            code: this.actionForm.controls.code.value,
-            general: this.actionForm.controls.general.value,
             description: this.actionForm.controls.description.value,
-            holder: this.actionForm.controls.actionHolder.value,
+            actionHolder: this.actionForm.controls.actionHolder.value,
             week: this.actionForm.controls.week.value,
             comments: this.actionForm.controls.comments.value,
             projectId: this.projectId,
-            isDone: this.selectedStatus.value
         };
+
+        if ( this.action ) {
+            this.action.update(data);
+            this.actionService.editAction(this.action, data);
+            return;
+        }
+
         this.actionService.postAction(data).subscribe((newAction: Action) => {
             this.closeEdit.emit(true);
         });
@@ -65,14 +66,10 @@ export class ItemDetailComponent implements OnInit {
     public onStatusSelect(status: Status): void {
         this.selectedStatus = status;
     }
-
     private setFormValue(): void {
-        this.actionForm.controls.code.setValue(this.action.code);
         this.actionForm.controls.description.setValue(this.action.description);
         this.actionForm.controls.actionHolder.setValue(this.action.actionHolder);
         this.actionForm.controls.week.setValue(this.action.week);
         this.actionForm.controls.comments.setValue(this.action.comments);
-        this.actionForm.controls.isDone.setValue(this.action.isDone);
     }
-
 }
