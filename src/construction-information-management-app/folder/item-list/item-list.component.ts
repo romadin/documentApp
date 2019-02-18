@@ -5,6 +5,7 @@ import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../../shared/packages/folder-package/folder.service';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { Document } from '../../../shared/packages/document-package/document.model';
+import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
 
 @Component({
   selector: 'cim-item-list',
@@ -32,9 +33,7 @@ export class ItemListComponent implements OnInit {
     constructor(private folderService: FolderService, private documentService: DocumentService) { }
 
     ngOnInit() {
-        this.mainFolder.getSubFolders().forEach((folder) => {
-            this.items.push(folder);
-        });
+        this.getAvailableFolder(this.mainFolder.getSubFolders(), this.currentFolder.getSubFolders());
 
         this.getDocumentAvailable().then((documents: Document[]) => {
             documents.forEach(document => this.items.push(document));
@@ -54,29 +53,55 @@ export class ItemListComponent implements OnInit {
     public saveItems(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.folderService.postFolderLinkItems(this.currentFolder.getId(), this.itemsSelected).subscribe((folder) => {
+        this.folderService.postFolder(this.currentFolder.id, this.preparePostData(this.itemsSelected)).subscribe((folder) => {
             this.saveItemsDone.emit(folder);
         });
     }
 
-    private getDocumentAvailable(): Promise<Document[]> {
+    private getDocumentAvailable(): Promise<any[]> {
         return new Promise((resolve) => {
             this.mainFolder.getDocuments().subscribe((documents) => {
                 this.currentFolder.getDocuments().subscribe((currentDocs) => {
                     if (currentDocs.length === 0 ) {
                         return resolve(documents);
                     }
-                    currentDocs.forEach((currentDoc) => {
-                        documents.forEach((document, key) => {
-                            if ( document.id === currentDoc.id ) {
-                                documents.splice(key, 1);
-                            }
-                        });
-                    });
-                    return resolve(documents);
+                    return resolve(this.removeItemMainArrayFromSubArray(documents, currentDocs));
                 });
             });
         });
+    }
+
+    private getAvailableFolder(mainSubFolders: Folder[], currentSubFolders: Folder[] ): void {
+        if (currentSubFolders.length === 0 ) {
+            this.items = this.items.concat(mainSubFolders);
+            return;
+        }
+
+        this.items = this.items.concat(this.removeItemMainArrayFromSubArray(mainSubFolders, currentSubFolders));
+    }
+
+    private removeItemMainArrayFromSubArray(mainArray, subArray): (Folder[] | Document[]) {
+        subArray.forEach((subItem) => {
+            mainArray.forEach((item, key) => {
+                if ( item.id === subItem.id ) {
+                    mainArray.splice(key, 1);
+                }
+            });
+        });
+        return mainArray;
+    }
+
+    private preparePostData(itemsSelected): FolderPostData {
+        const postData: FolderPostData = {};
+
+        itemsSelected.forEach((item: Folder | Document) => {
+            if (this.isFolder(item)) {
+                postData.subFolders ? postData.subFolders.push((<Folder>item).id) : postData.subFolders = [(<Folder>item).id];
+            } else {
+                postData.subDocuments ? postData.subDocuments.push((<Document>item).id) : postData.subDocuments = [(<Document>item).id];
+            }
+        });
+        return postData;
     }
 
 }

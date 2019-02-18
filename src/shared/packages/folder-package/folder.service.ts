@@ -61,12 +61,12 @@ export class FolderService {
         return folder;
     }
 
-    public postFolder(data: FolderPostData, id: number): Subject<Folder> {
+    public postFolder(id: number, data: FolderPostData): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
 
         this.apiService.post('/folders/' + id, data).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
-                return folder.next(this.foldersCache[id]);
+                return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
             folder.next(this.makeFolder(foldersResponse));
         }, (error) => {
@@ -98,16 +98,16 @@ export class FolderService {
     }
 
     public getMainFolderFromProject(projectId: number) {
-        return this.getFoldersByProject(projectId).pipe(map(folders => folders.find(folder => folder.getIsMainFolder())));
+        return this.getFoldersByProject(projectId).pipe(map(folders => folders.find(folder => folder.isMainFolder)));
     }
 
     public makeFolder(folderData: ApiFolderResponse) {
         const folder = new Folder();
-        folder.setId(folderData.id);
+        folder.id = folderData.id;
         folder.setName(folderData.name);
         folder.setProjectId(folderData.projectId);
         folder.setOn(folderData.on);
-        folder.setIsMainFolder(folderData.isMain);
+        folder.isMainFolder = folderData.isMain;
 
         folder.order = folderData.order;
 
@@ -120,7 +120,7 @@ export class FolderService {
 
         folder.setDocuments(this.documentService.getDocuments(folderData.id).pipe(map((documents) => documents )));
 
-        this.foldersCache[folder.getId()] = folder;
+        this.foldersCache[folder.id] = folder;
         return folder;
     }
 
@@ -133,7 +133,16 @@ export class FolderService {
     }
 
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        folder.setDocuments(this.documentService.getDocuments(folder.getId()).pipe(map((documents) => documents )));
+        // check if sub folders exist then set the sub folder.
+        if ( response.subFolders !== null && response.subFolders.length > 0 ) {
+            const subFolders: Folder[] = [];
+            response.subFolders.forEach((subFolderResponse) => {
+                subFolders.push(this.makeFolder(subFolderResponse));
+            });
+            folder.setSubFolders(subFolders);
+        }
+
+        folder.setDocuments(this.documentService.getDocuments(folder.id).pipe(map((documents) => documents )));
         return folder;
     }
 }

@@ -15,11 +15,11 @@ export class Folder {
         //
     }
 
-    public getId(): number {
+    get id(): number {
         return this._id;
     }
 
-    public setId(value: number) {
+    set id(value: number) {
         this._id = value;
     }
 
@@ -67,11 +67,11 @@ export class Folder {
         this._subFolders = subFolders;
     }
 
-    getIsMainFolder(): boolean {
+    get isMainFolder(): boolean {
         return this._isMain;
     }
 
-    setIsMainFolder(value: boolean) {
+    set isMainFolder(value: boolean) {
         this._isMain = value;
     }
 
@@ -85,7 +85,7 @@ export class Folder {
     }
 
     public update(data): void {
-        this.setId(data.id);
+        this.id = data.id;
         this.setName(data.name);
         this.setDocuments(data.documents);
     }

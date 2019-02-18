@@ -2,7 +2,7 @@
     <cim-folder-row *ngFor="let folder of folders"
                     [folder]="folder"
                     [currentUser]="currentUser"
-                    [redirectUrl]="folderUrlToRedirect + folder.getId()">
+                    [redirectUrl]="folderUrlToRedirect + folder.id">
     </cim-folder-row>
     <div class="actionRow" routerLink="/actionList/{{ projectId }}">
         <div class="header">

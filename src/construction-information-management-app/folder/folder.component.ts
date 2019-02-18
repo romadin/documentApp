@@ -7,6 +7,7 @@ import { DocumentService } from '../../shared/packages/document-package/document
 import { Document } from '../../shared/packages/document-package/document.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'cim-folder',
@@ -25,6 +26,8 @@ export class FolderComponent implements OnInit {
     public items: (Document | Folder)[];
     public partnerIsOpen = false;
 
+    private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
+
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
                 private userService: UserService,
@@ -37,10 +40,11 @@ export class FolderComponent implements OnInit {
         this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
         });
-        this.getItems(folderId).then((items: (Document | Folder)[]) => {
+        this.itemsSubscription.subscribe((items: (Document | Folder)[]) => {
             this.items = items;
         });
 
+        this.getItems(folderId);
     }
 
     public onDocumentEdit(document: Document) {
@@ -55,7 +59,8 @@ export class FolderComponent implements OnInit {
     }
 
     public onItemsAdded(folder: Folder): void {
-        this.getDocumentsFromFolder(folder.getId());
+        this.setNewItems(folder);
+        this.currentFolder = folder;
         this.showAddItemList = false;
     }
 
@@ -80,28 +85,31 @@ export class FolderComponent implements OnInit {
         return item instanceof Folder;
     }
 
-    private getItems(folderId: number): Promise<(Document | Folder)[]> {
-        return new Promise((resolve) => {
-            this.folderService.getFolder(folderId).subscribe((folder: Folder) => {
+    private getItems(folderId: number): void {
+        this.folderService.getFolder(folderId).subscribe((folder: Folder) => {
+            if (folder) {
                 this.currentFolder = folder;
-                let items: (Document | Folder)[];
                 this.currentFolder.getDocuments().subscribe((documents) => {
-                    items = documents;
-                    items = items.concat(this.currentFolder.getSubFolders());
-                    items.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
-                    resolve(items);
+                    let itemsContainer: (Document | Folder)[];
+                    itemsContainer = documents;
+                    itemsContainer = itemsContainer.concat(this.currentFolder.getSubFolders());
+                    itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
+                    this.itemsSubscription.next(itemsContainer);
                 });
                 this.folderService.getMainFolderFromProject(folder.getProjectId()).subscribe((mainFolder: Folder) => {
                     this.mainFolder = mainFolder;
                 });
-
-            });
+            }
         });
     }
 
-    private getDocumentsFromFolder(folderId: number) {
-        this.documentService.getDocuments(folderId).subscribe((documents: Document[]) => {
-            this.documents = documents;
+    private setNewItems(folder: Folder) {
+        folder.getDocuments().subscribe((documents) => {
+            let itemsContainer: (Document | Folder)[];
+            itemsContainer = documents;
+            itemsContainer = itemsContainer.concat(folder.getSubFolders());
+            itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
+            this.itemsSubscription.next(itemsContainer);
         });
     }
 }

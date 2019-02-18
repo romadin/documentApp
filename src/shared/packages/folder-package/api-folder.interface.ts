@@ -9,5 +9,7 @@ export interface ApiFolderResponse {
 }
 
 export interface FolderPostData {
-    turnOn: boolean;
+    turnOn?: boolean;
+    subDocuments?: number[];
+    subFolders?: number[];
 }

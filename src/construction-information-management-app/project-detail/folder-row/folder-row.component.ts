@@ -59,7 +59,7 @@ export class FolderRowComponent implements OnInit {
             clearTimeout(this.timerId);
         }
         this.timerId = setTimeout(() => {
-            this.folderService.postFolder({turnOn: turnOn}, this.folder.getId());
+            this.folderService.postFolder(this.folder.id, {turnOn: turnOn});
         }, 500);
     }
 
