@@ -98,8 +98,15 @@ export class HeaderComponent implements OnInit {
             show: true,
             needsAdmin: true,
         };
+        const logout: HeaderAction = {
+            onClick: this.logoutCurrentUser.bind(this),
+            iconName: 'exit_to_app',
+            name: 'Uitloggen',
+            show: true,
+            needsAdmin: false,
+        };
 
-        this.menuActions.push(addUser, showUsers);
+        this.menuActions.push(addUser, showUsers, logout);
     }
 
     private determineActions(navigation: NavigationEnd): void {
@@ -138,7 +145,6 @@ export class HeaderComponent implements OnInit {
                 submitButton: 'Voeg toe',
             }
         });
-
         dialogRef.afterClosed().subscribe(result => {
         });
     }
@@ -154,7 +160,11 @@ export class HeaderComponent implements OnInit {
         });
         dialogRef.afterClosed().subscribe(result => {
         });
+    }
 
+    private logoutCurrentUser(): void {
+        localStorage.clear();
+        this.router.navigate(['login']);
     }
 
 
