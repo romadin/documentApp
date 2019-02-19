@@ -6,6 +6,7 @@ import { MatTable  } from '@angular/material';
 import { ActionService } from '../../shared/packages/action-package/action.service';
 import { Action } from '../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
+import { RouterService } from '../../shared/service/router.service';
 
 @Component({
   selector: 'cim-action-list',
@@ -23,7 +24,9 @@ export class ActionListComponent implements OnInit {
 
     private timerId: number;
 
-    constructor(private actionService: ActionService, private activatedRoute: ActivatedRoute ) { }
+    constructor(private actionService: ActionService,
+                private activatedRoute: ActivatedRoute,
+                private routerService: RouterService) { }
 
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
@@ -33,6 +36,7 @@ export class ActionListComponent implements OnInit {
             }
             this.actions = actions;
         });
+        this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
     }
 
     public showActionEditor(event: MouseEvent): void {

@@ -6,6 +6,7 @@ export interface ApiFolderResponse {
     subFolders: null | ApiFolderResponse[];
     isMain: boolean;
     order: number;
+    fromTemplate: boolean;
 }
 
 export interface FolderPostData {

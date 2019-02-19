@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 import { FolderService } from '../../../shared/packages/folder-package/folder.service';
@@ -23,7 +23,7 @@ export class FolderRowComponent implements OnInit {
     private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     private timerId: number;
 
-    constructor(private folderService: FolderService, private router: Router) {
+    constructor(private folderService: FolderService, private router: Router, private activatedRoute: ActivatedRoute) {
     }
 
     public ngOnInit(): void {
@@ -43,11 +43,9 @@ export class FolderRowComponent implements OnInit {
         e.stopPropagation();
         e.preventDefault();
         if (this.redirectUrl) {
-            this.router.navigate([this.redirectUrl]);
+            this.router.navigate([this.redirectUrl], {relativeTo: this.activatedRoute});
             return;
         }
-
-
     }
 
     public toggleFolderOn(e: MouseEvent, turnOn: boolean): void {

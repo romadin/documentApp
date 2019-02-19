@@ -3,16 +3,16 @@
     <form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
         <div mat-dialog-content>
             <mat-form-field>
-                <input matInput placeholder="Omschrijving" formControlName="description">
+                <input matInput placeholder="Omschrijving" formControlName="description" required>
             </mat-form-field>
             <mat-form-field>
-                <input matInput placeholder="Aktie houder" formControlName="actionHolder" required>
+                <input matInput placeholder="Aktie houder" formControlName="actionHolder">
             </mat-form-field>
             <mat-form-field>
-                <input type="number" matInput placeholder="Week" formControlName="week" required>
+                <input type="number" matInput placeholder="Week" formControlName="week">
             </mat-form-field>
             <mat-form-field>
-                <input type="text" matInput placeholder="Opmerkingen" formControlName="comments" required>
+                <input type="text" matInput placeholder="Opmerkingen" formControlName="comments">
             </mat-form-field>
         </div>
         <div mat-dialog-actions>

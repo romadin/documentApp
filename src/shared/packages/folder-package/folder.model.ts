@@ -10,6 +10,7 @@ export class Folder {
     private _subFolders: Folder[] = [];
     private _isMain: boolean;
     private _order: number;
+    private _fromTemplate: boolean;
 
     public constructor() {
         //
@@ -82,6 +83,14 @@ export class Folder {
 
     set order(value: number) {
         this._order = value;
+    }
+
+    get fromTemplate(): boolean {
+        return this._fromTemplate;
+    }
+
+    set fromTemplate(value: boolean) {
+        this._fromTemplate = value;
     }
 
     public update(data): void {

@@ -13,12 +13,10 @@ interface UserCache {
 @Injectable()
 export class UserService {
     private currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
-    private apiService: ApiService;
     private userCache: UserCache = {};
     private allUsers: BehaviorSubject<User[]> = new BehaviorSubject([]);
 
-    constructor(apiService: ApiService, private roleService: RoleService) {
-        this.apiService = apiService;
+    constructor(private apiService: ApiService, private roleService: RoleService) {
         const user: ApiUserResponse = JSON.parse(localStorage.getItem('currentUser'));
         if ( user ) {
             this.setCurrentUser(this.makeUser(user));
@@ -44,17 +42,13 @@ export class UserService {
     }
 
     public getUserById(id: number): Subject<User> {
-        const subject: Subject<User> = new Subject();
+        const subject: BehaviorSubject<User> = new BehaviorSubject(null);
 
         if ( this.userCache[id] ) {
             subject.next(this.userCache[id]);
             return subject;
         }
         this.apiService.get('/users/' + id, {}).subscribe((value: ApiUserResponse) => {
-            /** We do the check here because the first user we are getting is the user trying to log in.  */
-            if ( ! localStorage.getItem('currentUser')) {
-                localStorage.setItem('currentUser', JSON.stringify(value));
-            }
             subject.next(this.makeUser(value));
         });
 

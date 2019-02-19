@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 
+import { RouterService } from '../../shared/service/router.service';
 import { FolderService } from '../../shared/packages/folder-package/folder.service';
 import { Folder } from '../../shared/packages/folder-package/folder.model';
 import { DocumentService } from '../../shared/packages/document-package/document.service';
 import { Document } from '../../shared/packages/document-package/document.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
-import { Subject } from 'rxjs';
 
 @Component({
   selector: 'cim-folder',
@@ -18,9 +19,7 @@ export class FolderComponent implements OnInit {
     public documents: Document[];
     public currentFolder: Folder;
     public mainFolder: Folder;
-    public subFolders: Folder[];
     public currentUser: User;
-    public subFolderRedirectUrl: string;
     public documentToEdit: Document;
     public showAddItemList: boolean;
     public items: (Document | Folder)[];
@@ -31,11 +30,13 @@ export class FolderComponent implements OnInit {
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
                 private userService: UserService,
-                private activatedRoute: ActivatedRoute) { }
+                private activatedRoute: ActivatedRoute,
+                private routerService: RouterService) { }
 
     ngOnInit() {
         const folderId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
-        this.subFolderRedirectUrl = '/subfolder/';
+
+        this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
 
         this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;

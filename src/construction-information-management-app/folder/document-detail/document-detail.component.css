@@ -3,6 +3,12 @@ mat-card.editDocument {
     border: solid 1px #cecece;
 }
 
+div.positionFixed {
+    position: fixed;
+    margin-right: 67px;
+    top: 70px;
+}
+
 mat-card.editDocument > h3.title {
     padding-top: 10px;
 }

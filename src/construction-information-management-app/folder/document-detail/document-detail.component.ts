@@ -1,22 +1,33 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+    ChangeDetectorRef,
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnDestroy,
+    OnInit,
+    Output,
+    ViewChild
+} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
+import { ScrollingService } from '../../../shared/service/scrolling.service';
 
 @Component({
   selector: 'cim-document-detail',
   templateUrl: './document-detail.component.html',
   styleUrls: ['./document-detail.component.css']
 })
-export class DocumentDetailComponent {
+export class DocumentDetailComponent implements OnInit, OnDestroy {
+    @ViewChild('editDocumentContainer') container: ElementRef;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
     public documentForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
-    public content = '';
     public editorConfig: AngularEditorConfig = {
         editable: true,
         spellcheck: true,
@@ -25,9 +36,10 @@ export class DocumentDetailComponent {
         placeholder: 'Voer je text in...',
         translate: 'no',
     };
+    public content = '';
+    public addFixedClass = false;
 
     private _document: Document;
-
 
     @Input()
     set document(document: Document) {
@@ -39,7 +51,17 @@ export class DocumentDetailComponent {
         return this._document;
     }
 
-    constructor(private documentService: DocumentService) { }
+    constructor(private documentService: DocumentService,
+                private scrollingService: ScrollingService,
+                private changeDetection: ChangeDetectorRef) { }
+
+    ngOnInit() {
+        this.setPositionByScroll();
+    }
+
+    ngOnDestroy() {
+        this.changeDetection.detach();
+    }
 
     public onSubmit() {
         const postData: DocPostData = {
@@ -62,6 +84,30 @@ export class DocumentDetailComponent {
     private updateForm(): void {
         this.documentForm.controls.name.setValue(this.document.getName());
         this.content = this.document.content !== null ? this.document.content : '';
+    }
+
+    /**
+     * We are getting the scroll position and by that we are setting the editDocumentContainer on an fixed position.
+     */
+    private setPositionByScroll(): void {
+        let oldFixedClass = this.addFixedClass;
+        let timeOutId: number;
+
+        this.scrollingService.scrollPosition.subscribe((scrollPosition: number) => {
+            if (this.container && this.container.nativeElement) {
+                this.addFixedClass = scrollPosition + 5 >= this.container.nativeElement.offsetTop;
+                if ( oldFixedClass !== this.addFixedClass ) {
+                    if (timeOutId) {
+                        clearTimeout(timeOutId);
+                    }
+
+                    timeOutId = setTimeout(() => {
+                        oldFixedClass = this.addFixedClass;
+                        this.changeDetection.detectChanges();
+                    }, 10);
+                }
+            }
+        });
     }
 
 }

@@ -110,6 +110,7 @@ export class FolderService {
         folder.isMainFolder = folderData.isMain;
 
         folder.order = folderData.order;
+        folder.fromTemplate = folderData.fromTemplate;
 
         // check if sub folders exist then set the sub folder.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {

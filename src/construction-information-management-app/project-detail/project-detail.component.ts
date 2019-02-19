@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { FolderService } from '../../shared/packages/folder-package/folder.service';
 import { Folder } from '../../shared/packages/folder-package/folder.model';
@@ -18,11 +18,10 @@ export class ProjectDetailComponent implements OnInit {
     public folderUrlToRedirect: string;
     public projectId: number;
 
-    constructor(private router: Router,
-                private activatedRoute: ActivatedRoute,
+    constructor(private activatedRoute: ActivatedRoute,
                 private folderService: FolderService,
                 private userService: UserService) {
-        this.folderUrlToRedirect = '/folder/';
+        this.folderUrlToRedirect = 'folder/';
     }
 
     ngOnInit() {

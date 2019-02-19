@@ -26,12 +26,10 @@ export class LoginComponent {
     public onSubmit() {
         const email = this.userForm.controls.email.value;
 
-        this.authService.AuthenticateUser(
-            email, this.userForm.controls.password.value
-        ).then((value) => {
-            if (value === true) {
+        this.authService.AuthenticateUser( email, this.userForm.controls.password.value).subscribe((gotUser) => {
+            if (gotUser === true) {
                 // redirect to projects page
-                this.router.navigate(['overview']);
+                this.router.navigate(['/overview']);
             } else {
                 alert('wrong credentials');
             }

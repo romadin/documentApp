@@ -22,6 +22,8 @@ import { FolderService } from '../shared/packages/folder-package/folder.service'
 import { DocumentService } from '../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../shared/packages/document-package/document-icon.service';
 import { ActionService } from '../shared/packages/action-package/action.service';
+import { ScrollingService } from '../shared/service/scrolling.service';
+import { RouterService } from '../shared/service/router.service';
 
 // popup components
 import { ProjectPopupComponent } from './popups/project-popup/project-popup.component';
@@ -47,17 +49,25 @@ import { UserDetailComponent } from './users/user-detail/user-detail.component';
 import { ActionListComponent } from './action-list/action-list.component';
 import { ItemComponent } from './action-list/item/item.component';
 import { ItemDetailComponent } from './action-list/item-detail/item-detail.component';
+import { ProjectComponent } from './project/project.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
-    { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
-    { path: 'project/:id', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ]  },
-    { path: 'folder/:id', component: FolderComponent, canActivate: [ CanActivateLoggedIn ]  },
-    { path: 'actionList/:id', component: ActionListComponent, canActivate: [ CanActivateLoggedIn ]  },
     { path: 'gebruikers', component: UsersOverviewComponent, canActivate: [ CanActivateAdminUser ]  },
+    { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
+    {
+        path: 'project/:id',
+        component: ProjectComponent,
+        canActivate: [ CanActivateLoggedIn ],
+        children: [
+            { path: 'folder/:id', component: FolderComponent, canActivate: [ CanActivateLoggedIn ]  },
+            { path: 'actionList/:id', component: ActionListComponent, canActivate: [ CanActivateLoggedIn ]  },
+            { path: '', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ] },
+        ]
+    },
     {
         path: '',
-        redirectTo: '/overview',
+        redirectTo: 'overview',
         pathMatch: 'full',
     }
 ];
@@ -85,6 +95,7 @@ const appRoutes: Routes = [
         ActionListComponent,
         ItemComponent,
         ItemDetailComponent,
+        ProjectComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),
@@ -106,6 +117,8 @@ const appRoutes: Routes = [
         DocumentService,
         DocumentIconService,
         ActionService,
+        RouterService,
+        ScrollingService,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]

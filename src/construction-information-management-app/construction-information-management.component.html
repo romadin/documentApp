@@ -1,16 +1,21 @@
 <div class="main-container">
-    <cim-header></cim-header>
-    <button mat-icon-button (click)="snav.toggle()"> open side menu</button>
+    <cim-header [sideNavigation]="sideMenu"
+    ></cim-header>
     <mat-sidenav-container class="example-sidenav-container">
-        <mat-sidenav #snav>
+        <mat-sidenav #sideMenu>
             <mat-nav-list>
-                <a mat-list-item >item 1</a>
-                <a mat-list-item >item 2</a>
-                <a mat-list-item >item 3</a>
+                <ng-template ngFor let-action [ngForOf]="sideMenuActions">
+                    <div class="sideMenuAction" *ngIf="action.show && currentUser" (click)="action.onClick(sideMenu.toggle())">
+                        <span> {{ action.name }}</span>
+                        <mat-icon aria-label="Icon">
+                            {{ action.iconName }}
+                        </mat-icon>
+                    </div>
+                </ng-template>
             </mat-nav-list>
         </mat-sidenav>
 
-        <mat-sidenav-content>
+        <mat-sidenav-content #sideMenuContent>
             <div class="body">
                 <router-outlet></router-outlet>
             </div>

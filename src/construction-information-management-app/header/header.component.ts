@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSidenav } from '@angular/material';
 import { filter } from 'rxjs/operators';
 
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
 import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
 import { UserPopupComponent } from '../popups/user-popup/user-popup.component';
+import { RouterService } from '../../shared/service/router.service';
 
-interface HeaderAction {
+export interface MenuAction {
     onClick: (item?) => void;
     iconName: string;
     name: string;
@@ -27,17 +28,21 @@ type UrlGroup = '/overview';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-    public actions: HeaderAction[] = [];
-    public actionBack: HeaderAction;
-    public menuActions: HeaderAction[] = [];
-    public routHistory: NavigationEnd[] = [];
+    @Input() sideNavigation: MatSidenav;
+    public actions: MenuAction[] = [];
+    public actionBack: MenuAction;
+    public actionMenu: MenuAction;
+    public menuActions: MenuAction[] = [];
     public currentUser: User;
+    private backRoute: string;
+    private routeHistory: NavigationEnd[] = [];
 
     constructor(
         public dialog: MatDialog,
         private location: Location,
         private router: Router,
-        private userService: UserService
+        private userService: UserService,
+        private routerService: RouterService,
     ) {
         this.defineActions();
     }
@@ -45,25 +50,25 @@ export class HeaderComponent implements OnInit {
     ngOnInit() {
         // track if url changes
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
-            this.routHistory.push(navigation);
-            this.determineBackAction(this.routHistory);
+            this.routeHistory.push(navigation);
             this.determineActions(navigation);
+            this.actionBack.show = navigation.url !== '/login';
         });
-        this.defineMenuActions();
+
+        this.routerService.backRoute.subscribe((backRoute: string) => {
+            this.backRoute = backRoute;
+        });
     }
 
     private defineActions(): void {
-        const location = this.location;
         this.actionBack = {
-            onClick: () => {
-                location.back();
-            },
+            onClick: this.onBackRouting.bind(this),
             iconName: 'arrow_back_ios',
             name: 'back',
             show: false,
             needsAdmin: false,
         };
-        const addProject: HeaderAction = {
+        const addProject: MenuAction = {
             onClick: this.openDialogAddProject.bind(this),
             iconName: 'add',
             name: 'Project toevoegen',
@@ -71,50 +76,23 @@ export class HeaderComponent implements OnInit {
             needsAdmin: true,
             urlGroup: '/overview',
         };
-        const menu = {
-            onClick: () => { },
+        this.actionMenu = {
+            onClick: () => { this.sideNavigation.toggle(); },
             iconName: 'menu',
             name: 'menu',
             show: false,
             needsAdmin: true,
         };
-        this.actions.push(addProject, menu);
-    }
-
-    private defineMenuActions(): void {
-        const addUser: HeaderAction = {
-            onClick: this.openDialogAddUser.bind(this),
-            iconName: 'person_add',
-            name: 'Gebruiker toevoegen',
-            show: true,
-            needsAdmin: true,
-        };
-        const showUsers: HeaderAction = {
-            onClick: () => {
-                this.router.navigate(['gebruikers']);
-            },
-            iconName: 'group',
-            name: 'Gebruikers',
-            show: true,
-            needsAdmin: true,
-        };
-        const logout: HeaderAction = {
-            onClick: this.logoutCurrentUser.bind(this),
-            iconName: 'exit_to_app',
-            name: 'Uitloggen',
-            show: true,
-            needsAdmin: false,
-        };
-
-        this.menuActions.push(addUser, showUsers, logout);
+        this.actions.push(addProject);
     }
 
     private determineActions(navigation: NavigationEnd): void {
+        this.actionMenu.show = navigation.url !== '/login';
         if ( navigation.url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
                 if ( user && user.role ) {
-                    this.actions.forEach(( action: HeaderAction ) => {
+                    this.actions.forEach(( action: MenuAction ) => {
                         if ( !action.urlGroup && action.needsAdmin || action.urlGroup === navigation.url && action.needsAdmin ) {
                             action.show = user.role.getName() === 'admin';
                         } else {
@@ -126,18 +104,21 @@ export class HeaderComponent implements OnInit {
         }
     }
 
-    private determineBackAction(routHistory: NavigationEnd[]) {
-        if ( routHistory.length > 1 ) {
-            this.actionBack.show = true;
-        }
-        // login page
-        if ( this.routHistory[0].url === this.routHistory[this.routHistory.length - 1].url ) {
-            this.actionBack.show = false;
+    /**
+     * Get the url to route back. If we have none then we route back to the overview.
+     */
+    private onBackRouting(): void {
+        if (this.backRoute) {
+            this.router.navigate([this.backRoute]);
+        } else if (this.routeHistory.length > 1) {
+            this.location.back();
+        } else {
+            this.router.navigate(['/overview']);
         }
     }
 
     private openDialogAddProject(): void {
-        const dialogRef = this.dialog.open(ProjectPopupComponent, {
+        this.dialog.open(ProjectPopupComponent, {
             width: '400px',
             data: {
                 title: 'Voeg een project toe',
@@ -145,27 +126,5 @@ export class HeaderComponent implements OnInit {
                 submitButton: 'Voeg toe',
             }
         });
-        dialogRef.afterClosed().subscribe(result => {
-        });
     }
-
-    private openDialogAddUser(): void {
-        const dialogRef = this.dialog.open(UserPopupComponent, {
-            width: '600px',
-            data: {
-                title: 'Voeg een gebruiker toe',
-                placeholder: 'Project naam',
-                submitButton: 'Voeg toe',
-            }
-        });
-        dialogRef.afterClosed().subscribe(result => {
-        });
-    }
-
-    private logoutCurrentUser(): void {
-        localStorage.clear();
-        this.router.navigate(['login']);
-    }
-
-
 }
