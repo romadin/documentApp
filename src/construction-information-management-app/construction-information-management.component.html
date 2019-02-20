@@ -1,6 +1,7 @@
 <div class="main-container">
     <cim-header [sideNavigation]="sideMenu"
-    ></cim-header>
+                (addUserClick)="onAddUserClick($event)">
+    </cim-header>
     <mat-sidenav-container class="example-sidenav-container">
         <mat-sidenav #sideMenu>
             <mat-nav-list>

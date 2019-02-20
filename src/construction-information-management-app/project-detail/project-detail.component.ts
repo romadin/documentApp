@@ -5,6 +5,7 @@ import { FolderService } from '../../shared/packages/folder-package/folder.servi
 import { Folder } from '../../shared/packages/folder-package/folder.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
+import { RouterService } from '../../shared/service/router.service';
 
 @Component({
     selector: 'cim-project-detail',
@@ -20,11 +21,13 @@ export class ProjectDetailComponent implements OnInit {
 
     constructor(private activatedRoute: ActivatedRoute,
                 private folderService: FolderService,
-                private userService: UserService) {
+                private userService: UserService,
+                private routerService: RouterService) {
         this.folderUrlToRedirect = 'folder/';
     }
 
     ngOnInit() {
+        this.routerService.setBackRoute('/overview');
         this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
 
         this.userService.getCurrentUser().subscribe((user: User) => {

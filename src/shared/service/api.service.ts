@@ -16,10 +16,10 @@ export class ApiService {
     constructor(http: HttpClient) {
         this.http = http;
 
-        const user: User = JSON.parse(localStorage.getItem('currentUser'));
-        if ( localStorage.getItem('token') && user ) {
+        const user: User = JSON.parse(sessionStorage.getItem('currentUser'));
+        if ( sessionStorage.getItem('token') && user ) {
             this.token = {
-                token: localStorage.getItem('token'),
+                token: sessionStorage.getItem('token'),
                 user_id: user.id,
             };
         }
@@ -43,6 +43,12 @@ export class ApiService {
         Object.assign( paramObject.params, params );
 
         return this.http.get(this.APIURL + path, paramObject );
+    }
+
+    public getBlob(path: string, params: any): Observable<any> {
+        const paramObject = { };
+
+        return this.http.get(this.APIURL + path, { params: { token: this.token.token, format: 'json'}, responseType: 'blob' } );
     }
 
     public delete(path: string, params: any): Observable<any> {

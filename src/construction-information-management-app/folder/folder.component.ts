@@ -9,6 +9,7 @@ import { DocumentService } from '../../shared/packages/document-package/document
 import { Document } from '../../shared/packages/document-package/document.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
+import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
 
 @Component({
   selector: 'cim-folder',
@@ -31,7 +32,8 @@ export class FolderComponent implements OnInit {
                 private documentService: DocumentService,
                 private userService: UserService,
                 private activatedRoute: ActivatedRoute,
-                private routerService: RouterService) { }
+                private routerService: RouterService,
+                private headerCommunicationService: HeaderWithFolderCommunicationService) { }
 
     ngOnInit() {
         const folderId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
@@ -43,6 +45,12 @@ export class FolderComponent implements OnInit {
         });
         this.itemsSubscription.subscribe((items: (Document | Folder)[]) => {
             this.items = items;
+        });
+
+        this.headerCommunicationService.triggerAddFolder.subscribe((trigger: boolean) => {
+            if (trigger) {
+                this.addItem();
+            }
         });
 
         this.getItems(folderId);
@@ -63,14 +71,15 @@ export class FolderComponent implements OnInit {
         this.setNewItems(folder);
         this.currentFolder = folder;
         this.showAddItemList = false;
+        this.headerCommunicationService.triggerAddFolder.next(false);
     }
 
     public onAddItemsCancel(cancelList: boolean) {
         this.showAddItemList = !cancelList;
+        this.headerCommunicationService.triggerAddFolder.next(false);
     }
 
-    public addItem(e: MouseEvent) {
-        e.stopPropagation();
+    public addItem() {
         this.documentToEdit = undefined;
         this.showAddItemList = true;
     }

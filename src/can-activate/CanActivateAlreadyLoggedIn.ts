@@ -14,8 +14,8 @@ export class CanActivateAlreadyLoggedIn implements CanActivate {
     }
 
     public canActivate(): Observable<boolean | UrlTree> {
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        if (user && localStorage.getItem('token')) {
+        const user = JSON.parse(sessionStorage.getItem('currentUser'));
+        if (user && sessionStorage.getItem('token')) {
             return of(this.router.parseUrl('/overview'));
         }
         return of(true);

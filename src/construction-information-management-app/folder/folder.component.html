@@ -1,8 +1,8 @@
 <div class="addItem" [ngClass]="{'showButton': !showAddItemList && currentUser && currentUser.isAdmin() && currentFolder && !currentFolder.isMainFolder}">
-    <div class="addItemButton" (click)="addItem($event)">
-        <i class="material-icons"> add </i>
-        <span> Voeg een document of een folder toe</span>
-    </div>
+    <!--<div class="addItemButton" (click)="addItem($event)">-->
+        <!--<i class="material-icons"> add </i>-->
+        <!--<span> Voeg een document of een folder toe</span>-->
+    <!--</div>-->
 </div>
 <div class="wrapper" *ngIf="currentUser">
     <div class="overview" *ngIf="items && items.length > 0">

@@ -13,7 +13,7 @@ export class AuthService {
         this.apiService = apiService;
     }
 
-    private static setCurrentUserInLocalStorage(user: User): void {
+    private static setCurrentUserInSessionStorage(user: User): void {
         const publicUser = {
             id: user.id,
             firstName: user.firstName,
@@ -25,7 +25,7 @@ export class AuthService {
             projectsId: user.projectsId,
         };
 
-        localStorage.setItem('currentUser', JSON.stringify(publicUser));
+        sessionStorage.setItem('currentUser', JSON.stringify(publicUser));
     }
 
     /**
@@ -42,11 +42,11 @@ export class AuthService {
             this.userService.getUserById(value.user_id).subscribe(user => {
                 if ( user ) {
                     /** We set the current user in the auth service because this the user trying to log in. */
-                    if ( ! localStorage.getItem('currentUser')) {
-                        AuthService.setCurrentUserInLocalStorage(user);
+                    if ( ! sessionStorage.getItem('currentUser')) {
+                        AuthService.setCurrentUserInSessionStorage(user);
                     }
                     this.userService.setCurrentUser(user);
-                    localStorage.setItem('token', value.token);
+                    sessionStorage.setItem('token', value.token);
                     authSubscription.next(true);
                 }
             });

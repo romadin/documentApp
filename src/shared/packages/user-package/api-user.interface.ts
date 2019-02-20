@@ -7,6 +7,7 @@ export interface ApiUserResponse {
     function: string;
     role: ApiRoleResponse;
     projectsId: number[];
+    hasImage: boolean;
 }
 
 export interface UserBody {
@@ -16,6 +17,7 @@ export interface UserBody {
     email: string;
     password: string;
     projectsId: string[];
+    image: File;
 }
 
 export interface EditUserBody {

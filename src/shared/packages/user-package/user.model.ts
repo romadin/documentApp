@@ -1,3 +1,4 @@
+import { Subject } from 'rxjs';
 import { Role } from '../role-package/role.model';
 
 export class User {
@@ -9,6 +10,7 @@ export class User {
     private _function: string;
     private _role: Role;
     private _projectsId: number[];
+    private _image: Subject<Blob>;
 
     public constructor() {
         //
@@ -76,6 +78,14 @@ export class User {
 
     set projectsId(value: number[]) {
         this._projectsId = value;
+    }
+
+    get image(): Subject<Blob> {
+        return this._image;
+    }
+
+    set image(value: Subject<Blob>) {
+        this._image = value;
     }
 
     public getFullName(): string {

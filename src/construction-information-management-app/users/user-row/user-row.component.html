@@ -1,6 +1,6 @@
 <mat-card class="userRow" (click)="editUser($event)">
     <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
+        <div mat-card-avatar *ngIf="image" class="avatar" [style.backgroundImage]="image" ></div>
         <mat-card-title> {{ user.getFullName() }}</mat-card-title>
         <mat-card-subtitle> {{ user.function }}</mat-card-subtitle>
     </mat-card-header>

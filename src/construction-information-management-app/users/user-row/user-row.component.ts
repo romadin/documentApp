@@ -1,17 +1,36 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 import { User } from '../../../shared/packages/user-package/user.model';
+import { UserService } from '../../../shared/packages/user-package/user.service';
 
 @Component({
   selector: 'cim-user-row',
   templateUrl: './user-row.component.html',
   styleUrls: ['./user-row.component.css']
 })
-export class UserRowComponent {
+export class UserRowComponent implements OnInit {
     @Input() public user: User;
     @Output() public userToEdit: EventEmitter<User> = new EventEmitter<User>();
+    public image: SafeStyle;
+    private fileReader: FileReader = new FileReader();
 
-    constructor() { }
+    constructor(private userService: UserService, private sanitizer: DomSanitizer) { }
+
+    ngOnInit() {
+        this.image = this.sanitizer.bypassSecurityTrustStyle('url( "/assets/images/defaultProfile.png")');
+        if (this.user.image) {
+            this.fileReader.addEventListener('loadend', () => {
+                const imageString =  JSON.stringify(this.fileReader.result).replace(/\\n/g, '');
+                this.image = this.sanitizer.bypassSecurityTrustStyle('url(' + imageString + ')');
+            }, false);
+            this.user.image.subscribe((blobValue) => {
+                if (blobValue) {
+                    this.fileReader.readAsDataURL(blobValue);
+                }
+            });
+        }
+    }
 
     public editUser (event: MouseEvent) {
         event.preventDefault();

@@ -37,19 +37,24 @@ export class ConstructionInformationManagementComponent implements OnInit, After
         });
     }
 
+    public onAddUserClick(trigger: boolean): void {
+        if (trigger) {
+            this.openDialogAddUser();
+        }
+    }
+
     private determineActions(navigation: NavigationEnd): void {
         if ( navigation.url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
                 if ( user && user.role ) {
                     this.sideMenuActions.forEach(( action: MenuAction ) => {
-                        if ( !action.urlGroup && action.needsAdmin || action.urlGroup === navigation.url && action.needsAdmin ) {
-                            action.show = user.role.getName() === 'admin';
-                        } else if ( !action.urlGroup && !action.needsAdmin ) {
-                            action.show = true;
-                        } else {
-                            action.show = action.urlGroup === navigation.url;
-                        }
+                        // step 1 check if action only needs to show at an specific url.
+                        action.show = action.urlGroup ? action.urlGroup === navigation.url : true;
+                        // step 2 check if action needs admin and if users has rights.
+                        action.show = action.needsAdmin ? user.role.getName() === 'admin' : true;
+                        // step 3 check if action does not need to be shown at specific url.
+                        action.show = action.urlNotShow ? action.urlNotShow !== navigation.url : true;
                     });
                 }
             });
@@ -57,12 +62,23 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     }
 
     private defineSideMenuActions(): void {
+        const projects: MenuAction = {
+            onClick: () => {
+                this.router.navigate(['overview']);
+            },
+            iconName: 'library_books',
+            name: 'Projecten',
+            show: true,
+            needsAdmin: false,
+            urlNotShow: '/overview'
+        };
         const addUser: MenuAction = {
             onClick: this.openDialogAddUser.bind(this),
             iconName: 'person_add',
             name: 'Gebruiker toevoegen',
             show: true,
             needsAdmin: true,
+            urlNotShow: '/gebruikers'
         };
         const showUsers: MenuAction = {
             onClick: () => {
@@ -81,7 +97,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             needsAdmin: false,
         };
 
-        this.sideMenuActions.push(addUser, showUsers, logout);
+        this.sideMenuActions.push(projects, showUsers, addUser, logout);
     }
 
     private openDialogAddUser(): void {
@@ -93,12 +109,11 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                 submitButton: 'Voeg toe',
             }
         });
-        dialogRef.afterClosed().subscribe(result => {
-        });
+        dialogRef.afterClosed().subscribe();
     }
 
     private logoutCurrentUser(): void {
-        localStorage.clear();
+        sessionStorage.clear();
         this.clearAllActions();
         this.router.navigate(['login']);
     }

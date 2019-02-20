@@ -1,4 +1,12 @@
 <h1 mat-dialog-title>{{ data.title }}</h1>
+<div class="profilePicture">
+    <label for="file">
+        <img class="avatar mat-card-avatar" id="blah" [src]="imageSrc" alt="your image" />
+        <div class="overlay">
+            <div class="text"> Wijzigen </div>
+        </div>
+    </label>
+</div>
 <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
     <div class="formWrapper">
         <div mat-dialog-content>
@@ -20,6 +28,7 @@
             <mat-form-field>
                 <input type="password" matInput placeholder="Wachtwoord" formControlName="password" required>
             </mat-form-field>
+            <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
         </div>
         <mat-selection-list #projects>
             <h4> Kies project </h4>

@@ -24,6 +24,7 @@ import { DocumentIconService } from '../shared/packages/document-package/documen
 import { ActionService } from '../shared/packages/action-package/action.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { RouterService } from '../shared/service/router.service';
+import { HeaderWithFolderCommunicationService } from '../shared/packages/communication/HeaderWithFolder.communication.service';
 
 // popup components
 import { ProjectPopupComponent } from './popups/project-popup/project-popup.component';
@@ -119,6 +120,7 @@ const appRoutes: Routes = [
         ActionService,
         RouterService,
         ScrollingService,
+        HeaderWithFolderCommunicationService,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]

@@ -6,6 +6,7 @@ import { FolderService } from '../../../shared/packages/folder-package/folder.se
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
+import { HeaderWithFolderCommunicationService } from '../../../shared/packages/communication/HeaderWithFolder.communication.service';
 
 @Component({
   selector: 'cim-item-list',
@@ -30,14 +31,17 @@ export class ItemListComponent implements OnInit {
         return this._currentFolder;
     }
 
-    constructor(private folderService: FolderService, private documentService: DocumentService) { }
+    constructor(private folderService: FolderService) { }
 
     ngOnInit() {
+        console.log(this.mainFolder);
         this.getAvailableFolder(this.mainFolder.getSubFolders(), this.currentFolder.getSubFolders());
 
         this.getDocumentAvailable().then((documents: Document[]) => {
+            console.log(documents);
             documents.forEach(document => this.items.push(document));
         });
+        console.log(this.items);
     }
 
     public isFolder(item: any) {

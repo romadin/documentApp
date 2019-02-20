@@ -2,3 +2,10 @@ mat-toolbar.headerToolbar {
     display: flex;
     justify-content: space-between;
 }
+mat-toolbar.headerToolbar > span.actions > button {
+    margin-right: 10px;
+}
+
+span.actionText {
+    margin-right: 10px;
+}

@@ -1,3 +1,38 @@
+div.profilePicture {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+div.profilePicture:hover label > div.overlay {
+    opacity: 1;
+}
+
+div.profilePicture > label > div.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: .5s ease;
+    border-radius: 50%;
+    background-color: #1f1f1f6e;
+}
+
+div.profilePicture > label > div.overlay > div.text {
+    font-size: 13px;
+    color: #fff
+}
+div.profilePicture > label > img.mat-card-avatar {
+    height: 80px;
+    width: 80px;
+}
+
 form > div.formWrapper {
     display: flex;
 }
@@ -11,6 +46,9 @@ form > div.formWrapper > mat-selection-list {
     padding: 0;
 }
 
+form > div.formWrapper > mat-selection-list:focus {
+    outline: none;
+}
 form > div.formWrapper > mat-selection-list > mat-list-option {
     border-bottom: solid 1px #cecece;
 }

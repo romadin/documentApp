@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog, MatSidenav } from '@angular/material';
 import { filter } from 'rxjs/operators';
@@ -7,8 +7,8 @@ import { filter } from 'rxjs/operators';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
 import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
-import { UserPopupComponent } from '../popups/user-popup/user-popup.component';
 import { RouterService } from '../../shared/service/router.service';
+import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
 
 export interface MenuAction {
     onClick: (item?) => void;
@@ -16,11 +16,11 @@ export interface MenuAction {
     name: string;
     show: boolean;
     needsAdmin: boolean;
-    location?: Location;
     urlGroup?: UrlGroup;
+    urlNotShow?: string;
 }
 
-type UrlGroup = '/overview';
+type UrlGroup = '/overview' | '/gebruikers' | '/project/:id/folder/:id';
 
 @Component({
   selector: 'cim-header',
@@ -29,6 +29,7 @@ type UrlGroup = '/overview';
 })
 export class HeaderComponent implements OnInit {
     @Input() sideNavigation: MatSidenav;
+    @Output() addUserClick: EventEmitter<boolean> = new EventEmitter<boolean>();
     public actions: MenuAction[] = [];
     public actionBack: MenuAction;
     public actionMenu: MenuAction;
@@ -43,6 +44,7 @@ export class HeaderComponent implements OnInit {
         private router: Router,
         private userService: UserService,
         private routerService: RouterService,
+        private folderCommunicationService: HeaderWithFolderCommunicationService,
     ) {
         this.defineActions();
     }
@@ -53,6 +55,7 @@ export class HeaderComponent implements OnInit {
             this.routeHistory.push(navigation);
             this.determineActions(navigation);
             this.actionBack.show = navigation.url !== '/login';
+            this.actionBack.show = navigation.url !== '/overview';
         });
 
         this.routerService.backRoute.subscribe((backRoute: string) => {
@@ -76,6 +79,22 @@ export class HeaderComponent implements OnInit {
             needsAdmin: true,
             urlGroup: '/overview',
         };
+        const addUser: MenuAction = {
+            onClick: () => { this.addUserClick.emit(true); },
+            iconName: 'person_add',
+            name: 'Gebruiker toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: '/gebruikers',
+        };
+        const addItemToFolder: MenuAction = {
+            onClick: () => { this.folderCommunicationService.triggerAddFolder.next(true); },
+            iconName: 'add',
+            name: 'Item toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: '/project/:id/folder/:id',
+        };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
             iconName: 'menu',
@@ -83,7 +102,7 @@ export class HeaderComponent implements OnInit {
             show: false,
             needsAdmin: true,
         };
-        this.actions.push(addProject);
+        this.actions.push(addProject, addUser, addItemToFolder);
     }
 
     private determineActions(navigation: NavigationEnd): void {
@@ -96,7 +115,13 @@ export class HeaderComponent implements OnInit {
                         if ( !action.urlGroup && action.needsAdmin || action.urlGroup === navigation.url && action.needsAdmin ) {
                             action.show = user.role.getName() === 'admin';
                         } else {
-                            action.show = action.urlGroup === navigation.url;
+                            const needToChangeUrlGroup = action.urlGroup.match(/(:id)/g);
+                            if (needToChangeUrlGroup) {
+                                const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, action.urlGroup);
+                                action.show = tempUrlGroup === navigation.url;
+                            } else {
+                                action.show = action.urlGroup === navigation.url;
+                            }
                         }
                     });
                 }
@@ -126,5 +151,16 @@ export class HeaderComponent implements OnInit {
                 submitButton: 'Voeg toe',
             }
         });
+    }
+
+    private replaceIdForUrlGroup(currentUrl: string, urlGroup: UrlGroup): UrlGroup {
+        const matchesId = currentUrl.match(/\d/g);
+        if (matchesId) {
+            matchesId.forEach((id: string) => {
+                urlGroup = <UrlGroup>urlGroup.replace(':id', id);
+            });
+            return urlGroup;
+        }
+        return <UrlGroup>'';
     }
 }

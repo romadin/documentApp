@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { ApiUserResponse, EditUserBody, UserBody } from './api-user.interface';
 import { ApiService } from '../../service/api.service';
@@ -16,8 +18,8 @@ export class UserService {
     private userCache: UserCache = {};
     private allUsers: BehaviorSubject<User[]> = new BehaviorSubject([]);
 
-    constructor(private apiService: ApiService, private roleService: RoleService) {
-        const user: ApiUserResponse = JSON.parse(localStorage.getItem('currentUser'));
+    constructor(private apiService: ApiService, private roleService: RoleService, private router: Router) {
+        const user: ApiUserResponse = JSON.parse(sessionStorage.getItem('currentUser'));
         if ( user ) {
             this.setCurrentUser(this.makeUser(user));
         }
@@ -36,6 +38,10 @@ export class UserService {
                 usersArray.push(this.makeUser(user));
             });
             this.allUsers.next(usersArray);
+        }, (error: HttpErrorResponse) => {
+            if (error.status === 401 && error.error === 'Unauthorized.') {
+                this.router.navigate(['/login']);
+            }
         });
 
         return this.allUsers;
@@ -55,8 +61,19 @@ export class UserService {
         return subject;
     }
 
-    public postUser(body: UserBody): Subject<User> {
+    public getUserImage(id: number): BehaviorSubject<Blob> {
+        const subject: BehaviorSubject<Blob> = new BehaviorSubject(null);
+
+        this.apiService.getBlob('/users/' + id + '/image', {}).subscribe((value: Blob) => {
+            subject.next(value);
+        });
+
+        return subject;
+    }
+
+    public postUser(body: FormData): Subject<User> {
         const subject: Subject<User> = new Subject();
+        console.log(body);
         this.apiService.post('/users', body).subscribe((value: ApiUserResponse) => {
             subject.next(this.makeUser(value));
             this.allUsers.next(Object.values(this.userCache));
@@ -91,6 +108,10 @@ export class UserService {
         user.function = value.function;
         user.role = this.roleService.makeRole(value.role);
         user.projectsId = value.projectsId;
+
+        if (value.hasImage) {
+            user.image = this.getUserImage(user.id);
+        }
 
         this.userCache[user.id] = user;
         return user;

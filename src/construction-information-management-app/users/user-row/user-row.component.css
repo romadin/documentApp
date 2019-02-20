@@ -9,6 +9,12 @@ mat-card.userRow {
 mat-card.userRow.mat-card:hover {
     background: #f7f7f7;
 }
+mat-card.userRow > mat-card-header.mat-card-header > div.avatar {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
 mat-card-actions.actionButton {
     display: inline;
 }

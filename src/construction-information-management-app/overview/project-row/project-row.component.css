@@ -10,11 +10,14 @@ mat-card.projectRow.mat-card:hover {
     background: #f7f7f7;
 }
 mat-card-actions.actionButton {
-    display: inline;
+    display: flex;
+    align-items: center;
 }
 mat-card-actions.actionButton > .actionsEditDelete {
     display: inline;
+    padding-right: 5px;
 }
 mat-card-actions.actionButton > .actionsEditDelete > i.material-icons {
-    font-size: 20px;
+    font-size: 18px;
+    margin-right: 5px;
 }

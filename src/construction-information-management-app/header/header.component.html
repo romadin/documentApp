@@ -9,12 +9,12 @@
     <span> BIM Uitvoeringsplan</span>
     <span class="actions">
         <ng-template ngFor let-action [ngForOf]="actions">
-                    <button mat-stroked-button *ngIf="action.show && currentUser" (click)="action.onClick()">
-                    <span> {{ action.name }}</span>
-                        <mat-icon aria-label="Icon">
-                            {{ action.iconName }}
-                        </mat-icon>
-                    </button>
+            <button mat-raised-button color="primary" *ngIf="action.show && currentUser" (click)="action.onClick()">
+            <span class="actionText"> {{ action.name }}</span>
+                <mat-icon aria-label="Icon">
+                    {{ action.iconName }}
+                </mat-icon>
+            </button>
         </ng-template>
         <button mat-icon-button *ngIf="sideNavigation && actionMenu.show && currentUser" (click)="actionMenu.onClick()">
         <mat-icon aria-label="Icon">
