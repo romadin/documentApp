@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -7,6 +7,11 @@ import { ApiUserResponse, EditUserBody, UserBody } from './api-user.interface';
 import { ApiService } from '../../service/api.service';
 import { RoleService } from '../role-package/role.service';
 import { User } from './user.model';
+import { map } from 'rxjs/operators';
+
+interface ActivationParams {
+    params: { activationToken: string; };
+}
 
 interface UserCache {
     [id: number]: User;
@@ -61,6 +66,20 @@ export class UserService {
         return subject;
     }
 
+    public getUserByIdActivationCode(activationToken: string): Observable<User> {
+        return this.apiService.noTokenGet('/users/activate',  { params: {activationToken: activationToken}})
+            .pipe( map( user => this.makeUser(user)) );
+    }
+
+    public activateUser( user: User, body: EditUserBody, params: ActivationParams ): Subject<User> {
+        const subject: Subject<User> = new Subject();
+        this.apiService.noTokenPost('/users/' + user.id, body, params).subscribe((value: ApiUserResponse) => {
+            this.updateUser(user, value);
+            subject.next(user);
+        });
+        return subject;
+    }
+
     public getUserImage(id: number): BehaviorSubject<Blob> {
         const subject: BehaviorSubject<Blob> = new BehaviorSubject(null);
 
@@ -73,7 +92,6 @@ export class UserService {
 
     public postUser(body: FormData): Subject<User> {
         const subject: Subject<User> = new Subject();
-        console.log(body);
         this.apiService.post('/users', body).subscribe((value: ApiUserResponse) => {
             subject.next(this.makeUser(value));
             this.allUsers.next(Object.values(this.userCache));
@@ -81,7 +99,7 @@ export class UserService {
         return subject;
     }
 
-    public editUser( user: User, body: EditUserBody): Subject<User> {
+    public editUser( user: User, body: EditUserBody ): Subject<User> {
         const subject: Subject<User> = new Subject();
         this.apiService.post('/users/' + user.id, body).subscribe((value: ApiUserResponse) => {
             this.updateUser(user, value);

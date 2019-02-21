@@ -12,6 +12,9 @@ import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
 import { CanActivateAdminUser } from '../can-activate/CanActivateAdminUser';
 
+// resolvers
+import { UserResolver } from '../shared/packages/user-package/user.resolver';
+
 // services
 import { AuthService } from '../shared/service/auth.service';
 import { ApiService } from '../shared/service/api.service';
@@ -51,9 +54,15 @@ import { ActionListComponent } from './action-list/action-list.component';
 import { ItemComponent } from './action-list/item/item.component';
 import { ItemDetailComponent } from './action-list/item-detail/item-detail.component';
 import { ProjectComponent } from './project/project.component';
+import { ActivateUserComponent } from './authenticate-app/activate-user/activate-user.component';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
+    {
+        path: 'activate/:token',
+        component: ActivateUserComponent,
+        resolve: {user: UserResolver}
+    },
     { path: 'gebruikers', component: UsersOverviewComponent, canActivate: [ CanActivateAdminUser ]  },
     { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
     {
@@ -97,6 +106,7 @@ const appRoutes: Routes = [
         ItemComponent,
         ItemDetailComponent,
         ProjectComponent,
+        ActivateUserComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),
@@ -121,6 +131,7 @@ const appRoutes: Routes = [
         RouterService,
         ScrollingService,
         HeaderWithFolderCommunicationService,
+        UserResolver,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]

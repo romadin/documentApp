@@ -21,11 +21,12 @@ export interface UserBody {
 }
 
 export interface EditUserBody {
-    firstName: string;
-    insertion: string | null;
-    lastName: string;
-    email: string;
+    firstName?: string;
+    insertion?: string | null;
+    lastName?: string;
+    email?: string;
     projectsId?: string[];
+    password?: string;
 }
 
 export interface ApiRoleResponse {

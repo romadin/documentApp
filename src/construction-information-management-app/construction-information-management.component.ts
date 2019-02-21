@@ -18,6 +18,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     @ViewChild('sideMenuContent') sideMenuElement: MatDrawerContent;
     public sideMenuActions: MenuAction[] = [];
     public currentUser: User;
+    public resetHeaderAction = false;
 
     constructor(private dialog: MatDialog,
                 private router: Router,
@@ -51,10 +52,10 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                     this.sideMenuActions.forEach(( action: MenuAction ) => {
                         // step 1 check if action only needs to show at an specific url.
                         action.show = action.urlGroup ? action.urlGroup === navigation.url : true;
-                        // step 2 check if action needs admin and if users has rights.
-                        action.show = action.needsAdmin ? user.role.getName() === 'admin' : true;
-                        // step 3 check if action does not need to be shown at specific url.
+                        // step 2 check if action does not need to be shown at specific url.
                         action.show = action.urlNotShow ? action.urlNotShow !== navigation.url : true;
+                        // step 3 check if action needs admin and if users has rights.
+                        action.show = action.needsAdmin ? user.role.getName() === 'admin' : true;
                     });
                 }
             });
@@ -114,6 +115,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
 
     private logoutCurrentUser(): void {
         sessionStorage.clear();
+        this.resetHeaderAction = true;
         this.clearAllActions();
         this.router.navigate(['login']);
     }

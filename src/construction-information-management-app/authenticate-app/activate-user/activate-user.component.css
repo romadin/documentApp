@@ -1,0 +1,4 @@
+div.formInput {
+    display: flex;
+    flex-direction: column;
+}

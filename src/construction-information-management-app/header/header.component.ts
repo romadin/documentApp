@@ -38,6 +38,15 @@ export class HeaderComponent implements OnInit {
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];
 
+    @Input()
+    set OnResetActions(reset: boolean) {
+        if (reset) {
+            this.actions.forEach((action) => {
+                action.show = false;
+            });
+        }
+    }
+
     constructor(
         public dialog: MatDialog,
         private location: Location,
@@ -54,8 +63,7 @@ export class HeaderComponent implements OnInit {
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routeHistory.push(navigation);
             this.determineActions(navigation);
-            this.actionBack.show = navigation.url !== '/login';
-            this.actionBack.show = navigation.url !== '/overview';
+            this.actionBack.show = navigation.url === '/login' ? false : (navigation.url !== '/overview');
         });
 
         this.routerService.backRoute.subscribe((backRoute: string) => {
@@ -100,7 +108,7 @@ export class HeaderComponent implements OnInit {
             iconName: 'menu',
             name: 'menu',
             show: false,
-            needsAdmin: true,
+            needsAdmin: false,
         };
         this.actions.push(addProject, addUser, addItemToFolder);
     }
@@ -119,6 +127,9 @@ export class HeaderComponent implements OnInit {
                             if (needToChangeUrlGroup) {
                                 const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, action.urlGroup);
                                 action.show = tempUrlGroup === navigation.url;
+                                if (action.needsAdmin && tempUrlGroup === navigation.url) {
+                                    action.show = user.role.getName() === 'admin';
+                                }
                             } else {
                                 action.show = action.urlGroup === navigation.url;
                             }

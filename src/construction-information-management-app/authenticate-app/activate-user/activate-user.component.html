@@ -1,0 +1,22 @@
+<mat-card class="example-card">
+    <mat-card-header>
+        <mat-card-title>Wachtwoord Wijzigen</mat-card-title>
+    </mat-card-header>
+    <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+        <mat-card-content>
+            <h3> HI {{ user.getFullName() }} </h3>
+            <span> Om U account te activeren moet u een wachtwoord instellen </span>
+            <div class="formInput">
+                <mat-form-field>
+                    <input type="password" matInput placeholder="Nieuwe wachtwoord" formControlName="password" required>
+                </mat-form-field>
+                <!--<mat-form-field>-->
+                    <!--<input matInput placeholder="Herhaal wachtwoord" required>-->
+                <!--</mat-form-field>-->
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button mat-raised-button color="primary">Opslaan</button>
+        </mat-card-actions>
+    </form>
+</mat-card>

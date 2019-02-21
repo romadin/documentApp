@@ -29,6 +29,10 @@ export class ApiService {
         return this.http.post(this.APIURL + path, body).pipe(map(response => this.token = <ApiAuthResponse>response ));
     }
 
+    public noTokenPost(path: string, body, params?: any ): Observable<any> {
+        return this.http.post( this.APIURL + path, body, params);
+    }
+
     public post(path: string, body: any, params?: any): Observable<any> {
         const paramObject = { params: { token: this.token.token, format: 'json'}};
         if ( params ) {
@@ -43,6 +47,10 @@ export class ApiService {
         Object.assign( paramObject.params, params );
 
         return this.http.get(this.APIURL + path, paramObject );
+    }
+
+    public noTokenGet(path: string, params: any): Observable<any> {
+        return this.http.get(this.APIURL + path, params );
     }
 
     public getBlob(path: string, params: any): Observable<any> {

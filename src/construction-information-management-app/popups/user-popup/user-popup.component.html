@@ -25,9 +25,6 @@
             <mat-form-field>
                 <input type="text" matInput placeholder="Functie" formControlName="function" required>
             </mat-form-field>
-            <mat-form-field>
-                <input type="password" matInput placeholder="Wachtwoord" formControlName="password" required>
-            </mat-form-field>
             <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
         </div>
         <mat-selection-list #projects>
