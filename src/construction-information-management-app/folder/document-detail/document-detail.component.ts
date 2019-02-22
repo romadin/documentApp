@@ -16,6 +16,8 @@ import { Document} from '../../../shared/packages/document-package/document.mode
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
 import { ScrollingService } from '../../../shared/service/scrolling.service';
+import { Folder } from '../../../shared/packages/folder-package/folder.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cim-document-detail',
@@ -25,6 +27,7 @@ import { ScrollingService } from '../../../shared/service/scrolling.service';
 export class DocumentDetailComponent implements OnInit, OnDestroy {
     @ViewChild('editDocumentContainer') container: ElementRef;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
+    @Input() parentFolder: Folder;
     public documentForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
@@ -40,6 +43,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     public addFixedClass = false;
 
     private _document: Document;
+    private subscription: Subscription;
 
     @Input()
     set document(document: Document) {
@@ -61,6 +65,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.changeDetection.detach();
+        this.subscription.unsubscribe();
     }
 
     public onSubmit() {
@@ -68,11 +73,22 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
             name: this.documentForm.controls.name.value,
             content: this.content,
         };
-        this.documentService.updateDocument(this.document, postData).subscribe((document) => {
-            if (document) {
-                this.document = document;
-            }
-        });
+        if (this.document) {
+            this.documentService.updateDocument(this.document, postData).subscribe((document) => {
+                if (document) {
+                    this.document = document;
+                }
+            });
+        } else {
+            postData.folderId = this.parentFolder.id;
+            this.documentService.postDocument(postData).subscribe((document) => {
+                if (document) {
+                    this.parentFolder.addDocument(document);
+                    this.document = document;
+                    this.closeEditForm.emit(true);
+                }
+            });
+        }
     }
 
     public cancel(event: MouseEvent): void {
@@ -93,7 +109,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         let oldFixedClass = this.addFixedClass;
         let timeOutId: number;
 
-        this.scrollingService.scrollPosition.subscribe((scrollPosition: number) => {
+        this.subscription = this.scrollingService.scrollPosition.subscribe((scrollPosition: number) => {
             if (this.container && this.container.nativeElement) {
                 this.addFixedClass = scrollPosition + 5 >= this.container.nativeElement.offsetTop;
                 if ( oldFixedClass !== this.addFixedClass ) {

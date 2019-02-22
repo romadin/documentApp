@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-    MatButtonModule,
+    MatButtonModule, MatButtonToggleModule,
     MatCardModule,
     MatCheckboxModule, MatDialogModule, MatExpansionModule,
     MatFormFieldModule, MatIconModule,
@@ -27,6 +27,7 @@ import {
         MatExpansionModule,
         MatTableModule,
         MatSidenavModule,
+        MatButtonToggleModule,
     ]
 })
 export class MaterialModule { }

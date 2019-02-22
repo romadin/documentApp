@@ -1,0 +1,14 @@
+<div class="editItemWrapper">
+    <div class="componentHeader">
+        <h3> Voeg een {{ itemToEdit }} toe </h3>
+        <mat-button-toggle-group name="itemPicker" aria-label="Font Style" class="switchItemButton">
+            <mat-button-toggle (change)="changeEditItemForm($event, 'document')" value="document" [checked]="true">Document</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'folder')" value="folder">Folder</mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+    <cim-create-document *ngIf="itemToEdit === 'document'"
+                         [parentFolder]="folder">
+    </cim-create-document>
+    <cim-create-folder *ngIf="itemToEdit === 'folder'"></cim-create-folder>
+</div>

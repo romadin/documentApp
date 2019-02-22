@@ -34,14 +34,11 @@ export class ItemListComponent implements OnInit {
     constructor(private folderService: FolderService) { }
 
     ngOnInit() {
-        console.log(this.mainFolder);
         this.getAvailableFolder(this.mainFolder.getSubFolders(), this.currentFolder.getSubFolders());
 
         this.getDocumentAvailable().then((documents: Document[]) => {
-            console.log(documents);
             documents.forEach(document => this.items.push(document));
         });
-        console.log(this.items);
     }
 
     public isFolder(item: any) {
@@ -85,14 +82,18 @@ export class ItemListComponent implements OnInit {
     }
 
     private removeItemMainArrayFromSubArray(mainArray, subArray): (Folder[] | Document[]) {
-        subArray.forEach((subItem) => {
-            mainArray.forEach((item, key) => {
+        /** We do this so that we dont copy the array by reference. */
+        const tempMainSubFolders = mainArray.concat();
+        const tempCurrentSubFolders = subArray.concat();
+
+        tempCurrentSubFolders.forEach((subItem) => {
+            tempMainSubFolders.forEach((item, key) => {
                 if ( item.id === subItem.id ) {
-                    mainArray.splice(key, 1);
+                    tempMainSubFolders.splice(key, 1);
                 }
             });
         });
-        return mainArray;
+        return tempMainSubFolders;
     }
 
     private preparePostData(itemsSelected): FolderPostData {

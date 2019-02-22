@@ -1,9 +1,10 @@
-<div class="DocumentWrapper" (click)="editDocument()">
+<div class="DocumentWrapper" (click)="editDocument($event)">
     <div class="header">
         <i class="material-icons"> {{ iconName }} </i>
         <h3> {{ document.getName() }}</h3>
     </div>
     <div class="actions">
+        <i *ngIf="currentUser.isAdmin() && !parentFolder.isMainFolder || currentUser.isAdmin() && parentFolder.isMainFolder && !document.fromTemplate" class="material-icons" (click)="deleteDocument($event)"> delete_forever </i>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>

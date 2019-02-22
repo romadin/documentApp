@@ -1,5 +1,10 @@
 <mat-toolbar class="headerToolbar">
     <span>
+        <button mat-icon-button *ngIf="sideNavigation && actionMenu.show && currentUser" (click)="actionMenu.onClick()">
+            <mat-icon aria-label="Icon">
+                {{ actionMenu.iconName }}
+            </mat-icon>
+        </button>
         <button mat-icon-button *ngIf="actionBack.show" (click)="actionBack.onClick()">
             <mat-icon aria-label="Icon">
                 {{ actionBack.iconName }}
@@ -16,10 +21,5 @@
                 </mat-icon>
             </button>
         </ng-template>
-        <button mat-icon-button *ngIf="sideNavigation && actionMenu.show && currentUser" (click)="actionMenu.onClick()">
-        <mat-icon aria-label="Icon">
-            {{ actionMenu.iconName }}
-        </mat-icon>
-        </button>
     </span>
 </mat-toolbar>

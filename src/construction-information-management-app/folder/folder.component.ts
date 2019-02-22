@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 
@@ -10,13 +10,14 @@ import { Document } from '../../shared/packages/document-package/document.model'
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
 import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
+import { FolderCommunicationService } from '../../shared/packages/communication/Folder.communication.service';
 
 @Component({
   selector: 'cim-folder',
   templateUrl: './folder.component.html',
   styleUrls: ['./folder.component.css']
 })
-export class FolderComponent implements OnInit {
+export class FolderComponent implements OnInit, OnDestroy {
     public documents: Document[];
     public currentFolder: Folder;
     public mainFolder: Folder;
@@ -25,6 +26,7 @@ export class FolderComponent implements OnInit {
     public showAddItemList: boolean;
     public items: (Document | Folder)[];
     public partnerIsOpen = false;
+    public showCreateNewItem: boolean;
 
     private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
 
@@ -33,7 +35,8 @@ export class FolderComponent implements OnInit {
                 private userService: UserService,
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
-                private headerCommunicationService: HeaderWithFolderCommunicationService) { }
+                private headerCommunicationService: HeaderWithFolderCommunicationService,
+                private folderCommunicationServce: FolderCommunicationService) { }
 
     ngOnInit() {
         const folderId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
@@ -53,12 +56,23 @@ export class FolderComponent implements OnInit {
             }
         });
 
+        this.folderCommunicationServce.onDocumentEditListener.subscribe((onClose: boolean) => {
+            if (onClose) {
+                this.showCreateNewItem = !onClose;
+            }
+        });
+
         this.getItems(folderId);
+    }
+
+    ngOnDestroy() {
+        this.headerCommunicationService.triggerAddFolder.next(false);
     }
 
     public onDocumentEdit(document: Document) {
         this.documentToEdit = document;
         this.showAddItemList = false;
+        this.showCreateNewItem = false;
     }
 
     public onDocumentEditClose(closeForm: boolean) {
@@ -81,6 +95,11 @@ export class FolderComponent implements OnInit {
 
     public addItem() {
         this.documentToEdit = undefined;
+        this.partnerIsOpen = false;
+        if (this.currentFolder && this.currentFolder.isMainFolder) {
+            this.showCreateNewItem = true;
+            return;
+        }
         this.showAddItemList = true;
     }
 
@@ -88,6 +107,7 @@ export class FolderComponent implements OnInit {
         event.stopPropagation();
         event.preventDefault();
         this.documentToEdit = undefined;
+        this.showCreateNewItem = false;
         this.partnerIsOpen = true;
     }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 
 import { Document } from './document.model';
 import { ApiDocResponse, DocPostData } from './api-document.interface';
@@ -43,6 +43,18 @@ export class DocumentService {
         return documents;
     }
 
+    public postDocument(postData: DocPostData): BehaviorSubject<Document> {
+        const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
+
+        this.apiService.post('/documents', postData).subscribe((response: ApiDocResponse) => {
+            newDocument.next(this.makeDocument(response));
+        }, (error) => {
+            newDocument.error(error.error);
+        });
+
+        return newDocument;
+    }
+
     public updateDocument(document: Document, postData: DocPostData): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
 
@@ -54,6 +66,21 @@ export class DocumentService {
         });
 
         return newDocument;
+    }
+
+    public deleteDocument(document: Document): Subject<boolean> {
+        const deleted: Subject<boolean> = new Subject<boolean>();
+        this.apiService.delete('/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {
+            if (this.documentsCache.hasOwnProperty(document.id) ) {
+                delete this.documentsCache[document.id];
+            }
+            deleted.next(true );
+        });
+        return deleted;
+    }
+
+    public deleteDocumentLink(document: Document) {
+
     }
 
     /**
@@ -83,6 +110,7 @@ export class DocumentService {
         doc.content = data.content;
         doc.parentFolders = data.foldersId;
         doc.order = data.order;
+        doc.fromTemplate = data.fromTemplate;
 
         this.documentsCache[doc.id] = doc;
         return doc;

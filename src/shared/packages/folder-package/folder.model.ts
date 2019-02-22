@@ -1,12 +1,12 @@
 import { Document } from '../document-package/document.model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export class Folder {
     private _id: number;
     private _name: string;
     private _projectId: number;
     private _isOn: boolean;
-    private _documents: Observable<Document[]>;
+    private _documents: BehaviorSubject<Document[]>;
     private _subFolders: Folder[] = [];
     private _isMain: boolean;
     private _order: number;
@@ -48,12 +48,17 @@ export class Folder {
         this._isOn = value;
     }
 
-    public getDocuments(): Observable<Document[]> {
+    public getDocuments(): BehaviorSubject<Document[]> {
         return this._documents;
     }
 
-    public setDocuments(value: Observable<Document[]>) {
+    public setDocuments(value: BehaviorSubject<Document[]>) {
         this._documents = value;
+    }
+
+    public addDocument(document: Document): void {
+        this._documents.getValue().push(document);
+        this.getDocuments().next(this._documents.getValue());
     }
 
     public getSubFolders(): Folder[] {

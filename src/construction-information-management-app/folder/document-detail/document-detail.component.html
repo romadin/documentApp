@@ -1,6 +1,6 @@
 <div #editDocumentContainer [ngClass]="addFixedClass ? 'positionFixed' : ''">
     <mat-card class="editDocument">
-        <h3 class="title">Wijzig document: {{ document.getName() }}</h3>
+        <h3 class="title" *ngIf="document">Wijzig document: {{ document.getName() }}</h3>
         <form [formGroup]="documentForm" (ngSubmit)="onSubmit()">
             <mat-card-content>
                 <div mat-dialog-content class="formFields">

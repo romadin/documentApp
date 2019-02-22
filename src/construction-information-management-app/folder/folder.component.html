@@ -27,6 +27,7 @@
             <ng-template #documentBlock>
                 <cim-document-row [document]="item"
                                   [currentUser]="currentUser"
+                                  [parentFolder]="currentFolder"
                                   (activatedDocument)="onDocumentEdit($event)">
                 </cim-document-row>
             </ng-template>
@@ -50,5 +51,8 @@
                 (cancelAddItems)="onAddItemsCancel($event)"
                 (saveItemsDone)="onItemsAdded($event)">
         </cim-item-list>
+    </div>
+    <div class="addItemForMainFolder" *ngIf="currentFolder && currentFolder.isMainFolder && showCreateNewItem">
+        <cim-item-create [folder]="currentFolder"></cim-item-create>
     </div>
 </div>

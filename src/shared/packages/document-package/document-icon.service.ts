@@ -19,6 +19,8 @@ export class DocumentIconService {
                 return 'assessment';
             case 'Modeloverzicht':
                 return 'remove_red_eye';
+            default:
+                return 'description';
         }
     }
 }

@@ -119,7 +119,7 @@ export class FolderService {
             });
         }
 
-        folder.setDocuments(this.documentService.getDocuments(folderData.id).pipe(map((documents) => documents )));
+        folder.setDocuments(this.documentService.getDocuments(folderData.id));
 
         this.foldersCache[folder.id] = folder;
         return folder;
@@ -143,7 +143,7 @@ export class FolderService {
             folder.setSubFolders(subFolders);
         }
 
-        folder.setDocuments(this.documentService.getDocuments(folder.id).pipe(map((documents) => documents )));
+        folder.setDocuments(this.documentService.getDocuments(folder.id));
         return folder;
     }
 }

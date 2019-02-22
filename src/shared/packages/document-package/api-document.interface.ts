@@ -5,10 +5,11 @@ export interface ApiDocResponse {
     content: string | null;
     foldersId: number[];
     order: number;
+    fromTemplate: boolean;
 }
 
 export interface DocPostData {
     name: string;
     content: string;
-    foldersId?: number[];
+    folderId?: number;
 }

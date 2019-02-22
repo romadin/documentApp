@@ -90,3 +90,7 @@ div.wrapper > div.partners {
 div.wrapper > div.partners > cim-partners {
     width: 100%;
 }
+
+div.wrapper > div.addItemForMainFolder {
+    flex: 4;
+}

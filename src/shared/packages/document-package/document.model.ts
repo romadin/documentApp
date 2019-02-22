@@ -5,6 +5,7 @@ export class Document {
     private _content: string;
     private _parentFolders: number[];
     private _order: number;
+    private _fromTemplate: boolean;
 
     constructor() {}
 
@@ -54,6 +55,14 @@ export class Document {
 
     set order(value: number) {
         this._order = value;
+    }
+
+    get fromTemplate(): boolean {
+        return this._fromTemplate;
+    }
+
+    set fromTemplate(value: boolean) {
+        this._fromTemplate = value;
     }
 
     public getName(): string {
