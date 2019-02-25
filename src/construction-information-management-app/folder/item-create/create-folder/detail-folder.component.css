@@ -5,6 +5,11 @@ mat-form-field.mat-form-field {
     width: 100%;
 }
 
+div.documentList > mat-expansion-panel {
+    border: solid 1px #cecece;
+    border-bottom: none;
+}
+
 button.editFolderButton > i.material-icons {
     font-size: 17px;
 }

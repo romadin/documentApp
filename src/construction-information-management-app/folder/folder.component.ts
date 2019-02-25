@@ -74,13 +74,15 @@ export class FolderComponent implements OnInit, OnDestroy {
     public onFolderEdit(folder: Folder) {
         this.showAddItemList = false;
         this.showCreateNewItem = false;
+        this.documentToEdit = undefined;
         this.folderToEdit = folder;
     }
 
     public onDocumentEdit(document: Document) {
-        this.documentToEdit = document;
         this.showAddItemList = false;
         this.showCreateNewItem = false;
+        this.folderToEdit = undefined;
+        this.documentToEdit = document;
     }
 
     public onEditClose(closeForm: boolean) {
@@ -104,6 +106,7 @@ export class FolderComponent implements OnInit, OnDestroy {
     public addItem() {
         this.documentToEdit = undefined;
         this.partnerIsOpen = false;
+        this.folderToEdit = undefined;
         if (this.currentFolder && this.currentFolder.isMainFolder) {
             this.showCreateNewItem = true;
             return;
