@@ -48,7 +48,17 @@ div.folderToggleDocument > mat-accordion > .toggleRow > mat-expansion-panel-head
     padding: 4px 25px 4px 16px;
 }
 
-button.editFolderButton > i.material-icons {
+div.actions {
+    display: flex;
+    padding-right: 10px;
+}
+
+div.actions > button{
+    padding: 0;
+    min-width: 26px;
+}
+
+div.actions > button.editFolderButton > i.material-icons {
     font-size: 17px;
 }
 /* end */

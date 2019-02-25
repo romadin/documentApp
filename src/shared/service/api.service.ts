@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ApiAuthResponse } from '../../construction-information-management-app/authenticate-app/interfaces/api-auth.interface';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -54,14 +54,12 @@ export class ApiService {
     }
 
     public getBlob(path: string, params: any): Observable<any> {
-        const paramObject = { };
-
         return this.http.get(this.APIURL + path, { params: { token: this.token.token, format: 'json'}, responseType: 'blob' } );
     }
 
     public delete(path: string, params: any): Observable<any> {
         const paramObject = { params: { token: this.token.token }};
-        Object.assign( params, paramObject.params );
+        Object.assign( paramObject.params, params);
 
         return this.http.delete(this.APIURL + path, paramObject);
     }

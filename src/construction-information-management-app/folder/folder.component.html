@@ -20,8 +20,10 @@
             <ng-template #folderBlock>
                 <cim-folder-row [folder]="item"
                                 [currentUser]="currentUser"
+                                [parent]="currentFolder"
                                 (sendDocumentToFolder)="onDocumentEdit($event)"
-                                (sendFolderToFolderComponent)="onFolderEdit($event)">
+                                (sendFolderToFolderComponent)="onFolderEdit($event)"
+                                (sendDeletedFolderToFolderComponent)="onFolderDeleted($event)">
                 </cim-folder-row>
             </ng-template>
 

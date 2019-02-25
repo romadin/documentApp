@@ -71,6 +71,10 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
+    onFolderDeleted(folder: Folder) {
+        this.items.splice(this.items.findIndex((item) => item === folder), 1);
+    }
+
     public onFolderEdit(folder: Folder) {
         this.showAddItemList = false;
         this.showCreateNewItem = false;

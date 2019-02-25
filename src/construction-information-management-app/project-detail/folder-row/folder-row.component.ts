@@ -6,6 +6,7 @@ import { FolderService } from '../../../shared/packages/folder-package/folder.se
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
+import { Project } from '../../../shared/packages/project-package/project.model';
 
 @Component({
   selector: 'cim-folder-row',
@@ -13,11 +14,13 @@ import { Document } from '../../../shared/packages/document-package/document.mod
   styleUrls: ['./folder-row.component.css']
 })
 export class FolderRowComponent implements OnInit {
+    @Input() parent: Folder | Project;
     @Input() public folder: Folder;
     @Input() public currentUser: User;
     @Input() public redirectUrl: string;
     @Output() public sendDocumentToFolder: EventEmitter<Document> = new EventEmitter<Document>();
     @Output() public sendFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
+    @Output() public sendDeletedFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
 
     public documents: Document[];
 
@@ -66,6 +69,34 @@ export class FolderRowComponent implements OnInit {
         e.stopPropagation();
         e.preventDefault();
         this.sendFolderToFolderComponent.emit(this.folder);
+    }
+
+    deleteFolder(e: Event): void {
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.parent instanceof Folder) {
+            const params = this.parent && this.parent.isMainFolder ? {} : { parentFolderId: this.parent.id };
+            this.folderService.deleteFolder(this.folder, params).subscribe((deleted) => {
+                if (deleted) {
+                    (<Folder>this.parent).getSubFolders().splice((<Folder>this.parent).getSubFolders()
+                        .findIndex((subFolder => subFolder === this.folder)), 1);
+                    this.sendDeletedFolderToFolderComponent.emit(this.folder);
+                }
+            });
+        }
+    }
+
+    showDeleteButton(): boolean {
+        if (this.currentUser.isAdmin()) {
+            if (!this.folder.fromTemplate) {
+                return true;
+            }
+            if (this.parent instanceof Folder) {
+                return !this.parent.isMainFolder;
+            }
+            return false;
+        }
+        return false;
     }
 
     public sendOnDocumentEdit(document: Document): void {

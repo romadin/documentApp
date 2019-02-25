@@ -7,6 +7,7 @@ import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-fold
 import { ApiService } from '../../service/api.service';
 import { DocumentService } from '../document-package/document.service';
 import { Document} from '../document-package/document.model';
+import { ApiDocResponse } from '../document-package/api-document.interface';
 
 interface FoldersByProjectCache {
     [projectId: number]: Folder[];
@@ -108,6 +109,17 @@ export class FolderService {
             throw new Error(error.error);
         });
         return folder;
+    }
+
+    public deleteFolder(folder: Folder, params: any): Subject<boolean> {
+        const deleted: Subject<boolean> = new Subject<boolean>();
+        this.apiService.delete('/folders/' + folder.id, params).subscribe((response: ApiDocResponse) => {
+            if (this.foldersCache.hasOwnProperty(folder.id) ) {
+                delete this.foldersCache[folder.id];
+            }
+            deleted.next(true );
+        });
+        return deleted;
     }
 
     public getMainFolderFromProject(projectId: number) {
