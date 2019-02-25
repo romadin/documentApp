@@ -18,11 +18,16 @@ export class DocumentRowComponent implements OnInit {
     @Output() public activatedDocument: EventEmitter<Document> = new EventEmitter<Document>();
     public iconName: string;
 
+    public highestLevelParentFolders: Folder[];
     constructor(private documentIconService: DocumentIconService, private documentService: DocumentService) {
     }
 
     ngOnInit() {
         this.iconName = this.documentIconService.getIconByName(this.document.originalName);
+
+        this.parentFolder.parentFolders.subscribe((parentFolders: Folder[]) => {
+            this.highestLevelParentFolders = parentFolders;
+        });
     }
 
     public editDocument(event: Event): void {
@@ -33,18 +38,36 @@ export class DocumentRowComponent implements OnInit {
 
     public deleteDocument(e: Event): void {
         e.stopPropagation();
-
-        if (this.parentFolder.isMainFolder) {
+        if ( this.parentFolder.isMainFolder ) {
             this.documentService.deleteDocument(this.document).subscribe((deleted: boolean) => {
-                if (deleted) {
-                    const documentsArray: Document[] = this.parentFolder.getDocuments().getValue();
-                    documentsArray.splice(documentsArray.findIndex((document => document === this.document)), 1);
-                    this.parentFolder.getDocuments().next(documentsArray);
+                if ( deleted ) {
+                    this.removeFromParentFolder();
                 }
             });
             return;
         }
-        this.documentService.deleteDocumentLink(this.document);
+        this.documentService.deleteDocumentLink(this.document, this.parentFolder).subscribe((deleted: boolean) => {
+            if ( deleted ) {
+                this.removeFromParentFolder();
+            }
+        });
+    }
+
+    public showDeleteButton(): boolean {
+        if (this.currentUser.isAdmin()) {
+            if ( this.parentFolder.isMainFolder ) {
+                return !this.document.fromTemplate;
+            } else {
+                return !this.highestLevelParentFolders.find((parentFolder: Folder) => parentFolder.isMainFolder);
+            }
+        }
+        return false;
+    }
+
+    private removeFromParentFolder(): void {
+        const documentsArray: Document[] = this.parentFolder.getDocuments().getValue();
+        documentsArray.splice(documentsArray.findIndex((document => document === this.document)), 1);
+        this.parentFolder.getDocuments().next(documentsArray);
     }
 
 }

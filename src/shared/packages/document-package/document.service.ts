@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 import { Document } from './document.model';
 import { ApiDocResponse, DocPostData } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
-
-interface DocumentsByProjectCache {
-    [projectId: number]: Document[];
-}
+import { Folder } from '../folder-package/folder.model';
 
 interface DocumentsCache {
     [id: number]: Document;
@@ -15,7 +12,6 @@ interface DocumentsCache {
 
 @Injectable()
 export class DocumentService {
-    private documentsByFolderCache: DocumentsByProjectCache = {};
     private documentsCache: DocumentsCache = {};
 
     constructor(private apiService: ApiService) { }
@@ -23,7 +19,6 @@ export class DocumentService {
     public getDocuments(folderId: number): BehaviorSubject<Document[]> {
         const documents: BehaviorSubject<Document[]> = new BehaviorSubject([]);
         const params = { folderId: folderId, template: 'default' };
-
 
         this.apiService.get('/documents', params).subscribe((documentsResponse: ApiDocResponse[]) => {
                 const documentsContainer: Document[] = [];
@@ -79,8 +74,15 @@ export class DocumentService {
         return deleted;
     }
 
-    public deleteDocumentLink(document: Document) {
-
+    public deleteDocumentLink(document: Document, folder: Folder) {
+        const deleted: Subject<boolean> = new Subject<boolean>();
+        this.apiService.delete('/folders/' + folder.id + '/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {
+            if (this.documentsCache.hasOwnProperty(document.id) ) {
+                delete this.documentsCache[document.id];
+            }
+            deleted.next(true );
+        });
+        return deleted;
     }
 
     /**
@@ -114,13 +116,5 @@ export class DocumentService {
 
         this.documentsCache[doc.id] = doc;
         return doc;
-    }
-
-    private setCacheDocumentsByFolderId(document: Document, folderId: number): void {
-        if ( this.documentsByFolderCache[folderId] ) {
-            this.documentsByFolderCache[folderId].push(document);
-        } else {
-            this.documentsByFolderCache[folderId] = [document];
-        }
     }
 }

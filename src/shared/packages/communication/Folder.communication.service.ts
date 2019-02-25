@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 export class FolderCommunicationService {
     private _OnDocumentEditListener: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-    get onDocumentEditListener(): BehaviorSubject<boolean> {
+    get onItemCloseListener(): BehaviorSubject<boolean> {
         return this._OnDocumentEditListener;
     }
 

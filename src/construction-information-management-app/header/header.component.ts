@@ -96,7 +96,7 @@ export class HeaderComponent implements OnInit {
             urlGroup: '/gebruikers',
         };
         const addItemToFolder: MenuAction = {
-            onClick: () => { this.folderCommunicationService.triggerAddFolder.next(true); },
+            onClick: () => { this.folderCommunicationService.triggerAddItem.next(true); },
             iconName: 'add',
             name: 'Item toevoegen',
             show: false,

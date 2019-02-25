@@ -18,7 +18,7 @@ export class CreateDocumentComponent implements OnInit {
 
     onCloseCreateDocument(closeForm: boolean): void {
         if (closeForm) {
-            this.folderCommunication.onDocumentEditListener.next(true);
+            this.folderCommunication.onItemCloseListener.next(true);
         }
     }
 

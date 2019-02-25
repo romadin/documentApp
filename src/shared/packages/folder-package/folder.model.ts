@@ -11,6 +11,7 @@ export class Folder {
     private _isMain: boolean;
     private _order: number;
     private _fromTemplate: boolean;
+    private _parentFolders: BehaviorSubject<Folder[]> = new BehaviorSubject<Folder[]>([]);
 
     public constructor() {
         //
@@ -73,6 +74,10 @@ export class Folder {
         this._subFolders = subFolders;
     }
 
+    public addSubFolder(folder: Folder): void {
+        this._subFolders.push(folder);
+    }
+
     get isMainFolder(): boolean {
         return this._isMain;
     }
@@ -80,7 +85,6 @@ export class Folder {
     set isMainFolder(value: boolean) {
         this._isMain = value;
     }
-
 
     get order(): number {
         return this._order;
@@ -96,6 +100,14 @@ export class Folder {
 
     set fromTemplate(value: boolean) {
         this._fromTemplate = value;
+    }
+
+    get parentFolders(): BehaviorSubject<Folder[]> {
+        return this._parentFolders;
+    }
+
+    set parentFolders(value: BehaviorSubject<Folder[]>) {
+        this._parentFolders = value;
     }
 
     public update(data): void {

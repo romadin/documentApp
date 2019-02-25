@@ -53,6 +53,8 @@
         </cim-item-list>
     </div>
     <div class="addItemForMainFolder" *ngIf="currentFolder && currentFolder.isMainFolder && showCreateNewItem">
-        <cim-item-create [folder]="currentFolder"></cim-item-create>
+        <cim-item-create [folder]="currentFolder"
+                         (folderChange)="onItemsAdded($event)">
+        </cim-item-create>
     </div>
 </div>

@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { find, map } from 'rxjs/operators';
 
 import { Folder } from './folder.model';
-import { ApiFolderResponse, FolderPostData } from './api-folder.interface';
+import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-folder.interface';
 import { ApiService } from '../../service/api.service';
 import { DocumentService } from '../document-package/document.service';
 import { Document} from '../document-package/document.model';
@@ -61,6 +61,19 @@ export class FolderService {
         return folder;
     }
 
+    public createFolder(data: NewFolderPostData): Subject<Folder> {
+        const folder: Subject<Folder> = new Subject();
+
+        this.apiService.post('/folders', data).subscribe((foldersResponse: ApiFolderResponse) => {
+            folder.next(this.makeFolder(foldersResponse));
+        }, (error) => {
+            throw new Error(error.error);
+        });
+
+        return folder;
+    }
+
+
     public postFolder(id: number, data: FolderPostData): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
 
@@ -102,6 +115,10 @@ export class FolderService {
     }
 
     public makeFolder(folderData: ApiFolderResponse) {
+        if ( this.foldersCache[folderData.id] ) {
+            return this.foldersCache[folderData.id];
+        }
+
         const folder = new Folder();
         folder.id = folderData.id;
         folder.setName(folderData.name);
@@ -111,6 +128,17 @@ export class FolderService {
 
         folder.order = folderData.order;
         folder.fromTemplate = folderData.fromTemplate;
+        this.foldersCache[folder.id] = folder;
+
+        const parentsFolders: Folder[] = [];
+        folderData.parentFoldersId.forEach((parentId) => {
+            this.getFolder(parentId).subscribe((parentFolder: Folder) => {
+                if (parentFolder) {
+                    parentsFolders.push(parentFolder);
+                    folder.parentFolders.next(parentsFolders);
+                }
+            });
+        });
 
         // check if sub folders exist then set the sub folder.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
@@ -121,7 +149,6 @@ export class FolderService {
 
         folder.setDocuments(this.documentService.getDocuments(folderData.id));
 
-        this.foldersCache[folder.id] = folder;
         return folder;
     }
 

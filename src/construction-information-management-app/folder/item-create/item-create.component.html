@@ -10,5 +10,8 @@
     <cim-create-document *ngIf="itemToEdit === 'document'"
                          [parentFolder]="folder">
     </cim-create-document>
-    <cim-create-folder *ngIf="itemToEdit === 'folder'"></cim-create-folder>
+    <cim-create-folder *ngIf="itemToEdit === 'folder'"
+                       [parentFolder]="folder"
+                       (editedFolder)="onFolderEdit($event)">
+    </cim-create-folder>
 </div>

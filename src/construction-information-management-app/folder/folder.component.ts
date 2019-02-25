@@ -36,7 +36,7 @@ export class FolderComponent implements OnInit, OnDestroy {
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
                 private headerCommunicationService: HeaderWithFolderCommunicationService,
-                private folderCommunicationServce: FolderCommunicationService) { }
+                private folderCommunicationService: FolderCommunicationService) { }
 
     ngOnInit() {
         const folderId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
@@ -50,13 +50,13 @@ export class FolderComponent implements OnInit, OnDestroy {
             this.items = items;
         });
 
-        this.headerCommunicationService.triggerAddFolder.subscribe((trigger: boolean) => {
+        this.headerCommunicationService.triggerAddItem.subscribe((trigger: boolean) => {
             if (trigger) {
                 this.addItem();
             }
         });
 
-        this.folderCommunicationServce.onDocumentEditListener.subscribe((onClose: boolean) => {
+        this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
             if (onClose) {
                 this.showCreateNewItem = !onClose;
             }
@@ -66,7 +66,7 @@ export class FolderComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.headerCommunicationService.triggerAddFolder.next(false);
+        this.headerCommunicationService.triggerAddItem.next(false);
     }
 
     public onDocumentEdit(document: Document) {
@@ -85,12 +85,12 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.setNewItems(folder);
         this.currentFolder = folder;
         this.showAddItemList = false;
-        this.headerCommunicationService.triggerAddFolder.next(false);
+        this.headerCommunicationService.triggerAddItem.next(false);
     }
 
     public onAddItemsCancel(cancelList: boolean) {
         this.showAddItemList = !cancelList;
-        this.headerCommunicationService.triggerAddFolder.next(false);
+        this.headerCommunicationService.triggerAddItem.next(false);
     }
 
     public addItem() {
