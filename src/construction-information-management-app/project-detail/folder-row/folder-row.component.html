@@ -27,6 +27,9 @@
                         <i class="material-icons"> folder_open </i>
                         <h3> {{ folder.getName()}} </h3>
                     </mat-panel-title>
+                    <button (click)="editFolder($event)" class="mat-button editFolderButton">
+                        <i class="material-icons"> edit </i>
+                    </button>
                 </mat-expansion-panel-header>
 
                 <cim-document-row *ngFor="let document of documents"

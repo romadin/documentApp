@@ -55,6 +55,9 @@ export class DocumentRowComponent implements OnInit {
 
     public showDeleteButton(): boolean {
         if (this.currentUser.isAdmin()) {
+            if (!this.document.fromTemplate) {
+                return true;
+            }
             if ( this.parentFolder.isMainFolder ) {
                 return !this.document.fromTemplate;
             } else {

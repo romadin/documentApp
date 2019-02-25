@@ -26,6 +26,6 @@ div.editItemWrapper > div.componentHeader > h3 {
     font-size: 18px;
 }
 
-div.editItemWrapper > cim-create-folder {
+div.editItemWrapper > cim-detail-folder {
     width: 100%;
 }

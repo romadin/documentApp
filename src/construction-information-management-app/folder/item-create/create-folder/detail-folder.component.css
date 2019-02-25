@@ -1,0 +1,21 @@
+div > mat-card.createFolder {
+    border: solid 1px #cecece;
+}
+mat-form-field.mat-form-field {
+    width: 100%;
+}
+
+button.editFolderButton > i.material-icons {
+    font-size: 17px;
+}
+
+div.documentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+div.documentHeader > h3 {
+    margin: 0;
+}

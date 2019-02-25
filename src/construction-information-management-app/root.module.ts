@@ -56,7 +56,7 @@ import { ItemDetailComponent } from './action-list/item-detail/item-detail.compo
 import { ProjectComponent } from './project/project.component';
 import { ActivateUserComponent } from './authenticate-app/activate-user/activate-user.component';
 import { ItemCreateComponent } from './folder/item-create/item-create.component';
-import { CreateFolderComponent } from './folder/item-create/create-folder/create-folder.component';
+import { DetailFolderComponent } from './folder/item-create/create-folder/detail-folder.component';
 import { CreateDocumentComponent } from './folder/item-create/create-document/create-document.component';
 import { FolderCommunicationService } from '../shared/packages/communication/Folder.communication.service';
 
@@ -112,7 +112,7 @@ const appRoutes: Routes = [
         ProjectComponent,
         ActivateUserComponent,
         ItemCreateComponent,
-        CreateFolderComponent,
+        DetailFolderComponent,
         CreateDocumentComponent,
     ],
     imports: [

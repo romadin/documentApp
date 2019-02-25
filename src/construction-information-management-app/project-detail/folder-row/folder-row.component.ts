@@ -17,6 +17,7 @@ export class FolderRowComponent implements OnInit {
     @Input() public currentUser: User;
     @Input() public redirectUrl: string;
     @Output() public sendDocumentToFolder: EventEmitter<Document> = new EventEmitter<Document>();
+    @Output() public sendFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
 
     public documents: Document[];
 
@@ -59,6 +60,12 @@ export class FolderRowComponent implements OnInit {
         this.timerId = setTimeout(() => {
             this.folderService.postFolder(this.folder.id, {turnOn: turnOn});
         }, 500);
+    }
+
+    public editFolder(e: MouseEvent) {
+        e.stopPropagation();
+        e.preventDefault();
+        this.sendFolderToFolderComponent.emit(this.folder);
     }
 
     public sendOnDocumentEdit(document: Document): void {

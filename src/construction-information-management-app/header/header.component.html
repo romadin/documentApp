@@ -15,7 +15,7 @@
     <span class="actions">
         <ng-template ngFor let-action [ngForOf]="actions">
             <button mat-raised-button color="primary" *ngIf="action.show && currentUser" (click)="action.onClick()">
-            <span class="actionText"> {{ action.name }}</span>
+                <span class="actionText"> {{ action.name }}</span>
                 <mat-icon aria-label="Icon">
                     {{ action.iconName }}
                 </mat-icon>

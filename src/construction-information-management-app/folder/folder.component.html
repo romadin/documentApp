@@ -20,7 +20,8 @@
             <ng-template #folderBlock>
                 <cim-folder-row [folder]="item"
                                 [currentUser]="currentUser"
-                                (sendDocumentToFolder)="onDocumentEdit($event)">
+                                (sendDocumentToFolder)="onDocumentEdit($event)"
+                                (sendFolderToFolderComponent)="onFolderEdit($event)">
                 </cim-folder-row>
             </ng-template>
 
@@ -36,8 +37,14 @@
     <div class="editDocument" *ngIf="documentToEdit && currentUser.isAdmin()">
         <cim-document-detail
                 [document]="documentToEdit"
-                (closeEditForm)="onDocumentEditClose($event)">
+                (closeEditForm)="onEditClose($event)">
         </cim-document-detail>
+    </div>
+    <div class="editDocument" *ngIf="folderToEdit && currentUser.isAdmin()">
+        <cim-detail-folder
+                [folder]="folderToEdit"
+                (closeEditForm)="onEditClose($event)">
+        </cim-detail-folder>
     </div>
     <div class="partners" *ngIf="!documentToEdit && partnerIsOpen">
         <cim-partners

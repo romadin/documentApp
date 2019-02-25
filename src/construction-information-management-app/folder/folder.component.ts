@@ -27,6 +27,7 @@ export class FolderComponent implements OnInit, OnDestroy {
     public items: (Document | Folder)[];
     public partnerIsOpen = false;
     public showCreateNewItem: boolean;
+    public folderToEdit: Folder;
 
     private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
 
@@ -59,6 +60,7 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
             if (onClose) {
                 this.showCreateNewItem = !onClose;
+                this.folderToEdit = undefined;
             }
         });
 
@@ -69,13 +71,19 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
+    public onFolderEdit(folder: Folder) {
+        this.showAddItemList = false;
+        this.showCreateNewItem = false;
+        this.folderToEdit = folder;
+    }
+
     public onDocumentEdit(document: Document) {
         this.documentToEdit = document;
         this.showAddItemList = false;
         this.showCreateNewItem = false;
     }
 
-    public onDocumentEditClose(closeForm: boolean) {
+    public onEditClose(closeForm: boolean) {
         if (closeForm) {
             this.documentToEdit = null;
         }
