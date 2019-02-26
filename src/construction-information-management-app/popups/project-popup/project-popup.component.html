@@ -2,11 +2,11 @@
 <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
     <div mat-dialog-content>
         <mat-form-field>
-            <input matInput placeholder="{{ data.placeholder }}" formControlName="projectName">
+            <input matInput placeholder="{{ data.placeholder }}" formControlName="projectName" required>
         </mat-form-field>
     </div>
     <div mat-dialog-actions>
-        <button mat-button (click)="onNoClick($event)">Annuleren</button>
         <button mat-raised-button type="submit">{{ data.submitButton }}</button>
+        <button mat-button (click)="onNoClick($event)">Annuleren</button>
     </div>
 </form>

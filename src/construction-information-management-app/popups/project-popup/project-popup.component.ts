@@ -33,15 +33,16 @@ export class ProjectPopupComponent {
 
     public onSubmit() {
         const projectName = this.projectForm.controls.projectName.value;
-
-        if (this.data.id) {
-            this.projectService.updateProject({ name: projectName }, this.data.id).then((value) => {
-                this.dialogRef.close(value);
-            });
-        } else {
-            this.projectService.postProjectWithDefaultTemplate({ name: projectName }).then((value) => {
-                this.dialogRef.close(value);
-            });
+        if (projectName !== '') {
+            if (this.data.id) {
+                this.projectService.updateProject({ name: projectName }, this.data.id).then((value) => {
+                    this.dialogRef.close(value);
+                });
+            } else {
+                this.projectService.postProjectWithDefaultTemplate({ name: projectName }).then((value) => {
+                    this.dialogRef.close(value);
+                });
+            }
         }
     }
 }
