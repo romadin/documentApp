@@ -30,6 +30,10 @@ export class PartnersComponent implements OnInit {
         this.sideMenuCommunicationService.triggerAddUserPopup.next(true);
     }
 
+    onDeleteUser(userToDelete: User) {
+        this.users.splice(this.users.findIndex((user) => user === userToDelete), 1);
+    }
+
     public onEditUser(user: User) {
         if ( this.currentUser.isAdmin()) {
             this.userToEdit = user;

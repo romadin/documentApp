@@ -8,6 +8,7 @@ import { ApiService } from '../../service/api.service';
 import { RoleService } from '../role-package/role.service';
 import { User } from './user.model';
 import { map } from 'rxjs/operators';
+import { ApiDocResponse } from '../document-package/api-document.interface';
 
 interface ActivationParams {
     params: { activationToken: string; };
@@ -114,6 +115,19 @@ export class UserService {
 
     public setCurrentUser(user: User): void {
         this.currentUser.next(user);
+    }
+
+    public deleteUser(user: User, params: any): Subject<boolean> {
+        const deleted: Subject<boolean> = new Subject<boolean>();
+        this.apiService.delete('/users/' + user.id, params).subscribe((response: ApiDocResponse) => {
+            if (response) {
+                if (this.userCache.hasOwnProperty(user.id) ) {
+                    delete this.userCache[user.id];
+                }
+                deleted.next(true );
+            }
+        });
+        return deleted;
     }
 
     public makeUser(value: ApiUserResponse): User {

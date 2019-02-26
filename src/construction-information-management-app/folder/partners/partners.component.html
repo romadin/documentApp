@@ -8,9 +8,11 @@
                 </button>
                 <ng-container *ngIf="!userToEdit">
                     <cim-user-row *ngFor="let user of users"
+                                  [projectId]="projectId"
                                   [currentUser]="currentUser"
                                   [user]="user"
-                                  (userToEdit)="onEditUser($event)">
+                                  (userToEdit)="onEditUser($event)"
+                                  (userToDelete)="onDeleteUser($event)">
                     </cim-user-row>
                 </ng-container>
                 <cim-user-detail *ngIf="userToEdit"

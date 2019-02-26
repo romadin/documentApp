@@ -3,6 +3,7 @@ import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 import { User } from '../../../shared/packages/user-package/user.model';
 import { UserService } from '../../../shared/packages/user-package/user.service';
+import { Project } from '../../../shared/packages/project-package/project.model';
 
 @Component({
   selector: 'cim-user-row',
@@ -11,8 +12,10 @@ import { UserService } from '../../../shared/packages/user-package/user.service'
 })
 export class UserRowComponent implements OnInit {
     @Input() currentUser: User;
-    @Input() public user: User;
+    @Input() user: User;
+    @Input() projectId: number;
     @Output() public userToEdit: EventEmitter<User> = new EventEmitter<User>();
+    @Output() public userToDelete: EventEmitter<User> = new EventEmitter<User>();
     public image: SafeStyle;
     private fileReader: FileReader = new FileReader();
 
@@ -40,6 +43,13 @@ export class UserRowComponent implements OnInit {
     }
 
     public deleteUser (event: MouseEvent) {
-        console.log('delete user');
+        event.preventDefault();
+        event.stopPropagation();
+        const params = this.projectId ? {projectId: this.projectId} : {};
+        this.userService.deleteUser(this.user, params).subscribe((deleted) => {
+            if (deleted) {
+                this.userToDelete.emit(this.user);
+            }
+        });
     }
 }
