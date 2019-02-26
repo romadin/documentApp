@@ -1,3 +1,45 @@
+div.detailWrapper > mat-card.editUser > div.profilePicture {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+div.detailWrapper > mat-card.editUser > div.profilePicture > label {
+    cursor: pointer;
+}
+div.detailWrapper > mat-card.editUser > div.profilePicture:hover label > div.overlay {
+    opacity: 1;
+}
+
+div.detailWrapper > mat-card.editUser > div.profilePicture > label > div.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: .5s ease;
+    border-radius: 50%;
+    background-color: #1f1f1f6e;
+}
+
+div.detailWrapper > mat-card.editUser > div.profilePicture > label > div.overlay > div.text {
+    font-size: 13px;
+    color: #fff
+}
+
+div.detailWrapper > mat-card.editUser > div.profilePicture > label > div.avatar {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 80px;
+    width: 80px;
+}
+
 mat-card.editDocument {
     box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
     border: solid 1px #cecece;
@@ -14,6 +56,7 @@ mat-card-content.content > div.formFields {
     display: flex;
     flex-direction: column;
     flex: 5;
+    padding-top: 28px;
 }
 mat-card-content.content > div.formFields > h3{
     margin: 0 0 10px;

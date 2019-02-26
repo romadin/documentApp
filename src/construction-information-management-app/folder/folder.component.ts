@@ -79,6 +79,7 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.showAddItemList = false;
         this.showCreateNewItem = false;
         this.documentToEdit = undefined;
+        this.partnerIsOpen = false;
         this.folderToEdit = folder;
     }
 

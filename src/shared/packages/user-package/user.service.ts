@@ -99,7 +99,7 @@ export class UserService {
         return subject;
     }
 
-    public editUser( user: User, body: EditUserBody ): Subject<User> {
+    public editUser( user: User, body: FormData ): Subject<User> {
         const subject: Subject<User> = new Subject();
         this.apiService.post('/users/' + user.id, body).subscribe((value: ApiUserResponse) => {
             this.updateUser(user, value);
@@ -126,6 +126,7 @@ export class UserService {
         user.function = value.function;
         user.role = this.roleService.makeRole(value.role);
         user.projectsId = value.projectsId;
+        user.phoneNumber = value.phoneNumber;
 
         if (value.hasImage) {
             user.image = this.getUserImage(user.id);

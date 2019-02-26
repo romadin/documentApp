@@ -1,12 +1,22 @@
-<div class="partnersContainer">
-    <ng-container *ngIf="!userToEdit">
-        <cim-user-row *ngFor="let user of users"
-                      [user]="user"
-                      (userToEdit)="onEditUser($event)">
-        </cim-user-row>
-    </ng-container>
-    <cim-user-detail *ngIf="userToEdit"
-                     [user]="userToEdit"
-                     (closeDetailView)="closeUserDetailView($event)">
-    </cim-user-detail>
+<div [ngClass]="addFixedClass ? 'positionFixed' : ''">
+    <mat-card class="partnersCard" *ngIf="!showAddDocument">
+        <h3 class="title">Partners</h3>
+            <mat-card-content>
+                <button *ngIf="users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
+                    <span> Voeg partners toe </span>
+                    <i class="material-icons"> add </i>
+                </button>
+                <ng-container *ngIf="!userToEdit">
+                    <cim-user-row *ngFor="let user of users"
+                                  [currentUser]="currentUser"
+                                  [user]="user"
+                                  (userToEdit)="onEditUser($event)">
+                    </cim-user-row>
+                </ng-container>
+                <cim-user-detail *ngIf="userToEdit"
+                                 [user]="userToEdit"
+                                 (closeDetailView)="closeUserDetailView($event)">
+                </cim-user-detail>
+            </mat-card-content>
+    </mat-card>
 </div>

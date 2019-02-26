@@ -1,0 +1,9 @@
+mat-card.partnersCard {
+    border: solid 1px #cecece;
+}
+
+mat-card-content.mat-card-content {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}

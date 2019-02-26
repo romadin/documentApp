@@ -23,6 +23,9 @@
                 <input type="email" matInput placeholder="Email" formControlName="email" required>
             </mat-form-field>
             <mat-form-field>
+                <input type="text" matInput placeholder="Telefoon nummer" formControlName="phoneNumber" required>
+            </mat-form-field>
+            <mat-form-field>
                 <input type="text" matInput placeholder="Functie" formControlName="function" required>
             </mat-form-field>
             <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">

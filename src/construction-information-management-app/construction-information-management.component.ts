@@ -8,6 +8,7 @@ import { UserService } from '../shared/packages/user-package/user.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { MenuAction } from './header/header.component';
 import { UserPopupComponent } from './popups/user-popup/user-popup.component';
+import { SideMenuCommunicationService } from '../shared/packages/communication/sideMenu.communication.service';
 
 @Component({
     selector: 'cim-root',
@@ -23,13 +24,20 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     constructor(private dialog: MatDialog,
                 private router: Router,
                 private userService: UserService,
-                private scrollingService: ScrollingService) {}
+                private scrollingService: ScrollingService,
+                private menuCommunicationService: SideMenuCommunicationService) {}
 
     ngOnInit() {
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.determineActions(navigation);
         });
         this.defineSideMenuActions();
+
+        this.menuCommunicationService.triggerAddUserPopup.subscribe((trigger) => {
+            if (trigger) {
+                this.openDialogAddUser();
+            }
+        });
     }
 
     ngAfterViewInit() {

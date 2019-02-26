@@ -1,10 +1,17 @@
 <div class="detailWrapper" *ngIf="projects">
-    <mat-card class="editDocument">
-        <h3 class="title">Partners</h3>
+    <mat-card class="editUser">
+        <h3> {{ user.getFullName() }} </h3>
+        <div class="profilePicture">
+            <label for="file">
+                <div mat-card-avatar *ngIf="imageSrc" class="avatar" [style.backgroundImage]="imageSrc" ></div>
+                <div class="overlay">
+                    <div class="text"> Wijzigen </div>
+                </div>
+            </label>
+        </div>
         <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
             <mat-card-content class="content">
                 <div mat-dialog-content class="formFields">
-                    <h3> {{ user.getFullName() }} </h3>
                     <mat-form-field>
                         <input matInput placeholder="Voornaam" formControlName="firstName" required>
                     </mat-form-field>
@@ -18,10 +25,14 @@
                         <input type="email" matInput placeholder="Email" formControlName="email" required>
                     </mat-form-field>
                     <mat-form-field>
+                        <input type="text" matInput placeholder="Telefoon nummer" formControlName="phoneNumber" required>
+                    </mat-form-field>
+                    <mat-form-field>
                         <input type="text" matInput placeholder="Functie" formControlName="function" required>
                     </mat-form-field>
+                    <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
                 </div>
-                <div class="projectsWrapper">
+                <div class="projectsWrapper" *ngIf="projects">
                     <h3> Projecten </h3>
                     <div class="projectContent" *ngFor="let project of projects">
                         <label> Project: </label>

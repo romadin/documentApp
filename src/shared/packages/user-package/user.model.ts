@@ -10,6 +10,7 @@ export class User {
     private _function: string;
     private _role: Role;
     private _projectsId: number[];
+    private _phoneNumber: number;
     private _image: Subject<Blob>;
 
     public constructor() {
@@ -78,6 +79,14 @@ export class User {
 
     set projectsId(value: number[]) {
         this._projectsId = value;
+    }
+
+    get phoneNumber(): number {
+        return this._phoneNumber;
+    }
+
+    set phoneNumber(value: number) {
+        this._phoneNumber = value;
     }
 
     get image(): Subject<Blob> {

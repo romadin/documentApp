@@ -50,6 +50,7 @@
     </div>
     <div class="partners" *ngIf="!documentToEdit && partnerIsOpen">
         <cim-partners
+                [currentUser]="currentUser"
                 [projectId]="currentFolder.getProjectId()">
         </cim-partners>
     </div>

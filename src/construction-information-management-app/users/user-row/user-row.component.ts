@@ -10,6 +10,7 @@ import { UserService } from '../../../shared/packages/user-package/user.service'
   styleUrls: ['./user-row.component.css']
 })
 export class UserRowComponent implements OnInit {
+    @Input() currentUser: User;
     @Input() public user: User;
     @Output() public userToEdit: EventEmitter<User> = new EventEmitter<User>();
     public image: SafeStyle;

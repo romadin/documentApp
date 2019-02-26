@@ -8,6 +8,7 @@ export interface ApiUserResponse {
     role: ApiRoleResponse;
     projectsId: number[];
     hasImage: boolean;
+    phoneNumber: number;
 }
 
 export interface UserBody {

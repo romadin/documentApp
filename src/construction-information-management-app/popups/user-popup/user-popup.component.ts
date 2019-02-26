@@ -22,6 +22,7 @@ export class UserPopupComponent {
         insertion: new FormControl(''),
         lastName: new FormControl(''),
         email: new FormControl(''),
+        phoneNumber: new FormControl(''),
         function: new FormControl(''),
         password: new FormControl(''),
     });
@@ -57,9 +58,10 @@ export class UserPopupComponent {
         const data = new FormData();
 
         data.append('firstName', this.userForm.controls.firstName.value);
-        data.append('insertion', this.userForm.controls.insertion.value);
+        data.append('insertion', this.userForm.controls.insertion.value ? this.userForm.controls.insertion.value : '');
         data.append('lastName', this.userForm.controls.lastName.value);
         data.append('email', this.userForm.controls.email.value);
+        data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
         data.append('function', this.userForm.controls.function.value);
         data.append('password', this.userForm.controls.password.value);
         data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));

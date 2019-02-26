@@ -8,12 +8,13 @@ import { User } from '../../shared/packages/user-package/user.model';
   styleUrls: ['./users-overview.component.css']
 })
 export class UsersOverviewComponent {
+    currentUser: User;
     public users: User[];
 
     constructor(private userService: UserService) {
         this.userService.getUsers().subscribe((users) => {
             this.users = users;
         });
+        this.currentUser = this.userService.getCurrentUser().getValue();
     }
-
 }

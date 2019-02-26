@@ -28,7 +28,7 @@
                         <h3> {{ folder.getName()}} </h3>
                     </mat-panel-title>
                     <div class="actions">
-                        <button (click)="editFolder($event)" class="mat-button editFolderButton">
+                        <button *ngIf="currentUser.isAdmin()" (click)="editFolder($event)" class="mat-button editFolderButton">
                             <i class="material-icons"> edit </i>
                         </button>
                         <button *ngIf="showDeleteButton()" (click)="deleteFolder($event)" class="mat-button editFolderButton">
