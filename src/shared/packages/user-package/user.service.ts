@@ -158,5 +158,9 @@ export class UserService {
         user.email = value.email;
         user.function = value.function;
         user.projectsId = value.projectsId;
+        user.phoneNumber = value.phoneNumber;
+        if (value.hasImage) {
+            user.image = this.getUserImage(user.id);
+        }
     }
 }

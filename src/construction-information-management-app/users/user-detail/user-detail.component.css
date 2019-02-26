@@ -80,3 +80,39 @@ mat-card-content.content > div.projectsWrapper > div.projectContent > div.divide
     border: solid 1px #949494;
     border-bottom: none;
 }
+
+/* Styling for normal user view */
+div.detailWrapper > mat-card.userDetailView > mat-card-header > div.avatar {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 80px;
+    width: 80px;
+}
+div.detailWrapper > mat-card.userDetailView > mat-card-content {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+div.detailWrapper > mat-card.userDetailView > mat-card-content > div.linkedProject {
+    padding-right: 10px;
+}
+div.detailWrapper > mat-card.userDetailView > mat-card-content > div.linkedProject > h3 {
+    margin: 0;
+}
+
+div.detailWrapper > mat-card.userDetailView > mat-card-content > div.linkedProject > div.projectContent {
+    padding-top: 10px;
+}
+div.detailWrapper > mat-card.userDetailView > mat-card-content > div.linkedProject > div.projectContent > label {
+    font-weight: bold;
+}
+
+div.detailWrapper > mat-card.userDetailView > mat-card-content > div.userInfo > div.title {
+    padding: 5px 0;
+
+}
+
+div.detailWrapper > mat-card.userDetailView > mat-card-content > div.userInfo > div.title > label {
+    font-weight: bold;
+}

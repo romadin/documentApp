@@ -1,0 +1,25 @@
+div.usersWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    transition: all 500ms ease-in;
+}
+
+div.usersWrapper > div.userOverview {
+    transition: all 500ms ease-in;
+    flex: 1;
+    margin-right: 10px;
+}
+
+div.usersWrapper > div.userDetail {
+    transition: all 500ms ease-in;
+    flex: 0;
+    width: 0;
+    opacity: 0;
+}
+
+
+div.usersWrapper > div.userDetail.showDetail {
+    flex: 1;
+    opacity: 1;
+}

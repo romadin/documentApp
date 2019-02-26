@@ -2,7 +2,7 @@
     <mat-card class="partnersCard" *ngIf="!showAddDocument">
         <h3 class="title">Partners</h3>
             <mat-card-content>
-                <button *ngIf="users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
+                <button *ngIf="currentUser.isAdmin() && users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
                     <span> Voeg partners toe </span>
                     <i class="material-icons"> add </i>
                 </button>
@@ -16,6 +16,7 @@
                     </cim-user-row>
                 </ng-container>
                 <cim-user-detail *ngIf="userToEdit"
+                                 [currentUser]="currentUser"
                                  [user]="userToEdit"
                                  (closeDetailView)="closeUserDetailView($event)">
                 </cim-user-detail>

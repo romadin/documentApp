@@ -35,9 +35,7 @@ export class PartnersComponent implements OnInit {
     }
 
     public onEditUser(user: User) {
-        if ( this.currentUser.isAdmin()) {
-            this.userToEdit = user;
-        }
+        this.userToEdit = user;
     }
 
     public closeUserDetailView(closeView: boolean) {

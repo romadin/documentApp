@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { User } from '../../../shared/packages/user-package/user.model';
-import { FormControl, FormGroup } from '@angular/forms';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { Project } from '../../../shared/packages/project-package/project.model';
 import { UserService } from '../../../shared/packages/user-package/user.service';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'cim-user-detail',
@@ -13,6 +13,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./user-detail.component.css']
 })
 export class UserDetailComponent implements OnInit {
+    @Input() currentUser: User;
     @Input() user: User;
     @Output() closeDetailView: EventEmitter<boolean> = new EventEmitter<boolean>();
     projects: Project[];
