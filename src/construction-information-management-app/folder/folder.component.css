@@ -38,9 +38,12 @@ div.wrapper > div.overview.readModeEnabled {
     flex: 0;
     width: 0;
     margin: 0;
+    overflow: hidden;
+    height: 1px;
 }
 
 div.wrapper > div.overview {
+    height: 100%;
     width: 0;
     transition: all 1s ease;
     flex: 1;

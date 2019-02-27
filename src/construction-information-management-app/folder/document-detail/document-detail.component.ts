@@ -34,7 +34,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     public editorConfig: AngularEditorConfig = {
         editable: true,
         spellcheck: true,
-        height: '15rem',
+        height: '20vh',
         minHeight: '5rem',
         placeholder: 'Voer je text in...',
         translate: 'no',

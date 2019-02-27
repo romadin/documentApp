@@ -100,7 +100,7 @@ export class HeaderComponent implements OnInit {
         const addItemToFolder: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerAddItem.next(true); },
             iconName: 'add',
-            name: 'Item toevoegen',
+            name: 'Hoofdstuk toevoegen',
             show: false,
             needsAdmin: true,
             urlGroup: '/project/:id/folder/:id',
@@ -143,10 +143,12 @@ export class HeaderComponent implements OnInit {
                         } else {
                             const needToChangeUrlGroup = action.urlGroup.match(/(:id)/g);
                             if (needToChangeUrlGroup) {
+                                console.log(navigation.url);
                                 const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, action.urlGroup);
                                 action.show = tempUrlGroup === navigation.url;
                                 if (action.needsAdmin && tempUrlGroup === navigation.url) {
                                     action.show = user.role.getName() === 'admin';
+                                    console.log(action.name);
                                 }
                             } else {
                                 action.show = action.urlGroup === navigation.url;
@@ -185,6 +187,7 @@ export class HeaderComponent implements OnInit {
 
     private replaceIdForUrlGroup(currentUrl: string, urlGroup: UrlGroup): UrlGroup {
         const matchesId = currentUrl.match(/\d/g);
+        console.log(matchesId);
         if (matchesId) {
             matchesId.forEach((id: string) => {
                 urlGroup = <UrlGroup>urlGroup.replace(':id', id);

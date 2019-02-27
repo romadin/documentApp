@@ -1,5 +1,5 @@
-<div [ngClass]="addFixedClass ? 'positionFixed' : ''">
-    <mat-card class="partnersCard" *ngIf="!showAddDocument">
+<div>
+    <mat-card class="partnersCard">
         <h3 class="title">Partners</h3>
             <mat-card-content>
                 <button *ngIf="currentUser.isAdmin() && users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">

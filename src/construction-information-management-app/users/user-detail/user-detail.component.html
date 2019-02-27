@@ -57,13 +57,10 @@
         <mat-card-content>
             <div class="userInfo">
                 <div class="title">
-                    <label> Naam: </label> <span>{{ user.firstName }}</span>
-                </div>
-                <div class="title" *ngIf="user.insertion">
-                    <label > Tussen voegsel: </label> <span>{{ user.insertion }}</span>
-                </div>
-                <div class="title">
-                    <label> Achternaam: </label> <span>{{ user.lastName }}</span>
+                    <label> Naam: </label>
+                    <span>{{ user.firstName }}</span>
+                    <span *ngIf="user.insertion"> {{ user.insertion }}</span>
+                    <span> {{ user.lastName }}</span>
                 </div>
                 <div class="title">
                     <label> Email: </label> <a href="mailto:{{ user.email }}">{{ user.email }}</a>

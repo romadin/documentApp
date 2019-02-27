@@ -75,7 +75,7 @@ export class UserService {
     public activateUser( user: User, body: EditUserBody, params: ActivationParams ): Subject<User> {
         const subject: Subject<User> = new Subject();
         this.apiService.noTokenPost('/users/' + user.id, body, params).subscribe((value: ApiUserResponse) => {
-            this.updateUser(user, value);
+            this.updateUser(user, value, true);
             subject.next(user);
         });
         return subject;
@@ -150,7 +150,7 @@ export class UserService {
         return user;
     }
 
-    private updateUser(user: User, value: ApiUserResponse): void {
+    private updateUser(user: User, value: ApiUserResponse, activate?: boolean): void {
         user.id = value.id;
         user.firstName = value.firstName;
         user.insertion = value.insertion;
@@ -159,6 +159,9 @@ export class UserService {
         user.function = value.function;
         user.projectsId = value.projectsId;
         user.phoneNumber = value.phoneNumber;
+        if (activate) {
+            return;
+        }
         if (value.hasImage) {
             user.image = this.getUserImage(user.id);
         }

@@ -1,9 +1,9 @@
 <div class="editItemWrapper">
     <div class="componentHeader">
-        <h3> Voeg een {{ itemToEdit }} toe </h3>
+        <h3> Voeg een {{ itemToEdit === 'folder' ? 'hoofdstuk' : 'sub hoofdstuk' }} toe </h3>
         <mat-button-toggle-group name="itemPicker" aria-label="Font Style" class="switchItemButton">
-            <mat-button-toggle (change)="changeEditItemForm($event, 'document')" value="document" [checked]="true">Document</mat-button-toggle>
-            <mat-button-toggle (change)="changeEditItemForm($event, 'folder')" value="folder">Folder</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'document')" value="document" [checked]="true">Sub hoofdstuk</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'folder')" value="folder">Hoofdstuk</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 

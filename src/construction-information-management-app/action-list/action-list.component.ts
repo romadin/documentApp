@@ -47,24 +47,20 @@ export class ActionListComponent implements OnInit {
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
     }
 
-    public showActionEditor(): void {
-        this.showItemDetail = true;
-    }
-
-    public editItem(event: MouseEvent, action: Action): void {
+    editItem(event: MouseEvent, action: Action): void {
         event.stopPropagation();
 
         this.actionToEdit = action;
         this.showItemDetail = true;
     }
 
-    public OnCloseDetail(closeEdit: boolean): void {
+    OnCloseDetail(closeEdit: boolean): void {
         this.showItemDetail = !closeEdit;
         this.actionToEdit = undefined;
     }
 
 
-    public changeActionStatus(e: MouseEvent, action: Action): void {
+    changeActionStatus(e: MouseEvent, action: Action): void {
         e.preventDefault();
         e.stopPropagation();
         if (this.timerId) {
@@ -77,5 +73,10 @@ export class ActionListComponent implements OnInit {
             };
             this.actionService.editAction(action, postData);
         }, 500);
+    }
+
+    private showActionEditor(): void {
+        this.actionToEdit = undefined;
+        this.showItemDetail = true;
     }
 }

@@ -1,4 +1,4 @@
-<mat-card class="projectRow" *ngIf="currentUser && userHasProject() || currentUser.isAdmin()" routerLink="/project/{{ project.getId() }}">
+<mat-card class="projectRow" *ngIf="userViewProject()" routerLink="/project/{{ project.getId() }}">
     <mat-card-header>
         <mat-card-title> {{ project.getName() }}</mat-card-title>
     </mat-card-header>

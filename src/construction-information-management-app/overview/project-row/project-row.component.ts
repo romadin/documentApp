@@ -45,13 +45,15 @@ export class ProjectRowComponent implements OnInit {
         this.projectService.deleteProject(id);
     }
 
-    public userHasProject(): boolean {
-        const user = this.currentUser.projectsId.find((projectId) => {
+    public userViewProject(): boolean {
+        if (this.currentUser.isAdmin()) {
+            return true;
+        }
+
+        const hasProjectId: number | undefined = this.currentUser.projectsId.find((projectId) => {
             return projectId === this.project.getId();
         });
 
-        return !!user;
+        return !!hasProjectId;
     }
-
-
 }
