@@ -60,6 +60,8 @@ import { ItemCreateComponent } from './folder/item-create/item-create.component'
 import { DetailFolderComponent } from './folder/item-create/create-folder/detail-folder.component';
 import { CreateDocumentComponent } from './folder/item-create/create-document/create-document.component';
 import { FolderCommunicationService } from '../shared/packages/communication/Folder.communication.service';
+import { ItemReadComponent } from './folder/item-read/item-read.component';
+import { ActionCommunicationService } from '../shared/packages/communication/action.communication.service';
 
 const appRoutes: Routes = [
     { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
@@ -115,6 +117,7 @@ const appRoutes: Routes = [
         ItemCreateComponent,
         DetailFolderComponent,
         CreateDocumentComponent,
+        ItemReadComponent,
     ],
     imports: [
         RouterModule.forRoot( appRoutes ),
@@ -141,6 +144,7 @@ const appRoutes: Routes = [
         HeaderWithFolderCommunicationService,
         FolderCommunicationService,
         SideMenuCommunicationService,
+        ActionCommunicationService,
         UserResolver,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],

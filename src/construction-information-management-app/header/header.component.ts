@@ -9,6 +9,7 @@ import { User } from '../../shared/packages/user-package/user.model';
 import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
 import { RouterService } from '../../shared/service/router.service';
 import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
+import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
 
 export interface MenuAction {
     onClick: (item?) => void;
@@ -20,7 +21,7 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/overview' | '/gebruikers' | '/project/:id/folder/:id';
+type UrlGroup = '/overview' | '/gebruikers' | '/project/:id/folder/:id'| '/project/:id/actionList/:id';
 
 @Component({
   selector: 'cim-header',
@@ -54,6 +55,7 @@ export class HeaderComponent implements OnInit {
         private userService: UserService,
         private routerService: RouterService,
         private folderCommunicationService: HeaderWithFolderCommunicationService,
+        private actionCommunicationService: ActionCommunicationService
     ) {
         this.defineActions();
     }
@@ -103,6 +105,22 @@ export class HeaderComponent implements OnInit {
             needsAdmin: true,
             urlGroup: '/project/:id/folder/:id',
         };
+        const readMode: MenuAction = {
+            onClick: () => { this.folderCommunicationService.triggerReadMode.next(true); },
+            iconName: 'book',
+            name: 'Boek modus',
+            show: false,
+            needsAdmin: false,
+            urlGroup: '/project/:id/folder/:id',
+        };
+        const addAction: MenuAction = {
+            onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },
+            iconName: 'add',
+            name: 'Actie toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: '/project/:id/actionList/:id',
+        };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
             iconName: 'menu',
@@ -110,7 +128,7 @@ export class HeaderComponent implements OnInit {
             show: false,
             needsAdmin: false,
         };
-        this.actions.push(addProject, addUser, addItemToFolder);
+        this.actions.push(addProject, addUser, readMode, addItemToFolder, addAction);
     }
 
     private determineActions(navigation: NavigationEnd): void {
@@ -151,6 +169,7 @@ export class HeaderComponent implements OnInit {
         } else {
             this.router.navigate(['/overview']);
         }
+        this.folderCommunicationService.triggerReadMode.next(false);
     }
 
     private openDialogAddProject(): void {

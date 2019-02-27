@@ -1,8 +1,4 @@
 <div class="actionListWrapper" *ngIf="actions">
-    <div class="addActionButton" (click)="showActionEditor($event)">
-        <i class="material-icons"> add </i>
-        Actie Toevoegen
-    </div>
     <div class="contentWrapper">
         <div class="list" *ngIf="actions.length > 0">
             <h3> Acties </h3>
@@ -39,6 +35,14 @@
                                       (change)="$event ? selection.toggle(action) : null"
                                       [checked]="action.isDone">
                         </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- Week Column -->
+                <ng-container matColumnDef="comment">
+                    <th mat-header-cell *matHeaderCellDef> Opmerkingen </th>
+                    <td mat-cell *matCellDef="let action" >
+                        <i *ngIf="action.comments" class="material-icons"> priority_high </i>
                     </td>
                 </ng-container>
 

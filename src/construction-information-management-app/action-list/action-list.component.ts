@@ -7,6 +7,7 @@ import { ActionService } from '../../shared/packages/action-package/action.servi
 import { Action } from '../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
 import { RouterService } from '../../shared/service/router.service';
+import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
 
 @Component({
   selector: 'cim-action-list',
@@ -19,14 +20,15 @@ export class ActionListComponent implements OnInit {
     public actionToEdit: Action;
     public showItemDetail = false;
     public projectId: number;
-    public displayedColumns: string[] = ['code', 'description', 'actionHolder', 'week', 'status'];
+    public displayedColumns: string[] = ['code', 'description', 'actionHolder', 'week', 'status', 'comment'];
     public selection = new SelectionModel<Action>(true, []);
 
     private timerId: number;
 
     constructor(private actionService: ActionService,
                 private activatedRoute: ActivatedRoute,
-                private routerService: RouterService) { }
+                private routerService: RouterService,
+                private actionCommunication: ActionCommunicationService) { }
 
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
@@ -36,11 +38,16 @@ export class ActionListComponent implements OnInit {
             }
             this.actions = actions;
         });
+
+        this.actionCommunication.triggerAddAction.subscribe((trigger: boolean) => {
+            if (trigger) {
+                this.showActionEditor();
+            }
+        });
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
     }
 
-    public showActionEditor(event: MouseEvent): void {
-        event.stopPropagation();
+    public showActionEditor(): void {
         this.showItemDetail = true;
     }
 
