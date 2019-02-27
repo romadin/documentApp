@@ -28,6 +28,8 @@ export class FolderComponent implements OnInit, OnDestroy {
     public partnerIsOpen = false;
     public showCreateNewItem: boolean;
     public folderToEdit: Folder;
+    public showReadMode: boolean;
+    public showReadModeAnimation: boolean;
 
     private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
 
@@ -57,10 +59,14 @@ export class FolderComponent implements OnInit, OnDestroy {
             }
         });
 
+        this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
+            this.resetView();
+            this.showReadMode = this.showReadModeAnimation = read;
+        });
+
         this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
             if (onClose) {
-                this.showCreateNewItem = !onClose;
-                this.folderToEdit = undefined;
+                this.resetView();
             }
         });
 
@@ -75,18 +81,20 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.items.splice(this.items.findIndex((item) => item === folder), 1);
     }
 
+    onCloseReadMode(close: boolean) {
+        this.showReadModeAnimation = !close;
+        setTimeout(() => {
+            this.showReadMode = !close;
+        }, 900);
+    }
+
     public onFolderEdit(folder: Folder) {
-        this.showAddItemList = false;
-        this.showCreateNewItem = false;
-        this.documentToEdit = undefined;
-        this.partnerIsOpen = false;
+        this.resetView();
         this.folderToEdit = folder;
     }
 
     public onDocumentEdit(document: Document) {
-        this.showAddItemList = false;
-        this.showCreateNewItem = false;
-        this.folderToEdit = undefined;
+        this.resetView();
         this.documentToEdit = document;
     }
 
@@ -109,9 +117,7 @@ export class FolderComponent implements OnInit, OnDestroy {
     }
 
     public addItem() {
-        this.documentToEdit = undefined;
-        this.partnerIsOpen = false;
-        this.folderToEdit = undefined;
+        this.resetView();
         if (this.currentFolder && this.currentFolder.isMainFolder) {
             this.showCreateNewItem = true;
             return;
@@ -122,8 +128,7 @@ export class FolderComponent implements OnInit, OnDestroy {
     public showAllPartners(event: MouseEvent) {
         event.stopPropagation();
         event.preventDefault();
-        this.documentToEdit = undefined;
-        this.showCreateNewItem = false;
+        this.resetView();
         this.partnerIsOpen = true;
     }
 
@@ -157,5 +162,14 @@ export class FolderComponent implements OnInit, OnDestroy {
             itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
             this.itemsSubscription.next(itemsContainer);
         });
+    }
+
+    private resetView(): void {
+        this.documentToEdit = undefined;
+        this.folderToEdit = undefined;
+        this.partnerIsOpen = false;
+        this.showCreateNewItem = false;
+        this.showAddItemList = false;
+        this.showReadMode = false;
     }
 }

@@ -38,6 +38,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         minHeight: '5rem',
         placeholder: 'Voer je text in...',
         translate: 'no',
+        uploadUrl: '/assets/images',
     };
     public content = '';
     public addFixedClass = false;

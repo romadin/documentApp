@@ -1,0 +1,18 @@
+mat-card.documentsReader {
+    padding: 0;
+}
+
+mat-card.documentsReader > mat-card-header {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px #cecece;
+}
+
+mat-card.documentsReader > mat-card-content {
+    max-height: 80vh;
+    overflow: hidden;
+    overflow-y: auto;
+    padding: 10px 0 10px 15px;
+}

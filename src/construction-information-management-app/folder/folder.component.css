@@ -34,16 +34,24 @@ div.addItem > div.addItemButton > i.material-icons {
     margin-right: 10px;
 }
 
+div.wrapper > div.overview.readModeEnabled {
+    flex: 0;
+    width: 0;
+    margin: 0;
+}
+
 div.wrapper > div.overview {
-    flex: 5;
+    width: 0;
+    transition: all 1s ease;
+    flex: 1;
     margin-right: 25px;
 }
 
 div.wrapper > div.editDocument {
-    flex: 4;
+    flex: 1;
 }
 div.wrapper > div.addItemList {
-    flex: 2;
+    flex: 1;
 }
 div.wrapper > div.overview > div.partnersWrapper {
 
@@ -85,12 +93,21 @@ div.wrapper > div.overview > div.partnersWrapper > .actions {
 
 div.wrapper > div.partners {
     display: flex;
-    flex: 5;
+    flex: 1;
 }
 div.wrapper > div.partners > cim-partners {
     width: 100%;
 }
 
 div.wrapper > div.addItemForMainFolder {
-    flex: 4;
+    flex: 1;
+}
+
+div.wrapper > div.readeModeContainer {
+    transition: all 1s ease;
+    flex: 0;
+    width: 0;
+}
+div.wrapper > div.readeModeContainer.animateDiv {
+    flex: 1;
 }
