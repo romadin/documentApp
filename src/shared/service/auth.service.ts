@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiAuthResponse } from '../../construction-information-management-app/authenticate-app/interfaces/api-auth.interface';
+import { ApiAuthResponse } from '../../construction-information-management-app/login-app/interfaces/api-auth.interface';
 import { ApiService } from './api.service';
 import { UserService } from '../packages/user-package/user.service';
 import { User } from '../packages/user-package/user.model';

@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { UserService } from './user.service';
 import { mergeMap } from 'rxjs/operators';
 import { EMPTY, Observable, of } from 'rxjs';
-import { UserActivation } from '../../../construction-information-management-app/authenticate-app/activate-user/activate-user.component';
+import { UserActivation } from '../../../construction-information-management-app/user-app/activate-user/activate-user.component';
 
 
 @Injectable()

@@ -15,11 +15,13 @@ export class RouterService {
     }
 
     setBackRouteParentFromActivatedRoute(parent: ActivatedRoute): void {
+
         parent.url.subscribe((urlSegments: UrlSegment[]) => {
-            let url = '';
-            urlSegments.forEach((segment) => {
-                url += segment.path + '/';
+            let urlToRemove = '';
+            urlSegments.forEach((segment, index) => {
+                index + 1 !== urlSegments.length ? urlToRemove += segment.path +  '/' : urlToRemove += segment.path;
             });
+            const url = location.pathname.replace(urlToRemove, '');
             this.setBackRoute(url);
         });
     }

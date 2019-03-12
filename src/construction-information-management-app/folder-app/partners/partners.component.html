@@ -1,0 +1,13 @@
+<div>
+    <mat-card class="partnersCard">
+        <h3 class="title">Partners</h3>
+            <mat-card-content>
+                <button *ngIf="currentUser.isAdmin() && users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
+                    <span> Voeg partners toe </span>
+                    <i class="material-icons"> add </i>
+                </button>
+                <ng-container *ngIf="!userToEdit">
+                </ng-container>
+            </mat-card-content>
+    </mat-card>
+</div>

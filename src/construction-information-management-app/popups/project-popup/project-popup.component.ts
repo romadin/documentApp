@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { FormControl, FormGroup } from '@angular/forms';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 export interface DialogData {
     title: string;

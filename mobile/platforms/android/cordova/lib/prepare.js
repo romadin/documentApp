@@ -120,8 +120,8 @@ function logFileOp (message) {
 
 /**
  * Updates platform 'www' directory by replacing it with contents of
- *   'platform_www' and app www. Also copies project's overrides' folder into
- *   the platform 'www' folder
+ *   'platform_www' and app www. Also copies project's overrides' folder-app into
+ *   the platform 'www' folder-app
  *
  * @param   {Object}  cordovaProject    An object which describes cordova project.
  * @param   {Object}  destinations      An object that contains destination
@@ -136,7 +136,7 @@ function updateWww (cordovaProject, destinations) {
     // If project contains 'merges' for our platform, use them as another overrides
     var merges_path = path.join(cordovaProject.root, 'merges', 'android');
     if (fs.existsSync(merges_path)) {
-        events.emit('verbose', 'Found "merges/android" folder. Copying its contents into the android project.');
+        events.emit('verbose', 'Found "merges/android" folder-app. Copying its contents into the android project.');
         sourceDirs.push(path.join('merges', 'android'));
     }
 

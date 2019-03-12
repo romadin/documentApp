@@ -1,9 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { MaterialModule } from '../shared/material.module';
 
@@ -36,55 +34,30 @@ import { UserPopupComponent } from './popups/user-popup/user-popup.component';
 
 // components
 import { ConstructionInformationManagementComponent } from './construction-information-management.component';
-import { LoginComponent } from './authenticate-app/login/login.component';
-import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
-import { UsersOverviewComponent } from './users/users-overview.component';
-import { UserRowComponent } from './users/user-row/user-row.component';
-import { FolderComponent } from './folder/folder.component';
-import { DocumentRowComponent } from './folder/document-row/document-row.component';
-import { DocumentDetailComponent } from './folder/document-detail/document-detail.component';
-import { ProjectDetailComponent } from './project-detail/project-detail.component';
-import { FolderRowComponent } from './project-detail/folder-row/folder-row.component';
-import { OverviewComponent } from './overview/overview.component';
-import { ProjectRowComponent } from './overview/project-row/project-row.component';
-import { ItemListComponent } from './folder/item-list/item-list.component';
-import { PartnersComponent } from './folder/partners/partners.component';
-import { UserDetailComponent } from './users/user-detail/user-detail.component';
-import { ActionListComponent } from './action-list/action-list.component';
-import { ItemComponent } from './action-list/item/item.component';
-import { ItemDetailComponent } from './action-list/item-detail/item-detail.component';
-import { ProjectComponent } from './project/project.component';
-import { ActivateUserComponent } from './authenticate-app/activate-user/activate-user.component';
-import { ItemCreateComponent } from './folder/item-create/item-create.component';
-import { DetailFolderComponent } from './folder/item-create/create-folder/detail-folder.component';
-import { CreateDocumentComponent } from './folder/item-create/create-document/create-document.component';
+import { ProjectComponent } from './project-app/project/project.component';
 import { FolderCommunicationService } from '../shared/packages/communication/Folder.communication.service';
-import { ItemReadComponent } from './folder/item-read/item-read.component';
 import { ActionCommunicationService } from '../shared/packages/communication/action.communication.service';
+import { SharedModule } from '../shared/shared.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const appRoutes: Routes = [
-    { path: 'login', component: LoginComponent, canActivate: [ CanActivateAlreadyLoggedIn ] },
     {
-        path: 'activate/:token',
-        component: ActivateUserComponent,
-        resolve: {user: UserResolver}
+        path: 'login',
+        loadChildren: './login-app/login-app.module#LoginAppModule',
+        canActivate: [ CanActivateAlreadyLoggedIn ] },
+    {
+        path: 'gebruikers',
+        loadChildren: './user-app/user.module#UserModule',
     },
-    { path: 'gebruikers', component: UsersOverviewComponent, canActivate: [ CanActivateAdminUser ]  },
-    { path: 'overview', component: OverviewComponent, canActivate: [ CanActivateLoggedIn ] },
     {
-        path: 'project/:id',
-        component: ProjectComponent,
-        canActivate: [ CanActivateLoggedIn ],
-        children: [
-            { path: 'folder/:id', component: FolderComponent, canActivate: [ CanActivateLoggedIn ]  },
-            { path: 'actionList/:id', component: ActionListComponent, canActivate: [ CanActivateLoggedIn ]  },
-            { path: '', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ] },
-        ]
+        path: 'projecten',
+        loadChildren: './project-app/project.module#ProjectModule',
+        canActivate: [ CanActivateLoggedIn ]
     },
     {
         path: '',
-        redirectTo: 'overview',
+        redirectTo: 'projecten',
         pathMatch: 'full',
     }
 ];
@@ -92,59 +65,37 @@ const appRoutes: Routes = [
 @NgModule({
     declarations : [
         ConstructionInformationManagementComponent,
-        LoginComponent,
-        HomeComponent,
         HeaderComponent,
-        OverviewComponent,
-        ProjectRowComponent,
-        ProjectDetailComponent,
-        FolderRowComponent,
-        ProjectPopupComponent,
         UserPopupComponent,
-        UsersOverviewComponent,
-        UserRowComponent,
-        FolderComponent,
-        DocumentRowComponent,
-        DocumentDetailComponent,
-        ItemListComponent,
-        PartnersComponent,
-        UserDetailComponent,
-        ActionListComponent,
-        ItemComponent,
-        ItemDetailComponent,
-        ProjectComponent,
-        ActivateUserComponent,
-        ItemCreateComponent,
-        DetailFolderComponent,
-        CreateDocumentComponent,
-        ItemReadComponent,
+        ProjectPopupComponent,
     ],
     imports: [
-        RouterModule.forRoot( appRoutes ),
         BrowserModule,
-        ReactiveFormsModule,
+        BrowserAnimationsModule,
         MaterialModule,
         HttpClientModule,
-        RouterModule,
-        AngularEditorModule,
-        FormsModule,
+        SharedModule,
+        RouterModule.forRoot(appRoutes)
     ],
     providers: [
         AuthService,
         ApiService,
+
         ProjectService,
         UserService,
+        RouterService,
+        HeaderWithFolderCommunicationService,
+        ActionCommunicationService,
+        ScrollingService,
         RoleService,
+
+
         FolderService,
         DocumentService,
         DocumentIconService,
         ActionService,
-        RouterService,
-        ScrollingService,
-        HeaderWithFolderCommunicationService,
         FolderCommunicationService,
         SideMenuCommunicationService,
-        ActionCommunicationService,
         UserResolver,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],

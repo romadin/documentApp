@@ -1,0 +1,43 @@
+<div>
+    <mat-card class="createFolder" *ngIf="!showAddDocument">
+        <h3 class="title" *ngIf="folder">Wijzig hoofdstuk: {{ folder.getName() }}</h3>
+        <form [formGroup]="folderForm" (ngSubmit)="onSubmit()">
+            <mat-card-content>
+                <div mat-dialog-content class="formFields">
+                    <mat-form-field>
+                        <input matInput placeholder="Hoofdstuk naam" formControlName="name" required="required">
+                    </mat-form-field>
+                </div>
+                <div class="documentList" *ngIf="documents">
+                    <div class="documentHeader">
+                        <h3>Sub hoofdstukken</h3>
+                        <button mat-raised-button color="primary" (click)="addDocument($event)">
+                            <span> Sub hoofdstuk toevoegen </span>
+                            <i class="material-icons"> add </i>
+                        </button>
+                    </div>
+                    <mat-expansion-panel *ngFor="let document of documents" class="toggleRow">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="toggleTitle">
+                                <h4> {{ document.getName()}} </h4>
+                            </mat-panel-title>
+                            <button *ngIf="showDeleteButton(document)" (click)="deleteDocument($event, document)" class="mat-button editFolderButton">
+                                <i class="material-icons"> delete_forever </i>
+                            </button>
+                        </mat-expansion-panel-header>
+                        <span>{{ document.content ? document.content : 'Er is nog geen content in dit hoofdstuk' }}</span>
+                    </mat-expansion-panel>
+                </div>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-raised-button type="submit">Opslaan</button>
+                <button mat-button (click)="onCancel($event)">Annuleren</button>
+            </mat-card-actions>
+        </form>
+    </mat-card>
+    <cim-document-detail *ngIf="folder && showAddDocument"
+                         [parentFolder]="folder"
+                         (closeEditForm)="onCloseAddDocument($event)">
+    </cim-document-detail>
+
+</div>

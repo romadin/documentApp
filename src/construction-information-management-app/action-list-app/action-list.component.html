@@ -1,0 +1,59 @@
+<div class="actionListWrapper" *ngIf="actions">
+    <div class="contentWrapper">
+        <div class="list" *ngIf="actions.length > 0">
+            <h3> Acties </h3>
+            <table #table mat-table [dataSource]="actions" class="tableList">
+                <!-- Code Column -->
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef> Actie code </th>
+                    <td mat-cell *matCellDef="let action"> {{action.code}} </td>
+                </ng-container>
+
+                <!-- The action description Column -->
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef> Omschrijving </th>
+                    <td mat-cell *matCellDef="let action"> {{action.description}} </td>
+                </ng-container>
+
+                <!-- The action holder Column -->
+                <ng-container matColumnDef="actionHolder">
+                    <th mat-header-cell *matHeaderCellDef> Actie houder </th>
+                    <td mat-cell *matCellDef="let action"> {{action.actionHolder}} </td>
+                </ng-container>
+
+                <!-- Week Column -->
+                <ng-container matColumnDef="week">
+                    <th mat-header-cell *matHeaderCellDef> Week </th>
+                    <td mat-cell *matCellDef="let action"> {{action.week}} </td>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Klaar </th>
+                    <td mat-cell *matCellDef="let action">
+                        <mat-checkbox (click)="changeActionStatus($event, action)"
+                                      (change)="$event ? selection.toggle(action) : null"
+                                      [checked]="action.isDone">
+                        </mat-checkbox>
+                    </td>
+                </ng-container>
+
+                <!-- Week Column -->
+                <ng-container matColumnDef="comment">
+                    <th mat-header-cell *matHeaderCellDef> Opmerkingen </th>
+                    <td mat-cell *matCellDef="let action" >
+                        <i *ngIf="action.comments" class="material-icons"> priority_high </i>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row class="actionRow" *matRowDef="let action; columns: displayedColumns;" (click)="editItem($event, action)"></tr>
+            </table>
+        </div>
+        <!--<cim-action-item-detail *ngIf="showItemDetail"-->
+                                <!--[action]="actionToEdit"-->
+                                <!--[projectId]="projectId"-->
+                                <!--(closeEdit)="OnCloseDetail($event)">-->
+        <!--</cim-action-item-detail>-->
+    </div>
+</div>

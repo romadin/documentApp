@@ -1,0 +1,23 @@
+<div class="detailWrapper">
+    <h3> {{action ? 'Actie bewerken' : 'Voeg een actie toe'}} </h3>
+    <form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
+        <div mat-dialog-content>
+            <mat-form-field>
+                <input matInput placeholder="Omschrijving" formControlName="description" required>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput placeholder="Aktie houder" formControlName="actionHolder">
+            </mat-form-field>
+            <mat-form-field>
+                <input type="number" matInput placeholder="Week" formControlName="week">
+            </mat-form-field>
+            <mat-form-field>
+                <input type="text" matInput placeholder="Opmerkingen" formControlName="comments">
+            </mat-form-field>
+        </div>
+        <div mat-dialog-actions>
+            <button mat-raised-button type="submit"> {{action ? 'Opslaan' : 'Toevoegen'}} </button>
+            <button mat-button (click)="onCancel($event)">Annuleren</button>
+        </div>
+    </form>
+</div>

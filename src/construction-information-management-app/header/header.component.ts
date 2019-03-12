@@ -17,11 +17,11 @@ export interface MenuAction {
     name: string;
     show: boolean;
     needsAdmin: boolean;
-    urlGroup?: UrlGroup;
+    urlGroup?: UrlGroup[];
     urlNotShow?: string;
 }
 
-type UrlGroup = '/overview' | '/gebruikers' | '/project/:id/folder/:id'| '/project/:id/actionList/:id';
+type UrlGroup = '/projecten' | '/gebruikers' | '/project/:id/folder/:id'| '/project/:id/actionList/:id';
 
 @Component({
   selector: 'cim-header',
@@ -65,11 +65,15 @@ export class HeaderComponent implements OnInit {
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routeHistory.push(navigation);
             this.determineActions(navigation);
-            this.actionBack.show = navigation.url === '/login' ? false : (navigation.url !== '/overview');
+            this.actionBack.show = navigation.url === '/login' ? false : (navigation.url !== '/projecten');
         });
 
         this.routerService.backRoute.subscribe((backRoute: string) => {
             this.backRoute = backRoute;
+        });
+
+        this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
+            this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
         });
     }
 
@@ -87,7 +91,7 @@ export class HeaderComponent implements OnInit {
             name: 'Project toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: '/overview',
+            urlGroup: ['/projecten'],
         };
         const addUser: MenuAction = {
             onClick: () => { this.addUserClick.emit(true); },
@@ -95,7 +99,7 @@ export class HeaderComponent implements OnInit {
             name: 'Gebruiker toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: '/gebruikers',
+            urlGroup: ['/gebruikers', '/project/:id/folder/:id'],
         };
         const addItemToFolder: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerAddItem.next(true); },
@@ -103,7 +107,7 @@ export class HeaderComponent implements OnInit {
             name: 'Hoofdstuk toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: '/project/:id/folder/:id',
+            urlGroup: ['/project/:id/folder/:id'],
         };
         const readMode: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerReadMode.next(true); },
@@ -111,7 +115,7 @@ export class HeaderComponent implements OnInit {
             name: 'Boek modus',
             show: false,
             needsAdmin: false,
-            urlGroup: '/project/:id/folder/:id',
+            urlGroup: ['/project/:id/folder/:id'],
         };
         const addAction: MenuAction = {
             onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },
@@ -119,7 +123,7 @@ export class HeaderComponent implements OnInit {
             name: 'Actie toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: '/project/:id/actionList/:id',
+            urlGroup: ['/project/:id/actionList/:id'],
         };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
@@ -136,22 +140,27 @@ export class HeaderComponent implements OnInit {
         if ( navigation.url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
-                if ( user && user.role ) {
+                if ( user ) {
                     this.actions.forEach(( action: MenuAction ) => {
-                        if ( !action.urlGroup && action.needsAdmin || action.urlGroup === navigation.url && action.needsAdmin ) {
-                            action.show = user.role.getName() === 'admin';
-                        } else {
-                            const needToChangeUrlGroup = action.urlGroup.match(/(:id)/g);
-                            if (needToChangeUrlGroup) {
-                                console.log(navigation.url);
-                                const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, action.urlGroup);
-                                action.show = tempUrlGroup === navigation.url;
-                                if (action.needsAdmin && tempUrlGroup === navigation.url) {
-                                    action.show = user.role.getName() === 'admin';
-                                    console.log(action.name);
+                        if ( !action.urlGroup && action.needsAdmin ) {
+                            action.show = user.isAdmin();
+                        } else if ( action.urlGroup ) {
+                            for ( const urlGroup of action.urlGroup ) {
+                                if (urlGroup === navigation.url) {
+                                    action.show = action.needsAdmin ? this.currentUser.isAdmin() : true;
+                                    return;
                                 }
-                            } else {
-                                action.show = action.urlGroup === navigation.url;
+                                const needToChangeUrlGroup = urlGroup.match(/(:id)/g);
+                                if (needToChangeUrlGroup) {
+                                    const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, urlGroup);
+                                    action.show = tempUrlGroup === navigation.url;
+                                    if (action.needsAdmin && tempUrlGroup === navigation.url) {
+                                        action.show = user.isAdmin();
+                                        return;
+                                    }
+                                } else {
+                                    action.show = urlGroup === navigation.url;
+                                }
                             }
                         }
                     });
@@ -161,7 +170,7 @@ export class HeaderComponent implements OnInit {
     }
 
     /**
-     * Get the url to route back. If we have none then we route back to the overview.
+     * Get the url to route back. If we have none then we route back to the projects-list.
      */
     private onBackRouting(): void {
         if (this.backRoute) {
@@ -169,7 +178,7 @@ export class HeaderComponent implements OnInit {
         } else if (this.routeHistory.length > 1) {
             this.location.back();
         } else {
-            this.router.navigate(['/overview']);
+            this.router.navigate(['/projecten']);
         }
         this.folderCommunicationService.triggerReadMode.next(false);
     }
@@ -186,14 +195,21 @@ export class HeaderComponent implements OnInit {
     }
 
     private replaceIdForUrlGroup(currentUrl: string, urlGroup: UrlGroup): UrlGroup {
-        const matchesId = currentUrl.match(/\d/g);
-        console.log(matchesId);
-        if (matchesId) {
-            matchesId.forEach((id: string) => {
-                urlGroup = <UrlGroup>urlGroup.replace(':id', id);
-            });
-            return urlGroup;
-        }
-        return <UrlGroup>'';
+        const groupArray = urlGroup.split('/');
+        const indexArray: number[] = [];
+        groupArray.forEach((id, index) => {
+            if (id === ':id') {
+                indexArray.push(index);
+            }
+        });
+
+        const currentUrlArray = currentUrl.split('/');
+
+        indexArray.forEach((index) => {
+            if ( currentUrlArray[index] ) {
+                groupArray.splice(index, 1, currentUrlArray[index]);
+            }
+        });
+        return <UrlGroup>groupArray.join('/');
     }
 }

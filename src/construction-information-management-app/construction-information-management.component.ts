@@ -7,8 +7,9 @@ import { User } from '../shared/packages/user-package/user.model';
 import { UserService } from '../shared/packages/user-package/user.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { MenuAction } from './header/header.component';
-import { UserPopupComponent } from './popups/user-popup/user-popup.component';
+
 import { SideMenuCommunicationService } from '../shared/packages/communication/sideMenu.communication.service';
+import { UserPopupComponent } from './popups/user-popup/user-popup.component';
 
 @Component({
     selector: 'cim-root',
@@ -59,7 +60,11 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                 if ( user && user.role ) {
                     this.sideMenuActions.forEach(( action: MenuAction ) => {
                         // step 1 check if action only needs to show at an specific url.
-                        action.show = action.urlGroup ? action.urlGroup === navigation.url : true;
+                        if (action.urlGroup) {
+                            action.urlGroup.forEach((urlGroup) => {
+                                action.show = urlGroup === navigation.url;
+                            });
+                        }
                         // step 2 check if action does not need to be shown at specific url.
                         action.show = action.urlNotShow ? action.urlNotShow !== navigation.url : true;
                         // step 3 check if action needs admin and if users has rights.
@@ -73,13 +78,13 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     private defineSideMenuActions(): void {
         const projects: MenuAction = {
             onClick: () => {
-                this.router.navigate(['overview']);
+                this.router.navigate(['projecten']);
             },
             iconName: 'library_books',
             name: 'Projecten',
             show: true,
             needsAdmin: false,
-            urlNotShow: '/overview'
+            urlNotShow: '/projecten'
         };
         const addUser: MenuAction = {
             onClick: this.openDialogAddUser.bind(this),

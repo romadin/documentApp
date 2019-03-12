@@ -152,7 +152,7 @@ export class FolderService {
             });
         });
 
-        // check if sub folders exist then set the sub folder.
+        // check if sub folders exist then set the sub folder-app.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
             folderData.subFolders.forEach((subFolderResponse) => {
                 folder.setSubFolder(this.makeFolder(subFolderResponse));
@@ -173,7 +173,7 @@ export class FolderService {
     }
 
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        // check if sub folders exist then set the sub folder.
+        // check if sub folders exist then set the sub folder-app.
         if ( response.subFolders !== null && response.subFolders.length > 0 ) {
             const subFolders: Folder[] = [];
             response.subFolders.forEach((subFolderResponse) => {

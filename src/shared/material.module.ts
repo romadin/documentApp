@@ -11,7 +11,6 @@ import {
 
 @NgModule({
     exports: [
-        BrowserAnimationsModule,
         MatFormFieldModule,
         MatButtonModule,
         MatCheckboxModule,

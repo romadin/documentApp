@@ -18,7 +18,7 @@ export class CanActivateAdminUser implements CanActivate {
             if ( user && user.role.getName() === 'admin') {
                 return true;
             }
-            return this.router.parseUrl('/overview');
+            return this.router.parseUrl('/projecten');
         }));
     }
 }
