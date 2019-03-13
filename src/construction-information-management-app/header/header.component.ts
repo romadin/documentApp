@@ -21,7 +21,7 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/projecten' | '/gebruikers' | '/project/:id/folder/:id'| '/project/:id/actionList/:id';
+type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/actionList/:id';
 
 @Component({
   selector: 'cim-header',
@@ -99,7 +99,7 @@ export class HeaderComponent implements OnInit {
             name: 'Gebruiker toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/gebruikers', '/project/:id/folder/:id'],
+            urlGroup: ['/gebruikers', '/projecten/:id/folder/:id'],
         };
         const addItemToFolder: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerAddItem.next(true); },
@@ -107,7 +107,7 @@ export class HeaderComponent implements OnInit {
             name: 'Hoofdstuk toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/project/:id/folder/:id'],
+            urlGroup: ['/projecten/:id/folder/:id'],
         };
         const readMode: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerReadMode.next(true); },
@@ -115,7 +115,7 @@ export class HeaderComponent implements OnInit {
             name: 'Boek modus',
             show: false,
             needsAdmin: false,
-            urlGroup: ['/project/:id/folder/:id'],
+            urlGroup: ['/projecten/:id/folder/:id'],
         };
         const addAction: MenuAction = {
             onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },
@@ -123,7 +123,15 @@ export class HeaderComponent implements OnInit {
             name: 'Actie toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/project/:id/actionList/:id'],
+            urlGroup: ['/projecten/:id/actionList/:id'],
+        };
+        const showArchivedActions: MenuAction = {
+            onClick: () => { this.actionCommunicationService.showArchivedActions.next(true); },
+            iconName: 'archive',
+            name: 'Gearchiveerde acties',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten/:id/actionList/:id'],
         };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
@@ -132,7 +140,7 @@ export class HeaderComponent implements OnInit {
             show: false,
             needsAdmin: false,
         };
-        this.actions.push(addProject, addUser, readMode, addItemToFolder, addAction);
+        this.actions.push(addProject, addUser, readMode, addItemToFolder, showArchivedActions, addAction);
     }
 
     private determineActions(navigation: NavigationEnd): void {

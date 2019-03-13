@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { LoginComponent } from './login/login.component';
 import { SharedModule } from '../../shared/shared.module';
+import { AuthService } from '../../shared/service/auth.service';
 
 const routes: Routes = [
     {
@@ -20,5 +21,6 @@ const routes: Routes = [
     declarations: [
         LoginComponent,
     ],
+    providers: [AuthService]
 })
 export class LoginAppModule { }

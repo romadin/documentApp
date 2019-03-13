@@ -33,7 +33,7 @@ const routes: Routes = [
         UsersOverviewComponent,
         ActivateUserComponent,
     ],
-    providers: [ UserResolver ],
+    providers: [ UserResolver, CanActivateAdminUser],
 })
 
 export class UserModule {  }

@@ -1,14 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute,  } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable } from '@angular/material';
 import { trigger, style, animate, transition, keyframes } from '@angular/animations';
+import { ToastrManager } from 'ng6-toastr-notifications';
 
 import { ActionService } from '../../shared/packages/action-package/action.service';
 import { Action } from '../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
 import { RouterService } from '../../shared/service/router.service';
 import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
+import { ToastrOptions } from 'ng6-toastr-notifications/lib/toastr.options';
 
 @Component({
     selector: 'cim-action-list',
@@ -41,12 +43,23 @@ export class ActionListComponent implements OnInit {
     public selection = new SelectionModel<Action>(true, []);
 
     private timerId: number;
+    private toastOption = {
+        position: 'top-center',
+        toastTimeout: 3000,
+        newestOnTop: true,
+        maxShown: 3,
+        animate: 'slideFromTop',
+        messageClass: 'toastWrapper',
+        enableHTML: false,
+        showCloseButton: false,
+    };
 
     constructor(private actionService: ActionService,
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
-                private actionCommunication: ActionCommunicationService) { }
-
+                private actionCommunication: ActionCommunicationService,
+                private toastMessage: ToastrManager) {
+    }
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
         this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
@@ -116,6 +129,7 @@ export class ActionListComponent implements OnInit {
             this.actionsDone = actionsDoneContainer;
 
             this.table.renderRows();
+            this.toastMessage.successToastr('Actie: ' + actionEdited.code + ' is gearchiveerd', 'Gearchiveerd', this.toastOption);
         }, 500);
     }
 

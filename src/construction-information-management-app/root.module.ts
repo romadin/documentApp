@@ -8,13 +8,9 @@ import { MaterialModule } from '../shared/material.module';
 // can Activate checks
 import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
-import { CanActivateAdminUser } from '../can-activate/CanActivateAdminUser';
 
-// resolvers
-import { UserResolver } from '../shared/packages/user-package/user.resolver';
 
 // services
-import { AuthService } from '../shared/service/auth.service';
 import { ApiService } from '../shared/service/api.service';
 import { ProjectService } from '../shared/packages/project-package/project.service';
 import { UserService } from '../shared/packages/user-package/user.service';
@@ -35,11 +31,12 @@ import { UserPopupComponent } from './popups/user-popup/user-popup.component';
 // components
 import { ConstructionInformationManagementComponent } from './construction-information-management.component';
 import { HeaderComponent } from './header/header.component';
-import { ProjectComponent } from './project-app/project/project.component';
 import { FolderCommunicationService } from '../shared/packages/communication/Folder.communication.service';
 import { ActionCommunicationService } from '../shared/packages/communication/action.communication.service';
 import { SharedModule } from '../shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { ToastrModule } from 'ng6-toastr-notifications';
 
 const appRoutes: Routes = [
     {
@@ -75,10 +72,10 @@ const appRoutes: Routes = [
         MaterialModule,
         HttpClientModule,
         SharedModule,
+        ToastrModule.forRoot(),
         RouterModule.forRoot(appRoutes)
     ],
     providers: [
-        AuthService,
         ApiService,
 
         ProjectService,
@@ -89,15 +86,14 @@ const appRoutes: Routes = [
         ScrollingService,
         RoleService,
 
-
         FolderService,
         DocumentService,
         DocumentIconService,
         ActionService,
         FolderCommunicationService,
         SideMenuCommunicationService,
-        UserResolver,
-        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateAdminUser ],
+        CanActivateLoggedIn, CanActivateAlreadyLoggedIn,
+    ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
     bootstrap: [ ConstructionInformationManagementComponent ]
 })
