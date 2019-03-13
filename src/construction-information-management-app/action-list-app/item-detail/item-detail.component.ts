@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { Action } from '../../../shared/packages/action-package/action.model';
@@ -10,13 +10,12 @@ interface Status {
 }
 
 @Component({
-  selector: 'cim-action-item-detail',
-  templateUrl: './item-detail.component.html',
-  styleUrls: ['./item-detail.component.css']
+    selector: 'cim-action-item-detail',
+    templateUrl: './item-detail.component.html',
+    styleUrls: ['./item-detail.component.css'],
 })
-export class ItemDetailComponent implements OnInit {
+export class ItemDetailComponent {
     @Input() projectId: number;
-    @Input() action: Action | null;
     @Output() closeEdit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public actionForm: FormGroup = new FormGroup({
@@ -28,16 +27,23 @@ export class ItemDetailComponent implements OnInit {
     });
     public selectedStatus: Status;
     public statusToSelect = [{ name: 'in behandeling', value: false }];
+    public animateView: boolean;
+
+    private _action: Action | null;
+
+    @Input()
+    set action(action: Action | null) {
+        this._action = action;
+        this.setFormValue();
+    }
+
+    get action(): Action | null {
+        return this._action;
+    }
 
     constructor(private actionService: ActionService) { }
 
-    ngOnInit() {
-        if (this.action) {
-            this.setFormValue();
-        }
-    }
-
-    public onSubmit() {
+    onSubmit() {
         const data =  {
             description: this.actionForm.controls.description.value,
             actionHolder: this.actionForm.controls.actionHolder.value,
@@ -57,19 +63,19 @@ export class ItemDetailComponent implements OnInit {
         });
     }
 
-    public onCancel(e: MouseEvent): void {
+    onCancel(e: MouseEvent): void {
         e.preventDefault();
         e.stopPropagation();
         this.closeEdit.emit(true);
     }
 
-    public onStatusSelect(status: Status): void {
+    onStatusSelect(status: Status): void {
         this.selectedStatus = status;
     }
     private setFormValue(): void {
-        this.actionForm.controls.description.setValue(this.action.description);
-        this.actionForm.controls.actionHolder.setValue(this.action.actionHolder);
-        this.actionForm.controls.week.setValue(this.action.week);
-        this.actionForm.controls.comments.setValue(this.action.comments);
+        this.actionForm.controls.description.setValue(this.action ? this.action.description : '');
+        this.actionForm.controls.actionHolder.setValue(this.action ? this.action.actionHolder : '');
+        this.actionForm.controls.week.setValue(this.action ? this.action.week : '');
+        this.actionForm.controls.comments.setValue(this.action ? this.action.comments : '');
     }
 }

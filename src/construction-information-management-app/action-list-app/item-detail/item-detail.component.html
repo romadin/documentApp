@@ -1,5 +1,5 @@
-<div class="detailWrapper">
-    <h3> {{action ? 'Actie bewerken' : 'Voeg een actie toe'}} </h3>
+<div class="detailWrapper" >
+    <h3> {{action ? 'Actie bewerken' : 'Actie toevoegen'}} </h3>
     <form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
         <div mat-dialog-content>
             <mat-form-field>
@@ -21,3 +21,4 @@
         </div>
     </form>
 </div>
+

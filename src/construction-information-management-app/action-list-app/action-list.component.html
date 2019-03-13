@@ -1,6 +1,6 @@
-<div class="actionListWrapper" *ngIf="actions">
+<div class="actionListWrapper" >
     <div class="contentWrapper">
-        <div class="list" *ngIf="actions.length > 0">
+        <div class="list">
             <h3> Acties </h3>
             <table #table mat-table [dataSource]="actions" class="tableList">
                 <!-- Code Column -->
@@ -50,10 +50,19 @@
                 <tr mat-row class="actionRow" *matRowDef="let action; columns: displayedColumns;" (click)="editItem($event, action)"></tr>
             </table>
         </div>
-        <!--<cim-action-item-detail *ngIf="showItemDetail"-->
-                                <!--[action]="actionToEdit"-->
-                                <!--[projectId]="projectId"-->
-                                <!--(closeEdit)="OnCloseDetail($event)">-->
-        <!--</cim-action-item-detail>-->
+        <div class="rightSide" [ngClass]="rightSideView ? 'onActive' : ''">
+            <div *ngIf="showItemDetail" [@toggleInView]>
+                <cim-action-item-detail [action]="actionToEdit"
+                                        [projectId]="projectId"
+                                        (closeEdit)="OnCloseDetail($event)">
+                </cim-action-item-detail>
+            </div>
+            <div *ngIf="showArchivedActions" [@toggleInView]>
+                <cim-actions-archived
+                        [actions]="actionsDone"
+                        (removeFromArchive)="addActionFromArchive($event)">
+                </cim-actions-archived>
+            </div>
+        </div>
     </div>
 </div>

@@ -23,9 +23,12 @@ div.actionListWrapper > div.addActionButton:hover {
 
 div.actionListWrapper > div.contentWrapper {
     margin-top: 10px;
+    padding-bottom: 10px;
     width: 100%;
+    overflow: hidden;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
 }
 div.actionListWrapper > div.contentWrapper > div.list {
     display: flex;
@@ -50,9 +53,17 @@ div.actionListWrapper > div.contentWrapper > div.list > table.tableList {
     width: 100%;
 }
 
-div.actionListWrapper > div.contentWrapper > cim-action-item-detail{
-    flex: 1;
+div.actionListWrapper > div.contentWrapper > div.rightSide {
+    display: flex;
+    flex-direction: column;
+    flex: 0;
+    transition: all 500ms ease;
 }
+div.actionListWrapper > div.contentWrapper > div.rightSide.onActive {
+    flex: 2;
+    transition: all 1s ease;
+}
+
 tr.actionRow {
     cursor: pointer;
 }
