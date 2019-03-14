@@ -9,6 +9,29 @@
     z-index: 2;
 }
 
+.main-container > div.spinnerContainer {
+    position: fixed;
+    background-color: rgba(0,0,0,.2);
+    transition: all 300ms ease;
+    height: 100%;
+    width: 100%;
+}
+
+.main-container > div.spinnerContainer.hideLoad {
+    z-index: 0;
+    opacity: 0;
+}
+
+.main-container > div.spinnerContainer.showLoad {
+    z-index: 99999;
+    opacity: 1;
+}
+
+.main-container > div.spinnerContainer > mat-spinner {
+    left: 50%;
+    top: 25%;
+}
+
 .main-container > mat-sidenav-container {
     height: 95vh;
     background-color: #fdfdfd;

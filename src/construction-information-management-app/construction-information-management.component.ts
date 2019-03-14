@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDrawerContent } from '@angular/material';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { delay, filter } from 'rxjs/operators';
 
 import { User } from '../shared/packages/user-package/user.model';
 import { UserService } from '../shared/packages/user-package/user.service';
@@ -10,6 +10,7 @@ import { MenuAction } from './header/header.component';
 
 import { SideMenuCommunicationService } from '../shared/packages/communication/sideMenu.communication.service';
 import { UserPopupComponent } from './popups/user-popup/user-popup.component';
+import { LoadingService } from '../shared/loading.service';
 
 @Component({
     selector: 'cim-root',
@@ -21,12 +22,14 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     public sideMenuActions: MenuAction[] = [];
     public currentUser: User;
     public resetHeaderAction = false;
+    public showIsLoading = false;
 
     constructor(private dialog: MatDialog,
                 private router: Router,
                 private userService: UserService,
                 private scrollingService: ScrollingService,
-                private menuCommunicationService: SideMenuCommunicationService) {}
+                private menuCommunicationService: SideMenuCommunicationService,
+                private loadingService: LoadingService) {}
 
     ngOnInit() {
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
@@ -38,6 +41,10 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             if (trigger) {
                 this.openDialogAddUser();
             }
+        });
+
+        this.loadingService.isLoading.pipe(delay(0)).subscribe((isLoading: boolean) => {
+            this.showIsLoading = isLoading;
         });
     }
 

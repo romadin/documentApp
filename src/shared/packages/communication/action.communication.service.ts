@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ActionCommunicationService {
     private _triggerAddAction: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showArchivedActions: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _showArchivedActionsButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     get triggerAddAction(): BehaviorSubject<boolean> {
         return this._triggerAddAction;
@@ -12,5 +13,9 @@ export class ActionCommunicationService {
 
     get showArchivedActions(): BehaviorSubject<boolean> {
         return this._showArchivedActions;
+    }
+
+    get showArchivedActionsButton(): BehaviorSubject<boolean> {
+        return this._showArchivedActionsButton;
     }
 }

@@ -1,5 +1,8 @@
 <div class="list">
-    <h3> Gearchiveerde acties </h3>
+    <div class="header">
+        <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
+        <h3> Gearchiveerde acties </h3>
+    </div>
     <table #archivedActions mat-table [dataSource]="actions" class="tableList">
         <!-- Code Column -->
         <ng-container matColumnDef="code">

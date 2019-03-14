@@ -60,7 +60,8 @@
             <div *ngIf="showArchivedActions" [@toggleInView]>
                 <cim-actions-archived
                         [actions]="actionsDone"
-                        (removeFromArchive)="addActionFromArchive($event)">
+                        (removeFromArchive)="addActionFromArchive($event)"
+                        (closeView)="OnCloseDetail($event)">
                 </cim-actions-archived>
             </div>
         </div>

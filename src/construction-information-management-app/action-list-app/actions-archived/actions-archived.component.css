@@ -15,3 +15,13 @@ div.list {
 div.list > table {
     width: 100%;
 }
+
+div.list > .header {
+    width: 100%;
+    display: flex;
+}
+
+div.list > .header > h3 {
+    flex: 1;
+    text-align: center;
+}

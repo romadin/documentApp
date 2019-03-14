@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute,  } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable } from '@angular/material';
 import { trigger, style, animate, transition, keyframes } from '@angular/animations';
-import { ToastrManager } from 'ng6-toastr-notifications';
+import { Subscription } from 'rxjs';
 
 import { ActionService } from '../../shared/packages/action-package/action.service';
 import { Action } from '../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
 import { RouterService } from '../../shared/service/router.service';
 import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
-import { ToastrOptions } from 'ng6-toastr-notifications/lib/toastr.options';
+import { ToastService } from '../../shared/toast.service';
+import { LoadingService } from '../../shared/loading.service';
 
 @Component({
     selector: 'cim-action-list',
@@ -20,17 +21,17 @@ import { ToastrOptions } from 'ng6-toastr-notifications/lib/toastr.options';
         trigger('toggleInView', [
             transition('void => *', [
                 style({ transform: 'translateX(110%)', }),
-                animate('500ms 300ms', style({ transform: 'translateX(0)' })),
+                animate('250ms', style({ transform: 'translateX(0)' })),
             ]),
             transition('* => void', [
-                animate('300ms', keyframes([
+                animate('250ms', keyframes([
                     style({ transform: 'translateX(110%)' })
                 ])),
             ])
         ]),
     ]
 })
-export class ActionListComponent implements OnInit {
+export class ActionListComponent implements OnInit, OnDestroy {
     @ViewChild(MatTable) table: MatTable<any>;
     public actions: Action[];
     public actionsDone: Action[] = [];
@@ -43,53 +44,52 @@ export class ActionListComponent implements OnInit {
     public selection = new SelectionModel<Action>(true, []);
 
     private timerId: number;
-    private toastOption = {
-        position: 'top-center',
-        toastTimeout: 3000,
-        newestOnTop: true,
-        maxShown: 3,
-        animate: 'slideFromTop',
-        messageClass: 'toastWrapper',
-        enableHTML: false,
-        showCloseButton: false,
-    };
+    private subscriptions: Subscription[] = [];
 
     constructor(private actionService: ActionService,
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
+                private toastService: ToastService,
                 private actionCommunication: ActionCommunicationService,
-                private toastMessage: ToastrManager) {
+                private loadingService: LoadingService
+               ) {
     }
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+        this.loadingService.isLoading.next(true);
         this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
-            if (actions.length > 0 && this.table) {
+            this.loadingService.isLoading.next(false);
+            if (this.actions && this.actions.length > 0 && this.table) {
                 this.table.renderRows();
             }
-            this.actions = actions;
+            this.actions = actions.map(action => action);
 
             // remove the already done actions and set in separate array.
-            this.actionsDone = this.actions.filter(action => action.isDone === true);
-            this.actionsDone.forEach((actionDone) => {
-                this.actions.splice(this.actions.findIndex(action => action === actionDone), 1);
-            });
+            this.setActionsDone();
         });
 
-        this.actionCommunication.triggerAddAction.subscribe((addAction: boolean) => {
+        this.subscriptions.push(this.actionCommunication.triggerAddAction.subscribe((addAction: boolean) => {
             if ( !this.showItemDetail || this.actionToEdit !== null) {
                 this.resetRightSide();
                 this.rightSideView = addAction;
-                setTimeout(() => { this.actionToEdit = null; this.showItemDetail = addAction; }, 300);
+                setTimeout(() => { this.actionToEdit = null; this.showItemDetail = addAction; }, 250);
             }
-        });
+        }));
 
-        this.actionCommunication.showArchivedActions.subscribe((show: boolean) => {
+        this.subscriptions.push(this.actionCommunication.showArchivedActions.subscribe((show: boolean) => {
             this.resetRightSide();
             this.rightSideView = show;
-            setTimeout(() => { this.showArchivedActions = show; }, 300);
-        });
+            setTimeout(() => { this.showArchivedActions = show; }, 250);
+        }));
 
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
+    }
+
+    ngOnDestroy() {
+        this.actionCommunication.triggerAddAction.next(false);
+        this.actionCommunication.showArchivedActions.next(false);
+        this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+        this.resetRightSide();
     }
 
     editItem(event: MouseEvent, action: Action): void {
@@ -127,9 +127,9 @@ export class ActionListComponent implements OnInit {
             this.actions.splice(this.actions.findIndex(action => action === actionEdited), 1);
             actionsDoneContainer.push(actionEdited);
             this.actionsDone = actionsDoneContainer;
-
             this.table.renderRows();
-            this.toastMessage.successToastr('Actie: ' + actionEdited.code + ' is gearchiveerd', 'Gearchiveerd', this.toastOption);
+            this.toastService.showSuccess('Actie: ' + actionEdited.code + ' is gearchiveerd', 'Gearchiveerd');
+            this.actionCommunication.showArchivedActionsButton.next(this.actionsDone.length > 0);
         }, 500);
     }
 
@@ -137,5 +137,16 @@ export class ActionListComponent implements OnInit {
         this.actionToEdit = undefined;
         this.showItemDetail = false;
         this.showArchivedActions = false;
+    }
+
+    /**
+     * Set all the actions that are done in a separate array, so we can send it to the archive component.
+     */
+    private setActionsDone(): void {
+        this.actionsDone = this.actions.filter(action => action.isDone === true);
+        this.actionsDone.forEach((actionDone) => {
+            this.actions.splice(this.actions.findIndex(action => action === actionDone), 1);
+        });
+        this.actionCommunication.showArchivedActionsButton.next(this.actionsDone.length > 0);
     }
 }

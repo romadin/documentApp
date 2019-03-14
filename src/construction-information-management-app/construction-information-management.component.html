@@ -3,7 +3,10 @@
                 (addUserClick)="onAddUserClick($event)"
                 [OnResetActions]="resetHeaderAction">
     </cim-header>
-    <mat-sidenav-container class="example-sidenav-container">
+    <div class="spinnerContainer" [ngClass]="showIsLoading ? 'showLoad' : 'hideLoad'">
+        <mat-spinner></mat-spinner>
+    </div>
+    <mat-sidenav-container>
         <mat-sidenav #sideMenu>
             <mat-nav-list>
                 <ng-template ngFor let-action [ngForOf]="sideMenuActions">

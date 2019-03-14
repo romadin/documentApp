@@ -2,6 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { ToastrModule } from 'ng6-toastr-notifications';
 
 import { MaterialModule } from '../shared/material.module';
 
@@ -35,8 +36,9 @@ import { FolderCommunicationService } from '../shared/packages/communication/Fol
 import { ActionCommunicationService } from '../shared/packages/communication/action.communication.service';
 import { SharedModule } from '../shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastService } from '../shared/toast.service';
+import { LoadingService } from '../shared/loading.service';
 
-import { ToastrModule } from 'ng6-toastr-notifications';
 
 const appRoutes: Routes = [
     {
@@ -92,6 +94,8 @@ const appRoutes: Routes = [
         ActionService,
         FolderCommunicationService,
         SideMenuCommunicationService,
+        ToastService,
+        LoadingService,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn,
     ],
     entryComponents: [ ProjectPopupComponent, UserPopupComponent ],

@@ -75,6 +75,11 @@ export class HeaderComponent implements OnInit {
         this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
             this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
         });
+
+        this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
+            const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
+            archiveAction.show = show;
+        });
     }
 
     private defineActions(): void {

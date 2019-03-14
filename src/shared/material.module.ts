@@ -1,11 +1,22 @@
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
-    MatButtonModule, MatButtonToggleModule,
+    MatButtonModule,
+    MatButtonToggleModule,
     MatCardModule,
-    MatCheckboxModule, MatDialogModule, MatExpansionModule,
-    MatFormFieldModule, MatIconModule,
-    MatInputModule, MatListModule, MatMenuModule, MatOptionModule, MatSelectModule, MatSidenavModule, MatTableModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatOptionModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatTableModule,
     MatToolbarModule,
 } from '@angular/material';
 
@@ -27,6 +38,7 @@ import {
         MatTableModule,
         MatSidenavModule,
         MatButtonToggleModule,
+        MatProgressSpinnerModule,
     ]
 })
 export class MaterialModule { }

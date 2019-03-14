@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Action } from './action.model';
@@ -8,22 +8,27 @@ import { ApiActionEditPostData, ApiActionNewPostData, ApiActionResponse } from '
 interface ActionCache {
     [id: number]: Action;
 }
+interface ActionsByProjectCache {
+    [id: number]: Action[];
+}
 
 interface ActionsByProject {
-    [id: number]: BehaviorSubject<Action[]>;
+    [id: number]: Subject<Action[]>;
 }
 
 @Injectable()
 export class ActionService {
     private actionCache: ActionCache = {};
+    private actionsByProjectCache: ActionsByProjectCache = [];
     private actionsByProject: ActionsByProject = [];
 
     constructor(private apiService: ApiService) { }
 
-    public getActionsByProject(projectId: number): BehaviorSubject<Action[]> {
+    public getActionsByProject(projectId: number): Subject<Action[]> {
         const params = { projectId: projectId, format: 'json' };
         if ( !this.actionsByProject[projectId]) {
-            this.actionsByProject[projectId] = new BehaviorSubject([]);
+            this.actionsByProjectCache[projectId] = [];
+            this.actionsByProject[projectId] = new Subject();
         }
 
         this.apiService.get('/actions', params).subscribe((actionsResponse: ApiActionResponse[]) => {
@@ -38,19 +43,20 @@ export class ActionService {
                 actionContainer.push(action);
             });
 
+            this.actionsByProjectCache[projectId] = actionContainer;
             this.actionsByProject[projectId].next(actionContainer);
         });
 
         return this.actionsByProject[projectId];
     }
 
-    public postAction(data: ApiActionNewPostData): BehaviorSubject<Action> {
+    public postAction(data: ApiActionNewPostData): Subject<Action> {
         let newAction: Action;
-        const action: BehaviorSubject<Action> = new BehaviorSubject(null);
+        const action: Subject<Action> = new Subject();
 
         this.apiService.post('/actions', data).subscribe((actionResponse: ApiActionResponse) => {
             newAction = this.makeAction(actionResponse);
-            const actions = this.actionsByProject[newAction.projectId].getValue();
+            const actions = this.actionsByProjectCache[newAction.projectId];
             actions.push(newAction);
             this.actionsByProject[newAction.projectId].next(actions);
             action.next(newAction);
