@@ -15,10 +15,11 @@ export class OrganisationResolver implements Resolve<Observable<Organisation> | 
 
         return this.organisationService.getCurrentOrganisation().pipe(
             mergeMap( organisation => {
+                console.log('here');
                 if (organisation) {
                     return of(organisation);
                 } else { // no organisation
-                    this.router.navigate(['login']);
+                    this.router.navigate(['not-found/organisation']);
                     return EMPTY;
                 }
             })

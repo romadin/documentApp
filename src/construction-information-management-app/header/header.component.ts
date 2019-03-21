@@ -33,11 +33,9 @@ type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/pr
 })
 export class HeaderComponent implements OnInit {
     @Input() sideNavigation: MatSidenav;
-    @Output() addUserClick: EventEmitter<boolean> = new EventEmitter<boolean>();
     public actions: MenuAction[] = [];
     public actionBack: MenuAction;
     public actionMenu: MenuAction;
-    public menuActions: MenuAction[] = [];
     public currentUser: User;
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];

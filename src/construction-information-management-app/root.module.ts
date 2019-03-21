@@ -42,6 +42,7 @@ import { OrganisationService } from '../shared/packages/organisation-package/org
 import { OrganisationResolver } from '../shared/packages/organisation-package/organisation.resolver';
 import { ConfirmPopupComponent } from './popups/confirm-popup/confirm-popup.component';
 import { MailService } from '../shared/service/mail.service';
+import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
 
 
 const appRoutes: Routes = [
@@ -66,7 +67,9 @@ const appRoutes: Routes = [
         path: '',
         redirectTo: 'projecten',
         pathMatch: 'full',
-    }
+    },
+    { path: 'not-found/organisation', component: OrganisationNotFoundComponent },
+    { path: '**', redirectTo: 'not-found/organisation'}
 ];
 
 @NgModule({
@@ -76,6 +79,7 @@ const appRoutes: Routes = [
         UserPopupComponent,
         ProjectPopupComponent,
         ConfirmPopupComponent,
+        OrganisationNotFoundComponent,
     ],
     imports: [
         BrowserModule,

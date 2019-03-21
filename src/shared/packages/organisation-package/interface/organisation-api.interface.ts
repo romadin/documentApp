@@ -6,3 +6,11 @@ export interface OrganisationApi {
     maxUser: number;
     logo: string | null;
 }
+
+export function isOrganisationApi(obj: any): obj is OrganisationApi {
+    return obj.id !== undefined &&
+        obj.name !== undefined &&
+        obj.primaryColor !== undefined &&
+        obj.secondaryColor !== undefined &&
+        obj.maxUser !== undefined;
+}
