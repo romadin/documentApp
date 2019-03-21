@@ -37,12 +37,6 @@ export class ConstructionInformationManagementComponent implements OnInit, After
         });
         this.defineSideMenuActions();
 
-        this.menuCommunicationService.triggerAddUserPopup.subscribe((trigger) => {
-            if (trigger) {
-                this.openDialogAddUser();
-            }
-        });
-
         this.loadingService.isLoading.pipe(delay(0)).subscribe((isLoading: boolean) => {
             this.showIsLoading = isLoading;
         });
@@ -52,12 +46,6 @@ export class ConstructionInformationManagementComponent implements OnInit, After
         this.sideMenuElement.elementScrolled().subscribe((event) => {
             this.scrollingService.setScrollPosition(this.sideMenuElement.measureScrollOffset('top'));
         });
-    }
-
-    public onAddUserClick(trigger: boolean): void {
-        if (trigger) {
-            this.openDialogAddUser();
-        }
     }
 
     private determineActions(navigation: NavigationEnd): void {
@@ -93,14 +81,6 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             needsAdmin: false,
             urlNotShow: '/projecten'
         };
-        const addUser: MenuAction = {
-            onClick: this.openDialogAddUser.bind(this),
-            iconName: 'person_add',
-            name: 'Gebruiker toevoegen',
-            show: true,
-            needsAdmin: true,
-            urlNotShow: '/gebruikers'
-        };
         const showUsers: MenuAction = {
             onClick: () => {
                 this.router.navigate(['gebruikers']);
@@ -118,19 +98,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             needsAdmin: false,
         };
 
-        this.sideMenuActions.push(projects, showUsers, addUser, logout);
-    }
-
-    private openDialogAddUser(): void {
-        const dialogRef = this.dialog.open(UserPopupComponent, {
-            width: '600px',
-            data: {
-                title: 'Voeg een gebruiker toe',
-                placeholder: 'Project naam',
-                submitButton: 'Voeg toe',
-            }
-        });
-        dialogRef.afterClosed().subscribe();
+        this.sideMenuActions.push(projects, showUsers, logout);
     }
 
     private logoutCurrentUser(): void {

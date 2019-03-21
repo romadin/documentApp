@@ -2,14 +2,17 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog, MatSidenav } from '@angular/material';
-import { filter } from 'rxjs/operators';
+import { filter, takeLast } from 'rxjs/operators';
 
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
-import { ProjectPopupComponent } from '../popups/project-popup/project-popup.component';
+import { ProjectPopupComponent, DefaultPopupData } from '../popups/project-popup/project-popup.component';
 import { RouterService } from '../../shared/service/router.service';
 import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
 import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
+import { UserPopupComponent } from '../popups/user-popup/user-popup.component';
+import { OrganisationService } from '../../shared/packages/organisation-package/organisation.service';
+import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
 
 export interface MenuAction {
     onClick: (item?) => void;
@@ -38,6 +41,7 @@ export class HeaderComponent implements OnInit {
     public currentUser: User;
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];
+    private currentOrganisation: Organisation;
 
     @Input()
     set OnResetActions(reset: boolean) {
@@ -55,7 +59,8 @@ export class HeaderComponent implements OnInit {
         private userService: UserService,
         private routerService: RouterService,
         private folderCommunicationService: HeaderWithFolderCommunicationService,
-        private actionCommunicationService: ActionCommunicationService
+        private actionCommunicationService: ActionCommunicationService,
+        private organisationService: OrganisationService
     ) {
         this.defineActions();
     }
@@ -80,6 +85,10 @@ export class HeaderComponent implements OnInit {
             const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
             archiveAction.show = show;
         });
+
+        this.organisationService.getCurrentOrganisation().pipe((takeLast(1))).subscribe((currentOrganisation) => {
+            this.currentOrganisation = currentOrganisation;
+        });
     }
 
     private defineActions(): void {
@@ -99,7 +108,7 @@ export class HeaderComponent implements OnInit {
             urlGroup: ['/projecten'],
         };
         const addUser: MenuAction = {
-            onClick: () => { this.addUserClick.emit(true); },
+            onClick: this.openDialogAddUser.bind(this),
             iconName: 'person_add',
             name: 'Gebruiker toevoegen',
             show: false,
@@ -197,14 +206,30 @@ export class HeaderComponent implements OnInit {
     }
 
     private openDialogAddProject(): void {
+        const data: DefaultPopupData =  {
+            title: 'Voeg een project toe',
+            placeholder: 'Project naam',
+            submitButton: 'Voeg toe',
+            organisation: this.currentOrganisation
+        };
         this.dialog.open(ProjectPopupComponent, {
             width: '400px',
-            data: {
-                title: 'Voeg een project toe',
+            data: data,
+        });
+    }
+
+    private openDialogAddUser(): void {
+        const data: DefaultPopupData = {
+            title: 'Voeg een gebruiker toe',
                 placeholder: 'Project naam',
                 submitButton: 'Voeg toe',
-            }
+                organisation: this.currentOrganisation
+        };
+        const dialogRef = this.dialog.open(UserPopupComponent, {
+            width: '600px',
+            data: data,
         });
+        dialogRef.afterClosed().subscribe();
     }
 
     private replaceIdForUrlGroup(currentUrl: string, urlGroup: UrlGroup): UrlGroup {

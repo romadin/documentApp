@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ActivateUserComponent } from './activate-user/activate-user.component';
 import { UserResolver } from '../../shared/packages/user-package/user.resolver';
 import { CanActivateAdminUser } from '../../can-activate/CanActivateAdminUser';
+import { MailService } from '../../shared/service/mail.service';
 
 const routes: Routes = [
     {
@@ -18,7 +19,7 @@ const routes: Routes = [
     {
         path: 'activate/:token',
         component: ActivateUserComponent,
-        resolve: {user: UserResolver}
+        resolve: { user: UserResolver }
     },
 ];
 
@@ -33,7 +34,10 @@ const routes: Routes = [
         UsersOverviewComponent,
         ActivateUserComponent,
     ],
-    providers: [ UserResolver, CanActivateAdminUser],
+    providers: [
+        UserResolver,
+        CanActivateAdminUser,
+    ],
 })
 
 export class UserModule {  }

@@ -38,21 +38,29 @@ import { SharedModule } from '../shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastService } from '../shared/toast.service';
 import { LoadingService } from '../shared/loading.service';
+import { OrganisationService } from '../shared/packages/organisation-package/organisation.service';
+import { OrganisationResolver } from '../shared/packages/organisation-package/organisation.resolver';
+import { ConfirmPopupComponent } from './popups/confirm-popup/confirm-popup.component';
+import { MailService } from '../shared/service/mail.service';
 
 
 const appRoutes: Routes = [
     {
         path: 'login',
         loadChildren: './login-app/login-app.module#LoginAppModule',
-        canActivate: [ CanActivateAlreadyLoggedIn ] },
+        canActivate: [ CanActivateAlreadyLoggedIn ],
+        resolve: { organisation: OrganisationResolver }
+    },
     {
         path: 'gebruikers',
         loadChildren: './user-app/user.module#UserModule',
+        resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'projecten',
         loadChildren: './project-app/project.module#ProjectModule',
-        canActivate: [ CanActivateLoggedIn ]
+        canActivate: [ CanActivateLoggedIn ],
+        resolve: { organisation: OrganisationResolver }
     },
     {
         path: '',
@@ -67,6 +75,7 @@ const appRoutes: Routes = [
         HeaderComponent,
         UserPopupComponent,
         ProjectPopupComponent,
+        ConfirmPopupComponent,
     ],
     imports: [
         BrowserModule,
@@ -96,9 +105,17 @@ const appRoutes: Routes = [
         SideMenuCommunicationService,
         ToastService,
         LoadingService,
+        MailService,
+
+        OrganisationService,
+        OrganisationResolver,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn,
     ],
-    entryComponents: [ ProjectPopupComponent, UserPopupComponent ],
+    entryComponents: [
+        UserPopupComponent,
+        ProjectPopupComponent,
+        ConfirmPopupComponent,
+    ],
     bootstrap: [ ConstructionInformationManagementComponent ]
 })
 export class RootModule { }

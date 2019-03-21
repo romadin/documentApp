@@ -3,6 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { SideMenuCommunicationService } from '../../../shared/packages/communication/sideMenu.communication.service';
+import { ActivatedRoute } from '@angular/router';
+import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 
 @Component({
   selector: 'cim-partners',
@@ -17,10 +19,13 @@ export class PartnersComponent implements OnInit {
     public userToEdit: User;
 
     constructor(private userService: UserService,
-                private sideMenuCommunicationService: SideMenuCommunicationService) { }
+                private sideMenuCommunicationService: SideMenuCommunicationService,
+                private activatedRoute: ActivatedRoute
+    ) { }
 
     ngOnInit() {
-        this.userService.getUsers({projectId: this.projectId}).subscribe((users) => {
+        const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.userService.getUsers({organisationId: organisation.id, projectId: this.projectId}).subscribe((users) => {
             this.users = users.filter((user) => user.projectsId.find((id) => id === this.projectId));
         });
     }
@@ -43,5 +48,4 @@ export class PartnersComponent implements OnInit {
             this.userToEdit = undefined;
         }
     }
-
 }

@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Project } from '../../../shared/packages/project-package/project.model';
+import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
-import { Project } from '../../../shared/packages/project-package/project.model';
-import { Router } from '@angular/router';
-import { ProjectService } from '../../../shared/packages/project-package/project.service';
+import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 
 @Component({
   selector: 'cim-item-read',
@@ -14,12 +15,15 @@ export class ItemReadComponent implements OnInit {
     @Input() items: (Folder | Document)[];
     @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
     project: Project;
+    private organisation: Organisation;
 
     constructor(private router: Router,
-                private projectService: ProjectService) {
+                private projectService: ProjectService,
+                private activatedRoute: ActivatedRoute) {
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         const projectId = parseInt(this.router.url.split('/')[2], 10);
 
-        this.projectService.getProject(projectId).then((project: Project) => {
+        this.projectService.getProject(projectId, this.organisation).then((project: Project) => {
             this.project = project;
         });
     }

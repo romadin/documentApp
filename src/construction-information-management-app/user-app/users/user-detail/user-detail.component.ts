@@ -6,6 +6,8 @@ import { User } from '../../../../shared/packages/user-package/user.model';
 import { ProjectService } from '../../../../shared/packages/project-package/project.service';
 import { Project } from '../../../../shared/packages/project-package/project.model';
 import { UserService } from '../../../../shared/packages/user-package/user.service';
+import { ActivatedRoute } from '@angular/router';
+import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 
 @Component({
   selector: 'cim-user-detail',
@@ -30,7 +32,8 @@ export class UserDetailComponent implements OnInit {
     private fileReader: FileReader = new FileReader();
     constructor(private projectService: ProjectService,
                 private userService: UserService,
-                private sanitizer: DomSanitizer) {
+                private sanitizer: DomSanitizer,
+                private activatedRoute: ActivatedRoute) {
         this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('/assets/images/defaultProfile.png');
     }
 
@@ -93,9 +96,10 @@ export class UserDetailComponent implements OnInit {
     }
 
     private getLinkedProjects(): Promise<Project>[] {
+        const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         const projectPromise = [];
         this.user.projectsId.forEach((projectId) => {
-            projectPromise.push(this.projectService.getProject(projectId));
+            projectPromise.push(this.projectService.getProject(projectId, organisation));
         });
         return projectPromise;
     }

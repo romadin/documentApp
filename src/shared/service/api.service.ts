@@ -5,16 +5,14 @@ import { map } from 'rxjs/operators';
 import { ApiAuthResponse } from '../../construction-information-management-app/login-app/interfaces/api-auth.interface';
 import { environment } from '../../environments/environment';
 import { User } from '../packages/user-package/user.model';
+import { LoadingService } from '../loading.service';
 
 @Injectable()
 export class ApiService {
     private token: ApiAuthResponse;
-    private APIURL = environment.APIURL;
-    private http: HttpClient;
+    private API_URL = environment.API_URL;
 
-    constructor(http: HttpClient) {
-        this.http = http;
-
+    constructor(private http: HttpClient, private loadingService: LoadingService) {
         const user: User = JSON.parse(sessionStorage.getItem('currentUser'));
         if ( sessionStorage.getItem('token') && user ) {
             this.token = {
@@ -24,12 +22,17 @@ export class ApiService {
         }
     }
 
-    public postAuthenticate(path: string, body: any): Observable<ApiAuthResponse> {
-        return this.http.post(this.APIURL + path, body).pipe(map(response => this.token = <ApiAuthResponse>response ));
+    public postAuthenticate(path: string, body: any, params: any): Observable<ApiAuthResponse> {
+        this.loadingService.isLoading.next(true);
+        const paramObject = {params: params};
+        return this.http.post(this.API_URL + path, body, paramObject).pipe(map((response) => {
+            this.loadingService.isLoading.next(false);
+            return this.token = <ApiAuthResponse>response;
+        }));
     }
 
     public noTokenPost(path: string, body, params?: any ): Observable<any> {
-        return this.http.post( this.APIURL + path, body, params);
+        return this.http.post( this.API_URL + path, body, params);
     }
 
     public post(path: string, body: any, params?: any): Observable<any> {
@@ -38,29 +41,30 @@ export class ApiService {
             Object.assign( paramObject.params, params );
         }
 
-        return this.http.post(this.APIURL + path, body, paramObject);
+        return this.http.post(this.API_URL + path, body, paramObject);
     }
 
     public get(path: string, params: any): Observable<any> {
         const paramObject = { params: { token: this.token.token }};
         Object.assign( paramObject.params, params );
 
-        return this.http.get(this.APIURL + path, paramObject );
+        return this.http.get(this.API_URL + path, paramObject );
     }
 
     public noTokenGet(path: string, params: any): Observable<any> {
-        return this.http.get(this.APIURL + path, params );
+        const paramObject = {params: params};
+        return this.http.get(this.API_URL + path, paramObject );
     }
 
     public getBlob(path: string, params: any): Observable<any> {
-        return this.http.get(this.APIURL + path, { params: { token: this.token.token, format: 'json'}, responseType: 'blob' } );
+        return this.http.get(this.API_URL + path, { params: { token: this.token.token, format: 'json'}, responseType: 'blob' } );
     }
 
     public delete(path: string, params: any): Observable<any> {
         const paramObject = { params: { token: this.token.token }};
         Object.assign( paramObject.params, params);
 
-        return this.http.delete(this.APIURL + path, paramObject);
+        return this.http.delete(this.API_URL + path, paramObject);
     }
 
     public tokenExist(): boolean {

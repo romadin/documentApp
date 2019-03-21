@@ -1,10 +1,12 @@
 import { ApiProjectResponse } from './api-project.interface';
+import { Organisation } from '../organisation-package/organisation.model';
 
 export class Project {
     private _id: number;
     private _name: string;
     private _agendaId: number;
     private _actionListId: number;
+    private _organisation: Organisation;
 
     public constructor() {
         //
@@ -40,6 +42,15 @@ export class Project {
 
     public setActionListId(value: number) {
         this._actionListId = value;
+    }
+
+
+    get organisation(): Organisation {
+        return this._organisation;
+    }
+
+    set organisation(value: Organisation) {
+        this._organisation = value;
     }
 
     public update(data: ApiProjectResponse): void {

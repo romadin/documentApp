@@ -9,6 +9,7 @@ import { RoleService } from '../role-package/role.service';
 import { User } from './user.model';
 import { map } from 'rxjs/operators';
 import { ApiDocResponse } from '../document-package/api-document.interface';
+import { Organisation } from '../organisation-package/organisation.model';
 
 interface ActivationParams {
     params: { activationToken: string; };
@@ -16,6 +17,15 @@ interface ActivationParams {
 
 interface UserCache {
     [id: number]: User;
+}
+
+export interface UserParams {
+    organisationId: number;
+
+}
+
+export interface GetUserParams extends UserParams{
+    projectId?: number;
 }
 
 @Injectable()
@@ -31,8 +41,7 @@ export class UserService {
         }
     }
 
-    public getUsers(options?): BehaviorSubject<User[]> {
-        const params = options ? options : {};
+    public getUsers(params: GetUserParams): BehaviorSubject<User[]> {
         if (Object.values(this.userCache).length === this.allUsers.getValue().length) {
             return this.allUsers;
         }
@@ -68,7 +77,7 @@ export class UserService {
     }
 
     public getUserByIdActivationCode(activationToken: string): Observable<User> {
-        return this.apiService.noTokenGet('/users/activate',  { params: {activationToken: activationToken}})
+        return this.apiService.noTokenGet('/users/activate',   {activationToken: activationToken})
             .pipe( map( user => this.makeUser(user)) );
     }
 
@@ -91,9 +100,9 @@ export class UserService {
         return subject;
     }
 
-    public postUser(body: FormData): Subject<User> {
+    public postUser(body: FormData, params: UserParams): Subject<User> {
         const subject: Subject<User> = new Subject();
-        this.apiService.post('/users', body).subscribe((value: ApiUserResponse) => {
+        this.apiService.post('/users', body, params).subscribe((value: ApiUserResponse) => {
             subject.next(this.makeUser(value));
             this.allUsers.next(Object.values(this.userCache));
         });

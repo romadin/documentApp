@@ -4,7 +4,8 @@
 
 export const environment = {
     production: false,
-    APIURL: 'http://api.romario:8000',
+    API_URL: 'http://api.romario:8000',
+    APP_TOKEN: '}p/mo0nz"tz.-8z/HOThy6LO4jg[F_',
 };
 
 /*

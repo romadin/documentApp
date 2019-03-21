@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../../../shared/service/auth.service';
+import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
+import { LoadingService } from '../../../shared/loading.service';
 
 @Component({
     selector: 'cim-login-app',
@@ -10,24 +12,32 @@ import { AuthService } from '../../../shared/service/auth.service';
     styleUrls: [ './login.component.css' ]
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
     public userForm: FormGroup = new FormGroup({
         email: new FormControl(''),
         password: new FormControl(''),
     });
+    private organisation: Organisation;
 
-    private authService: AuthService;
-    private router: Router;
-
-    constructor (authService: AuthService, router: Router) {
+    constructor (private authService: AuthService,
+                 private router: Router,
+                 private activatedRoute: ActivatedRoute,
+                 private loadingService: LoadingService) {
         this.authService = authService;
         this.router = router;
     }
 
-    public onSubmit() {
-        const email = this.userForm.controls.email.value;
+    ngOnInit() {
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+    }
 
-        this.authService.AuthenticateUser( email, this.userForm.controls.password.value).subscribe((gotUser) => {
+    onSubmit() {
+        // this.loadingService.isLoading.next(true);
+        const email = this.userForm.controls.email.value;
+        const params = { organisationId: this.organisation.id };
+
+        this.authService.AuthenticateUser( email, this.userForm.controls.password.value, params).subscribe((gotUser) => {
+            // this.loadingService.isLoading.next(false);
             if (gotUser === true) {
                 // redirect to projects page
                 this.router.navigate(['/projecten']);
