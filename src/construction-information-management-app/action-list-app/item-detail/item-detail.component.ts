@@ -48,7 +48,7 @@ export class ItemDetailComponent implements OnInit {
                 private toastService: ToastService) { }
 
     ngOnInit() {
-        this.actionForm.controls.description.setValidators([ Validators.required, Validators.minLength(4) ]);
+        this.actionForm.controls.description.setValidators([ Validators.required ]);
         this.actionForm.controls.week.setValidators([ Validators.maxLength(2), weekNumberValidator(52) ]);
     }
 

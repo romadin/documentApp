@@ -2,14 +2,9 @@
     <h3> {{action ? 'Actie bewerken' : 'Actie toevoegen'}} </h3>
     <form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
         <div mat-dialog-content>
-            <div *ngIf="actionForm.get('description').invalid && (actionForm.get('description').dirty || actionForm.get('description').touched)"
-                 class="alert alert-danger">
-
+            <div *ngIf="actionForm.get('description').invalid && (actionForm.get('description').dirty || actionForm.get('description').touched)" class="alert alert-danger">
                 <div *ngIf="actionForm.get('description').errors.required">
                     Omschrijving is vereist
-                </div>
-                <div *ngIf="actionForm.get('description').errors.minlength">
-                    Omschrijving moet minimaal meer dan 4 karakters lang zijn
                 </div>
             </div>
             <mat-form-field>
