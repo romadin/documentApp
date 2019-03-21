@@ -68,7 +68,8 @@ export class HeaderComponent implements OnInit {
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routeHistory.push(navigation);
             this.determineActions(navigation);
-            this.actionBack.show = navigation.url === '/login' ? false : (navigation.url !== '/projecten');
+            this.actionBack.show = navigation.url === '/login' || navigation.url === '/not-found/organisation' ?
+                false : navigation.url !== '/projecten';
         });
 
         this.routerService.backRoute.subscribe((backRoute: string) => {

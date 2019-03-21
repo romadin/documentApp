@@ -42,7 +42,7 @@ export class OrganisationService {
         organisation.name = data.name;
         organisation.primaryColor = data.primaryColor;
         organisation.secondaryColor = data.secondaryColor;
-        organisation.maxUser = data.maxUser;
+        organisation.maxUser = data.maxUsers;
 
         // @todo need to add the logo
         this.organisationCache[organisation.id] = organisation;

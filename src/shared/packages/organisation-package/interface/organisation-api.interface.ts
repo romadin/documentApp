@@ -3,7 +3,7 @@ export interface OrganisationApi {
     name: string;
     primaryColor: string;
     secondaryColor: string;
-    maxUser: number;
+    maxUsers: number;
     logo: string | null;
 }
 
@@ -12,5 +12,5 @@ export function isOrganisationApi(obj: any): obj is OrganisationApi {
         obj.name !== undefined &&
         obj.primaryColor !== undefined &&
         obj.secondaryColor !== undefined &&
-        obj.maxUser !== undefined;
+        obj.maxUsers !== undefined;
 }
