@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content>
+    <span> Weet u zeker dat u <strong> {{data.name}} </strong> wilt {{data.action}}</span>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onAcceptClick($event)"> Ja </button>
+    <button mat-button (click)="onNoClick($event)"> Nee </button>
+</div>
