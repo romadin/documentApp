@@ -1,6 +1,8 @@
 export interface ApiProjectResponse {
     id: number;
     name: string;
-    agendaId: number | null;
-    actionListId: number | null;
+}
+
+export interface ProjectUpdateData {
+    name?: string;
 }

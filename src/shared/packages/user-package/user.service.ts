@@ -3,13 +3,14 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiUserResponse, EditUserBody, UserBody } from './api-user.interface';
+import { ApiUserResponse, EditUserBody, isApiUserResponse, UserBody } from './api-user.interface';
 import { ApiService } from '../../service/api.service';
 import { RoleService } from '../role-package/role.service';
 import { User } from './user.model';
 import { map } from 'rxjs/operators';
 import { ApiDocResponse } from '../document-package/api-document.interface';
 import { Organisation } from '../organisation-package/organisation.model';
+import { ErrorMessage } from '../../type-guard/error-message';
 
 interface ActivationParams {
     params: { activationToken: string; };
@@ -21,10 +22,9 @@ interface UserCache {
 
 export interface UserParams {
     organisationId: number;
-
 }
 
-export interface GetUserParams extends UserParams{
+export interface GetUserParams extends UserParams {
     projectId?: number;
 }
 
@@ -100,20 +100,28 @@ export class UserService {
         return subject;
     }
 
-    public postUser(body: FormData, params: UserParams): Subject<User> {
-        const subject: Subject<User> = new Subject();
-        this.apiService.post('/users', body, params).subscribe((value: ApiUserResponse) => {
-            subject.next(this.makeUser(value));
-            this.allUsers.next(Object.values(this.userCache));
+    public postUser(body: FormData, params: UserParams): Subject<User | ErrorMessage> {
+        const subject: Subject<User | ErrorMessage> = new Subject();
+        this.apiService.post('/users', body, params).subscribe((value: ApiUserResponse | ErrorMessage) => {
+            if (isApiUserResponse(value)) {
+                subject.next(this.makeUser(value));
+                this.allUsers.next(Object.values(this.userCache));
+            } else {
+                subject.next(value);
+            }
         });
         return subject;
     }
 
-    public editUser( user: User, body: FormData ): Subject<User> {
-        const subject: Subject<User> = new Subject();
-        this.apiService.post('/users/' + user.id, body).subscribe((value: ApiUserResponse) => {
-            this.updateUser(user, value);
-            subject.next(user);
+    public editUser( user: User, body: FormData ): Subject<User | ErrorMessage> {
+        const subject: Subject<User | ErrorMessage> = new Subject();
+        this.apiService.post('/users/' + user.id, body).subscribe((value: ApiUserResponse | ErrorMessage) => {
+            if (isApiUserResponse(value)) {
+                this.updateUser(user, value);
+                subject.next(user);
+            } else {
+                subject.next(value);
+            }
         });
         return subject;
     }

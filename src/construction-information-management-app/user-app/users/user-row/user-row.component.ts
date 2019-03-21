@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material';
 
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 import { User } from '../../../../shared/packages/user-package/user.model';
 import { UserService } from '../../../../shared/packages/user-package/user.service';
-import { Project } from '../../../../shared/packages/project-package/project.model';
+import { ToastService } from '../../../../shared/toast.service';
 
 @Component({
   selector: 'cim-user-row',
@@ -19,7 +21,11 @@ export class UserRowComponent implements OnInit {
     public image: SafeStyle;
     private fileReader: FileReader = new FileReader();
 
-    constructor(private userService: UserService, private sanitizer: DomSanitizer) { }
+    constructor(public dialog: MatDialog,
+                private userService: UserService,
+                private sanitizer: DomSanitizer,
+                private toast: ToastService,
+    ) { }
 
     ngOnInit() {
         this.image = this.sanitizer.bypassSecurityTrustStyle('url( "/assets/images/defaultProfile.png")');
@@ -45,10 +51,20 @@ export class UserRowComponent implements OnInit {
     public deleteUser (event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        const params = this.projectId ? {projectId: this.projectId} : {};
-        this.userService.deleteUser(this.user, params).subscribe((deleted) => {
-            if (deleted) {
-                this.userToDelete.emit(this.user);
+        const popupData: ConfirmPopupData = {
+            title: 'Gebruiker verwijderen',
+            name: this.user.getFullName(),
+            action: 'verwijderen'
+        };
+        this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+            if (action) {
+                const params = this.projectId ? {projectId: this.projectId} : {};
+                this.userService.deleteUser(this.user, params).subscribe((deleted) => {
+                    if (deleted) {
+                        this.toast.showSuccess('Project: ' + this.user.getFullName() + ' is verwijderd', 'Verwijderd');
+                        this.userToDelete.emit(this.user);
+                    }
+                });
             }
         });
     }

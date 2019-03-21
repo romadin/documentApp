@@ -9,3 +9,9 @@ export function weekNumberValidator(amount: number): ValidatorFn {
         return maxNumber ? {'weekNumber': {value: control.value}} : null;
     };
 }
+
+export function duplicateValidator(existingItems: string[]): ValidatorFn {
+    return (control: AbstractControl) => {
+        return existingItems.find(item => item === control.value) ? {'duplicate': {value: control.value}} : null;
+    };
+}

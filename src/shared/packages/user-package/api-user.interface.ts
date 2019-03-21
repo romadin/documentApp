@@ -34,3 +34,16 @@ export interface ApiRoleResponse {
     id: number;
     name: string;
 }
+
+export function isApiUserResponse(arg: any): arg is ApiUserResponse {
+    return arg.id !== undefined &&
+        arg.firstName !== undefined &&
+        arg.insertion !== undefined &&
+        arg.lastName !== undefined &&
+        arg.email !== undefined &&
+        arg.function !== undefined &&
+        arg.role !== undefined &&
+        arg.projectsId !== undefined &&
+        arg.hasImage !== undefined &&
+        arg.phoneNumber !== undefined;
+}

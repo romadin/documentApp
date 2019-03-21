@@ -21,9 +21,22 @@
                     <mat-form-field>
                         <input matInput placeholder="Achternaam" formControlName="lastName" required>
                     </mat-form-field>
+                    <div *ngIf="userForm.get('email').invalid && (userForm.get('email').dirty || userForm.get('email').touched)" class="alert alert-danger">
+                        <div *ngIf="userForm.get('email').errors.email">
+                            De e-mailadres heeft een ongeldig formaat
+                        </div>
+                        <div *ngIf="userForm.get('email').errors.duplicate">
+                            De email bestaat al
+                        </div>
+                    </div>
                     <mat-form-field>
                         <input type="email" matInput placeholder="Email" formControlName="email" required>
                     </mat-form-field>
+                    <div *ngIf="userForm.get('phoneNumber').invalid && (userForm.get('phoneNumber').dirty || userForm.get('phoneNumber').touched)" class="alert alert-danger">
+                        <div *ngIf="userForm.get('phoneNumber').errors.duplicate">
+                            De telefoon nummer bestaat al
+                        </div>
+                    </div>
                     <mat-form-field>
                         <input type="text" matInput placeholder="Telefoon nummer" formControlName="phoneNumber" required>
                     </mat-form-field>

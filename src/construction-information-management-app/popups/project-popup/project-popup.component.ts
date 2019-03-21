@@ -45,7 +45,7 @@ export class ProjectPopupComponent {
         const projectName = this.projectForm.controls.projectName.value;
         if (projectName !== '') {
             if (this.data.id) {
-                this.projectService.updateProject({ name: projectName }, this.data.id).then((value) => {
+                this.projectService.updateProject({ name: projectName }, this.data.id).subscribe((value) => {
                     this.toastService.showSuccess('Project: ' + this.data.placeholder + ' is bewerkt', 'Bewerkt');
                     this.dialogRef.close(value);
                 });

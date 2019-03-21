@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
+import { LoadingService } from '../../../shared/loading.service';
 
 @Component({
   selector: 'cim-users-overview',
@@ -17,10 +18,13 @@ export class UsersOverviewComponent {
     tempAnimationDelay: boolean;
 
     constructor(private userService: UserService,
-                private activatedRoute: ActivatedRoute
+                private activatedRoute: ActivatedRoute,
+                private loadingService: LoadingService
     ) {
+        this.loadingService.isLoading.next(true);
         const organisation: Organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.userService.getUsers({organisationId: organisation.id}).subscribe((users) => {
+            this.loadingService.isLoading.next(false);
             this.users = users;
         });
         this.currentUser = this.userService.getCurrentUser().getValue();

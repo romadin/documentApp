@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { User } from '../../../../shared/packages/user-package/user.model';
 import { ProjectService } from '../../../../shared/packages/project-package/project.service';
@@ -8,6 +8,9 @@ import { Project } from '../../../../shared/packages/project-package/project.mod
 import { UserService } from '../../../../shared/packages/user-package/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
+import { ToastService } from '../../../../shared/toast.service';
+import { ErrorMessage, isErrorMessage } from '../../../../shared/type-guard/error-message';
+import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
 
 @Component({
   selector: 'cim-user-detail',
@@ -30,11 +33,16 @@ export class UserDetailComponent implements OnInit {
     imageToUpload: File;
     imageSrc: any;
     private fileReader: FileReader = new FileReader();
-    constructor(private projectService: ProjectService,
-                private userService: UserService,
-                private sanitizer: DomSanitizer,
-                private activatedRoute: ActivatedRoute) {
+    private existingItems: string[] = [];
+    constructor(
+        private projectService: ProjectService,
+        private userService: UserService,
+        private sanitizer: DomSanitizer,
+        private activatedRoute: ActivatedRoute,
+        private toast: ToastService,
+    ) {
         this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('/assets/images/defaultProfile.png');
+        this.userForm.controls.email.setValidators([Validators.email]);
     }
 
     ngOnInit() {
@@ -74,8 +82,13 @@ export class UserDetailComponent implements OnInit {
             data.append('image', this.imageToUpload, this.imageToUpload.name);
         }
 
-        this.userService.editUser(this.user, data).subscribe((value) => {
-            this.onCloseDetailView();
+        this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
+            if (value instanceof User) {
+                this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
+                this.onCloseDetailView();
+            } else {
+                this.showErrorMessage(value);
+            }
         });
     }
 
@@ -93,6 +106,21 @@ export class UserDetailComponent implements OnInit {
         this.userForm.controls.email.setValue(this.user.email);
         this.userForm.controls.phoneNumber.setValue(this.user.phoneNumber);
         this.userForm.controls.function.setValue(this.user.function);
+    }
+
+    private showErrorMessage(message: ErrorMessage): void {
+        for (const key in message) {
+            const currentValue = this.userForm.controls[key].value;
+            if (!this.existingItems.find(item => item === currentValue)) {
+                this.existingItems.push(currentValue);
+            }
+            const validators = [duplicateValidator(this.existingItems)];
+            if (key === 'email') {
+                validators.push(Validators.email);
+            }
+            this.userForm.controls[key].setValidators(validators);
+            this.userForm.controls[key].setErrors({'duplicate': true});
+        }
     }
 
     private getLinkedProjects(): Promise<Project>[] {

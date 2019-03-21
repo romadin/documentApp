@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
 import { DefaultPopupData } from '../project-popup/project-popup.component';
@@ -9,6 +9,9 @@ import { Project } from '../../../shared/packages/project-package/project.model'
 import { LoadingService } from '../../../shared/loading.service';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { MailService } from '../../../shared/service/mail.service';
+import { duplicateValidator } from '../../../shared/form-validator/custom-validators';
+import { ToastService } from '../../../shared/toast.service';
+import { ErrorMessage } from '../../../shared/type-guard/error-message';
 
 interface SelectedProject {
     [id: number]: Project;
@@ -34,6 +37,7 @@ export class UserPopupComponent {
     public selectedProjects: SelectedProject = {};
     public imageSrc: any;
     public imageToUpload: File;
+    private existingItems: string[] = [];
 
     constructor(
         public dialogRef: MatDialogRef<UserPopupComponent>,
@@ -42,11 +46,14 @@ export class UserPopupComponent {
         private mailService: MailService,
         private projectService: ProjectService,
         private loadingService: LoadingService,
+        private toast: ToastService,
     ) {
         this.imageSrc = '/assets/images/defaultProfile.png';
         this.projectService.getProjects(this.data.organisation).subscribe((projects: Project[]) => {
             this.allProjects = projects;
         });
+
+        this.userForm.controls.email.setValidators([Validators.email]);
     }
 
     onNoClick(event: MouseEvent): void {
@@ -75,10 +82,15 @@ export class UserPopupComponent {
         if (this.imageToUpload) {
             data.append('image', this.imageToUpload, this.imageToUpload.name);
         }
-        this.userService.postUser(data, {organisationId: this.data.organisation.id }).subscribe((user: User) => {
-            this.dialogRef.close(user);
-            this.mailService.sendUserActivation(user);
+        this.userService.postUser(data, {organisationId: this.data.organisation.id }).subscribe((user: User | ErrorMessage) => {
             this.loadingService.isLoading.next(false);
+            if (user instanceof User) {
+                this.dialogRef.close(user);
+                this.mailService.sendUserActivation(user);
+                this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
+            } else {
+                this.showErrorMessage(<ErrorMessage>user);
+            }
         });
     }
 
@@ -100,6 +112,21 @@ export class UserPopupComponent {
             reader.onload = e => this.imageSrc = reader.result;
 
             reader.readAsDataURL(this.imageToUpload);
+        }
+    }
+
+    private showErrorMessage(message: ErrorMessage): void {
+        for (const key in message) {
+            const currentValue = this.userForm.controls[key].value;
+            if (!this.existingItems.find(item => item === currentValue)) {
+                this.existingItems.push(currentValue);
+            }
+            const validators = [duplicateValidator(this.existingItems)];
+            if (key === 'email') {
+                validators.push(Validators.email);
+            }
+            this.userForm.controls[key].setValidators(validators);
+            this.userForm.controls[key].setErrors({'duplicate': true});
         }
     }
 
