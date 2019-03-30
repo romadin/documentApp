@@ -1,3 +1,5 @@
+import { EventLocation } from './event.service';
+
 export class Event {
     private _id: number;
     private _name: string;
@@ -5,6 +7,7 @@ export class Event {
     private _projectId: number;
     private _startDate: Date;
     private _endDate: Date;
+    private _location: EventLocation;
 
     constructor() {}
 
@@ -54,5 +57,13 @@ export class Event {
 
     set endDate(value: Date) {
         this._endDate = value;
+    }
+
+    get location(): EventLocation {
+        return this._location;
+    }
+
+    set location(value: EventLocation) {
+        this._location = value;
     }
 }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Event } from '../../../../shared/packages/agenda-package/event.model';
 
 @Component({
@@ -8,10 +8,15 @@ import { Event } from '../../../../shared/packages/agenda-package/event.model';
 })
 export class EventRowComponent implements OnInit {
     @Input() event: Event;
+    @Output() eventToShow: EventEmitter<Event> = new EventEmitter<Event>();
 
     constructor() { }
 
     ngOnInit() {
     }
 
+    showEvent(e: MouseEvent): void {
+        e.stopPropagation();
+        this.eventToShow.emit(this.event);
+    }
 }

@@ -20,6 +20,13 @@ interface EventApiResponse {
     projectId: number;
     startDate: ApiDate;
     endDate: ApiDate;
+    location: EventLocation;
+}
+
+export interface EventLocation {
+    streetName: string;
+    zipCode: string;
+    residence: string;
 }
 
 @Injectable()
@@ -44,6 +51,7 @@ export class EventService {
         event.projectId = apiData.projectId;
         event.startDate = new Date(apiData.startDate.date);
         event.endDate = new Date(apiData.endDate.date);
+        event.location = apiData.location;
         return event;
     }
 }

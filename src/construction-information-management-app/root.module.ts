@@ -3,8 +3,10 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ng6-toastr-notifications';
+import { AgmCoreModule } from '@agm/core';
 import { registerLocaleData } from '@angular/common';
 import localeNl from '@angular/common/locales/nl';
+
 
 import { MaterialModule } from '../shared/material.module';
 

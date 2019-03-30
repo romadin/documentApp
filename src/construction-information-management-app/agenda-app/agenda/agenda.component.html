@@ -1,10 +1,12 @@
 <div class="agendaContainer">
     <div class="listWrapper">
         <div *ngFor="let event of events">
-            <cim-event-row [event]="event"></cim-event-row>
+            <cim-event-row [event]="event"
+                           (eventToShow)="eventOnClick($event)">
+            </cim-event-row>
         </div>
     </div>
-    <div class="detailView">
-        <span>here is the detail view for single item</span>
+    <div class="detailView" [ngClass]="rightSideActive ? 'show' : ''">
+        <cim-event-detail *ngIf="eventToEdit" [event]="eventToEdit" (closeView)="onCloseRightSide($event)"></cim-event-detail>
     </div>
 </div>

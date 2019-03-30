@@ -10,12 +10,29 @@ import { Event } from '../../../shared/packages/agenda-package/event.model';
 })
 export class AgendaComponent implements OnInit {
     events: Event[];
-    private projectId: number;
+    rightSideActive = false;
+    eventToEdit: Event;
+
     constructor(private eventService: EventService, private route: ActivatedRoute) { }
 
     ngOnInit() {
         this.events  = <Event[]>this.route.snapshot.data.events;
+    }
 
+    eventOnClick(clickedEvent: Event): void  {
+        this.eventToEdit = clickedEvent;
+        this.rightSideActive = true;
+    }
+
+    onCloseRightSide(close: boolean): void {
+        this.rightSideActive = false;
+        this.reset();
+    }
+
+    private reset(): void {
+        setTimeout(() => {
+            this.eventToEdit = undefined;
+        }, 500);
     }
 
 }
