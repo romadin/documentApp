@@ -55,7 +55,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
                ) {
     }
     ngOnInit() {
-        this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+        this.projectId = parseInt(this.activatedRoute.parent.parent.snapshot.paramMap.get('id'), 10);
         this.loadingService.isLoading.next(true);
         this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
             this.loadingService.isLoading.next(false);

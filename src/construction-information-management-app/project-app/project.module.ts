@@ -21,9 +21,13 @@ const routes: Routes = [
                 canActivate: [ CanActivateLoggedIn ]
             },
             {
-                path: 'actionList/:id',
+                path: 'acties',
                 loadChildren: '../action-list-app/action-list.module#ActionListModule',
                 canActivate: [ CanActivateLoggedIn ]
+            },
+            {
+                path: 'agenda',
+                loadChildren: '../'
             },
             {
                 path: '',

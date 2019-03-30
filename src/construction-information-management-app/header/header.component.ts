@@ -24,7 +24,7 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/actionList/:id';
+type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/acties';
 
 @Component({
   selector: 'cim-header',
@@ -136,7 +136,7 @@ export class HeaderComponent implements OnInit {
             name: 'Actie toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/projecten/:id/actionList/:id'],
+            urlGroup: ['/projecten/:id/acties'],
         };
         const showArchivedActions: MenuAction = {
             onClick: () => { this.actionCommunicationService.showArchivedActions.next(true); },
@@ -144,7 +144,7 @@ export class HeaderComponent implements OnInit {
             name: 'Gearchiveerde acties',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/projecten/:id/actionList/:id'],
+            urlGroup: ['/projecten/:id/acties'],
         };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
