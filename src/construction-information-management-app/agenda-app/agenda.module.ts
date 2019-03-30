@@ -4,6 +4,7 @@ import { AgendaComponent } from './agenda/agenda.component';
 import { EventService } from '../../shared/packages/agenda-package/event.service';
 import { SharedModule } from '../../shared/shared.module';
 import { EventsResolver } from './events.resolver';
+import { EventRowComponent } from './agenda/event-row/event-row.component';
 
 const routes: Routes = [
     {
@@ -18,7 +19,7 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         SharedModule,
     ],
-    declarations: [AgendaComponent],
+    declarations: [AgendaComponent, EventRowComponent],
     providers: [ EventService, EventsResolver ]
 })
 export class AgendaModule {}

@@ -1,0 +1,59 @@
+div.row {
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: solid 1px #cecece;
+    border-bottom: none;
+    cursor: pointer;
+    padding: 5px 16px;
+    border-radius: 4px;
+    background: #fff;
+    color: rgba(0,0,0,.87);
+    transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+div.row:hover {
+    background: #f7f7f7;
+}
+div.row > .header {
+    display: flex;
+}
+
+div.row > .header > .content {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 5px 0;
+}
+
+div.row > .header > .content > h3 {
+    margin: 0;
+}
+div.row > .header > .content > span {
+    font-size: 14px;
+    color: #585858;
+}
+div.row > .header > div.iconContainer {
+    position: relative;
+    margin-right: 10px;
+}
+div.row > .header > div.iconContainer > i.material-icons {
+    font-size: 60px;
+}
+div.row > .header > .iconContainer > .dateContainer {
+    position: absolute;
+    top: 19px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 18px;
+}
+div.row > .header > .iconContainer > .dateContainer > span.day {
+    font-weight: bold;
+}
+div.row > .actions {
+    display: flex;
+    align-items: center;
+}

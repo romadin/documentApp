@@ -7,14 +7,19 @@ import { map } from 'rxjs/operators';
 interface GetParams {
     projectId: number;
 }
+interface ApiDate {
+    date: string;
+    timezone_type: number;
+    timezone: string;
+}
 
 interface EventApiResponse {
     id: number;
     name: string;
     description: string;
     projectId: number;
-    startDate: Date;
-    endDate: Date;
+    startDate: ApiDate;
+    endDate: ApiDate;
 }
 
 @Injectable()
@@ -24,8 +29,8 @@ export class EventService {
 
     getEvents(projectId: number): Observable<Event[]> {
         const params: GetParams = { projectId: projectId };
-        const events: Event[] = [];
         return this.apiService.get('/events', params).pipe(map((eventsResponse: EventApiResponse[]) => {
+            const events: Event[] = [];
             eventsResponse.forEach((event) => { events.push(this.makeEvent(event)); });
             return events;
         }));
@@ -37,9 +42,8 @@ export class EventService {
         event.name = apiData.name;
         event.description = apiData.description;
         event.projectId = apiData.projectId;
-        event.startDate = apiData.startDate;
-        event.endDate = apiData.endDate;
-
+        event.startDate = new Date(apiData.startDate.date);
+        event.endDate = new Date(apiData.endDate.date);
         return event;
     }
 }

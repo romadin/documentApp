@@ -1,8 +1,10 @@
 import { RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ng6-toastr-notifications';
+import { registerLocaleData } from '@angular/common';
+import localeNl from '@angular/common/locales/nl';
 
 import { MaterialModule } from '../shared/material.module';
 
@@ -45,6 +47,7 @@ import { MailService } from '../shared/service/mail.service';
 import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
 import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
 
+registerLocaleData(localeNl, 'nl');
 
 const appRoutes: Routes = [
     {
@@ -96,6 +99,7 @@ const appRoutes: Routes = [
         RouterModule.forRoot(appRoutes)
     ],
     providers: [
+        { provide: LOCALE_ID, useValue: 'nl'},
         ApiService,
 
         ProjectService,

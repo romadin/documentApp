@@ -1,3 +1,10 @@
-<div *ngFor="let event of events">
-    {{event.name}}
+<div class="agendaContainer">
+    <div class="listWrapper">
+        <div *ngFor="let event of events">
+            <cim-event-row [event]="event"></cim-event-row>
+        </div>
+    </div>
+    <div class="detailView">
+        <span>here is the detail view for single item</span>
+    </div>
 </div>
