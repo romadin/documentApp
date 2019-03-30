@@ -27,7 +27,8 @@ const routes: Routes = [
             },
             {
                 path: 'agenda',
-                loadChildren: '../'
+                loadChildren: '../agenda-app/agenda.module#AgendaModule',
+                canActivate: [ CanActivateLoggedIn ]
             },
             {
                 path: '',

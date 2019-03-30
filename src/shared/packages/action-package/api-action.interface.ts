@@ -1,8 +1,10 @@
+import { ApiUserResponse } from '../user-package/api-user.interface';
+
 export interface ApiActionResponse {
     id: number;
     code: number;
     description: string;
-    actionHolder: string;
+    actionHolder: ApiUserResponse;
     week: number;
     comments: string;
     isDone: boolean;

@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { ApiService } from '../../service/api.service';
 import { Action } from './action.model';
 import { ApiActionEditPostData, ApiActionNewPostData, ApiActionResponse } from './api-action.interface';
+import { UserService } from '../user-package/user.service';
 
 interface ActionCache {
     [id: number]: Action;
@@ -22,7 +23,7 @@ export class ActionService {
     private actionsByProjectCache: ActionsByProjectCache = [];
     private actionsByProject: ActionsByProject = [];
 
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService, private userService: UserService) { }
 
     public getActionsByProject(projectId: number): Subject<Action[]> {
         const params = { projectId: projectId, format: 'json' };
@@ -81,7 +82,7 @@ export class ActionService {
         action.id = data.id;
         action.code = data.code;
         action.description = data.description;
-        action.actionHolder = data.actionHolder;
+        action.actionHolder = this.userService.makeUser(data.actionHolder);
         action.week = data.week;
         action.isDone = data.isDone;
         action.comments = data.comments;

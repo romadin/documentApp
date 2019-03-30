@@ -91,7 +91,7 @@ export class ItemDetailComponent implements OnInit {
 
     private setFormValue(): void {
         this.actionForm.controls.description.setValue(this.action ? this.action.description : '');
-        this.actionForm.controls.actionHolder.setValue(this.action ? this.action.actionHolder : '');
+        this.actionForm.controls.actionHolder.setValue(this.action ? this.action.actionHolder.getFullName() : '');
         this.actionForm.controls.week.setValue(this.action ? this.action.week : '');
         this.actionForm.controls.comments.setValue(this.action ? this.action.comments : '');
     }

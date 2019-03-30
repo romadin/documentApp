@@ -1,10 +1,11 @@
 import { ApiActionEditPostData } from './api-action.interface';
+import { User } from '../user-package/user.model';
 
 export class Action {
     private _id: number;
     private _code: number;
     private _description: string;
-    private _actionHolder: string;
+    private _actionHolder: User;
     private _week: number;
     private _isDone: boolean;
     private _comments: string;
@@ -36,11 +37,11 @@ export class Action {
         this._description = value;
     }
 
-    get actionHolder(): string {
+    get actionHolder(): User {
         return this._actionHolder;
     }
 
-    set actionHolder(value: string) {
+    set actionHolder(value: User) {
         this._actionHolder = value;
     }
 
