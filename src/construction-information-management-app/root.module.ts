@@ -43,6 +43,7 @@ import { OrganisationResolver } from '../shared/packages/organisation-package/or
 import { ConfirmPopupComponent } from './popups/confirm-popup/confirm-popup.component';
 import { MailService } from '../shared/service/mail.service';
 import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
+import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
 
 
 const appRoutes: Routes = [
@@ -68,7 +69,11 @@ const appRoutes: Routes = [
         redirectTo: 'projecten',
         pathMatch: 'full',
     },
-    { path: 'not-found/organisation', component: OrganisationNotFoundComponent },
+    {
+        path: 'not-found/organisation',
+        component: OrganisationNotFoundComponent,
+        canActivate: [ CanActivateNoOrganisation ],
+    },
     { path: '**', redirectTo: 'not-found/organisation'}
 ];
 
@@ -113,7 +118,7 @@ const appRoutes: Routes = [
 
         OrganisationService,
         OrganisationResolver,
-        CanActivateLoggedIn, CanActivateAlreadyLoggedIn,
+        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation
     ],
     entryComponents: [
         UserPopupComponent,

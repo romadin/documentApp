@@ -12,7 +12,7 @@ export class ApiService {
     private token: ApiAuthResponse;
     private API_URL = environment.API_URL;
 
-    constructor(private http: HttpClient, private loadingService: LoadingService) {
+    constructor(private http: HttpClient) {
         const user: User = JSON.parse(sessionStorage.getItem('currentUser'));
         if ( sessionStorage.getItem('token') && user ) {
             this.token = {
@@ -23,10 +23,8 @@ export class ApiService {
     }
 
     public postAuthenticate(path: string, body: any, params: any): Observable<ApiAuthResponse> {
-        this.loadingService.isLoading.next(true);
         const paramObject = {params: params};
         return this.http.post(this.API_URL + path, body, paramObject).pipe(map((response) => {
-            this.loadingService.isLoading.next(false);
             return this.token = <ApiAuthResponse>response;
         }));
     }

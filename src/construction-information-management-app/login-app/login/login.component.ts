@@ -32,12 +32,12 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit() {
-        // this.loadingService.isLoading.next(true);
+        this.loadingService.isLoading.next(true);
         const email = this.userForm.controls.email.value;
         const params = { organisationId: this.organisation.id };
 
         this.authService.AuthenticateUser( email, this.userForm.controls.password.value, params).subscribe((gotUser) => {
-            // this.loadingService.isLoading.next(false);
+            this.loadingService.isLoading.next(false);
             if (gotUser === true) {
                 // redirect to projects page
                 this.router.navigate(['/projecten']);
