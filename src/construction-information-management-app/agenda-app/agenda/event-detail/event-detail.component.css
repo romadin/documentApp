@@ -10,39 +10,3 @@ div.detail {
     color: rgba(0,0,0,.87);
     background-color: #fff;
 }
-
-div.detail > .header {
-    display: flex;
-}
-
-div.detail > .header > h3 {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-div.detail > div.content {
-    padding: 0 15px;
-}
-
-div.detail > div.content > h4 {
-    font-size: 18px;
-}
-div.detail > div.content > .location > .map > agm-map {
-    height: 300px;
-}
-
-div.detail > div.content > div.text {
-    font-size: 15px;
-    display: flex;
-    padding: 4px 0;
-}
-label {
-    font-weight: bold;
-    color: #585858;
-    flex: 1;
-}
-
-div.detail > div.content > div.text > span {
-    flex: 2;
-}

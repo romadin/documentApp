@@ -7,6 +7,8 @@ import { EventsResolver } from './events.resolver';
 import { EventRowComponent } from './agenda/event-row/event-row.component';
 import { EventDetailComponent } from './agenda/event-detail/event-detail.component';
 import { AgmCoreModule } from '@agm/core';
+import { PublicComponent } from './agenda/event-detail/public/public.component';
+import { AdminComponent } from './agenda/event-detail/admin/admin.component';
 
 const routes: Routes = [
     {
@@ -24,7 +26,7 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         SharedModule,
     ],
-    declarations: [AgendaComponent, EventRowComponent, EventDetailComponent],
+    declarations: [AgendaComponent, EventRowComponent, EventDetailComponent, PublicComponent, AdminComponent],
     providers: [ EventService, EventsResolver ]
 })
 export class AgendaModule {}

@@ -1,4 +1,4 @@
-<div class="agendaContainer">
+<div class="agendaContainer" *ngIf="currentUser">
     <div class="listWrapper">
         <div *ngFor="let event of events">
             <cim-event-row [event]="event"
@@ -7,6 +7,10 @@
         </div>
     </div>
     <div class="detailView" [ngClass]="rightSideActive ? 'show' : ''">
-        <cim-event-detail *ngIf="eventToEdit" [event]="eventToEdit" (closeView)="onCloseRightSide($event)"></cim-event-detail>
+        <cim-event-detail *ngIf="eventToEdit"
+                          [event]="eventToEdit"
+                          [user]="currentUser"
+                          (closeView)="onCloseRightSide($event)">
+        </cim-event-detail>
     </div>
 </div>
