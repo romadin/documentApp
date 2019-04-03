@@ -1,0 +1,25 @@
+.header {
+    display: flex;
+}
+.header > h3 {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+div.formFields {
+    display: flex;
+    flex-direction: column;
+    flex: 5;
+    padding-top: 28px;
+}
+div.formFields > h3 {
+    margin: 0 0 10px;
+}
+
+div.formFields > .dateWrapper > mat-form-field.mat-form-field:nth-child(1) {
+    margin-right: 10px;
+}
+
+.mat-icon.material-icons {
+    font-size: 21px;
+}

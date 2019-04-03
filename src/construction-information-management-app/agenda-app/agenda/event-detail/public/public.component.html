@@ -1,10 +1,9 @@
 <div class="detail" *ngIf="event && !user.isAdmin()" [@fadeIn]>
   <div class="header">
     <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
-    <h3> {{ event ? 'Bewerk activiteit' : 'Nieuwe activiteit' }} </h3>
+    <h3> {{ 'Activiteit ' + event.name }} </h3>
   </div>
   <div class="content">
-    <h4> {{event.name}} </h4>
     <div class="text">
       <label>Omschrijving: </label>
       <span>{{ event.description }}</span>

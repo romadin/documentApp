@@ -1,14 +1,18 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AgmCoreModule } from '@agm/core';
+import { DatePipe } from '@angular/common';
+
 import { AgendaComponent } from './agenda/agenda.component';
+import { EventRowComponent } from './agenda/event-row/event-row.component';
+import { EventDetailComponent } from './agenda/event-detail/event-detail.component';
+import { PublicComponent } from './agenda/event-detail/public/public.component';
+import { AdminComponent } from './agenda/event-detail/admin/admin.component';
+import { TimePickerComponent } from '../../shared/helpers/time-picker/time-picker.component';
+import { TimePickerDirective } from '../../shared/helpers/time-picker/time-picker.directive';
 import { EventService } from '../../shared/packages/agenda-package/event.service';
 import { SharedModule } from '../../shared/shared.module';
 import { EventsResolver } from './events.resolver';
-import { EventRowComponent } from './agenda/event-row/event-row.component';
-import { EventDetailComponent } from './agenda/event-detail/event-detail.component';
-import { AgmCoreModule } from '@agm/core';
-import { PublicComponent } from './agenda/event-detail/public/public.component';
-import { AdminComponent } from './agenda/event-detail/admin/admin.component';
 
 const routes: Routes = [
     {
@@ -26,7 +30,15 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         SharedModule,
     ],
-    declarations: [AgendaComponent, EventRowComponent, EventDetailComponent, PublicComponent, AdminComponent],
-    providers: [ EventService, EventsResolver ]
+    declarations: [
+        AgendaComponent,
+        EventRowComponent,
+        EventDetailComponent,
+        PublicComponent,
+        AdminComponent,
+        TimePickerComponent,
+        TimePickerDirective,
+    ],
+    providers: [ EventService, EventsResolver, DatePipe ]
 })
 export class AgendaModule {}

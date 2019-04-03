@@ -9,7 +9,7 @@ import { UserService } from '../../../../shared/packages/user-package/user.servi
 import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { ToastService } from '../../../../shared/toast.service';
-import { ErrorMessage, isErrorMessage } from '../../../../shared/type-guard/error-message';
+import { ErrorMessage } from '../../../../shared/type-guard/error-message';
 import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
 
 @Component({

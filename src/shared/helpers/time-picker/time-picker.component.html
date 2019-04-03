@@ -1,0 +1,23 @@
+<div class="timePickerWrapper">
+    <div class="timePicker" [ngClass]="{'show' : showDatePicker}">
+        <div class="timeContent" >
+            <button class="manageButton" (click)="increment($event, 1, 'Hours')">
+                <i class="material-icons"> expand_less </i>
+            </button>
+            <span>{{fullTime | date: 'HH'}}</span>
+            <button class="manageButton"  (click)="decrease($event, 1, 'Hours')">
+                <i class="material-icons"> expand_more </i>
+            </button>
+        </div>
+        <span class="separator">:</span>
+        <div class="timeContent">
+            <button class="manageButton" (click)="increment($event, 1, 'Minutes')">
+                <i class="material-icons"> expand_less </i>
+            </button>
+            <span>{{fullTime | date: 'mm'}}</span>
+            <button class="manageButton" (click)="decrease($event, 1, 'Minutes')">
+                <i class="material-icons"> expand_more </i>
+            </button>
+        </div>
+    </div>
+</div>

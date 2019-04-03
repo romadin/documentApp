@@ -1,3 +1,66 @@
-<p>
-  admin works!
-</p>
+<div class="header">
+    <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
+    <h3 class="title"> {{event ? 'Wijzig activiteit' : 'Nieuwe activiteit'}} </h3>
+</div>
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content class="formFields">
+        <mat-form-field>
+            <input matInput placeholder="Naam" formControlName="name" required>
+        </mat-form-field>
+        <mat-form-field>
+            <textarea matInput placeholder="Omschrijving" formControlName="description"></textarea>
+        </mat-form-field>
+        <div *ngIf="(eventForm.get('endDate').invalid && (eventForm.get('endDate').dirty || eventForm.get('endDate').touched)) || (eventForm.get('startDate').invalid && (eventForm.get('startDate').dirty || eventForm.get('startDate').touched))" class="alert alert-danger">
+            <div *ngIf="eventForm.get('endDate').errors && eventForm.get('endDate').errors.startDateBiggerThenEndDate || eventForm.get('startDate').errors && eventForm.get('startDate').errors.startDateBiggerThenEndDate">
+                De start datum mag niet later dan de eind datum
+            </div>
+        </div>
+        <div *ngIf="(eventForm.get('endTime').invalid && (eventForm.get('endTime').dirty || eventForm.get('endTime').touched)) || (eventForm.get('startTime').invalid && (eventForm.get('startTime').dirty || eventForm.get('startTime').touched))" class="alert alert-danger">
+            <div *ngIf="eventForm.get('endDate').valid && eventForm.get('startDate').valid && eventForm.get('endTime').errors && eventForm.get('endTime').errors.startTimeHigherOrEqual || eventForm.get('startTime').errors && eventForm.get('startTime').errors.startTimeHigherOrEqual">
+                De start tijd mag niet later of dezelfde eind tijd hebben
+            </div>
+        </div>
+        <div class="dateWrapper">
+            <mat-form-field>
+                <input formControlName="startDate" matInput [matDatepicker]="startDatePicker" placeholder="Start datum" autocomplete="off" required>
+                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field #startTimeInput>
+                <input cisTimePicker [timePicker]="startTime" [inputWrapper]="startTimeInput._elementRef" (time)="setStartTime($event)"
+                       type="text" matInput placeholder="Start Tijd"
+                       formControlName="startTime" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" autocomplete="off" required>
+                <mat-icon matSuffix>access_time</mat-icon>
+                <cim-time-picker #startTime [startTime]="''" ></cim-time-picker>
+            </mat-form-field>
+        </div>
+
+        <div class="dateWrapper">
+            <mat-form-field>
+                <input formControlName="endDate" matInput [matDatepicker]="endDatePicker" placeholder="Eind datum" autocomplete="off" required>
+                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field #endTimeInput>
+                <input cisTimePicker [timePicker]="endTime" [inputWrapper]="endTimeInput._elementRef" (time)="setEndTime($event)"
+                       type="text" matInput placeholder="Tijd"
+                       formControlName="endTime" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" autocomplete="off" required>
+                <mat-icon matSuffix>access_time</mat-icon>
+                <cim-time-picker #endTime [startTime]="eventForm.get('startTime').value"></cim-time-picker>
+            </mat-form-field>
+        </div>
+        <mat-form-field>
+            <input type="text" matInput placeholder="Straat naam en huisnummer" formControlName="streetName">
+        </mat-form-field>
+        <mat-form-field>
+            <input type="text" matInput placeholder="Postcode" formControlName="zipCode">
+        </mat-form-field>
+        <mat-form-field>
+            <input type="text" matInput placeholder="Woonplaats" formControlName="residence">
+        </mat-form-field>
+    </div>
+  <div class="actions">
+      <button mat-raised-button type="submit">Opslaan</button>
+      <button mat-button (click)="onCloseView($event)">Annuleren</button>
+  </div>
+</form>

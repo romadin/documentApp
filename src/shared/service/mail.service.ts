@@ -12,7 +12,6 @@ export class MailService {
      */
     sendUserActivation(user: User) {
         this.apiService.get('/mail/activate/' + user.id, {}).subscribe((message: string) => {
-            console.log(message);
         });
     }
 }

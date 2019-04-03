@@ -42,22 +42,6 @@ export class ProjectService {
             this.projectsByOrganisationCache[organisation.id] = projects;
             return this.projectsByOrganisationCache[organisation.id];
         }));
-
-        // this.apiService.get('/projects', params).subscribe((apiResponse: ApiProjectResponse[]) => {
-        //     console.log('in subscribe');
-        //     const projects = [];
-        //
-        //     apiResponse.forEach((item) => {
-        //         const project = this.makeProject(item, organisation);
-        //         projects.push(project);
-        //     });
-        //     this.projectsByOrganisationCache[organisation.id] = projects;
-        //     this.allProjectSubject.next(projects);
-        //     console.log(projects);
-        //     return projects;
-        // }, (error) => {
-        //     this.allProjectSubject.error(error);
-        // });
     }
 
     public getProject(id: number, organisation: Organisation): Promise<Project> {
