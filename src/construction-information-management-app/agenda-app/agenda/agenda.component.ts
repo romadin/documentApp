@@ -42,6 +42,12 @@ export class AgendaComponent implements OnInit {
         this.eventToEdit = clickedEvent;
         this.rightSideActive = true;
     }
+    eventOnDelete(eventToDelete: Event): void {
+        this.events.splice(this.events.findIndex(event => event === eventToDelete), 1);
+        if (eventToDelete === this.eventToEdit ) {
+            this.onCloseRightSide(true);
+        }
+    }
 
     onCloseRightSide(close: boolean): void {
         this.rightSideActive = false;

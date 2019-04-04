@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Event } from '../../../../../shared/packages/agenda-package/event.model';
 import { User } from '../../../../../shared/packages/user-package/user.model';
 import { EventPostData, EventService } from '../../../../../shared/packages/agenda-package/event.service';
@@ -7,13 +7,14 @@ import { startDateBiggerThenEndDate, startTimeBiggerThenEndTime } from '../../..
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { EventCommunicationService } from '../../../../../shared/packages/communication/event.communication.service';
+import { ToastService } from '../../../../../shared/toast.service';
 
 @Component({
   selector: 'cim-event-detail-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements AfterViewInit {
     @Input() user: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() eventAdded: EventEmitter<Event> = new EventEmitter<Event>();
@@ -29,6 +30,7 @@ export class AdminComponent implements OnInit {
         residence: new FormControl(''),
     });
     private _event: Event;
+    private formHasChanged = false;
     readonly projectId: number;
 
     constructor(
@@ -36,6 +38,7 @@ export class AdminComponent implements OnInit {
         private eventService: EventService,
         private datePipe: DatePipe,
         private router: Router,
+        private toast: ToastService,
     ) {
         this.projectId = parseInt(this.router.url.split('/')[2], 10);
         this.eventForm.controls.endDate.setValidators(
@@ -64,14 +67,18 @@ export class AdminComponent implements OnInit {
         return this._event;
     }
 
-    ngOnInit() {}
+    ngAfterViewInit() {
+        this.onFormChanges();
+    }
     onSubmit() {
-        if (this.eventForm.valid) {
+        if (this.eventForm.valid && this.formHasChanged) {
             this.updateOrMakeEvent();
             if (this.event.id) {
                 this.eventService.editEvent(this.event).subscribe(() => {});
+                this.toast.showSuccess('Activiteit: ' + event.name + 'is gewijziged', 'Wijzigen');
             } else {
                 this.eventService.createEvent(this.event).subscribe(event => {
+                    this.toast.showSuccess('Activiteit: ' + event.name + 'toegevoegd', 'Toegevoegd');
                     this.event = event;
                     this.eventCommunication.eventAdded.next(event);
                 });
@@ -131,6 +138,22 @@ export class AdminComponent implements OnInit {
         );
         event.projectId = this.projectId;
         this._event = event;
+    }
+
+    private onFormChanges() {
+        let oldValue = this.eventForm.value;
+        this.eventForm.valueChanges.subscribe(value => {
+            for (const key in value) {
+                if (value.hasOwnProperty(key) && oldValue.hasOwnProperty(key)) {
+                    if (value[key] !== oldValue[key]) {
+                        this.formHasChanged = true;
+                        oldValue = value;
+                        break;
+                    }
+                    this.formHasChanged = false;
+                }
+            }
+        });
     }
 
     private getFullDateTime(time: Date, controlToLink: AbstractControl): any {

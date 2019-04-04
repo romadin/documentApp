@@ -13,6 +13,9 @@
         </div>
     </div>
     <div class="actions">
+        <div class="actionsEditDelete">
+            <i *ngIf="currentUser.isAdmin()" class="material-icons" (click)="deleteEvent($event)"> delete_forever </i>
+        </div>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>

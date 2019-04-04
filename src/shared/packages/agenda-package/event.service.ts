@@ -75,6 +75,13 @@ export class EventService {
         }));
     }
 
+    deleteEvent(event: Event): Observable<Event> {
+        return this.apiService.delete(this.eventsEndpoint + '/' + event.id, {}).pipe(map(response => {
+            console.log(response);
+            return response;
+        }));
+    }
+
     makeEvent(apiData: EventApiResponse): Event {
         const event = new Event();
         event.id = apiData.id;

@@ -61,7 +61,7 @@ export class UserRowComponent implements OnInit {
                 const params = this.projectId ? {projectId: this.projectId} : {};
                 this.userService.deleteUser(this.user, params).subscribe((deleted) => {
                     if (deleted) {
-                        this.toast.showSuccess('Project: ' + this.user.getFullName() + ' is verwijderd', 'Verwijderd');
+                        this.toast.showSuccess('Gebruiker: ' + this.user.getFullName() + ' is verwijderd', 'Verwijderd');
                         this.userToDelete.emit(this.user);
                     }
                 });

@@ -2,6 +2,8 @@
     <div class="listWrapper">
         <div *ngFor="let event of events">
             <cim-event-row [event]="event"
+                           [currentUser]="currentUser"
+                           (eventToDelete)="eventOnDelete($event)"
                            (eventToShow)="eventOnClick($event)">
             </cim-event-row>
         </div>
