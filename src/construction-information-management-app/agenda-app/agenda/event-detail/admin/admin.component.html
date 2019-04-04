@@ -17,7 +17,7 @@
         </div>
         <div *ngIf="(eventForm.get('endTime').invalid && (eventForm.get('endTime').dirty || eventForm.get('endTime').touched)) || (eventForm.get('startTime').invalid && (eventForm.get('startTime').dirty || eventForm.get('startTime').touched))" class="alert alert-danger">
             <div *ngIf="eventForm.get('endDate').valid && eventForm.get('startDate').valid && eventForm.get('endTime').errors && eventForm.get('endTime').errors.startTimeHigherOrEqual || eventForm.get('startTime').errors && eventForm.get('startTime').errors.startTimeHigherOrEqual">
-                De start tijd mag niet later of dezelfde eind tijd hebben
+                De start tijd mag niet dezelfde of latere eind tijd hebben
             </div>
         </div>
         <div class="dateWrapper">
@@ -31,7 +31,7 @@
                        type="text" matInput placeholder="Start Tijd"
                        formControlName="startTime" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" autocomplete="off" required>
                 <mat-icon matSuffix>access_time</mat-icon>
-                <cim-time-picker #startTime [startTime]="''" ></cim-time-picker>
+                <cim-time-picker #startTime [startTime]="''" [time]="event ? event.startDate : ''" ></cim-time-picker>
             </mat-form-field>
         </div>
 
@@ -46,17 +46,17 @@
                        type="text" matInput placeholder="Tijd"
                        formControlName="endTime" pattern="([01]?[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}" autocomplete="off" required>
                 <mat-icon matSuffix>access_time</mat-icon>
-                <cim-time-picker #endTime [startTime]="eventForm.get('startTime').value"></cim-time-picker>
+                <cim-time-picker #endTime [startTime]="eventForm.get('startTime').value" [time]="event ? event.endDate : ''"></cim-time-picker>
             </mat-form-field>
         </div>
         <mat-form-field>
-            <input type="text" matInput placeholder="Straat naam en huisnummer" formControlName="streetName">
+            <input type="text" matInput placeholder="Straat naam en huisnummer" formControlName="streetName" required>
         </mat-form-field>
         <mat-form-field>
-            <input type="text" matInput placeholder="Postcode" formControlName="zipCode">
+            <input type="text" matInput placeholder="Postcode" formControlName="zipCode" required>
         </mat-form-field>
         <mat-form-field>
-            <input type="text" matInput placeholder="Woonplaats" formControlName="residence">
+            <input type="text" matInput placeholder="Woonplaats" formControlName="residence" required>
         </mat-form-field>
     </div>
   <div class="actions">

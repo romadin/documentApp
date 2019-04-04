@@ -4,7 +4,7 @@
                              [user]="user"
                              (closeView)=onCloseView($event)>
     </cim-event-detail-public>
-    <cim-event-detail-admin *ngIf=" event && user.isAdmin()"
+    <cim-event-detail-admin *ngIf="user.isAdmin()"
                             [event]="event"
                             [user]="user"
                             (closeView)="onCloseView($event)">

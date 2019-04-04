@@ -8,6 +8,7 @@ type TimeType = 'Hours' | 'Minutes';
   styleUrls: ['./time-picker.component.css']
 })
 export class TimePickerComponent implements OnInit {
+    @Input() time: Date | string;
     showDatePicker = false;
     fullTime: Date;
     date: Date;
@@ -26,7 +27,9 @@ export class TimePickerComponent implements OnInit {
         this.fullTime = startDate;
     }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.fullTime = this.time instanceof Date ? this.time : new Date();
+    }
 
     increment(event: Event, newValue: number, type: TimeType) {
         event.preventDefault();

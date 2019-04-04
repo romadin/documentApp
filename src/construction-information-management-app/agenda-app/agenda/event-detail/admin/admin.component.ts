@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Event } from '../../../../../shared/packages/agenda-package/event.model';
 import { User } from '../../../../../shared/packages/user-package/user.model';
-import { EventService } from '../../../../../shared/packages/agenda-package/event.service';
+import { EventPostData, EventService } from '../../../../../shared/packages/agenda-package/event.service';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { startDateBiggerThenEndDate, startTimeBiggerThenEndTime } from '../../../../../shared/form-validator/custom-validators';
 import { DatePipe } from '@angular/common';
+import { Router } from '@angular/router';
+import { EventCommunicationService } from '../../../../../shared/packages/communication/event.communication.service';
 
 @Component({
   selector: 'cim-event-detail-admin',
@@ -14,6 +16,7 @@ import { DatePipe } from '@angular/common';
 export class AdminComponent implements OnInit {
     @Input() user: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() eventAdded: EventEmitter<Event> = new EventEmitter<Event>();
     eventForm: FormGroup = new FormGroup({
         name: new FormControl(''),
         description: new FormControl(''),
@@ -26,10 +29,15 @@ export class AdminComponent implements OnInit {
         residence: new FormControl(''),
     });
     private _event: Event;
+    readonly projectId: number;
+
     constructor(
+        private eventCommunication: EventCommunicationService,
         private eventService: EventService,
-        private datePipe: DatePipe
+        private datePipe: DatePipe,
+        private router: Router,
     ) {
+        this.projectId = parseInt(this.router.url.split('/')[2], 10);
         this.eventForm.controls.endDate.setValidators(
             startDateBiggerThenEndDate(this.eventForm.controls.startDate, this.eventForm.controls.endDate)
         );
@@ -44,20 +52,30 @@ export class AdminComponent implements OnInit {
         );
     }
     @Input()
-    set event(event: Event) {
-        if (event) {
-            this._event = event;
+    set event(event: Event | undefined) {
+        this._event = event;
+        if (event instanceof Event) {
             this.setFormValue();
+        } else {
+            this.eventForm.reset();
         }
     }
     get event(): Event {
         return this._event;
     }
-    ngOnInit() {
-    }
+
+    ngOnInit() {}
     onSubmit() {
-        if (this._event) {
-            this.updateEvent();
+        if (this.eventForm.valid) {
+            this.updateOrMakeEvent();
+            if (this.event.id) {
+                this.eventService.editEvent(this.event).subscribe(() => {});
+            } else {
+                this.eventService.createEvent(this.event).subscribe(event => {
+                    this.event = event;
+                    this.eventCommunication.eventAdded.next(event);
+                });
+            }
         }
     }
     onCloseView(e: MouseEvent) {
@@ -81,26 +99,38 @@ export class AdminComponent implements OnInit {
         this.eventForm.controls.startTime.setValue(this.datePipe.transform(this._event.startDate, 'HH:mm'));
         this.eventForm.controls.endDate.setValue(this._event.endDate);
         this.eventForm.controls.endTime.setValue(this.datePipe.transform(this._event.endDate, 'HH:mm'));
-        this.eventForm.controls.streetName.setValue(this._event.location.streetName);
-        this.eventForm.controls.zipCode.setValue(this._event.location.zipCode);
-        this.eventForm.controls.residence.setValue(this._event.location.residence);
+        if (this.event.location) {
+            this.eventForm.controls.streetName.setValue(this._event.location.streetName);
+            this.eventForm.controls.zipCode.setValue(this._event.location.zipCode);
+            this.eventForm.controls.residence.setValue(this._event.location.residence);
+        }
     }
 
-    private updateEvent(): void {
-        this._event.name = this.eventForm.controls.name.value;
-        this._event.description = this.eventForm.controls.description.value;
-        this._event.location.streetName = this.eventForm.controls.streetName.value;
-        this._event.location.zipCode = this.eventForm.controls.zipCode.value;
-        this._event.location.residence = this.eventForm.controls.residence.value;
+    private updateOrMakeEvent(): void {
+        let event: Event;
+        if (this.event) {
+            event = this._event;
+        } else {
+            event = new Event();
+            event.location = { streetName: '', zipCode: '', residence: '' };
+        }
 
-        this._event.startDate = this.getFullDateTime(
+        event.name = this.eventForm.controls.name.value;
+        event.description = this.eventForm.controls.description.value;
+        event.location.streetName = this.eventForm.controls.streetName.value;
+        event.location.zipCode = this.eventForm.controls.zipCode.value;
+        event.location.residence = this.eventForm.controls.residence.value;
+
+        event.startDate = this.getFullDateTime(
             new Date(this.createDateFromStringTime(this.eventForm.controls.startTime.value)),
             this.eventForm.controls.startDate
         );
-        this._event.endDate = this.getFullDateTime(
+        event.endDate = this.getFullDateTime(
             new Date(this.createDateFromStringTime(this.eventForm.controls.endTime.value)),
             this.eventForm.controls.startDate
         );
+        event.projectId = this.projectId;
+        this._event = event;
     }
 
     private getFullDateTime(time: Date, controlToLink: AbstractControl): any {

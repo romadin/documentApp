@@ -48,6 +48,7 @@ import { ConfirmPopupComponent } from './popups/confirm-popup/confirm-popup.comp
 import { MailService } from '../shared/service/mail.service';
 import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
 import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
+import { EventCommunicationService } from '../shared/packages/communication/event.communication.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -107,17 +108,19 @@ const appRoutes: Routes = [
         ProjectService,
         UserService,
         RouterService,
-        HeaderWithFolderCommunicationService,
-        ActionCommunicationService,
         ScrollingService,
         RoleService,
+
+        EventCommunicationService,
+        ActionCommunicationService,
+        FolderCommunicationService,
+        HeaderWithFolderCommunicationService,
+        SideMenuCommunicationService,
 
         FolderService,
         DocumentService,
         DocumentIconService,
         ActionService,
-        FolderCommunicationService,
-        SideMenuCommunicationService,
         ToastService,
         LoadingService,
         MailService,

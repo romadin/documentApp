@@ -7,8 +7,7 @@
         </div>
     </div>
     <div class="detailView" [ngClass]="rightSideActive ? 'show' : ''">
-        <cim-event-detail *ngIf="eventToEdit"
-                          [event]="eventToEdit"
+        <cim-event-detail [event]="eventToEdit"
                           [user]="currentUser"
                           (closeView)="onCloseRightSide($event)">
         </cim-event-detail>

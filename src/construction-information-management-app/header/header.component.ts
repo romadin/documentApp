@@ -13,6 +13,7 @@ import { ActionCommunicationService } from '../../shared/packages/communication/
 import { UserPopupComponent } from '../popups/user-popup/user-popup.component';
 import { OrganisationService } from '../../shared/packages/organisation-package/organisation.service';
 import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
+import { EventCommunicationService } from '../../shared/packages/communication/event.communication.service';
 
 export interface MenuAction {
     onClick: (item?) => void;
@@ -24,7 +25,7 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/acties';
+type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/acties'| '/projecten/:id/agenda' ;
 
 @Component({
   selector: 'cim-header',
@@ -58,6 +59,7 @@ export class HeaderComponent implements OnInit {
         private routerService: RouterService,
         private folderCommunicationService: HeaderWithFolderCommunicationService,
         private actionCommunicationService: ActionCommunicationService,
+        private eventCommunicationService: EventCommunicationService,
         private organisationService: OrganisationService
     ) {
         this.defineActions();
@@ -146,6 +148,14 @@ export class HeaderComponent implements OnInit {
             needsAdmin: true,
             urlGroup: ['/projecten/:id/acties'],
         };
+        const addEvent: MenuAction = {
+            onClick: () => { this.eventCommunicationService.triggerAddEvent.next(true); },
+            iconName: 'add',
+            name: 'Activiteit toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten/:id/agenda'],
+        };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
             iconName: 'menu',
@@ -153,7 +163,7 @@ export class HeaderComponent implements OnInit {
             show: false,
             needsAdmin: false,
         };
-        this.actions.push(addProject, addUser, readMode, addItemToFolder, showArchivedActions, addAction);
+        this.actions.push(addProject, addUser, readMode, addItemToFolder, showArchivedActions, addAction, addEvent);
     }
 
     private determineActions(navigation: NavigationEnd): void {
