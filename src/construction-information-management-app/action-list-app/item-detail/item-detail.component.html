@@ -11,7 +11,12 @@
                 <input matInput placeholder="Omschrijving" formControlName="description" required>
             </mat-form-field>
             <mat-form-field>
-                <input matInput placeholder="Aktie houder" formControlName="actionHolder">
+                <mat-label>Actie houder</mat-label>
+                <mat-select [(ngModel)]=userSelected [ngModelOptions]="{standalone: true}" name="users">
+                    <mat-option *ngFor="let user of users" [value]="user.id">
+                        {{user.getFullName()}}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
             <div *ngIf="actionForm.get('week').invalid && (actionForm.get('week').dirty || actionForm.get('week').touched)" class="alert alert-danger">
                 <div *ngIf="actionForm.get('week').errors.weekNumber">

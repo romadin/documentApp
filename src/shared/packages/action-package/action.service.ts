@@ -82,7 +82,9 @@ export class ActionService {
         action.id = data.id;
         action.code = data.code;
         action.description = data.description;
-        action.actionHolder = this.userService.makeUser(data.actionHolder);
+        if (data.actionHolder) {
+            action.actionHolder = this.userService.makeUser(data.actionHolder);
+        }
         action.week = data.week;
         action.isDone = data.isDone;
         action.comments = data.comments;

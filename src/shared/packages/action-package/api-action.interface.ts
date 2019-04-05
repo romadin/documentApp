@@ -4,7 +4,7 @@ export interface ApiActionResponse {
     id: number;
     code: number;
     description: string;
-    actionHolder: ApiUserResponse;
+    actionHolder?: ApiUserResponse;
     week: number;
     comments: string;
     isDone: boolean;
@@ -13,9 +13,9 @@ export interface ApiActionResponse {
 
 export interface ApiActionNewPostData {
     description: string;
-    actionHolder: string;
-    week: number;
-    comments: string;
+    userId?: number;
+    week?: number;
+    comments?: string;
     projectId: number;
     isDone?: boolean;
 }

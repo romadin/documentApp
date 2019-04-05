@@ -66,26 +66,32 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
+        let waitUntilRouteSubscription = false;
         // track if url changes
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routeHistory.push(navigation);
             this.determineActions(navigation);
             this.actionBack.show = navigation.url === '/login' || navigation.url === '/not-found/organisation' ?
                 false : navigation.url !== '/projecten';
+            waitUntilRouteSubscription = true;
         });
 
         this.routerService.backRoute.subscribe((backRoute: string) => {
             this.backRoute = backRoute;
         });
 
-        this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
-            this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
-        });
+            this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
+                this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
+            });
 
-        this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
-            const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
-            archiveAction.show = show;
-        });
+            this.folderCommunicationService.showDocumentToPdfButton.subscribe((show: boolean) => {
+                this.actions.find((action) => action.name === 'Exporteer naar pdf').show = show;
+            });
+
+            this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
+                const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
+                archiveAction.show = show;
+            });
 
         this.organisationService.getCurrentOrganisation().pipe((takeLast(1))).subscribe((currentOrganisation) => {
             this.currentOrganisation = currentOrganisation;
@@ -132,6 +138,14 @@ export class HeaderComponent implements OnInit {
             needsAdmin: false,
             urlGroup: ['/projecten/:id/folder/:id'],
         };
+        const documentToPdf: MenuAction = {
+            onClick: () => { this.folderCommunicationService.exportToPdf.next(true); },
+            iconName: 'picture_as_pdf',
+            name: 'Exporteer naar pdf',
+            show: false,
+            needsAdmin: false,
+            urlGroup: ['/projecten/:id/folder/:id'],
+        };
         const addAction: MenuAction = {
             onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },
             iconName: 'add',
@@ -146,6 +160,14 @@ export class HeaderComponent implements OnInit {
             name: 'Gearchiveerde acties',
             show: false,
             needsAdmin: true,
+            urlGroup: ['/projecten/:id/acties'],
+        };
+        const actionsToPdf: MenuAction = {
+            onClick: () => { this.actionCommunicationService.exportToPdf.next(true); },
+            iconName: 'picture_as_pdf',
+            name: 'Exporteer naar pdf',
+            show: false,
+            needsAdmin: false,
             urlGroup: ['/projecten/:id/acties'],
         };
         const addEvent: MenuAction = {
@@ -163,7 +185,12 @@ export class HeaderComponent implements OnInit {
             show: false,
             needsAdmin: false,
         };
-        this.actions.push(addProject, addUser, readMode, addItemToFolder, showArchivedActions, addAction, addEvent);
+        this.actions.push(
+            addProject, addUser,
+            documentToPdf, readMode, addItemToFolder,
+            actionsToPdf, showArchivedActions, addAction,
+            addEvent
+        );
     }
 
     private determineActions(navigation: NavigationEnd): void {

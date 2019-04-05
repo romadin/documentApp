@@ -40,6 +40,7 @@ import {
         MatProgressSpinnerModule,
         MatDatepickerModule,
         MatNativeDateModule,
+        MatSelectModule
     ]
 })
 export class MaterialModule { }

@@ -174,5 +174,6 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.showAddItemList = false;
         this.showReadMode = false;
         this.headerCommunicationService.showAddUserButton.next(false);
+        this.headerCommunicationService.showDocumentToPdfButton.next(false);
     }
 }

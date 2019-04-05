@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable()
 export class HeaderWithFolderCommunicationService {
@@ -7,6 +7,8 @@ export class HeaderWithFolderCommunicationService {
     private _triggerAddItem: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _triggerReadMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showAddUserButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _showDocumentToPdfButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _exportToPdfButton: Subject<boolean> = new Subject<boolean>();
 
     get triggerAddItem(): BehaviorSubject<boolean> {
         return this._triggerAddItem;
@@ -18,5 +20,11 @@ export class HeaderWithFolderCommunicationService {
 
     get showAddUserButton(): BehaviorSubject<boolean> {
         return this._showAddUserButton;
+    }
+    get showDocumentToPdfButton(): BehaviorSubject<boolean> {
+        return this._showDocumentToPdfButton;
+    }
+    get exportToPdf(): Subject<boolean> {
+        return this._exportToPdfButton;
     }
 }

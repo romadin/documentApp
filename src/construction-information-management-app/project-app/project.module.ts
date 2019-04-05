@@ -5,6 +5,7 @@ import { ProjectComponent } from './project/project.component';
 import { ProjectsListComponent } from './project/projects-list/projects-list.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ProjectRowComponent } from './project/projects-list/project-row/project-row.component';
+import { OrganisationResolver } from '../../shared/packages/organisation-package/organisation.resolver';
 
 const routes: Routes = [
     {
@@ -18,12 +19,14 @@ const routes: Routes = [
             {
                 path: 'folder/:id',
                 loadChildren: '../folder-app/folder.module#FolderModule',
-                canActivate: [ CanActivateLoggedIn ]
+                canActivate: [ CanActivateLoggedIn ],
+                resolve: { organisation: OrganisationResolver }
             },
             {
                 path: 'acties',
                 loadChildren: '../action-list-app/action-list.module#ActionListModule',
-                canActivate: [ CanActivateLoggedIn ]
+                canActivate: [ CanActivateLoggedIn ],
+                resolve: { organisation: OrganisationResolver }
             },
             {
                 path: 'agenda',

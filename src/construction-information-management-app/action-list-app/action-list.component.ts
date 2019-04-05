@@ -1,9 +1,12 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute,  } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatTable } from '@angular/material';
 import { trigger, style, animate, transition, keyframes } from '@angular/animations';
 import { Subscription } from 'rxjs';
+
+import * as jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 import { ActionService } from '../../shared/packages/action-package/action.service';
 import { Action } from '../../shared/packages/action-package/action.model';
@@ -33,6 +36,7 @@ import { LoadingService } from '../../shared/loading.service';
 })
 export class ActionListComponent implements OnInit, OnDestroy {
     @ViewChild(MatTable) table: MatTable<any>;
+    @ViewChild('list') list: ElementRef;
     public actions: Action[];
     public actionsDone: Action[] = [];
     public actionToEdit: Action;
@@ -80,6 +84,12 @@ export class ActionListComponent implements OnInit, OnDestroy {
             this.resetRightSide();
             this.rightSideView = show;
             setTimeout(() => { this.showArchivedActions = show; }, 250);
+        }));
+
+        this.subscriptions.push(this.actionCommunication.exportToPdf.subscribe(exportToPdf => {
+            if (exportToPdf) {
+                this.exportActionListToPdf();
+            }
         }));
 
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
@@ -131,6 +141,21 @@ export class ActionListComponent implements OnInit, OnDestroy {
             this.toastService.showSuccess('Actie: ' + actionEdited.code + ' is gearchiveerd', 'Gearchiveerd');
             this.actionCommunication.showArchivedActionsButton.next(this.actionsDone.length > 0);
         }, 500);
+    }
+
+    private exportActionListToPdf(): void {
+        html2canvas(this.list.nativeElement).then( canvas => {
+            const imgWidth = 218;
+            const pageHeight = 295;
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            const heightLeft = imgHeight;
+
+            const contentDatatUrl = canvas.toDataURL('image/png');
+            const pdf = new jsPDF();
+            const position = 0;
+            pdf.addImage(contentDatatUrl, 'PNG', 0, position, imgWidth, imgHeight);
+            pdf.save('ActieLijst.pdf');
+        });
     }
 
     private resetRightSide(): void {

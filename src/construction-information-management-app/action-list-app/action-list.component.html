@@ -1,6 +1,6 @@
 <div class="actionListWrapper" >
     <div class="contentWrapper">
-        <div class="list">
+        <div class="list" #list>
             <h3> Acties </h3>
             <table #table mat-table [dataSource]="actions" class="tableList">
                 <!-- Code Column -->
@@ -18,7 +18,7 @@
                 <!-- The action holder Column -->
                 <ng-container matColumnDef="actionHolder">
                     <th mat-header-cell *matHeaderCellDef> Actie houder </th>
-                    <td mat-cell *matCellDef="let action"> {{action.actionHolder.getFullName()}} </td>
+                    <td mat-cell *matCellDef="let action"> {{action.actionHolder ? action.actionHolder.getFullName() : ''}} </td>
                 </ng-container>
 
                 <!-- Week Column -->

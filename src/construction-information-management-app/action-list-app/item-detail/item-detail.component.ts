@@ -6,6 +6,11 @@ import { ActionService } from '../../../shared/packages/action-package/action.se
 import { LoadingService } from '../../../shared/loading.service';
 import { ToastService } from '../../../shared/toast.service';
 import { weekNumberValidator } from '../../../shared/form-validator/custom-validators';
+import { UserService } from '../../../shared/packages/user-package/user.service';
+import { User } from '../../../shared/packages/user-package/user.model';
+import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
+import { ActivatedRoute } from '@angular/router';
+import { ApiActionNewPostData } from '../../../shared/packages/action-package/api-action.interface';
 
 interface Status {
     name: string;
@@ -21,6 +26,7 @@ export class ItemDetailComponent implements OnInit {
     @Input() projectId: number;
     @Output() closeEdit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+    userSelected;
     public actionForm: FormGroup = new FormGroup({
         description: new FormControl(),
         actionHolder: new FormControl(),
@@ -29,6 +35,7 @@ export class ItemDetailComponent implements OnInit {
         projectId: new FormControl(),
     });
     public selectedStatus: Status;
+    public users: User[];
     public statusToSelect = [{ name: 'in behandeling', value: false }];
 
     private _action: Action | null;
@@ -44,20 +51,27 @@ export class ItemDetailComponent implements OnInit {
     }
 
     constructor(private actionService: ActionService,
+                private userService: UserService,
                 private loadingService: LoadingService,
-                private toastService: ToastService) { }
+                private toastService: ToastService,
+                private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
+        const organisation: Organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.actionForm.controls.description.setValidators([ Validators.required ]);
         this.actionForm.controls.week.setValidators([ Validators.maxLength(2), weekNumberValidator(52) ]);
+
+        this.userService.getUsers({organisationId: organisation.id, projectId: this.projectId}).subscribe(users => {
+            this.users = users;
+        });
     }
 
     onSubmit() {
         if (this.actionForm.valid) {
             this.loadingService.isLoading.next(true);
-            const data =  {
+            const data: ApiActionNewPostData =  {
                 description: this.actionForm.controls.description.value,
-                actionHolder: this.actionForm.controls.actionHolder.value,
+                userId: this.userSelected !== '' ? this.userSelected : null,
                 week: this.actionForm.controls.week.value !== '' ? this.actionForm.controls.week.value : null,
                 comments: this.actionForm.controls.comments.value,
                 projectId: this.projectId,
@@ -90,6 +104,7 @@ export class ItemDetailComponent implements OnInit {
     }
 
     private setFormValue(): void {
+        this.userSelected = this.action ? this.action.actionHolder.id : '';
         this.actionForm.controls.description.setValue(this.action ? this.action.description : '');
         this.actionForm.controls.actionHolder.setValue(this.action ? this.action.actionHolder.getFullName() : '');
         this.actionForm.controls.week.setValue(this.action ? this.action.week : '');
