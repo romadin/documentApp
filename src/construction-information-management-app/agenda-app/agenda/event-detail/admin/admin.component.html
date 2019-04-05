@@ -2,7 +2,7 @@
     <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
     <h3 class="title"> {{event ? 'Wijzig activiteit' : 'Nieuwe activiteit'}} </h3>
 </div>
-<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit($event)">
     <div mat-dialog-content class="formFields">
         <mat-form-field>
             <input matInput placeholder="Naam" formControlName="name" required>
@@ -50,7 +50,7 @@
             </mat-form-field>
         </div>
         <mat-form-field>
-            <input type="text" matInput placeholder="Straat naam en huisnummer" formControlName="streetName" required>
+            <input type="text" matInput placeholder="Straat naam en nummer" formControlName="streetName" required>
         </mat-form-field>
         <mat-form-field>
             <input type="text" matInput placeholder="Postcode" formControlName="zipCode" required>

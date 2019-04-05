@@ -1,11 +1,25 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 type TimeType = 'Hours' | 'Minutes';
 
 @Component({
-  selector: 'cim-time-picker',
-  templateUrl: './time-picker.component.html',
-  styleUrls: ['./time-picker.component.css']
+    selector: 'cim-time-picker',
+    templateUrl: './time-picker.component.html',
+    styleUrls: ['./time-picker.component.css'],
+    animations: [
+        trigger('fadeIn', [
+            transition('void => *', [
+                style({ opacity: '0', maxHeight: '0px'}),
+                animate('250ms', style({ opacity: '1', maxHeight: '200px' })),
+            ]),
+            transition('* => void', [
+                animate('250ms', keyframes([
+                    style({ opacity: '0', maxHeight: '0px'})
+                ])),
+            ])
+        ]),
+    ]
 })
 export class TimePickerComponent implements OnInit {
     @Input() time: Date | string;

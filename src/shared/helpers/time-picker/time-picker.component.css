@@ -6,19 +6,19 @@ div.timePicker {
     display: flex;
     align-items: center;
     top: 10px;
-    max-height: 0;
+    /*max-height: 0;*/
     padding: 10px;
     overflow: hidden;
     background: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
     border: solid 1px #cecece;
-    opacity: 0;
+    /*opacity: 0;*/
     transition: opacity ease-in-out 250ms, max-height ease 250ms;
 }
 div.timePicker.show {
-    opacity: 1;
-    max-height: 200px;
+    /*opacity: 1;*/
+    /*max-height: 200px;*/
     z-index: 1;
 }
 div.timePicker > span.separator {

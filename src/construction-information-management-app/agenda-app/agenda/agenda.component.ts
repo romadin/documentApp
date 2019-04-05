@@ -34,6 +34,7 @@ export class AgendaComponent implements OnInit {
             this.rightSideActive = trigger;
         });
         this.eventCommunication.eventAdded.subscribe(newEvent => {
+            this.eventToEdit = newEvent;
             this.events.push(newEvent);
         });
     }

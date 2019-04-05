@@ -17,7 +17,6 @@ import { ToastService } from '../../../../../shared/toast.service';
 export class AdminComponent implements AfterViewInit {
     @Input() user: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() eventAdded: EventEmitter<Event> = new EventEmitter<Event>();
     eventForm: FormGroup = new FormGroup({
         name: new FormControl(''),
         description: new FormControl(''),
@@ -70,7 +69,7 @@ export class AdminComponent implements AfterViewInit {
     ngAfterViewInit() {
         this.onFormChanges();
     }
-    onSubmit() {
+    onSubmit(e: KeyboardEvent) {
         if (this.eventForm.valid && this.formHasChanged) {
             this.updateOrMakeEvent();
             if (this.event.id) {

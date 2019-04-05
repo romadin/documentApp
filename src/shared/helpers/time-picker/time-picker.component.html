@@ -1,4 +1,4 @@
-<div class="timePickerWrapper">
+<div class="timePickerWrapper" *ngIf="showDatePicker" [@fadeIn]>
     <div class="timePicker" [ngClass]="{'show' : showDatePicker}">
         <div class="timeContent" >
             <button class="manageButton" (click)="increment($event, 1, 'Hours')">
