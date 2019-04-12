@@ -8,8 +8,6 @@ import { UserService } from '../shared/packages/user-package/user.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { MenuAction } from './header/header.component';
 
-import { SideMenuCommunicationService } from '../shared/packages/communication/sideMenu.communication.service';
-import { UserPopupComponent } from './popups/user-popup/user-popup.component';
 import { LoadingService } from '../shared/loading.service';
 
 @Component({
@@ -28,7 +26,6 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                 private router: Router,
                 private userService: UserService,
                 private scrollingService: ScrollingService,
-                private menuCommunicationService: SideMenuCommunicationService,
                 private loadingService: LoadingService) {}
 
     ngOnInit() {

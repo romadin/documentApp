@@ -12,7 +12,7 @@ import { ActionService } from '../../shared/packages/action-package/action.servi
 import { Action } from '../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
 import { RouterService } from '../../shared/service/router.service';
-import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
+import { ActionCommunicationService } from '../../shared/service/communication/action.communication.service';
 import { ToastService } from '../../shared/toast.service';
 import { LoadingService } from '../../shared/loading.service';
 

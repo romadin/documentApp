@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { FolderComponent } from './folder.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -10,7 +11,7 @@ import { DetailFolderComponent } from './item-create/create-folder/detail-folder
 import { ItemReadComponent } from './item-read/item-read.component';
 import { CreateDocumentComponent } from './item-create/create-document/create-document.component';
 import { PartnersComponent } from './partners/partners.component';
-import { AngularEditorModule } from '@kolkov/angular-editor';
+import { FolderDetailComponent } from './folder-detail/folder-detail.component';
 
 const routes: Routes = [
     {
@@ -34,6 +35,7 @@ const routes: Routes = [
         DetailFolderComponent,
         ItemReadComponent,
         PartnersComponent,
+        FolderDetailComponent,
     ],
 })
 

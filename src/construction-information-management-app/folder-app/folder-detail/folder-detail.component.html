@@ -1,0 +1,29 @@
+<cim-document-detail *ngIf="documentToEdit && currentUser.isAdmin()"
+        [document]="documentToEdit"
+        (closeEditForm)="onEditClose($event)">
+</cim-document-detail>
+
+<cim-detail-folder *ngIf="folderToEdit && currentUser.isAdmin()"
+        [folder]="folderToEdit"
+        (closeEditForm)="onEditClose($event)">
+</cim-detail-folder>
+
+<div *ngIf="activeItem && activeItem.component === 'cim-partners'" [@fadeIn]>
+    <cim-partners
+            [currentUser]="currentUser"
+            [projectId]="currentFolder.getProjectId()"
+            (closeView)="onCloseView($event)">
+    </cim-partners>
+</div>
+
+<cim-item-list *ngIf="showAddItemList && mainFolder && currentFolder"
+      [mainFolder]="mainFolder"
+      [currentFolder]="currentFolder"
+      (cancelAddItems)="onAddItemsCancel($event)"
+      (saveItemsDone)="onItemsAdded($event)">
+</cim-item-list>
+
+<cim-item-create *ngIf="currentFolder && currentFolder.isMainFolder && showCreateNewItem"
+               [folder]="currentFolder"
+               (folderChange)="onItemsAdded($event)">
+</cim-item-create>

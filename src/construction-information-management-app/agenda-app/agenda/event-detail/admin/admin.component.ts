@@ -6,7 +6,7 @@ import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { startDateBiggerThenEndDate, startTimeBiggerThenEndTime } from '../../../../../shared/form-validator/custom-validators';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { EventCommunicationService } from '../../../../../shared/packages/communication/event.communication.service';
+import { EventCommunicationService } from '../../../../../shared/service/communication/event.communication.service';
 import { ToastService } from '../../../../../shared/toast.service';
 
 @Component({

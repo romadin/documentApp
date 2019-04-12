@@ -4,7 +4,7 @@ import { EventService } from '../../../shared/packages/agenda-package/event.serv
 import { Event } from '../../../shared/packages/agenda-package/event.model';
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
-import { EventCommunicationService } from '../../../shared/packages/communication/event.communication.service';
+import { EventCommunicationService } from '../../../shared/service/communication/event.communication.service';
 
 @Component({
   selector: 'cim-agenda',

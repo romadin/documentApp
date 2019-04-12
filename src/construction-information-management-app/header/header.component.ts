@@ -8,12 +8,13 @@ import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
 import { ProjectPopupComponent, DefaultPopupData } from '../popups/project-popup/project-popup.component';
 import { RouterService } from '../../shared/service/router.service';
-import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
-import { ActionCommunicationService } from '../../shared/packages/communication/action.communication.service';
+import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
+import { ActionCommunicationService } from '../../shared/service/communication/action.communication.service';
 import { UserPopupComponent } from '../popups/user-popup/user-popup.component';
 import { OrganisationService } from '../../shared/packages/organisation-package/organisation.service';
 import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
-import { EventCommunicationService } from '../../shared/packages/communication/event.communication.service';
+import { EventCommunicationService } from '../../shared/service/communication/event.communication.service';
+import { UsersCommunicationService } from '../../shared/service/communication/users-communication.service';
 
 export interface MenuAction {
     onClick: (item?) => void;
@@ -60,7 +61,8 @@ export class HeaderComponent implements OnInit {
         private folderCommunicationService: HeaderWithFolderCommunicationService,
         private actionCommunicationService: ActionCommunicationService,
         private eventCommunicationService: EventCommunicationService,
-        private organisationService: OrganisationService
+        private usersCommunicationService: UsersCommunicationService,
+        private organisationService: OrganisationService,
     ) {
         this.defineActions();
     }
@@ -80,18 +82,24 @@ export class HeaderComponent implements OnInit {
             this.backRoute = backRoute;
         });
 
-            this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
-                this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
-            });
+        this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
+            this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
+        });
 
-            this.folderCommunicationService.showDocumentToPdfButton.subscribe((show: boolean) => {
-                this.actions.find((action) => action.name === 'Exporteer naar pdf').show = show;
-            });
+        this.folderCommunicationService.showDocumentToPdfButton.subscribe((show: boolean) => {
+            this.actions.find((action) => action.name === 'Exporteer naar pdf').show = show;
+        });
 
-            this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
-                const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
-                archiveAction.show = show;
-            });
+        this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
+            const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
+            archiveAction.show = show;
+        });
+
+        this.usersCommunicationService.triggerAddUserPopup.subscribe(addUser => {
+            if (addUser) {
+                this.openDialogAddUser();
+            }
+        });
 
         this.organisationService.getCurrentOrganisation().pipe((takeLast(1))).subscribe((currentOrganisation) => {
             this.currentOrganisation = currentOrganisation;

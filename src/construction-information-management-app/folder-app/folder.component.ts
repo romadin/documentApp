@@ -9,8 +9,9 @@ import { DocumentService } from '../../shared/packages/document-package/document
 import { Document } from '../../shared/packages/document-package/document.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
-import { HeaderWithFolderCommunicationService } from '../../shared/packages/communication/HeaderWithFolder.communication.service';
-import { FolderCommunicationService } from '../../shared/packages/communication/Folder.communication.service';
+import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
+import { FolderCommunicationService } from '../../shared/service/communication/Folder.communication.service';
+import { ActiveItemPackage } from './folder-detail/folder-detail.component';
 
 @Component({
   selector: 'cim-folder',
@@ -22,14 +23,11 @@ export class FolderComponent implements OnInit, OnDestroy {
     public currentFolder: Folder;
     public mainFolder: Folder;
     public currentUser: User;
-    public documentToEdit: Document;
-    public showAddItemList: boolean;
     public items: (Document | Folder)[];
-    public partnerIsOpen = false;
     public showCreateNewItem: boolean;
-    public folderToEdit: Folder;
     public showReadMode: boolean;
     public showReadModeAnimation: boolean;
+    public activeItem: ActiveItemPackage;
 
     private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
 
@@ -89,31 +87,30 @@ export class FolderComponent implements OnInit, OnDestroy {
         }, 900);
     }
 
+    onCloseRightSide(close: boolean): void {
+        this.resetView();
+        this.activeItem = undefined;
+    }
+
     public onFolderEdit(folder: Folder) {
         this.resetView();
-        this.folderToEdit = folder;
+        this.activeItem = {
+            component: 'cim-detail-folder',
+            item: folder
+        };
     }
 
     public onDocumentEdit(document: Document) {
         this.resetView();
-        this.documentToEdit = document;
-    }
-
-    public onEditClose(closeForm: boolean) {
-        if (closeForm) {
-            this.documentToEdit = null;
-        }
+        this.activeItem = {
+            component: 'cim-document-detail',
+            item: document
+        };
     }
 
     public onItemsAdded(folder: Folder): void {
         this.setNewItems(folder);
         this.currentFolder = folder;
-        this.showAddItemList = false;
-        this.headerCommunicationService.triggerAddItem.next(false);
-    }
-
-    public onAddItemsCancel(cancelList: boolean) {
-        this.showAddItemList = !cancelList;
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
@@ -123,14 +120,14 @@ export class FolderComponent implements OnInit, OnDestroy {
             this.showCreateNewItem = true;
             return;
         }
-        this.showAddItemList = true;
     }
 
     public showAllPartners(event: MouseEvent) {
-        event.stopPropagation();
-        event.preventDefault();
         this.resetView();
-        this.partnerIsOpen = true;
+        this.activeItem = {
+            component: 'cim-partners',
+            item: null
+        };
         this.headerCommunicationService.showAddUserButton.next(true);
     }
 
@@ -167,11 +164,6 @@ export class FolderComponent implements OnInit, OnDestroy {
     }
 
     private resetView(): void {
-        this.documentToEdit = undefined;
-        this.folderToEdit = undefined;
-        this.partnerIsOpen = false;
-        this.showCreateNewItem = false;
-        this.showAddItemList = false;
         this.showReadMode = false;
         this.headerCommunicationService.showAddUserButton.next(false);
         this.headerCommunicationService.showDocumentToPdfButton.next(false);

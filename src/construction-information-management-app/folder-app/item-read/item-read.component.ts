@@ -8,7 +8,7 @@ import { ProjectService } from '../../../shared/packages/project-package/project
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
-import { HeaderWithFolderCommunicationService } from '../../../shared/packages/communication/HeaderWithFolder.communication.service';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { Subscription } from 'rxjs';
 
 @Component({

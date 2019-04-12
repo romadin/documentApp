@@ -26,8 +26,10 @@ import { DocumentIconService } from '../shared/packages/document-package/documen
 import { ActionService } from '../shared/packages/action-package/action.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { RouterService } from '../shared/service/router.service';
-import { HeaderWithFolderCommunicationService } from '../shared/packages/communication/HeaderWithFolder.communication.service';
-import { SideMenuCommunicationService } from '../shared/packages/communication/sideMenu.communication.service';
+import { HeaderWithFolderCommunicationService } from '../shared/service/communication/HeaderWithFolder.communication.service';
+import { FolderCommunicationService } from '../shared/service/communication/Folder.communication.service';
+import { ActionCommunicationService } from '../shared/service/communication/action.communication.service';
+import { EventCommunicationService } from '../shared/service/communication/event.communication.service';
 
 // popup components
 import { ProjectPopupComponent } from './popups/project-popup/project-popup.component';
@@ -36,8 +38,6 @@ import { UserPopupComponent } from './popups/user-popup/user-popup.component';
 // components
 import { ConstructionInformationManagementComponent } from './construction-information-management.component';
 import { HeaderComponent } from './header/header.component';
-import { FolderCommunicationService } from '../shared/packages/communication/Folder.communication.service';
-import { ActionCommunicationService } from '../shared/packages/communication/action.communication.service';
 import { SharedModule } from '../shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastService } from '../shared/toast.service';
@@ -48,7 +48,7 @@ import { ConfirmPopupComponent } from './popups/confirm-popup/confirm-popup.comp
 import { MailService } from '../shared/service/mail.service';
 import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
 import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
-import { EventCommunicationService } from '../shared/packages/communication/event.communication.service';
+import { UsersCommunicationService } from '../shared/service/communication/users-communication.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -115,7 +115,7 @@ const appRoutes: Routes = [
         ActionCommunicationService,
         FolderCommunicationService,
         HeaderWithFolderCommunicationService,
-        SideMenuCommunicationService,
+        UsersCommunicationService,
 
         FolderService,
         DocumentService,

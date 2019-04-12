@@ -1,13 +1,24 @@
-<div>
-    <mat-card class="partnersCard">
-        <h3 class="title">Partners</h3>
-            <mat-card-content>
-                <button *ngIf="currentUser.isAdmin() && users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
-                    <span> Voeg partners toe </span>
-                    <i class="material-icons"> add </i>
-                </button>
-                <ng-container *ngIf="!userToEdit">
-                </ng-container>
-            </mat-card-content>
-    </mat-card>
+<div class="wrapper">
+    <div class="usersOverview" *ngIf="!userToEdit" [@slideIn]>
+        <div class="header">
+            <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
+            <h3 class="title"> Partners </h3>
+        </div>
+        <button class="addUserButton" *ngIf="currentUser.isAdmin() && users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
+            <span> Voeg partners toe </span>
+            <i class="material-icons"> add </i>
+        </button>
+        <cim-user-row *ngFor="let user of users"
+                      [currentUser]="currentUser"
+                      [user]="user"
+                      (userToDelete)="onDeleteUser($event)"
+                      (userToEdit)="onEditUser($event)">
+        </cim-user-row>
+    </div>
+    <div class="userDetail" *ngIf="userToEdit" [@slideIn]>
+        <cim-user-detail [currentUser]="currentUser"
+                         [user]="userToEdit"
+                         (closeDetailView)="closeUserDetailView($event)">
+        </cim-user-detail>
+    </div>
 </div>

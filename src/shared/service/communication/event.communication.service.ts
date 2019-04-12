@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Event } from '../agenda-package/event.model';
+import { Event } from '../../packages/agenda-package/event.model';
 
 @Injectable()
 export class EventCommunicationService {

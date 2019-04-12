@@ -1,7 +1,7 @@
 <div class="wrapper" *ngIf="currentUser">
     <div class="overview" *ngIf="items && items.length > 0" [ngClass]="{'readModeEnabled': showReadModeAnimation}">
         <ng-container *ngFor="let item of items; let itemIndex = index">
-            <div class="partnersWrapper" *ngIf="itemIndex === 1 && currentFolder.isMainFolder" (click)="showAllPartners($event)">
+            <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && currentFolder.isMainFolder" (click)="showAllPartners($event)">
                 <div class="header">
                     <i class="material-icons"> people </i>
                     <h3> Partners</h3>
@@ -30,36 +30,13 @@
             </ng-template>
         </ng-container>
     </div>
-    <div class="editDocument" *ngIf="documentToEdit && currentUser.isAdmin()">
-        <cim-document-detail
-                [document]="documentToEdit"
-                (closeEditForm)="onEditClose($event)">
-        </cim-document-detail>
-    </div>
-    <div class="editDocument" *ngIf="folderToEdit && currentUser.isAdmin()">
-        <cim-detail-folder
-                [folder]="folderToEdit"
-                (closeEditForm)="onEditClose($event)">
-        </cim-detail-folder>
-    </div>
-    <div class="partners" *ngIf="!documentToEdit && partnerIsOpen">
-        <cim-partners
-                [currentUser]="currentUser"
-                [projectId]="currentFolder.getProjectId()">
-        </cim-partners>
-    </div>
-    <div class="addItemList" *ngIf="showAddItemList && mainFolder && currentFolder">
-        <cim-item-list
-                [mainFolder]="mainFolder"
+    <div class="card" [ngClass]="activeItem ? 'show' : ''">
+        <cim-folder-detail
                 [currentFolder]="currentFolder"
-                (cancelAddItems)="onAddItemsCancel($event)"
-                (saveItemsDone)="onItemsAdded($event)">
-        </cim-item-list>
-    </div>
-    <div class="addItemForMainFolder" *ngIf="currentFolder && currentFolder.isMainFolder && showCreateNewItem">
-        <cim-item-create [folder]="currentFolder"
-                         (folderChange)="onItemsAdded($event)">
-        </cim-item-create>
+                [currentUser]="currentUser"
+                [activeSidePackage]="activeItem"
+                (closeView)="onCloseRightSide($event)">
+        </cim-folder-detail>
     </div>
     <div class="readeModeContainer" [ngClass]="{'animateDiv': showReadModeAnimation}">
         <cim-item-read *ngIf="showReadMode"

@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Folder } from '../../../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../../../shared/packages/folder-package/folder.service';
 import { NewFolderPostData } from '../../../../shared/packages/folder-package/api-folder.interface';
-import { FolderCommunicationService } from '../../../../shared/packages/communication/Folder.communication.service';
+import { FolderCommunicationService } from '../../../../shared/service/communication/Folder.communication.service';
 import { Document } from '../../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../../shared/packages/document-package/document.service';
 

@@ -1,25 +1,40 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
-import { SideMenuCommunicationService } from '../../../shared/packages/communication/sideMenu.communication.service';
+import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'cim-partners',
-  templateUrl: './partners.component.html',
-  styleUrls: ['./partners.component.css']
+    selector: 'cim-partners',
+    templateUrl: './partners.component.html',
+    styleUrls: ['./partners.component.css'],
+    animations: [
+        trigger('slideIn', [
+            transition('void => *', [
+                style({ width: '0', order: '1' }),
+                animate('300ms 300ms cubic-bezier(0.4, 0, 0.2, 1)', style({ width: '100%' })),
+            ]),
+            transition('* => void', [
+                animate('300ms cubic-bezier(0.4, 0, 0.2, 1)', keyframes([
+                    style({ width: '0' })
+                ])),
+            ])
+        ]),
+    ]
 })
 export class PartnersComponent implements OnInit {
     @Input() public projectId: number;
     @Input() currentUser: User;
+    @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public users: User[];
     public userToEdit: User;
 
     constructor(private userService: UserService,
-                private sideMenuCommunicationService: SideMenuCommunicationService,
+                private usersCommunicationService: UsersCommunicationService,
                 private activatedRoute: ActivatedRoute
     ) { }
 
@@ -32,18 +47,23 @@ export class PartnersComponent implements OnInit {
 
     addUser(e: Event): void {
         e.preventDefault();
-        this.sideMenuCommunicationService.triggerAddUserPopup.next(true);
+        this.usersCommunicationService.triggerAddUserPopup.next(true);
     }
 
     onDeleteUser(userToDelete: User) {
         this.users.splice(this.users.findIndex((user) => user === userToDelete), 1);
     }
 
-    public onEditUser(user: User) {
+    onEditUser(user: User) {
         this.userToEdit = user;
     }
 
-    public closeUserDetailView(closeView: boolean) {
+    onCloseView(event: MouseEvent): void {
+        event.stopPropagation();
+        this.closeView.emit(true);
+    }
+
+    closeUserDetailView(closeView: boolean) {
         if (closeView) {
             this.userToEdit = undefined;
         }

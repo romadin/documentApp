@@ -3,7 +3,7 @@ import { MatTable } from '@angular/material';
 import { Action } from '../../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../../shared/packages/action-package/api-action.interface';
 import { ActionService } from '../../../shared/packages/action-package/action.service';
-import { ActionCommunicationService } from '../../../shared/packages/communication/action.communication.service';
+import { ActionCommunicationService } from '../../../shared/service/communication/action.communication.service';
 import { ToastService } from '../../../shared/toast.service';
 
 @Component({

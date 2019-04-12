@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Folder } from '../../../../shared/packages/folder-package/folder.model';
-import { FolderCommunicationService } from '../../../../shared/packages/communication/Folder.communication.service';
+import { FolderCommunicationService } from '../../../../shared/service/communication/Folder.communication.service';
 
 @Component({
   selector: 'cim-create-document',

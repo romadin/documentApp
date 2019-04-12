@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -17,7 +17,7 @@ import { duplicateValidator } from '../../../../shared/form-validator/custom-val
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.css']
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent implements OnInit, AfterViewInit {
     @Input() currentUser: User;
     @Input() user: User;
     @Output() closeDetailView: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -34,6 +34,7 @@ export class UserDetailComponent implements OnInit {
     imageSrc: any;
     private fileReader: FileReader = new FileReader();
     private existingItems: string[] = [];
+    private formHasChanged = false;
     constructor(
         private projectService: ProjectService,
         private userService: UserService,
@@ -41,7 +42,7 @@ export class UserDetailComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private toast: ToastService,
     ) {
-        this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('/assets/images/defaultProfile.png');
+        this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('url( "/assets/images/defaultProfile.png")');
         this.userForm.controls.email.setValidators([Validators.email]);
     }
 
@@ -63,33 +64,43 @@ export class UserDetailComponent implements OnInit {
         });
         this.setFormValue();
     }
+    ngAfterViewInit() {
+        this.onFormChanges();
+    }
 
-    public onCloseDetailView() {
+    public onCloseDetailView(event?: Event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         this.closeDetailView.emit(true);
     }
 
-    public onSubmit() {
-        const data = new FormData();
+    public onSubmit(e: Event) {
+        e.stopPropagation();
+        if (this.userForm.valid && this.formHasChanged) {
+            const data = new FormData();
 
-        data.append('firstName', this.userForm.controls.firstName.value);
-        data.append('insertion', this.userForm.controls.insertion.value);
-        data.append('lastName', this.userForm.controls.lastName.value);
-        data.append('email', this.userForm.controls.email.value);
-        data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
-        data.append('function', this.userForm.controls.function.value);
+            data.append('firstName', this.userForm.controls.firstName.value);
+            data.append('insertion', this.userForm.controls.insertion.value);
+            data.append('lastName', this.userForm.controls.lastName.value);
+            data.append('email', this.userForm.controls.email.value);
+            data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
+            data.append('function', this.userForm.controls.function.value);
 
-        if (this.imageToUpload) {
-            data.append('image', this.imageToUpload, this.imageToUpload.name);
-        }
-
-        this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
-            if (value instanceof User) {
-                this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
-                this.onCloseDetailView();
-            } else {
-                this.showErrorMessage(value);
+            if (this.imageToUpload) {
+                data.append('image', this.imageToUpload, this.imageToUpload.name);
             }
-        });
+
+            this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
+                if (value instanceof User) {
+                    this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
+                    this.onCloseDetailView();
+                } else {
+                    this.showErrorMessage(value);
+                }
+            });
+        }
     }
 
     onImageUpload(event: Event): void {
@@ -132,4 +143,19 @@ export class UserDetailComponent implements OnInit {
         return projectPromise;
     }
 
+    private onFormChanges() {
+        let oldValue = this.userForm.value;
+        this.userForm.valueChanges.subscribe(value => {
+            for (const key in value) {
+                if (value.hasOwnProperty(key) && oldValue.hasOwnProperty(key)) {
+                    if (value[key] !== oldValue[key]) {
+                        this.formHasChanged = true;
+                        oldValue = value;
+                        break;
+                    }
+                    this.formHasChanged = false;
+                }
+            }
+        });
+    }
 }

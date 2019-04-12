@@ -1,9 +1,19 @@
-mat-card.partnersCard {
-    border: solid 1px #cecece;
+.wrapper {
+    display: flex;
+    flex-direction: column;
 }
 
-mat-card-content.mat-card-content {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+.wrapper > .userDetail, .usersOverview {
+    overflow: hidden;
+    padding: 1px 0;
+}
+
+.wrapper > .usersOverview > button.addUserButton {
+    width: 100%;
+}
+
+:host > .wrapper > .userDetail >>> cim-user-detail > .detailWrapper > .editUser {
+    padding: 0;
+    border: none;
+    box-shadow: none;
 }

@@ -6,7 +6,7 @@ import { FolderService } from '../../../shared/packages/folder-package/folder.se
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
-import { HeaderWithFolderCommunicationService } from '../../../shared/packages/communication/HeaderWithFolder.communication.service';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({
   selector: 'cim-item-list',
