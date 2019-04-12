@@ -53,5 +53,4 @@ export class FolderDetailComponent implements OnInit {
         this._activeItem = undefined;
         this.closeView.emit(close);
     }
-
 }

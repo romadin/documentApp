@@ -17,3 +17,9 @@
     border: none;
     box-shadow: none;
 }
+
+:host > .wrapper > .userDetail >>> cim-user-detail > .detailWrapper >>> cim-user-detail-public > .card {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}

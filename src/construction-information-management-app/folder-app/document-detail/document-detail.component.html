@@ -1,19 +1,22 @@
 <div #editDocumentContainer [ngClass]="addFixedClass ? 'positionFixed' : ''">
-    <mat-card class="editDocument">
-        <h3 class="title" *ngIf="document">Wijzig document: {{ document.getName() }}</h3>
+    <div class="card editDocument">
+        <div class="header">
+            <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
+            <h3 class="title" *ngIf="document">Wijzig document: {{ document.getName() }}</h3>
+        </div>
         <form [formGroup]="documentForm" (ngSubmit)="onSubmit()">
-            <mat-card-content>
+            <div class="content">
                 <div mat-dialog-content class="formFields">
                     <mat-form-field>
                         <input matInput placeholder="Hoofdstuk naam" formControlName="name" required="required">
                     </mat-form-field>
                     <angular-editor [(ngModel)]="content" [config]="editorConfig" [ngModelOptions]="{standalone: true}"></angular-editor>
                 </div>
-            </mat-card-content>
-            <mat-card-actions>
+            </div>
+            <div class="actionButtons">
+                <button mat-button (click)="onCloseView($event)">Annuleren</button>
                 <button mat-raised-button type="submit">Opslaan</button>
-                <button mat-button (click)="cancel($event)">Annuleren</button>
-            </mat-card-actions>
+            </div>
         </form>
-    </mat-card>
+    </div>
 </div>

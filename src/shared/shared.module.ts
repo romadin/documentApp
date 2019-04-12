@@ -8,6 +8,7 @@ import { FolderRowComponent } from '../construction-information-management-app/f
 import { DocumentRowComponent } from '../construction-information-management-app/folder-app/document-row/document-row.component';
 import { UserRowComponent } from '../construction-information-management-app/user-app/users/user-row/user-row.component';
 import { UserDetailComponent } from '../construction-information-management-app/user-app/users/user-detail/user-detail.component';
+import { UserDetailPublicComponent } from '../construction-information-management-app/user-app/users/user-detail/user-detail-public/user-detail-public.component';
 
 @NgModule({
     declarations: [
@@ -15,6 +16,7 @@ import { UserDetailComponent } from '../construction-information-management-app/
         DocumentRowComponent,
         UserRowComponent,
         UserDetailComponent,
+        UserDetailPublicComponent,
     ],
     exports: [
         ReactiveFormsModule,
@@ -25,6 +27,7 @@ import { UserDetailComponent } from '../construction-information-management-app/
         DocumentRowComponent,
         UserRowComponent,
         UserDetailComponent,
+        UserDetailPublicComponent,
         CommonModule,
     ],
     imports: [

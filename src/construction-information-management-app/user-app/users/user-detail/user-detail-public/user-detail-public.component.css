@@ -1,0 +1,46 @@
+h3 {
+    margin: 0;
+}
+
+.userDetailView > .header {
+    align-items: center;
+}
+
+.userDetailView > .header > div.headerTitle {
+    padding-left: 10px;
+}
+.userDetailView > .header > div.avatar {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 80px;
+    width: 80px;
+    margin-left: 5px;
+}
+.userDetailView > .content {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.userDetailView > .content > div.linkedProject {
+    padding-right: 10px;
+}
+
+.userDetailView > .content > div.linkedProject > div.projectContent {
+    padding-top: 10px;
+}
+.userDetailView > .content > div.linkedProject > div.projectContent > label {
+    font-weight: bold;
+}
+
+.userDetailView > .content > div.userInfo > div.title {
+    padding: 5px 0;
+}
+
+.userDetailView > .content > div.userInfo > div.title > label {
+    font-weight: bold;
+}
+
+.userDetailView > .actionButtons {
+    padding: 10px 1px;
+}

@@ -5,7 +5,7 @@ import { User } from '../../../shared/packages/user-package/user.model';
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 @Component({
     selector: 'cim-partners',

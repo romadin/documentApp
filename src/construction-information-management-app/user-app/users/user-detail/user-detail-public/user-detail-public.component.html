@@ -1,0 +1,40 @@
+<div class=" card userDetailView">
+    <div class="header">
+        <button mat-button (click)="onCloseDetailView($event)" > <i class="material-icons"> close </i> </button>
+        <div mat-card-avatar class="avatar" [style.backgroundImage]="imageSrc"></div>
+        <div class="headerTitle">
+            <h3> {{ user.getFullName() }} </h3>
+            <span class="subTitle"> {{ user.function }} </span>
+        </div>
+    </div>
+  <div class="content">
+    <div class="userInfo">
+      <div class="title">
+        <label> Naam: </label>
+        <span>{{ user.firstName }}</span>
+        <span *ngIf="user.insertion"> {{ user.insertion }}</span>
+        <span> {{ user.lastName }}</span>
+      </div>
+      <div class="title">
+        <label> Email: </label> <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+      </div>
+      <div class="title">
+        <label> Telefoon nummer: </label> <a href="tel:{{ user.phoneNumber }}">{{ user.phoneNumber }}</a>
+      </div>
+      <div class="title">
+        <label> Functie: </label> <span>{{ user.function }}</span>
+      </div>
+    </div>
+    <div class="linkedProject">
+      <h3> Projecten </h3>
+      <div class="projectContent" *ngFor="let project of projects">
+        <label> Project naam: </label>
+        <span> {{ project.getName() }} </span>
+        <div class="divider"></div>
+      </div>
+    </div>
+  </div>
+  <div class="actionButtons">
+    <button mat-raised-button (click)="onCloseDetailView($event)">Terug</button>
+  </div>
+</div>

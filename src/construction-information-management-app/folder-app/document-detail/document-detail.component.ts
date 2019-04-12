@@ -92,7 +92,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    public cancel(event: MouseEvent): void {
+    public onCloseView(event: MouseEvent): void {
         event.stopPropagation();
         event.preventDefault();
         this.closeEditForm.emit(true);

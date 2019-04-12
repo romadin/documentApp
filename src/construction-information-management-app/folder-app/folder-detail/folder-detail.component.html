@@ -1,7 +1,9 @@
-<cim-document-detail *ngIf="documentToEdit && currentUser.isAdmin()"
-        [document]="documentToEdit"
-        (closeEditForm)="onEditClose($event)">
-</cim-document-detail>
+<div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail' && currentUser.isAdmin()" [@fadeIn]>
+    <cim-document-detail
+            [document]="activeItem.item"
+            (closeEditForm)="onCloseView($event)">
+    </cim-document-detail>
+</div>
 
 <cim-detail-folder *ngIf="folderToEdit && currentUser.isAdmin()"
         [folder]="folderToEdit"
