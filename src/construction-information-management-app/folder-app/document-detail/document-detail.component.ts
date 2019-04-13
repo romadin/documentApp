@@ -11,18 +11,19 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { Subscription } from 'rxjs';
 
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
-import { ScrollingService } from '../../../shared/service/scrolling.service';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
-import { Subscription } from 'rxjs';
+import { ScrollingService } from '../../../shared/service/scrolling.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
-  selector: 'cim-document-detail',
-  templateUrl: './document-detail.component.html',
-  styleUrls: ['./document-detail.component.css']
+    selector: 'cim-document-detail',
+    templateUrl: './document-detail.component.html',
+    styleUrls: ['./document-detail.component.css']
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy {
     @ViewChild('editDocumentContainer') container: ElementRef;
@@ -38,7 +39,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         minHeight: '5rem',
         placeholder: 'Voer je text in...',
         translate: 'no',
-        uploadUrl: '/assets/images',
     };
     public content = '';
     public addFixedClass = false;
@@ -49,6 +49,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     @Input()
     set document(document: Document) {
         this._document = document;
+        this.editorConfig.uploadUrl = environment.API_URL + '/documents/' + document.id + '/image?token=' + sessionStorage.getItem('token');
         this.updateForm();
     }
 

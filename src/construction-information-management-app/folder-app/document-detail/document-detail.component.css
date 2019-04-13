@@ -1,19 +1,8 @@
-div.editDocument {
-    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
-    border: solid 1px #cecece;
+div.editDocument > div.formBody {
+    padding: 10px 0;
 }
 
-div.positionFixed {
-    position: fixed;
-    margin-right: 67px;
-    top: 70px;
-}
-
-div.editDocument > h3.title {
-    padding-top: 10px;
-}
-
-div.editDocument > form > div.actionButtons {
+div.editDocument > div.formBody > form > div.actionButtons {
     padding: 15px 1px;
 }
 
@@ -24,4 +13,9 @@ div.formFields {
 
 textarea.textArea {
     min-height: 400px;
+}
+div.positionFixed {
+    position: fixed;
+    margin-right: 67px;
+    top: 70px;
 }
