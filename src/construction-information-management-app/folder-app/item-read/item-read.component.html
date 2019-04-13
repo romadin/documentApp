@@ -14,7 +14,7 @@
                         <h3> {{ item.getName() }} </h3>
                         <div *ngFor="let subDocument of item.getDocuments().getValue()">
                             <h4> {{ subDocument.getName() }} </h4>
-                            <div [innerHTML]="subDocument.content"></div>
+                            <div #dataContentSubDocument >{{ setContent(subDocument, dataContentSubDocument) }}</div>
                         </div>
                     </div>
                 </ng-template>
@@ -22,7 +22,7 @@
                 <ng-template #documentBlock>
                     <div>
                         <h3> {{ item.getName() }} </h3>
-                        <div [innerHTML]="item.content"></div>
+                        <div #dataContentDocument>{{ setContent(item, dataContentDocument) }}</div>
                     </div>
                 </ng-template>
             </ng-container>

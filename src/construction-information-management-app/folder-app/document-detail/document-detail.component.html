@@ -1,8 +1,8 @@
-<div #editDocumentContainer [ngClass]="addFixedClass ? 'positionFixed' : ''">
+<div #editDocumentContainer *ngIf="currentUser.isAdmin()" [ngClass]="addFixedClass ? 'positionFixed' : ''">
     <div class="card editDocument">
         <div class="header">
             <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
-            <h3 class="title" *ngIf="document">Wijzig document: {{ document.getName() }}</h3>
+            <h3 class="title" *ngIf="document">Wijzig hoofdstuk: {{ document.getName() }}</h3>
         </div>
         <div class="formBody">
             <form [formGroup]="documentForm" (ngSubmit)="onSubmit()">
@@ -22,3 +22,7 @@
         </div>
     </div>
 </div>
+<cim-document-detail-public *ngIf="!currentUser.isAdmin()"
+                            [document]="document"
+                            (closeView)="onCloseView()">
+</cim-document-detail-public>

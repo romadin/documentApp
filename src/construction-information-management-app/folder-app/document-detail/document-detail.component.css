@@ -19,3 +19,9 @@ div.positionFixed {
     margin-right: 67px;
     top: 70px;
 }
+
+:host >>> cim-document-detail-public > .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}

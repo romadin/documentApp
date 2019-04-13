@@ -1,7 +1,7 @@
 <div class="wrapper" *ngIf="currentUser">
     <div class="overview" *ngIf="items && items.length > 0" [ngClass]="{'readModeEnabled': showReadModeAnimation}">
         <ng-container *ngFor="let item of items; let itemIndex = index">
-            <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && currentFolder.isMainFolder" (click)="showAllPartners($event)">
+            <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && currentFolder.isMainFolder" (click)="onItemView('cim-partners')">
                 <div class="header">
                     <i class="material-icons"> people </i>
                     <h3> Partners</h3>
@@ -15,8 +15,8 @@
                 <cim-folder-row [folder]="item"
                                 [currentUser]="currentUser"
                                 [parent]="currentFolder"
-                                (sendDocumentToFolder)="onDocumentEdit($event)"
-                                (sendFolderToFolderComponent)="onFolderEdit($event)"
+                                (sendDocumentToFolder)="onItemView('cim-document-detail', $event)"
+                                (sendFolderToFolderComponent)="onItemView('cim-detail-folder', $event)"
                                 (sendDeletedFolderToFolderComponent)="onFolderDeleted($event)">
                 </cim-folder-row>
             </ng-template>
@@ -25,7 +25,7 @@
                 <cim-document-row [document]="item"
                                   [currentUser]="currentUser"
                                   [parentFolder]="currentFolder"
-                                  (activatedDocument)="onDocumentEdit($event)">
+                                  (activatedDocument)="onItemView('cim-document-detail', $event)">
                 </cim-document-row>
             </ng-template>
         </ng-container>

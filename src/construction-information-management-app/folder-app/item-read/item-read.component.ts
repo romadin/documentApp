@@ -61,6 +61,10 @@ export class ItemReadComponent implements OnInit, OnDestroy {
         return item instanceof Folder;
     }
 
+    setContent(item: Document, element): void {
+        element.innerHTML = item.content;
+    }
+
     private exportDocumentToPdf(): void {
         html2canvas(this.documentPlan.nativeElement).then( canvas => {
             const imgWidth = 225;

@@ -1,5 +1,6 @@
-<div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail' && currentUser.isAdmin()" [@fadeIn]>
+<div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail'" [@fadeIn]>
     <cim-document-detail
+            [currentUser]="currentUser"
             [document]="activeItem.item"
             (closeEditForm)="onCloseView($event)">
     </cim-document-detail>

@@ -89,22 +89,13 @@ export class FolderComponent implements OnInit, OnDestroy {
 
     onCloseRightSide(close: boolean): void {
         this.resetView();
-        this.activeItem = undefined;
     }
 
-    public onFolderEdit(folder: Folder) {
+    public onItemView(component: string, item?: Document | Folder) {
         this.resetView();
         this.activeItem = {
-            component: 'cim-detail-folder',
-            item: folder
-        };
-    }
-
-    public onDocumentEdit(document: Document) {
-        this.resetView();
-        this.activeItem = {
-            component: 'cim-document-detail',
-            item: document
+            component: component,
+            item: item
         };
     }
 
@@ -120,15 +111,6 @@ export class FolderComponent implements OnInit, OnDestroy {
             this.showCreateNewItem = true;
             return;
         }
-    }
-
-    public showAllPartners(event: MouseEvent) {
-        this.resetView();
-        this.activeItem = {
-            component: 'cim-partners',
-            item: null
-        };
-        this.headerCommunicationService.showAddUserButton.next(true);
     }
 
     public checkItemIsFolder(item): boolean {
@@ -164,8 +146,8 @@ export class FolderComponent implements OnInit, OnDestroy {
     }
 
     private resetView(): void {
+        this.activeItem = undefined;
         this.showReadMode = false;
-        this.headerCommunicationService.showAddUserButton.next(false);
         this.headerCommunicationService.showDocumentToPdfButton.next(false);
     }
 }

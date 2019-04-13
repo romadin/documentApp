@@ -21,6 +21,7 @@ import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { ScrollingService } from '../../../shared/service/scrolling.service';
 import { environment } from '../../../environments/environment';
 import { ToastService } from '../../../shared/toast.service';
+import { User } from '../../../shared/packages/user-package/user.model';
 
 @Component({
     selector: 'cim-document-detail',
@@ -28,9 +29,10 @@ import { ToastService } from '../../../shared/toast.service';
     styleUrls: ['./document-detail.component.css']
 })
 export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild('editDocumentContainer') container: ElementRef;
-    @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
     @Input() parentFolder: Folder;
+    @Input() currentUser: User;
+    @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
+    @ViewChild('editDocumentContainer') container: ElementRef;
     public documentForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
@@ -104,9 +106,11 @@ export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit
         }
     }
 
-    public onCloseView(event: MouseEvent): void {
-        event.stopPropagation();
-        event.preventDefault();
+    public onCloseView(event?: MouseEvent): void {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
         this.closeEditForm.emit(true);
     }
     dataChanged(): void {

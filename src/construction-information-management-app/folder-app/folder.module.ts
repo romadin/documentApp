@@ -12,6 +12,7 @@ import { ItemReadComponent } from './item-read/item-read.component';
 import { CreateDocumentComponent } from './item-create/create-document/create-document.component';
 import { PartnersComponent } from './partners/partners.component';
 import { FolderDetailComponent } from './folder-detail/folder-detail.component';
+import { DocumentDetailPublicComponent } from './document-detail/document-detail-public/document-detail-public.component';
 
 const routes: Routes = [
     {
@@ -36,6 +37,7 @@ const routes: Routes = [
         ItemReadComponent,
         PartnersComponent,
         FolderDetailComponent,
+        DocumentDetailPublicComponent,
     ],
 })
 
