@@ -1,5 +1,5 @@
-div > mat-card.createFolder {
-    border: solid 1px #cecece;
+div.createFolder > form > .actionButtons {
+    margin-top: 10px;
 }
 mat-form-field.mat-form-field {
     width: 100%;

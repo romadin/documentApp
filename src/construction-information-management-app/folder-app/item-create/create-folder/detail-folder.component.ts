@@ -7,6 +7,7 @@ import { NewFolderPostData } from '../../../../shared/packages/folder-package/ap
 import { FolderCommunicationService } from '../../../../shared/service/communication/Folder.communication.service';
 import { Document } from '../../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../../shared/packages/document-package/document.service';
+import { User } from '../../../../shared/packages/user-package/user.model';
 
 @Component({
   selector: 'cim-detail-folder',
@@ -15,6 +16,7 @@ import { DocumentService } from '../../../../shared/packages/document-package/do
 })
 export class DetailFolderComponent implements OnInit {
     @Input() parentFolder: Folder;
+    @Input() currentUser: User;
     @Output() editedFolder: EventEmitter<Folder> = new EventEmitter<Folder>();
     public folderForm: FormGroup = new FormGroup({
         name: new FormControl('')
@@ -95,6 +97,10 @@ export class DetailFolderComponent implements OnInit {
                 this.folder.getDocuments().next(documentsArray);
             }
         });
+    }
+
+    public setContent(document: Document, element: HTMLElement): void {
+        element.innerHTML = document.content ? document.content : 'Er is nog geen content bij dit hoofdstuk';
     }
 
     private getDocuments(): void {

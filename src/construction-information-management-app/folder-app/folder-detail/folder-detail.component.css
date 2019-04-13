@@ -3,3 +3,8 @@
     box-shadow: none;
     padding: 0;
 }
+:host > div >>> cim-detail-folder > div > .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}

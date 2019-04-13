@@ -1,8 +1,11 @@
 <div>
-    <mat-card class="createFolder" *ngIf="!showAddDocument">
-        <h3 class="title" *ngIf="folder">Wijzig hoofdstuk: {{ folder.getName() }}</h3>
+    <div class="card createFolder" *ngIf="!showAddDocument">
+        <div class="header">
+            <button mat-button (click)="onCancel($event)" > <i class="material-icons"> close </i> </button>
+            <h3 class="title" *ngIf="folder">Wijzig hoofdstuk: {{ folder.getName() }}</h3>
+        </div>
         <form [formGroup]="folderForm" (ngSubmit)="onSubmit()">
-            <mat-card-content>
+            <div class="content">
                 <div mat-dialog-content class="formFields">
                     <mat-form-field>
                         <input matInput placeholder="Hoofdstuk naam" formControlName="name" required="required">
@@ -25,17 +28,18 @@
                                 <i class="material-icons"> delete_forever </i>
                             </button>
                         </mat-expansion-panel-header>
-                        <span>{{ document.content ? document.content : 'Er is nog geen content in dit hoofdstuk' }}</span>
+                        <div #dataContainer>{{ setContent(document, dataContainer)}}</div>
                     </mat-expansion-panel>
                 </div>
-            </mat-card-content>
-            <mat-card-actions>
+            </div>
+            <div class="actionButtons">
                 <button mat-raised-button type="submit">Opslaan</button>
                 <button mat-button (click)="onCancel($event)">Annuleren</button>
-            </mat-card-actions>
+            </div>
         </form>
-    </mat-card>
+    </div>
     <cim-document-detail *ngIf="folder && showAddDocument"
+                         [currentUser]="currentUser"
                          [parentFolder]="folder"
                          (closeEditForm)="onCloseAddDocument($event)">
     </cim-document-detail>
