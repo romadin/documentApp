@@ -1,24 +1,17 @@
 import {
     AfterViewInit,
-    ChangeDetectorRef,
     Component,
-    ElementRef,
     EventEmitter,
     Input,
-    OnDestroy,
-    OnInit,
     Output,
-    ViewChild
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { Subscription } from 'rxjs';
 
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
-import { ScrollingService } from '../../../shared/service/scrolling.service';
 import { environment } from '../../../environments/environment';
 import { ToastService } from '../../../shared/toast.service';
 import { User } from '../../../shared/packages/user-package/user.model';
@@ -28,11 +21,10 @@ import { User } from '../../../shared/packages/user-package/user.model';
     templateUrl: './document-detail.component.html',
     styleUrls: ['./document-detail.component.css']
 })
-export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DocumentDetailComponent implements AfterViewInit {
     @Input() parentFolder: Folder;
     @Input() currentUser: User;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
-    @ViewChild('editDocumentContainer') container: ElementRef;
     public documentForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
@@ -45,9 +37,7 @@ export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit
         translate: 'no',
     };
     public content = '';
-    public addFixedClass = false;
 
-    private subscription: Subscription;
     private formHasChanged = false;
     private startValue = '';
     private _document: Document;
@@ -64,19 +54,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     constructor(private documentService: DocumentService,
-                private scrollingService: ScrollingService,
-                private changeDetection: ChangeDetectorRef,
                 private toast: ToastService) { }
 
-    ngOnInit() {
-        this.setPositionByScroll();
-    }
     ngAfterViewInit() {
         this.onFormChanges();
-    }
-    ngOnDestroy() {
-        this.changeDetection.detach();
-        this.subscription.unsubscribe();
     }
 
     public onSubmit() {
@@ -122,30 +103,6 @@ export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit
         this.startValue = this.content = this.document.content !== null ? this.document.content : '';
     }
 
-    /**
-     * We are getting the scroll position and by that we are setting the editDocumentContainer on an fixed position.
-     */
-    private setPositionByScroll(): void {
-        let oldFixedClass = this.addFixedClass;
-        let timeOutId: number;
-
-        this.subscription = this.scrollingService.scrollPosition.subscribe((scrollPosition: number) => {
-            if (this.container && this.container.nativeElement) {
-                this.addFixedClass = scrollPosition + 5 >= this.container.nativeElement.offsetTop;
-                if ( oldFixedClass !== this.addFixedClass ) {
-                    if (timeOutId) {
-                        clearTimeout(timeOutId);
-                    }
-
-                    timeOutId = setTimeout(() => {
-                        oldFixedClass = this.addFixedClass;
-                        this.changeDetection.detectChanges();
-                    }, 10);
-                }
-            }
-        });
-    }
-
     private onFormChanges() {
         let oldValue = this.documentForm.value;
         this.documentForm.valueChanges.subscribe(value => {
@@ -161,5 +118,4 @@ export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
-
 }

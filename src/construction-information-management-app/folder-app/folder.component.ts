@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 
 import { RouterService } from '../../shared/service/router.service';
 import { FolderService } from '../../shared/packages/folder-package/folder.service';
@@ -12,6 +12,7 @@ import { User } from '../../shared/packages/user-package/user.model';
 import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
 import { FolderCommunicationService } from '../../shared/service/communication/Folder.communication.service';
 import { ActiveItemPackage } from './folder-detail/folder-detail.component';
+import { ScrollingService } from '../../shared/service/scrolling.service';
 
 @Component({
   selector: 'cim-folder',
@@ -30,6 +31,7 @@ export class FolderComponent implements OnInit, OnDestroy {
     public activeItem: ActiveItemPackage;
 
     private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
+    private subscriptions: Subscription[] = [];
 
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
@@ -37,36 +39,37 @@ export class FolderComponent implements OnInit, OnDestroy {
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
                 private headerCommunicationService: HeaderWithFolderCommunicationService,
-                private folderCommunicationService: FolderCommunicationService) { }
+                private folderCommunicationService: FolderCommunicationService,
+    ) { }
 
     ngOnInit() {
         const folderId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
 
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
 
-        this.userService.getCurrentUser().subscribe((user: User) => {
+        this.subscriptions.push(this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
-        });
-        this.itemsSubscription.subscribe((items: (Document | Folder)[]) => {
+        }));
+        this.subscriptions.push(this.itemsSubscription.subscribe((items: (Document | Folder)[]) => {
             this.items = items;
-        });
+        }));
 
-        this.headerCommunicationService.triggerAddItem.subscribe((trigger: boolean) => {
+        this.subscriptions.push(this.headerCommunicationService.triggerAddItem.subscribe((trigger: boolean) => {
             if (trigger) {
                 this.addItem();
             }
-        });
+        }));
 
-        this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
+        this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
             this.resetView();
             this.showReadMode = this.showReadModeAnimation = read;
-        });
+        }));
 
-        this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
+        this.subscriptions.push(this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
             if (onClose) {
                 this.resetView();
             }
-        });
+        }));
 
         this.headerCommunicationService.showAddUserButton.next(false);
         this.getItems(folderId);
@@ -74,6 +77,7 @@ export class FolderComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.headerCommunicationService.triggerAddItem.next(false);
+        this.subscriptions.map(s => s.unsubscribe());
     }
 
     onFolderDeleted(folder: Folder) {
@@ -99,17 +103,25 @@ export class FolderComponent implements OnInit, OnDestroy {
         };
     }
 
-    public onItemsAdded(folder: Folder): void {
-        this.setNewItems(folder);
-        this.currentFolder = folder;
+    public onItemsAdded(item: Folder | Document): void {
+        this.setNewItems(<Folder>item);
+        this.currentFolder = <Folder>item;
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
     public addItem() {
         this.resetView();
         if (this.currentFolder && this.currentFolder.isMainFolder) {
-            this.showCreateNewItem = true;
-            return;
+            this.activeItem = {
+                component: 'cim-item-create',
+                item: null
+            };
+        } else {
+            this.activeItem = {
+                component: 'cim-item-list',
+                item: null,
+                mainFolder: this.mainFolder
+            };
         }
     }
 
@@ -144,6 +156,8 @@ export class FolderComponent implements OnInit, OnDestroy {
             this.itemsSubscription.next(itemsContainer);
         });
     }
+
+
 
     private resetView(): void {
         this.activeItem = undefined;

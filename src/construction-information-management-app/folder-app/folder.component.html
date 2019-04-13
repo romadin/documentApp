@@ -30,11 +30,12 @@
             </ng-template>
         </ng-container>
     </div>
-    <div class="card" [ngClass]="activeItem ? 'show' : ''">
+    <div class="card" [ngClass]="{'show': activeItem}">
         <cim-folder-detail
                 [currentFolder]="currentFolder"
                 [currentUser]="currentUser"
                 [activeSidePackage]="activeItem"
+                (itemsAdded)="onItemsAdded($event)"
                 (closeView)="onCloseRightSide($event)">
         </cim-folder-detail>
     </div>

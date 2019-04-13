@@ -14,14 +14,14 @@ div.formFields {
 textarea.textArea {
     min-height: 400px;
 }
-div.positionFixed {
-    position: fixed;
-    margin-right: 67px;
-    top: 70px;
-}
 
 :host >>> cim-document-detail-public > .card {
     border: none;
     box-shadow: none;
     padding: 0;
+}
+div.positionFixed {
+    position: fixed;
+    margin-right: 67px;
+    top: 70px;
 }

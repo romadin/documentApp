@@ -19,17 +19,19 @@
                             <i class="material-icons"> add </i>
                         </button>
                     </div>
-                    <mat-expansion-panel *ngFor="let document of documents" class="toggleRow">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title class="toggleTitle">
-                                <h4> {{ document.getName()}} </h4>
-                            </mat-panel-title>
-                            <button *ngIf="showDeleteButton(document)" (click)="deleteDocument($event, document)" class="mat-button editFolderButton">
-                                <i class="material-icons"> delete_forever </i>
-                            </button>
-                        </mat-expansion-panel-header>
-                        <div #dataContainer>{{ setContent(document, dataContainer)}}</div>
-                    </mat-expansion-panel>
+                    <div class="documentsContainer">
+                        <mat-expansion-panel *ngFor="let document of documents" class="toggleRow">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title class="toggleTitle">
+                                    <h4> {{ document.getName()}} </h4>
+                                </mat-panel-title>
+                                <button *ngIf="showDeleteButton(document)" (click)="deleteDocument($event, document)" class="mat-button editFolderButton">
+                                    <i class="material-icons"> delete_forever </i>
+                                </button>
+                            </mat-expansion-panel-header>
+                            <div #dataContainer>{{ setContent(document, dataContainer)}}</div>
+                        </mat-expansion-panel>
+                    </div>
                 </div>
             </div>
             <div class="actionButtons">

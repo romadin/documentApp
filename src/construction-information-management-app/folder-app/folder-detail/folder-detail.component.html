@@ -1,33 +1,35 @@
-<div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail'" [@fadeIn]>
-    <cim-document-detail
-            [currentUser]="currentUser"
-            [document]="activeItem.item"
-            (closeEditForm)="onCloseView($event)">
-    </cim-document-detail>
-</div>
-<div *ngIf="activeItem && activeItem.component === 'cim-detail-folder'" [@fadeIn]>
-    <cim-detail-folder [currentUser]="currentUser"
-                       [folder]="activeItem.item"
-                       (closeEditForm)="onCloseView($event)">
-    </cim-detail-folder>
-</div>
+<div #container [ngClass]="addFixedClass ? 'positionFixed' : 'normal'">
+    <div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail'" [@fadeIn]>
+        <cim-document-detail
+                [currentUser]="currentUser"
+                [document]="activeItem.item"
+                (closeEditForm)="onCloseView($event)">
+        </cim-document-detail>
+    </div>
+    <div *ngIf="activeItem && activeItem.component === 'cim-detail-folder'" [@fadeIn]>
+        <cim-detail-folder [currentUser]="currentUser"
+                           [folder]="activeItem.item"
+                           (closeEditForm)="onCloseView($event)">
+        </cim-detail-folder>
+    </div>
 
-<div *ngIf="activeItem && activeItem.component === 'cim-partners'" [@fadeIn]>
-    <cim-partners
-            [currentUser]="currentUser"
-            [projectId]="currentFolder.getProjectId()"
-            (closeView)="onCloseView($event)">
-    </cim-partners>
+    <div *ngIf="activeItem && activeItem.component === 'cim-partners'" [@fadeIn]>
+        <cim-partners
+                [currentUser]="currentUser"
+                [projectId]="currentFolder.getProjectId()"
+                (closeView)="onCloseView($event)">
+        </cim-partners>
+    </div>
+    <div *ngIf="activeItem && activeItem.component === 'cim-item-list'" [@fadeIn]>
+        <cim-item-list [mainFolder]="activeItem.mainFolder"
+                       [currentFolder]="currentFolder"
+                       (cancelAddItems)="onCloseView($event)"
+                       (saveItemsDone)="onItemsAdded($event)">
+        </cim-item-list>
+    </div>
+    <div *ngIf="activeItem && activeItem.component === 'cim-item-create'" [@fadeIn]>
+        <cim-item-create [folder]="currentFolder"
+                         (folderChange)="onItemsAdded($event)">
+        </cim-item-create>
+    </div>
 </div>
-
-<cim-item-list *ngIf="showAddItemList && mainFolder && currentFolder"
-      [mainFolder]="mainFolder"
-      [currentFolder]="currentFolder"
-      (cancelAddItems)="onAddItemsCancel($event)"
-      (saveItemsDone)="onItemsAdded($event)">
-</cim-item-list>
-
-<cim-item-create *ngIf="currentFolder && currentFolder.isMainFolder && showCreateNewItem"
-               [folder]="currentFolder"
-               (folderChange)="onItemsAdded($event)">
-</cim-item-create>

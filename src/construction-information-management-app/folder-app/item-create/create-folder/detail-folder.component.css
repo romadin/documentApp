@@ -5,7 +5,13 @@ mat-form-field.mat-form-field {
     width: 100%;
 }
 
-div.documentList > mat-expansion-panel {
+div.documentList > div.documentsContainer {
+    max-height: 60vh;
+    padding: 5px 0;
+    overflow: auto;
+}
+
+div.documentList > div.documentsContainer > mat-expansion-panel {
     border: solid 1px #cecece;
     border-bottom: none;
 }
