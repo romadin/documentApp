@@ -11,7 +11,7 @@
                         <mat-form-field>
                             <input matInput placeholder="Hoofdstuk naam" formControlName="name" required="required">
                         </mat-form-field>
-                        <angular-editor #editor [(ngModel)]="content" [config]="editorConfig" [ngModelOptions]="{standalone: true}"></angular-editor>
+                        <angular-editor #editor [(ngModel)]="content" (ngModelChange)="dataChanged($event)" [config]="editorConfig" [ngModelOptions]="{standalone: true}"></angular-editor>
                     </div>
                 </div>
                 <div class="actionButtons">

@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -19,13 +20,14 @@ import { DocPostData } from '../../../shared/packages/document-package/api-docum
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { ScrollingService } from '../../../shared/service/scrolling.service';
 import { environment } from '../../../environments/environment';
+import { ToastService } from '../../../shared/toast.service';
 
 @Component({
     selector: 'cim-document-detail',
     templateUrl: './document-detail.component.html',
     styleUrls: ['./document-detail.component.css']
 })
-export class DocumentDetailComponent implements OnInit, OnDestroy {
+export class DocumentDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('editDocumentContainer') container: ElementRef;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
     @Input() parentFolder: Folder;
@@ -43,8 +45,10 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
     public content = '';
     public addFixedClass = false;
 
-    private _document: Document;
     private subscription: Subscription;
+    private formHasChanged = false;
+    private startValue = '';
+    private _document: Document;
 
     @Input()
     set document(document: Document) {
@@ -59,37 +63,44 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
 
     constructor(private documentService: DocumentService,
                 private scrollingService: ScrollingService,
-                private changeDetection: ChangeDetectorRef) { }
+                private changeDetection: ChangeDetectorRef,
+                private toast: ToastService) { }
 
     ngOnInit() {
         this.setPositionByScroll();
     }
-
+    ngAfterViewInit() {
+        this.onFormChanges();
+    }
     ngOnDestroy() {
         this.changeDetection.detach();
         this.subscription.unsubscribe();
     }
 
     public onSubmit() {
-        const postData: DocPostData = {
-            name: this.documentForm.controls.name.value,
-            content: this.content,
-        };
-        if (this.document) {
-            this.documentService.updateDocument(this.document, postData).subscribe((document) => {
-                if (document) {
-                    this.document = document;
-                }
-            });
-        } else {
-            postData.folderId = this.parentFolder.id;
-            this.documentService.postDocument(postData).subscribe((document) => {
-                if (document) {
-                    this.parentFolder.addDocument(document);
-                    this.document = document;
-                    this.closeEditForm.emit(true);
-                }
-            });
+        if (this.documentForm.valid && this.formHasChanged) {
+            const postData: DocPostData = {
+                name: this.documentForm.controls.name.value,
+                content: this.content,
+            };
+            if ( this.document ) {
+                this.documentService.updateDocument(this.document, postData).subscribe((document) => {
+                    if ( document ) {
+                        this.document = document;
+                        this.toast.showSuccess('Hoofdstuk: ' + this.document.getName() + ' is bewerkt', 'Bewerkt');
+                    }
+                });
+            } else {
+                postData.folderId = this.parentFolder.id;
+                this.documentService.postDocument(postData).subscribe((document) => {
+                    if ( document ) {
+                        this.parentFolder.addDocument(document);
+                        this.document = document;
+                        this.closeEditForm.emit(true);
+                        this.toast.showSuccess('Hoofdstuk: ' + document.getName() + ' is toegevoegd', 'Toegevoegd');
+                    }
+                });
+            }
         }
     }
 
@@ -98,10 +109,13 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
         event.preventDefault();
         this.closeEditForm.emit(true);
     }
+    dataChanged(): void {
+        this.formHasChanged = this.content !== this.startValue;
+    }
 
     private updateForm(): void {
         this.documentForm.controls.name.setValue(this.document.getName());
-        this.content = this.document.content !== null ? this.document.content : '';
+        this.startValue = this.content = this.document.content !== null ? this.document.content : '';
     }
 
     /**
@@ -123,6 +137,22 @@ export class DocumentDetailComponent implements OnInit, OnDestroy {
                         oldFixedClass = this.addFixedClass;
                         this.changeDetection.detectChanges();
                     }, 10);
+                }
+            }
+        });
+    }
+
+    private onFormChanges() {
+        let oldValue = this.documentForm.value;
+        this.documentForm.valueChanges.subscribe(value => {
+            for (const key in value) {
+                if (value.hasOwnProperty(key) && oldValue.hasOwnProperty(key)) {
+                    if (value[key] !== oldValue[key]) {
+                        this.formHasChanged = true;
+                        oldValue = value;
+                        break;
+                    }
+                    this.formHasChanged = false;
                 }
             }
         });
