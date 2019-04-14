@@ -78,7 +78,7 @@ module.exports = {
     * Note: The user should not have to call this method.  Instead, when the user
     *       registers for the "backbutton" event, this is automatically done.
     *
-    * @param override        T=override, F=cancel override
+    * @param override        T=override, F=onCloseView override
     */
     overrideBackbutton:function(override) {
         exec(null, null, APP_PLUGIN_NAME, "overrideBackbutton", [override]);
@@ -93,7 +93,7 @@ module.exports = {
     *       registers for the "volume[up|down]button" event, this is automatically done.
     *
     * @param button          volumeup, volumedown
-    * @param override        T=override, F=cancel override
+    * @param override        T=override, F=onCloseView override
     */
     overrideButton:function(button, override) {
         exec(null, null, APP_PLUGIN_NAME, "overrideButton", [button, override]);
