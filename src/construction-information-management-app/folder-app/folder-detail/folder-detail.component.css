@@ -26,3 +26,14 @@ div.positionFixed {
     box-shadow: none;
     padding: 0;
 }
+:host > div.normal > div >>> cim-item-create > div.card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+:host > div.normal > div >>> cim-item-create > div.card >>> cim-create-document >>> cim-document-detail > div > .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}

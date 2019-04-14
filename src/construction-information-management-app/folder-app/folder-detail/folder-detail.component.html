@@ -29,7 +29,9 @@
     </div>
     <div *ngIf="activeItem && activeItem.component === 'cim-item-create'" [@fadeIn]>
         <cim-item-create [folder]="currentFolder"
-                         (folderChange)="onItemsAdded($event)">
+                         [currentUser]="currentUser"
+                         (folderChange)="onItemsAdded($event)"
+                         (closeView)="onCloseView($event)">
         </cim-item-create>
     </div>
 </div>

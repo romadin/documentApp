@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 
@@ -12,7 +12,6 @@ import { User } from '../../shared/packages/user-package/user.model';
 import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
 import { FolderCommunicationService } from '../../shared/service/communication/Folder.communication.service';
 import { ActiveItemPackage } from './folder-detail/folder-detail.component';
-import { ScrollingService } from '../../shared/service/scrolling.service';
 
 @Component({
   selector: 'cim-folder',
@@ -25,7 +24,6 @@ export class FolderComponent implements OnInit, OnDestroy {
     public mainFolder: Folder;
     public currentUser: User;
     public items: (Document | Folder)[];
-    public showCreateNewItem: boolean;
     public showReadMode: boolean;
     public showReadModeAnimation: boolean;
     public activeItem: ActiveItemPackage;

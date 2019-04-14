@@ -1,5 +1,6 @@
-<div class="editItemWrapper">
+<div class="card">
     <div class="componentHeader">
+        <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
         <h3> Voeg een {{ itemToEdit === 'folder' ? 'hoofdstuk' : 'sub hoofdstuk' }} toe </h3>
         <mat-button-toggle-group name="itemPicker" aria-label="Font Style" class="switchItemButton">
             <mat-button-toggle (change)="changeEditItemForm($event, 'document')" value="document" [checked]="true">Sub hoofdstuk</mat-button-toggle>
@@ -8,6 +9,7 @@
     </div>
 
     <cim-create-document *ngIf="itemToEdit === 'document'"
+                         [currentUser]="currentUser"
                          [parentFolder]="folder">
     </cim-create-document>
     <cim-detail-folder *ngIf="itemToEdit === 'folder'"

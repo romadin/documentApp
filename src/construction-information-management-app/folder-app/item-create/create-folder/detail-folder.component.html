@@ -1,8 +1,8 @@
 <div>
     <div class="card createFolder" *ngIf="!showAddDocument">
-        <div class="header">
+        <div class="header" *ngIf="folder">
             <button mat-button (click)="onCancel($event)" > <i class="material-icons"> close </i> </button>
-            <h3 class="title" *ngIf="folder">Wijzig hoofdstuk: {{ folder.getName() }}</h3>
+            <h3 class="title">Wijzig hoofdstuk: {{ folder.getName() }}</h3>
         </div>
         <form [formGroup]="folderForm" (ngSubmit)="onSubmit()">
             <div class="content">
