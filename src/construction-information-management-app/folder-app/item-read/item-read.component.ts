@@ -66,17 +66,31 @@ export class ItemReadComponent implements OnInit, OnDestroy {
     }
 
     private exportDocumentToPdf(): void {
-        html2canvas(this.documentPlan.nativeElement).then( canvas => {
-            const imgWidth = 225;
-            const pageHeight = 295;
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-            const heightLeft = imgHeight;
-
-            const contentDatatUrl = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
-            pdf.addImage(contentDatatUrl, 'PNG', 0, 2, imgWidth, imgHeight);
-            pdf.save('BIMPlan.pdf');
-        });
+        // html2canvas(this.documentPlan.nativeElement).then( canvas => {
+        //     const imgWidth = 225;
+        //     const pageHeight = 295;
+        //     const imgHeight = canvas.height * imgWidth / canvas.width;
+        //     const heightLeft = imgHeight;
+        //
+        //     const contentDatatUrl = canvas.toDataURL('image/png');
+        //     const pdf = new jsPDF();
+        //     pdf.addImage(contentDatatUrl, 'PNG', 0, 2, imgWidth, imgHeight);
+        //     pdf.save('BIMPlan.pdf');
+        // });
+        const doc = new jsPDF();
+        const elementHandler = {
+            '#ignorePDF': function (element, renderer) {
+                return true;
+            }
+        };
+        const source = this.documentPlan.nativeElement;
+        doc.fromHTML(
+            source,
+            15,
+            15,
+            {
+                'width': 180, 'elementHandlers': elementHandler
+            }, function(bla) { doc.save('BIMPlan.pdf'); });
     }
 
 }
