@@ -13,12 +13,10 @@ export class UserDetailPublicComponent implements OnInit {
     @Input() imageSrc: string;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    constructor() {
-        this.projects = this.projects.filter(project => this.user.projectsId.find(projectId => projectId === project.getId()));
-        console.log(this.projects);
-    }
+    constructor() {}
 
     ngOnInit() {
+        this.projects = this.projects.filter(project => this.user.projectsId.find(projectId => projectId === project.getId()));
     }
 
     onCloseDetailView(e: Event): void {

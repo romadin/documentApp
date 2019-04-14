@@ -20,10 +20,9 @@ h3 {
 .userDetailView > .content {
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
 }
 .userDetailView > .content > div.linkedProject {
-    padding-right: 10px;
+    flex: 1;
 }
 
 .userDetailView > .content > div.linkedProject > div.projectContent {
@@ -31,6 +30,9 @@ h3 {
 }
 .userDetailView > .content > div.linkedProject > div.projectContent > label {
     font-weight: bold;
+}
+.userDetailView > .content > div.userInfo {
+    flex: 2;
 }
 
 .userDetailView > .content > div.userInfo > div.title {
