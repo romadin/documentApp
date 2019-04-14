@@ -30,7 +30,7 @@
             </ng-template>
         </ng-container>
     </div>
-    <div class="card" [ngClass]="{'show': activeItem}">
+    <div class="card" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
         <cim-folder-detail
                 [currentFolder]="currentFolder"
                 [currentUser]="currentUser"

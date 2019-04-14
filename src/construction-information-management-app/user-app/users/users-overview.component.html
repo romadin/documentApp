@@ -8,7 +8,7 @@
         </cim-user-row>
     </div>
     <div class="userDetail" [ngClass]="{'showDetail': tempAnimationDelay}">
-        <cim-user-detail *ngIf="userToEdit"
+        <cim-user-detail *ngIf="rightSideActive"
                          [currentUser]="currentUser"
                          [user]="userToEdit"
                          (closeDetailView)="closeUserDetailView($event)">

@@ -1,0 +1,19 @@
+.card > .wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+.card > .wrapper > .content {
+    display: flex;
+    flex-direction: row;
+    margin: 5px 0;
+    border-bottom: solid 1px #b5b5b5;
+}
+.card > .wrapper > .content > span {
+    flex: 2;
+}
+
+.card > .wrapper > .content > span.title {
+    flex: 1;
+    font-weight: bold;
+}

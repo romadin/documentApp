@@ -41,11 +41,14 @@
             <mat-form-field>
                 <input type="text" matInput placeholder="Functie" formControlName="function" required>
             </mat-form-field>
+            <mat-form-field>
+                <input type="text" matInput placeholder="Bedrijfsnaam" formControlName="company" required>
+            </mat-form-field>
             <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
         </div>
         <mat-selection-list #projects>
             <h4> Kies project </h4>
-            <mat-list-option *ngFor="let project of allProjects" (click)="onProjectSelect(project)">
+            <mat-list-option mat-line *ngFor="let project of allProjects" (click)="onProjectSelect(project)">
                 {{ project.getName() }}
             </mat-list-option>
         </mat-selection-list>

@@ -12,6 +12,7 @@ export class User {
     private _projectsId: number[];
     private _phoneNumber: number;
     private _image: Subject<Blob>;
+    private _company: string;
 
     public constructor() {
         //
@@ -95,6 +96,14 @@ export class User {
 
     set image(value: Subject<Blob>) {
         this._image = value;
+    }
+
+    get company(): string {
+        return this._company;
+    }
+
+    set company(value: string) {
+        this._company = value;
     }
 
     public getFullName(): string {

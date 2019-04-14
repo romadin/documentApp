@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { map } from 'rxjs/operators';
 
-import { ApiUserResponse, EditUserBody, isApiUserResponse, UserBody } from './api-user.interface';
+import { ApiUserResponse, EditUserBody, isApiUserResponse } from './api-user.interface';
+import { ErrorMessage } from '../../type-guard/error-message';
+import { ApiDocResponse } from '../document-package/api-document.interface';
 import { ApiService } from '../../service/api.service';
 import { RoleService } from '../role-package/role.service';
 import { User } from './user.model';
-import { map } from 'rxjs/operators';
-import { ApiDocResponse } from '../document-package/api-document.interface';
-import { Organisation } from '../organisation-package/organisation.model';
-import { ErrorMessage } from '../../type-guard/error-message';
 
 interface ActivationParams {
     params: { activationToken: string; };
@@ -158,6 +157,7 @@ export class UserService {
         user.role = this.roleService.makeRole(value.role);
         user.projectsId = value.projectsId;
         user.phoneNumber = value.phoneNumber;
+        user.company = value.company;
 
         if (value.hasImage) {
             user.image = this.getUserImage(user.id);

@@ -66,18 +66,10 @@ div.detailWrapper > .editUser > div.profilePicture > label > div.avatar {
     flex: 5;
     padding: 0 16px;
 }
-.content > div.projectsWrapper > h3 {
-    margin: 0 0 10px;
-}
-.content > div.projectsWrapper > div.projectContent {
-    padding: 20px 0;
-}
-.content > div.projectsWrapper > div.projectContent > label {
-    font-weight: bold;
+.content > div.projectsWrapper > mat-selection-list > span.title {
     color: rgba(0,0,0,.54);
 }
-.content > div.projectsWrapper > div.projectContent > div.divider {
-    margin-top: 1px;
-    border: solid 1px #949494;
-    border-bottom: none;
+.content > div.projectsWrapper > mat-selection-list > mat-list-option {
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,0.1), 0 1px 3px 0 rgba(0,0,0,0.1);
+    margin-bottom: 4px;
 }

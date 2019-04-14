@@ -26,7 +26,8 @@ export class ItemDetailComponent implements OnInit {
     @Input() projectId: number;
     @Output() closeEdit: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    userSelected;
+    userSelected: any;
+    currentUser: User;
     public actionForm: FormGroup = new FormGroup({
         description: new FormControl(),
         actionHolder: new FormControl(),
@@ -36,7 +37,6 @@ export class ItemDetailComponent implements OnInit {
     });
     public selectedStatus: Status;
     public users: User[];
-    public statusToSelect = [{ name: 'in behandeling', value: false }];
 
     private _action: Action | null;
 
@@ -58,6 +58,9 @@ export class ItemDetailComponent implements OnInit {
 
     ngOnInit() {
         const organisation: Organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.userService.getCurrentUser().subscribe(user => {
+            this.currentUser = user;
+        });
         this.actionForm.controls.description.setValidators([ Validators.required ]);
         this.actionForm.controls.week.setValidators([ Validators.maxLength(2), weekNumberValidator(52) ]);
 
@@ -93,14 +96,12 @@ export class ItemDetailComponent implements OnInit {
         }
     }
 
-    onCancel(e: MouseEvent): void {
-        e.preventDefault();
-        e.stopPropagation();
+    onCancel(e?: MouseEvent): void {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
         this.closeEdit.emit(true);
-    }
-
-    onStatusSelect(status: Status): void {
-        this.selectedStatus = status;
     }
 
     private setFormValue(): void {

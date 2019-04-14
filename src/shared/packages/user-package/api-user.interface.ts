@@ -9,6 +9,7 @@ export interface ApiUserResponse {
     projectsId: number[];
     hasImage: boolean;
     phoneNumber: number;
+    company: string;
 }
 
 export interface UserBody {
@@ -28,6 +29,7 @@ export interface EditUserBody {
     email?: string;
     projectsId?: string[];
     password?: string;
+    company?: string;
 }
 
 export interface ApiRoleResponse {
@@ -45,5 +47,6 @@ export function isApiUserResponse(arg: any): arg is ApiUserResponse {
         arg.role !== undefined &&
         arg.projectsId !== undefined &&
         arg.hasImage !== undefined &&
-        arg.phoneNumber !== undefined;
+        arg.phoneNumber !== undefined &&
+        arg.company !== undefined;
 }

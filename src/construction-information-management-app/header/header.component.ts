@@ -263,6 +263,10 @@ export class HeaderComponent implements OnInit {
     }
 
     private openDialogAddUser(): void {
+        if (this.router.url === '/gebruikers') {
+            this.usersCommunicationService.addUserInUserComponent.next(true);
+            return;
+        }
         const data: DefaultPopupData = {
             title: 'Voeg een gebruiker toe',
                 placeholder: 'Project naam',

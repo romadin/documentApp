@@ -1,0 +1,32 @@
+<div class="card">
+    <div class="header">
+        <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
+        <h3 class="title"> Actie: {{action.code}} </h3>
+    </div>
+    <div class="wrapper">
+        <div class="content">
+            <span class="title">Actie code: </span>
+            <span>{{ action.code }} </span>
+        </div>
+        <div class="content">
+            <span class="title">Omschrijving: </span>
+            <span>{{ action.description }} </span>
+        </div>
+        <div class="content">
+            <span class="title">Actie houder: </span>
+            <span>{{ action.actionHolder.getFullName() }} </span>
+        </div>
+        <div class="content">
+            <span class="title">Week: </span>
+            <span>{{ action.week }} </span>
+        </div>
+        <div class="content">
+            <span class="title">Status </span>
+            <span>{{ action.isDone ? 'Klaar' : 'Nog bezig'}} </span>
+        </div>
+        <div class="content">
+            <span class="title">Opmerking: </span>
+            <span>{{ action.comments }} </span>
+        </div>
+    </div>
+</div>

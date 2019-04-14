@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Event } from '../../../../../shared/packages/agenda-package/event.model';
 import { User } from '../../../../../shared/packages/user-package/user.model';
-import { EventPostData, EventService } from '../../../../../shared/packages/agenda-package/event.service';
+import { EventService } from '../../../../../shared/packages/agenda-package/event.service';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { startDateBiggerThenEndDate, startTimeBiggerThenEndTime } from '../../../../../shared/form-validator/custom-validators';
 import { DatePipe } from '@angular/common';
@@ -25,7 +25,6 @@ export class AdminComponent implements AfterViewInit {
         endDate: new FormControl(''),
         endTime: new FormControl(''),
         streetName: new FormControl(''),
-        zipCode: new FormControl(''),
         residence: new FormControl(''),
     });
     private _event: Event;
@@ -107,7 +106,6 @@ export class AdminComponent implements AfterViewInit {
         this.eventForm.controls.endTime.setValue(this.datePipe.transform(this._event.endDate, 'HH:mm'));
         if (this.event.location) {
             this.eventForm.controls.streetName.setValue(this._event.location.streetName);
-            this.eventForm.controls.zipCode.setValue(this._event.location.zipCode);
             this.eventForm.controls.residence.setValue(this._event.location.residence);
         }
     }
@@ -118,13 +116,12 @@ export class AdminComponent implements AfterViewInit {
             event = this._event;
         } else {
             event = new Event();
-            event.location = { streetName: '', zipCode: '', residence: '' };
+            event.location = { streetName: '', residence: '' };
         }
 
         event.name = this.eventForm.controls.name.value;
         event.description = this.eventForm.controls.description.value;
         event.location.streetName = this.eventForm.controls.streetName.value;
-        event.location.zipCode = this.eventForm.controls.zipCode.value;
         event.location.residence = this.eventForm.controls.residence.value;
 
         event.startDate = this.getFullDateTime(

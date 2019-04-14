@@ -4,6 +4,7 @@ import { ActionListComponent } from './action-list.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ItemDetailComponent } from './item-detail/item-detail.component';
 import { ActionsArchivedComponent } from './actions-archived/actions-archived.component';
+import { ActionDetailPublicComponent } from './item-detail/action-detail-public/action-detail-public.component';
 
 const routes: Routes = [
     {
@@ -21,6 +22,7 @@ const routes: Routes = [
         ActionListComponent,
         ItemDetailComponent,
         ActionsArchivedComponent,
+        ActionDetailPublicComponent,
     ],
 })
 

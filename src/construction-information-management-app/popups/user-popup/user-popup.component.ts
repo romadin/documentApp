@@ -12,8 +12,9 @@ import { MailService } from '../../../shared/service/mail.service';
 import { duplicateValidator } from '../../../shared/form-validator/custom-validators';
 import { ToastService } from '../../../shared/toast.service';
 import { ErrorMessage } from '../../../shared/type-guard/error-message';
+import { objectIsEmpty } from '../../../shared/helpers/practice-functions';
 
-interface SelectedProject {
+export interface SelectedProject {
     [id: number]: Project;
 }
 
@@ -30,7 +31,7 @@ export class UserPopupComponent {
         email: new FormControl(''),
         phoneNumber: new FormControl(''),
         function: new FormControl(''),
-        password: new FormControl(''),
+        company: new FormControl(''),
     });
     public projectsId = new FormControl();
     public allProjects: Project[];
@@ -63,7 +64,7 @@ export class UserPopupComponent {
     }
 
     public onSubmit() {
-        if ( this.objectIsEmpty(this.selectedProjects) ) {
+        if ( objectIsEmpty(this.selectedProjects) ) {
             return alert('Er is geen project gekozen!');
         }
         this.loadingService.isLoading.next(true);
@@ -76,7 +77,7 @@ export class UserPopupComponent {
         data.append('email', this.userForm.controls.email.value);
         data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
         data.append('function', this.userForm.controls.function.value);
-        data.append('password', this.userForm.controls.password.value);
+        data.append('company', this.userForm.controls.company.value);
         data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));
 
         if (this.imageToUpload) {
@@ -101,7 +102,6 @@ export class UserPopupComponent {
         }
 
         this.selectedProjects[project.getId()] = project;
-
     }
 
     public onImageUpload(event: Event): void {
@@ -128,14 +128,5 @@ export class UserPopupComponent {
             this.userForm.controls[key].setValidators(validators);
             this.userForm.controls[key].setErrors({'duplicate': true});
         }
-    }
-
-    private objectIsEmpty(object: any): boolean {
-        for (const key in object ) {
-            if (object.hasOwnProperty(key)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

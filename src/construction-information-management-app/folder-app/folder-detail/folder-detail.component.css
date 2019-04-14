@@ -1,22 +1,8 @@
-div.card {
-    flex: 0;
-    width: 0;
-    padding: 0;
-    border: none;
-    transition: all 5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-div.card.show {
-    width: 100%;
-    border: solid 1px #cecece;
-    padding: 18px;
-    flex: 1;
-}
 div.positionFixed {
     position: fixed;
     top: 70px;
     right: 35px;
-    left: 48%;
+    left: 50%;
 }
 
 :host > div.normal > div.documentView >>> cim-document-detail > div > .card {
@@ -30,6 +16,12 @@ div.positionFixed {
     padding: 0;
 }
 :host > div.normal > div >>> cim-item-list > div.card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+:host > div.normal > div.documentView >>> cim-document-detail >>> cim-document-detail-public > .card {
     border: none;
     box-shadow: none;
     padding: 0;

@@ -1,16 +1,21 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { MatListOption } from '@angular/material';
 
-import { User } from '../../../../shared/packages/user-package/user.model';
+import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
+import { objectIsEmpty } from '../../../../shared/helpers/practice-functions';
+import { SelectedProject } from '../../../popups/user-popup/user-popup.component';
+import { ToastService } from '../../../../shared/toast.service';
+import { ErrorMessage } from '../../../../shared/type-guard/error-message';
+import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { ProjectService } from '../../../../shared/packages/project-package/project.service';
 import { Project } from '../../../../shared/packages/project-package/project.model';
 import { UserService } from '../../../../shared/packages/user-package/user.service';
-import { ActivatedRoute } from '@angular/router';
-import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
-import { ToastService } from '../../../../shared/toast.service';
-import { ErrorMessage } from '../../../../shared/type-guard/error-message';
-import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
+import { User } from '../../../../shared/packages/user-package/user.model';
+import { MailService } from '../../../../shared/service/mail.service';
+import { LoadingService } from '../../../../shared/loading.service';
 
 @Component({
   selector: 'cim-user-detail',
@@ -19,7 +24,6 @@ import { duplicateValidator } from '../../../../shared/form-validator/custom-val
 })
 export class UserDetailComponent implements OnInit, AfterViewInit {
     @Input() currentUser: User;
-    @Input() user: User;
     @Output() closeDetailView: EventEmitter<boolean> = new EventEmitter<boolean>();
     projects: Project[];
     userForm: FormGroup = new FormGroup({
@@ -29,21 +33,53 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         email: new FormControl(''),
         function: new FormControl(''),
         phoneNumber: new FormControl(''),
+        company: new FormControl(''),
     });
     imageToUpload: File;
     imageSrc: any;
+    selectedProjects: SelectedProject = {};
     private fileReader: FileReader = new FileReader();
     private existingItems: string[] = [];
     private formHasChanged = false;
+    private organisation: Organisation;
+    private _user: User;
     constructor(
         private projectService: ProjectService,
         private userService: UserService,
         private sanitizer: DomSanitizer,
         private activatedRoute: ActivatedRoute,
+        private mailService: MailService,
         private toast: ToastService,
+        private loadingService: LoadingService,
     ) {
-        this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('url( "/assets/images/defaultProfile.png")');
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.userForm.controls.email.setValidators([Validators.email]);
+
+        this.projectService.getProjects(this.organisation).subscribe((projects: Project[]) => {
+            this.projects = projects;
+        });
+    }
+
+    @Input()
+    set user(user: User) {
+        this._user = user;
+        this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('url( "/assets/images/defaultProfile.png")');
+        if (user) {
+            if (this.user.image) {
+                this.user.image.subscribe((blobValue) => {
+                    if (blobValue) {
+                        this.fileReader.readAsDataURL(blobValue);
+                    }
+                });
+            }
+            this.setFormValue();
+        } else {
+            this.userForm.reset();
+        }
+    }
+
+    get user(): User {
+        return this._user;
     }
 
     ngOnInit() {
@@ -52,17 +88,6 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
             this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('url(' + imageString + ')');
         }, false);
 
-        if (this.user.image) {
-            this.user.image.subscribe((blobValue) => {
-                if (blobValue) {
-                    this.fileReader.readAsDataURL(blobValue);
-                }
-            });
-        }
-        Promise.all(this.getLinkedProjects()).then((projects) => {
-            this.projects = projects;
-        });
-        this.setFormValue();
     }
     ngAfterViewInit() {
         this.onFormChanges();
@@ -78,6 +103,10 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
 
     public onSubmit(e: Event) {
         e.stopPropagation();
+        if ( objectIsEmpty(this.selectedProjects) ) {
+            return alert('Er is geen project gekozen!');
+        }
+        this.projectsHasChanged();
         if (this.userForm.valid && this.formHasChanged) {
             const data = new FormData();
 
@@ -87,27 +116,63 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
             data.append('email', this.userForm.controls.email.value);
             data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
             data.append('function', this.userForm.controls.function.value);
+            data.append('company', this.userForm.controls.company.value);
+            data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));
 
             if (this.imageToUpload) {
                 data.append('image', this.imageToUpload, this.imageToUpload.name);
             }
 
-            this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
-                if (value instanceof User) {
-                    this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
-                    this.onCloseDetailView();
-                } else {
-                    this.showErrorMessage(value);
-                }
-            });
+            if (this.user) {
+                this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
+                    if (value instanceof User) {
+                        this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
+                        this.onCloseDetailView();
+                    } else {
+                        this.showErrorMessage(value);
+                    }
+                });
+            } else {
+                this.userService.postUser(data, {organisationId: this.organisation.id }).subscribe((user: User | ErrorMessage) => {
+                    this.loadingService.isLoading.next(false);
+                    if (user instanceof User) {
+                        this.mailService.sendUserActivation(user);
+                        this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
+                        this.user = user;
+                    } else {
+                        this.showErrorMessage(<ErrorMessage>user);
+                    }
+                });
+            }
         }
     }
+    public onProjectSelect(project: Project, option?: MatListOption): void {
+        if (option && !option.selected) {
+            delete this.selectedProjects[project.getId()];
+            return;
+        }
+
+        this.selectedProjects[project.getId()] = project;
+    }
+
 
     onImageUpload(event: Event): void {
         if ((<HTMLInputElement>event.target).files && (<HTMLInputElement>event.target).files[0]) {
             this.imageToUpload = (<HTMLInputElement>event.target).files[0];
             this.fileReader.readAsDataURL(this.imageToUpload);
+            this.formHasChanged = true;
         }
+    }
+
+    checkProjectSelected(project: Project): boolean {
+        if (this.user) {
+            if ( this.user.projectsId.find(projectId => projectId === project.getId()) ) {
+                this.onProjectSelect(project);
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     private setFormValue() {
@@ -117,6 +182,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         this.userForm.controls.email.setValue(this.user.email);
         this.userForm.controls.phoneNumber.setValue(this.user.phoneNumber);
         this.userForm.controls.function.setValue(this.user.function);
+        this.userForm.controls.company.setValue(this.user.company);
     }
 
     private showErrorMessage(message: ErrorMessage): void {
@@ -141,6 +207,16 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
             projectPromise.push(this.projectService.getProject(projectId, organisation));
         });
         return projectPromise;
+    }
+
+    private projectsHasChanged() {
+        if (this.user) {
+            for (const selectedProjectId in this.selectedProjects) {
+                if (this.user.projectsId.find(projectId => projectId === parseInt(selectedProjectId, 10)) === undefined) {
+                    this.formHasChanged = true;
+                }
+            }
+        }
     }
 
     private onFormChanges() {

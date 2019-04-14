@@ -107,3 +107,7 @@ div.card.show {
     padding: 18px;
     flex: 1;
 }
+div.card.show.scrollBar {
+    height: 63vh;
+    overflow: auto;
+}

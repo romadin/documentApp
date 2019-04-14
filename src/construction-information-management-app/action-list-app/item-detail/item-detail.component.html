@@ -1,4 +1,4 @@
-<div class="detailWrapper" >
+<div class="detailWrapper" *ngIf="currentUser.isAdmin()">
     <h3> {{action ? 'Actie bewerken' : 'Actie toevoegen'}} </h3>
     <form [formGroup]="actionForm" (ngSubmit)="onSubmit()">
         <div mat-dialog-content>
@@ -39,4 +39,8 @@
         </div>
     </form>
 </div>
+<cim-action-detail-public *ngIf="!currentUser.isAdmin() && action"
+                          [action]="action"
+                          (closeView)="onCancel()">
+</cim-action-detail-public>
 

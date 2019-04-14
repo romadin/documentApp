@@ -26,7 +26,6 @@ interface EventApiResponse {
 
 export interface EventLocation {
     streetName: string;
-    zipCode: string;
     residence: string;
 }
 
