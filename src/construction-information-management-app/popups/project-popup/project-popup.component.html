@@ -4,6 +4,14 @@
         <mat-form-field>
             <input matInput placeholder="{{ data.placeholder }}" formControlName="projectName" required>
         </mat-form-field>
+        <mat-form-field *ngIf="!data.id">
+            <mat-label>Template</mat-label>
+            <mat-select [(ngModel)]=templateId [ngModelOptions]="{standalone: true}" name="templateId">
+                <mat-option *ngFor="let template of templates" [value]="template.id">
+                    {{ template.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </div>
     <div mat-dialog-actions>
         <button mat-raised-button type="submit">{{ data.submitButton }}</button>

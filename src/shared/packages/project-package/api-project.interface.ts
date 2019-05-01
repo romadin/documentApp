@@ -6,3 +6,9 @@ export interface ApiProjectResponse {
 export interface ProjectUpdateData {
     name?: string;
 }
+
+export interface ProjectPostDataInterface {
+    name: string;
+    templateId: number;
+    organisationId: number;
+}

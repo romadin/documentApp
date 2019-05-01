@@ -49,6 +49,7 @@ import { MailService } from '../shared/service/mail.service';
 import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
 import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
 import { UsersCommunicationService } from '../shared/service/communication/users-communication.service';
+import { TemplateService } from '../shared/packages/template-package/template.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -110,6 +111,7 @@ const appRoutes: Routes = [
         RouterService,
         ScrollingService,
         RoleService,
+        TemplateService,
 
         EventCommunicationService,
         ActionCommunicationService,

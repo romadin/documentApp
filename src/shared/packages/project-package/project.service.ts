@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
 
 import { Project } from './project.model';
-import { ApiProjectResponse, ProjectUpdateData } from './api-project.interface';
+import { ApiProjectResponse, ProjectPostDataInterface, ProjectUpdateData } from './api-project.interface';
 import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
 import { map } from 'rxjs/operators';
@@ -59,11 +59,9 @@ export class ProjectService {
         });
     }
 
-    public postProject(data: { name: string }, organisation: Organisation ): Promise<Project> {
-        const params = { organisationId: organisation.id };
-
+    public postProject(data: ProjectPostDataInterface, organisation: Organisation ): Promise<Project> {
         return new Promise<Project>((resolve) => {
-            this.apiService.post('/projects', data, params).subscribe((apiResponse: ApiProjectResponse) => {
+            this.apiService.post('/projects', data, {}).subscribe((apiResponse: ApiProjectResponse) => {
                     const newProject = this.makeProject(apiResponse, organisation);
                     this.allProjectSubject.next(Object.values(this.projectsCache));
                     resolve(newProject);
@@ -76,7 +74,7 @@ export class ProjectService {
     /**
      * Doing a post project but this call does also do folders and documents. That is the default template.
      */
-    public postProjectWithDefaultTemplate(data: { name: string }, organisation: Organisation  ): Promise<Project> {
+    public postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
         const params = { template: 'default', organisationId: organisation.id };
 
         return new Promise<Project>((resolve) => {

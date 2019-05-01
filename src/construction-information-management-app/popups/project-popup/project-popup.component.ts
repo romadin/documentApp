@@ -6,6 +6,9 @@ import { ProjectService } from '../../../shared/packages/project-package/project
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { OrganisationService } from '../../../shared/packages/organisation-package/organisation.service';
 import { ToastService } from '../../../shared/toast.service';
+import { TemplateService } from '../../../shared/packages/template-package/template.service';
+import { Template } from '../../../shared/packages/template-package/template.model';
+import { ProjectPostDataInterface } from '../../../shared/packages/project-package/api-project.interface';
 
 export interface DefaultPopupData {
     title: string;
@@ -21,9 +24,11 @@ export interface DefaultPopupData {
     styleUrls: ['./project-popup.component.css']
 })
 export class ProjectPopupComponent {
-    public projectForm: FormGroup = new FormGroup({
+    templateId: any;
+    projectForm: FormGroup = new FormGroup({
         projectName: new FormControl(''),
     });
+    templates: Template[];
 
     constructor(
         public dialogRef: MatDialogRef<ProjectPopupComponent>,
@@ -31,8 +36,13 @@ export class ProjectPopupComponent {
         private projectService: ProjectService,
         private organisationService: OrganisationService,
         private toastService: ToastService,
+        private templateService: TemplateService,
     ) {
         this.projectForm.controls.projectName.setValue(data.id ? data.placeholder : '');
+        this.templateService.getTemplates(this.data.organisation).subscribe((templates) => {
+            this.templates = templates;
+            this.templateId = 1;
+        });
     }
 
     onNoClick(e: MouseEvent): void {
@@ -50,10 +60,17 @@ export class ProjectPopupComponent {
                     this.dialogRef.close(value);
                 });
             } else {
-                this.projectService.postProjectWithDefaultTemplate({ name: projectName }, this.data.organisation).then((value) => {
-                    this.toastService.showSuccess('Project: ' + projectName + ' is toegevoegd', 'Toegevoegd');
-                    this.dialogRef.close(value);
-                });
+                const data: ProjectPostDataInterface = {
+                    name: projectName,
+                    templateId: this.templateId,
+                    organisationId: this.data.organisation.id
+                };
+
+                this.projectService.postProjectWithDefaultTemplate(data, this.data.organisation)
+                    .then((value) => {
+                        this.toastService.showSuccess('Project: ' + projectName + ' is toegevoegd', 'Toegevoegd');
+                        this.dialogRef.close(value);
+                    });
             }
         }
     }
