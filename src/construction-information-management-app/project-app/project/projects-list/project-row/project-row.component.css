@@ -5,6 +5,7 @@ mat-card.projectRow {
     border: solid 1px #cecece;
     border-bottom: none;
     cursor: pointer;
+    transition: background 0.5s;
 }
 mat-card.projectRow.mat-card:hover {
     background: #f7f7f7;

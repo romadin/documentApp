@@ -57,9 +57,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                                 action.show = urlGroup === navigation.url;
                             });
                         }
-                        // step 2 check if action does not need to be shown at specific url.
-                        action.show = action.urlNotShow ? action.urlNotShow !== navigation.url : true;
-                        // step 3 check if action needs admin and if users has rights.
+                        // step 2 check if action needs admin and if users has rights.
                         action.show = action.needsAdmin ? user.role.getName() === 'admin' : true;
                     });
                 }
@@ -76,7 +74,6 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             name: 'Projecten',
             show: true,
             needsAdmin: false,
-            urlNotShow: '/projecten'
         };
         const showUsers: MenuAction = {
             onClick: () => {
@@ -84,6 +81,15 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             },
             iconName: 'group',
             name: 'Gebruikers',
+            show: true,
+            needsAdmin: true,
+        };
+        const templates: MenuAction = {
+            onClick: () => {
+                this.router.navigate(['templates']);
+            },
+            iconName: 'collections',
+            name: 'Template Beheer',
             show: true,
             needsAdmin: true,
         };
@@ -95,7 +101,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             needsAdmin: false,
         };
 
-        this.sideMenuActions.push(projects, showUsers, logout);
+        this.sideMenuActions.push(projects, showUsers, templates, logout);
     }
 
     private logoutCurrentUser(): void {

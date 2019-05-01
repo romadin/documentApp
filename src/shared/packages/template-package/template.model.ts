@@ -1,11 +1,12 @@
-import { TemplateItemInterface, TemplateParentItemInterface } from './interface/template-api-response.interface';
+import { TemplateParentItemInterface } from './interface/template-api-response.interface';
+import { TemplateItem } from './templateItem.model';
 
 export class Template {
     private _id: number;
     private _name: string;
-    private _folders: TemplateItemInterface[];
-    private _subFolders: TemplateItemInterface[];
-    private _documents: TemplateItemInterface[];
+    private _folders: TemplateItem[];
+    private _subFolders: TemplateItem[];
+    private _documents: TemplateItem[];
     private _subDocuments: TemplateParentItemInterface[];
 
     constructor() { }
@@ -26,27 +27,27 @@ export class Template {
         this._name = value;
     }
 
-    get folders(): TemplateItemInterface[] {
+    get folders(): TemplateItem[] {
         return this._folders;
     }
 
-    set folders(value: TemplateItemInterface[]) {
+    set folders(value: TemplateItem[]) {
         this._folders = value;
     }
 
-    get subFolders(): TemplateItemInterface[] {
+    get subFolders(): TemplateItem[] {
         return this._subFolders;
     }
 
-    set subFolders(value: TemplateItemInterface[]) {
+    set subFolders(value: TemplateItem[]) {
         this._subFolders = value;
     }
 
-    get documents(): TemplateItemInterface[] {
+    get documents(): TemplateItem[] {
         return this._documents;
     }
 
-    set documents(value: TemplateItemInterface[]) {
+    set documents(value: TemplateItem[]) {
         this._documents = value;
     }
 

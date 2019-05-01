@@ -1,0 +1,79 @@
+<!--<mat-accordion *ngFor="let foldersTemplate of template.folders">-->
+    <!--<mat-expansion-panel class="toggleRow">-->
+        <!--<mat-expansion-panel-header>-->
+            <!--<mat-panel-title class="toggleTitle">-->
+                <!--<i class="material-icons"> folder_open </i>-->
+                <!--<span> {{ foldersTemplate.name }} </span>-->
+            <!--</mat-panel-title>-->
+        <!--</mat-expansion-panel-header>-->
+
+        <!--<div *ngFor="let item of items">-->
+            <!--<div *ngIf="item.type === 'folder' ; then folderBlock; else documentBlock"></div>-->
+            <!--<ng-template #folderBlock>-->
+                <!--<mat-accordion>-->
+                    <!--<mat-expansion-panel class="toggleRow">-->
+                        <!--<mat-expansion-panel-header>-->
+                            <!--<mat-panel-title class="toggleTitle">-->
+                                <!--<i class="material-icons"> folder_open </i>-->
+                                <!--<span> {{ item.name }} </span>-->
+                            <!--</mat-panel-title>-->
+                        <!--</mat-expansion-panel-header>-->
+
+                        <!--<div *ngFor="let subDocument of getSubDocuments(item.name)">-->
+                            <!--<div class="card rippleRow" (click)="onDocumentClick(subDocument)">-->
+                                <!--<i class="material-icons"> description </i>-->
+                                <!--{{ subDocument.name }}-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</mat-expansion-panel>-->
+                <!--</mat-accordion>-->
+            <!--</ng-template>-->
+
+            <!--<ng-template #documentBlock>-->
+                <!--<div class="card rippleRow" (click)="onDocumentClick(item)">-->
+                    <!--<i class="material-icons"> description </i>-->
+                    <!--{{ item.name }}-->
+                <!--</div>-->
+            <!--</ng-template>-->
+        <!--</div>-->
+    <!--</mat-expansion-panel>-->
+<!--</mat-accordion>-->
+<div class="content-row">
+    <div class="container">
+        <div *ngFor="let item of items">
+            <div *ngIf="item.type === 'folder' ; then folderBlock; else documentBlock"></div>
+            <ng-template #folderBlock>
+                <mat-accordion>
+                    <mat-expansion-panel class="card expansion-panel">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title class="toggleTitle">
+                                <i class="material-icons"> folder_open </i>
+                                <span> {{ item.name }} </span>
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <div *ngFor="let subDocument of getSubDocuments(item.name)">
+                            <div class="card rippleRow" (click)="onDocumentClick(subDocument)">
+                                <i class="material-icons"> description </i>
+                                {{ subDocument.name }}
+                            </div>
+                        </div>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </ng-template>
+
+            <ng-template #documentBlock>
+                <div class="card rippleRow" (click)="onDocumentClick(item)">
+                    <i class="material-icons"> description </i>
+                    {{ item.name }}
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div *ngIf="templateItemToEdit" class="container">
+        <cim-template-item-detail
+                [item]="templateItemToEdit"
+                (closeView)="onCloseItemView()">
+        </cim-template-item-detail>
+    </div>
+</div>

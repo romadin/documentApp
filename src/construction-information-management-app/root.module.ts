@@ -66,6 +66,11 @@ const appRoutes: Routes = [
         resolve: { organisation: OrganisationResolver }
     },
     {
+        path: 'templates',
+        loadChildren: './templates-app/templates.module#TemplatesModule',
+        resolve: { organisation: OrganisationResolver }
+    },
+    {
         path: 'projecten',
         loadChildren: './project-app/project.module#ProjectModule',
         canActivate: [ CanActivateLoggedIn ],

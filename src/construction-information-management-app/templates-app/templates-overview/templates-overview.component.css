@@ -1,0 +1,9 @@
+.card > .header {
+    padding: 0 10px 5px 0;
+}
+.card > .header > h3 {
+    flex: unset;
+}
+i.material-icons {
+    font-size: 18px;
+}
