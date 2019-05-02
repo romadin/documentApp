@@ -1,6 +1,7 @@
 export interface TemplateApiResponseInterface {
     id: number;
     name: string;
+    organisationId: number;
     folders: TemplateItemInterface[];
     subFolders: TemplateItemInterface[];
     documents: TemplateItemInterface[];

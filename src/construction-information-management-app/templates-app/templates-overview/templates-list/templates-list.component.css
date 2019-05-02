@@ -5,6 +5,7 @@
     align-items: center;
     background-position: center;
     transition: background 0.8s;
+    justify-content: space-between;
 }
 .rippleRow:hover {
     background: #ececec radial-gradient(circle, transparent 1%, #ececec 1%) center/15000%;
@@ -14,6 +15,10 @@
     background-size: 100%;
     transition: background 0s;
 }
-.rippleRow > i.material-icons {
+.rippleRow > div.header > i.material-icons {
     margin-right: 15px;
+}
+.rippleRow > i.delete {
+    font-size: 18px;
+    padding: 3px 10px;
 }

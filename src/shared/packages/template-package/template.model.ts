@@ -4,6 +4,7 @@ import { TemplateItem } from './templateItem.model';
 export class Template {
     private _id: number;
     private _name: string;
+    private _organisationId: number;
     private _folders: TemplateItem[];
     private _subFolders: TemplateItem[];
     private _documents: TemplateItem[];
@@ -25,6 +26,14 @@ export class Template {
 
     set name(value: string) {
         this._name = value;
+    }
+
+    get organisationId(): number {
+        return this._organisationId;
+    }
+
+    set organisationId(value: number) {
+        this._organisationId = value;
     }
 
     get folders(): TemplateItem[] {

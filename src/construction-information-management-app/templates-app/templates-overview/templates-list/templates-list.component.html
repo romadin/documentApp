@@ -1,4 +1,7 @@
 <div class="card rippleRow" *ngFor="let template of templates" (click)="onTemplateClick(template)">
-    <i class="material-icons"> collections </i>
-    {{ template.name }}
+    <div class="header">
+        <i class="material-icons"> collections </i>
+        {{ template.name }}
+    </div>
+    <i class="material-icons delete" *ngIf="template.organisationId !== 0" (click)="deleteTemplate($event, template)"> delete_forever </i>
 </div>

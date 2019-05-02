@@ -6,7 +6,11 @@ import { Template } from './template.model';
 import { TemplateItem, templateItemType } from './templateItem.model';
 import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
-import { TemplateApiResponseInterface, TemplateItemInterface, TemplatePostData } from './interface/template-api-response.interface';
+import {
+    TemplateApiResponseInterface,
+    TemplateItemInterface,
+    TemplatePostData
+} from './interface/template-api-response.interface';
 
 interface Cache {
     [id: number]: Template;
@@ -40,10 +44,19 @@ export class TemplateService {
         );
     }
 
+    deleteTemplate(template: Template): Observable<string> {
+        if (template.organisationId !== 0) {
+            return this.apiService.delete(this.path + '/' + template.id, {}).pipe(
+                map((result: string) => result )
+            );
+        }
+    }
+
     private makeTemplate(result: TemplateApiResponseInterface): Template {
         const template: Template = new Template();
         template.id = result.id;
         template.name = result.name;
+        template.organisationId = result.organisationId;
         template.folders = result.folders.map(item => this.makeTemplateItem(item, 'folder'));
         template.subFolders = result.subFolders.map(item => this.makeTemplateItem(item, 'folder'));
         template.documents = result.documents.map(item => this.makeTemplateItem(item, 'document'));
