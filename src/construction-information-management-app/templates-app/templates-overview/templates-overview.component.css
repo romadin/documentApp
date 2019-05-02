@@ -1,9 +1,27 @@
+i.material-icons {
+    font-size: 18px;
+}
 .card > .header {
     padding: 0 10px 5px 0;
 }
-.card > .header > h3 {
-    flex: unset;
+
+.card > .header > button {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 250ms, visibility 250ms;
 }
-i.material-icons {
-    font-size: 18px;
+
+.card > .header > .show {
+    visibility: visible;
+    opacity: 1;
+}
+.card > .container {
+    overflow: hidden;
+    padding: 1px;
+}
+.card > .container > div {
+    width: 100%;
+}
+.card > .container > div:first-child {
+    float:left
 }

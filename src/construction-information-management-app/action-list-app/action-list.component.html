@@ -50,7 +50,7 @@
                 <tr mat-row class="actionRow" *matRowDef="let action; columns: displayedColumns;" (click)="editItem($event, action)"></tr>
             </table>
         </div>
-        <div class="rightSide" [ngClass]="rightSideView ? 'onActive' : ''">
+        <div class="rightSide" [ngClass]="{'onActive': rightSideView}">
             <div *ngIf="showItemDetail" [@toggleInView]>
                 <cim-action-item-detail [action]="actionToEdit"
                                         [projectId]="projectId"
