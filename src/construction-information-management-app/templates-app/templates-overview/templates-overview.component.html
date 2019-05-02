@@ -12,9 +12,7 @@
         </div>
 
         <div *ngIf="templateToEdit" [@slideRight]>
-            <cim-template
-                    [template]="templateToEdit"
-                    (showDocument)="onDocumentClick($event)">
+            <cim-template [template]="templateToEdit">
             </cim-template>
         </div>
     </div>

@@ -39,7 +39,7 @@
     <!--</mat-expansion-panel>-->
 <!--</mat-accordion>-->
 <div class="content-row">
-    <div class="container">
+    <div class="container" [@resizeWidth]="templateItemToEdit ? 'smallWidth' : 'fullWidth'">
         <div *ngFor="let item of items">
             <div *ngIf="item.type === 'folder' ; then folderBlock; else documentBlock"></div>
             <ng-template #folderBlock>
@@ -70,7 +70,7 @@
             </ng-template>
         </div>
     </div>
-    <div *ngIf="templateItemToEdit" class="container">
+    <div class="container" [@toggleInView]="templateItemToEdit ? 'open' : 'close'">
         <cim-template-item-detail
                 [item]="templateItemToEdit"
                 (closeView)="onCloseItemView()">

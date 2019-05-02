@@ -4,15 +4,47 @@ import {
     TemplateItemInterface,
     TemplateParentItemInterface
 } from '../../../shared/packages/template-package/interface/template-api-response.interface';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'cim-template',
-  templateUrl: './template.component.html',
-  styleUrls: ['./template.component.css']
+    selector: 'cim-template',
+    templateUrl: './template.component.html',
+    styleUrls: ['./template.component.css'],
+    animations: [
+        trigger('toggleInView', [
+            state('close', style({
+                transform: 'translateX(110%)'
+            })),
+            state('open', style({
+                width: '48%',
+                transform: 'translateX(0)'
+            })),
+            transition('close => open', [
+                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)')
+            ]),
+            transition('open => close', [
+                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
+                    style({ transform: 'translateX(5%)', offset: 0.1}),
+                    style({ transform: 'translateX(10%)', offset: 0.8}),
+                    style({ transform: 'translateX(110%)', offset: 1}),
+                ]))
+            ]),
+        ]),
+        trigger('resizeWidth', [
+            state('fullWidth', style({
+                width: '100%'
+            })),
+            state('smallWidth', style({
+                width: '50%'
+            })),
+            transition('fullWidth <=> smallWidth', [
+                animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
+            ]),
+        ])
+    ]
 })
 export class TemplateComponent implements OnInit {
     @Input() template: Template;
-    @Output() showDocument: EventEmitter<TemplateItemInterface> = new EventEmitter<TemplateItemInterface>();
     templateItemToEdit: TemplateItemInterface;
     items: TemplateItemInterface[];
     constructor() { }
@@ -26,8 +58,14 @@ export class TemplateComponent implements OnInit {
     }
 
     onDocumentClick(item: TemplateItemInterface): void {
-        this.showDocument.emit(item);
-        this.templateItemToEdit = item;
+        if (!this.templateItemToEdit) {
+            this.templateItemToEdit = item;
+        } else {
+            this.templateItemToEdit = undefined;
+            setTimeout(() => {
+                this.templateItemToEdit = item;
+            }, 290);
+        }
     }
 
     onCloseItemView(): void {

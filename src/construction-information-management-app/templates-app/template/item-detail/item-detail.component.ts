@@ -30,7 +30,9 @@ export class ItemDetailComponent implements OnInit {
     @Input()
     set item(item: TemplateItemInterface) {
         this._item = item;
-        this.updateForm();
+        if (item) {
+            this.updateForm();
+        }
     }
     get item(): TemplateItemInterface {
         return this._item;

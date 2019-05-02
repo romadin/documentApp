@@ -1,0 +1,6 @@
+mat-form-field.mat-form-field {
+    width: 100%;
+}
+div.card > div.formBody > form > div.actionButtons {
+    padding-top: 10px;
+}

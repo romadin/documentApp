@@ -4,7 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
-import { TemplateItemInterface } from '../../../shared/packages/template-package/interface/template-api-response.interface';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -54,9 +53,6 @@ export class TemplatesOverviewComponent implements OnInit {
 
     onTemplateClick(template: Template): void {
         this.templateToEdit = template;
-    }
-
-    onDocumentClick(item: TemplateItemInterface): void {
     }
 
 }

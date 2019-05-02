@@ -2,9 +2,11 @@
     display: flex;
 }
 .content-row > .container {
-    width: 100%;
+    /*flex: 1;*/
+    flex: none;
 }
 .content-row > .container:first-child {
+    float: left;
     margin-right: 20px;
 }
 .card.rippleRow {
