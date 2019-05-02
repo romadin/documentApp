@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Template } from '../../../shared/packages/template-package/template.model';
 import {
     TemplateItemInterface,
     TemplateParentItemInterface
 } from '../../../shared/packages/template-package/interface/template-api-response.interface';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { TemplateItemEdit } from './item-detail/item-detail.component';
 
 @Component({
     selector: 'cim-template',
@@ -45,7 +46,7 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
 })
 export class TemplateComponent implements OnInit {
     @Input() template: Template;
-    templateItemToEdit: TemplateItemInterface;
+    templateItemToEdit: TemplateItemEdit;
     items: TemplateItemInterface[];
     constructor() { }
 
@@ -57,13 +58,13 @@ export class TemplateComponent implements OnInit {
         return this.template.subDocuments.find((parentItem: TemplateParentItemInterface) => parentItem.name === parentName).items;
     }
 
-    onDocumentClick(item: TemplateItemInterface): void {
+    onDocumentClick(item: TemplateItemInterface, parentName?: string): void {
         if (!this.templateItemToEdit) {
-            this.templateItemToEdit = item;
+            this.templateItemToEdit = { item: item, parentName: parentName};
         } else {
             this.templateItemToEdit = undefined;
             setTimeout(() => {
-                this.templateItemToEdit = item;
+                this.templateItemToEdit = { item: item, parentName: parentName };
             }, 290);
         }
     }
@@ -76,5 +77,4 @@ export class TemplateComponent implements OnInit {
         this.items = this.template.documents.concat(this.template.subFolders);
         this.items.sort((a: TemplateItemInterface, b: TemplateItemInterface) => a.order - b.order);
     }
-
 }

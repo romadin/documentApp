@@ -4,6 +4,14 @@
         <h3 class="title">{{ item ? item.name : '' }}</h3>
     </div>
     <div class="formBody">
+        <div class="warning" *ngIf="template.organisationId === 0">
+            <div class="content">
+                <i class="material-icons"> warning </i>
+                <span>
+                Dit is een standaard template, u kunt de template niet aanpassen.
+            </span>
+            </div>
+        </div>
         <form [formGroup]="templateItemForm" (ngSubmit)="onSubmit()">
             <div class="content">
                 <div mat-dialog-content class="formFields">
@@ -13,9 +21,9 @@
                     <angular-editor #editor [(ngModel)]="content" [config]="editorConfig" [ngModelOptions]="{standalone: true}"></angular-editor>
                 </div>
             </div>
-            <div class="actionButtons">
+            <div class="actionButtons" *ngIf="template.organisationId !== 0">
                 <button mat-button (click)="onCloseView()">Annuleren</button>
-                <button mat-raised-button type="submit">Opslaan</button>
+                <button mat-raised-button type="submit" [disabled]="template.organisationId === 0">Opslaan</button>
             </div>
         </form>
     </div>

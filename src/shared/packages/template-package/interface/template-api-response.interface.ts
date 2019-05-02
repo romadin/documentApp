@@ -23,3 +23,9 @@ export interface TemplatePostData {
     name: string;
     organisationId: number;
 }
+
+export interface TemplatePatchBody {
+    name?: string;
+    documents?: string;
+    subDocuments?: string;
+}

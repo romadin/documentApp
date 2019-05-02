@@ -8,7 +8,7 @@ import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
 import {
     TemplateApiResponseInterface,
-    TemplateItemInterface,
+    TemplateItemInterface, TemplatePatchBody,
     TemplatePostData
 } from './interface/template-api-response.interface';
 
@@ -40,6 +40,13 @@ export class TemplateService {
 
     postTemplate(body: TemplatePostData): Observable<Template> {
         return this.apiService.post(this.path, body).pipe(
+            map((result: TemplateApiResponseInterface) => this.makeTemplate(result))
+        );
+    }
+
+    updateTemplate(template: Template, body): Observable<Template> {
+        console.log(body);
+        return this.apiService.post(this.path + '/' + template.id, body).pipe(
             map((result: TemplateApiResponseInterface) => this.makeTemplate(result))
         );
     }
