@@ -6,7 +6,7 @@ import { Template } from './template.model';
 import { TemplateItem, templateItemType } from './templateItem.model';
 import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
-import { TemplateApiResponseInterface, TemplateItemInterface } from './interface/template-api-response.interface';
+import { TemplateApiResponseInterface, TemplateItemInterface, TemplatePostData } from './interface/template-api-response.interface';
 
 interface Cache {
     [id: number]: Template;
@@ -30,6 +30,12 @@ export class TemplateService {
         }
 
         return this.apiService.get(this.path, {}).pipe(
+            map((result: TemplateApiResponseInterface) => this.makeTemplate(result))
+        );
+    }
+
+    postTemplate(body: TemplatePostData): Observable<Template> {
+        return this.apiService.post(this.path, body).pipe(
             map((result: TemplateApiResponseInterface) => this.makeTemplate(result))
         );
     }

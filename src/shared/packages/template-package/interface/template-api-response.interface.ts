@@ -17,3 +17,8 @@ export interface TemplateParentItemInterface {
     name: string;
     items: TemplateItemInterface[];
 }
+
+export interface TemplatePostData {
+    name: string;
+    organisationId: number;
+}

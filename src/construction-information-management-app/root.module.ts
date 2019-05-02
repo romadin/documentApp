@@ -50,6 +50,7 @@ import { OrganisationNotFoundComponent } from './not-found/organisation-not-foun
 import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
 import { UsersCommunicationService } from '../shared/service/communication/users-communication.service';
 import { TemplateService } from '../shared/packages/template-package/template.service';
+import { TemplateCommunicationService } from '../shared/service/communication/template.communication.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -123,6 +124,7 @@ const appRoutes: Routes = [
         FolderCommunicationService,
         HeaderWithFolderCommunicationService,
         UsersCommunicationService,
+        TemplateCommunicationService,
 
         FolderService,
         DocumentService,

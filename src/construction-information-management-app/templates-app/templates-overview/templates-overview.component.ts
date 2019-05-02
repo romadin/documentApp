@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { TemplateCommunicationService } from '../../../shared/service/communication/template.communication.service';
+import { DefaultPopupData } from '../../popups/project-popup/project-popup.component';
+import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-template-popup.component';
 
 @Component({
     selector: 'cim-templates-overview',
@@ -36,10 +40,21 @@ export class TemplatesOverviewComponent implements OnInit {
     templates: Template[];
     title = 'Template beheer';
     templateToEdit: Template;
+    readonly organisation: Organisation;
 
-    constructor(private templateService: TemplateService, private route: ActivatedRoute) {
-        const organisation: Organisation = <Organisation>this.route.snapshot.data.organisation;
-        this.templateService.getTemplates(organisation).subscribe(templates => this.templates = templates);
+    constructor(
+        public dialog: MatDialog,
+        private templateService: TemplateService,
+        private route: ActivatedRoute,
+        private templateCommunication: TemplateCommunicationService
+    ) {
+        this.organisation = <Organisation>this.route.snapshot.data.organisation;
+        this.templateService.getTemplates(this.organisation).subscribe(templates => this.templates = templates);
+        this.templateCommunication.triggerAddTemplate.subscribe(onAddTemplateClicked => {
+            if (onAddTemplateClicked) {
+                this.showAddTemplateView();
+            }
+        });
     }
 
     ngOnInit() {
@@ -53,6 +68,25 @@ export class TemplatesOverviewComponent implements OnInit {
 
     onTemplateClick(template: Template): void {
         this.templateToEdit = template;
+    }
+
+    private showAddTemplateView(): void {
+        this.templateToEdit = undefined;
+        const data: DefaultPopupData = {
+            title: 'Voeg een template toe',
+            placeholder: 'Template naam',
+            submitButton: 'Voeg toe',
+            organisation: this.organisation
+        };
+        const dialogRef = this.dialog.open(AddTemplatePopupComponent, {
+            width: '600px',
+            data: data,
+        });
+        dialogRef.afterClosed().subscribe((newTemplate?: Template) => {
+            if (newTemplate) {
+                this.templates.push(newTemplate);
+            }
+        });
     }
 
 }

@@ -15,6 +15,7 @@ import { OrganisationService } from '../../shared/packages/organisation-package/
 import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
 import { EventCommunicationService } from '../../shared/service/communication/event.communication.service';
 import { UsersCommunicationService } from '../../shared/service/communication/users-communication.service';
+import { TemplateCommunicationService } from '../../shared/service/communication/template.communication.service';
 
 export interface MenuAction {
     onClick: (item?) => void;
@@ -26,7 +27,7 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/acties'| '/projecten/:id/agenda' ;
+type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/acties'| '/projecten/:id/agenda' | '/templates';
 
 @Component({
   selector: 'cim-header',
@@ -62,6 +63,7 @@ export class HeaderComponent implements OnInit {
         private actionCommunicationService: ActionCommunicationService,
         private eventCommunicationService: EventCommunicationService,
         private usersCommunicationService: UsersCommunicationService,
+        private templateCommunicationService: TemplateCommunicationService,
         private organisationService: OrganisationService,
     ) {
         this.defineActions();
@@ -186,6 +188,14 @@ export class HeaderComponent implements OnInit {
             needsAdmin: true,
             urlGroup: ['/projecten/:id/agenda'],
         };
+        const addTemplate: MenuAction = {
+            onClick: () => { this.templateCommunicationService.triggerAddTemplate.next(true); },
+            iconName: 'add',
+            name: 'Template toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/templates'],
+        };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
             iconName: 'menu',
@@ -197,7 +207,7 @@ export class HeaderComponent implements OnInit {
             addProject, addUser,
             documentToPdf, readMode, addItemToFolder,
             actionsToPdf, showArchivedActions, addAction,
-            addEvent
+            addEvent, addTemplate
         );
     }
 
