@@ -79,7 +79,7 @@ export class TemplatesOverviewComponent implements OnInit {
             organisation: this.organisation
         };
         const dialogRef = this.dialog.open(AddTemplatePopupComponent, {
-            width: '600px',
+            width: '400px',
             data: data,
         });
         dialogRef.afterClosed().subscribe((newTemplate?: Template) => {

@@ -7,8 +7,6 @@ import { Template } from '../../../../shared/packages/template-package/template.
 import { TemplateService } from '../../../../shared/packages/template-package/template.service';
 import { ToastService } from '../../../../shared/toast.service';
 
-export type TemplateItemType = 'subDocument' | 'document';
-
 export interface TemplateItemEdit {
     item: TemplateItemInterface;
     parentName?: string;
@@ -53,11 +51,11 @@ export class ItemDetailComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (this.templateItemForm.valid) {
+        const stillTheSame = this.item.content === null && this.content === '';
+        if (this.item.content !== this.content && !stillTheSame) {
             this.item.name = this.templateItemForm.get('name').value;
             this.item.content = this.content;
             const body = this.parentName ? this.patchBodyWithParent() : this.createPatchBody();
-            console.log(body);
 
             this.templateService.updateTemplate(this.template, body).subscribe(template => {
                 this.toast.showSuccess('Template item: ' + this.item.name + ' is bewerkt', 'Bewerkt');
