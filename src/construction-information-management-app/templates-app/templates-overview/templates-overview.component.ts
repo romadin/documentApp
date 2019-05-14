@@ -56,6 +56,8 @@ export class TemplatesOverviewComponent implements OnInit {
     title = 'Template beheer';
     templateToShow: Template;
     templateToEdit: Template;
+    showAddWorkFunction: boolean;
+    addNewFunction = false;
     readonly organisation: Organisation;
 
     constructor(
@@ -80,10 +82,16 @@ export class TemplatesOverviewComponent implements OnInit {
         event.stopPropagation();
         event.preventDefault();
         this.templateToShow = undefined;
+        this.showAddWorkFunction = false;
     }
 
     onTemplateClick(template: Template): void {
-        this.templateToShow = template;
+        this.templateToEdit = undefined;
+        setTimeout(() => {
+            this.templateToShow = template;
+            this.title = this.templateToShow.name;
+            this.showAddWorkFunction = true;
+        }, 200);
     }
 
     editTemplate(template: Template): void {
@@ -96,8 +104,18 @@ export class TemplatesOverviewComponent implements OnInit {
         }
     }
 
+    onCancelAddFunction(cancel: boolean): void {
+        if (cancel) {
+            this.addNewFunction = false;
+        }
+    }
+
     OnTemplateEdited(template: Template): void {
         this.templates[this.templates.findIndex(t => t.id === template.id)] = template;
+    }
+
+    addFunction(): void {
+        this.addNewFunction = true;
     }
 
     private showAddTemplateView(): void {

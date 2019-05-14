@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Template } from '../../../shared/packages/template-package/template.model';
 import {
     TemplateItemInterface,
@@ -7,6 +7,8 @@ import {
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { TemplateItemEdit } from './item-detail/item-detail.component';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
+import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
+import { ToastService } from '../../../shared/toast.service';
 
 @Component({
     selector: 'cim-template',
@@ -31,6 +33,15 @@ import { WorkFunction } from '../../../shared/packages/work-function-package/wor
                     style({ transform: 'translateX(110%)', offset: 1}),
                 ]))
             ]),
+            transition('void => *', [
+                style({ opacity: '0'}),
+                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ opacity: '1'})),
+            ]),
+            transition('* => void', [
+                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
+                    style({ opacity: '0'})
+                ])),
+            ])
         ]),
         trigger('resizeWidth', [
             state('fullWidth', style({
@@ -47,24 +58,29 @@ import { WorkFunction } from '../../../shared/packages/work-function-package/wor
 })
 export class TemplateComponent implements OnInit {
     @Input() template: Template;
+    @Output() cancelAddFunction: EventEmitter<boolean> = new EventEmitter<boolean>();
     templateItemToEdit: TemplateItemEdit;
+    workFunctionToEdit: WorkFunction;
+    showWorkFunctionDetail: boolean;
     items: TemplateItemInterface[];
-    constructor() { }
+
+    constructor(private workFunctionService: WorkFunctionService,
+                private toast: ToastService) { }
 
     ngOnInit() {
-        console.log(this.template);
-        // this.setItems();
     }
 
-    // getSubDocuments(parentName: string): TemplateItemInterface[] {
-    //     return this.template.subDocuments.find((parentItem: TemplateParentItemInterface) => parentItem.name === parentName).items;
-    // }
+    @Input()
+    set addWorkFunction(add: boolean) {
+        this.showWorkFunctionDetail = add;
+    }
 
     onDocumentClick(item: TemplateItemInterface, parentName?: string): void {
         if (!this.templateItemToEdit) {
             this.templateItemToEdit = { item: item, parentName: parentName};
         } else {
             this.templateItemToEdit = undefined;
+            this.showWorkFunctionDetail = false;
             setTimeout(() => {
                 this.templateItemToEdit = { item: item, parentName: parentName };
             }, 290);
@@ -73,21 +89,25 @@ export class TemplateComponent implements OnInit {
 
     onCloseItemView(): void {
         this.templateItemToEdit = undefined;
+        this.workFunctionToEdit = undefined;
+        this.showWorkFunctionDetail = false;
+        this.cancelAddFunction.emit(true);
     }
 
     deleteWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
-        // delete workFunction
-        console.log(workFunction);
+        this.workFunctionService.deleteWorkFunction(workFunction).subscribe((message) => {
+            this.template.workFunctions.splice(this.template.workFunctions.findIndex(w => w.id === workFunction.id), 1);
+            this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
+        });
     }
 
     editWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
-        // edit workFunction
-        console.log(workFunction);
+        this.templateItemToEdit = undefined;
+        setTimeout(() => {
+            this.showWorkFunctionDetail = true;
+            this.workFunctionToEdit = workFunction;
+        }, 290);
     }
-    // private setItems(): void {
-    //     this.items = this.template.documents.concat(this.template.subFolders);
-    //     this.items.sort((a: TemplateItemInterface, b: TemplateItemInterface) => a.order - b.order);
-    // }
 }

@@ -9,6 +9,7 @@ i.material-icons {
     opacity: 0;
     visibility: hidden;
     transition: opacity 250ms, visibility 250ms;
+    align-self: center;
 }
 
 .card > .header > .show {

@@ -4,6 +4,10 @@
             <i class="material-icons"> arrow_back_ios </i>
         </button>
         <h3 class="title">{{ title }}</h3>
+        <button mat-raised-button color="primary" [ngClass]="{'show': showAddWorkFunction}" (click)="addFunction()">
+            <span class="actionText"> Functie toevoegen</span>
+            <mat-icon aria-label="Icon"> add </mat-icon>
+        </button>
     </div>
     <div class="container">
         <div *ngIf="!templateToShow" [@slideLeftAndRight]="templateToEdit ? 'halfOpen' : 'fullOpen' " [ngClass]="{'halfOpen' : templateToEdit}">
@@ -23,7 +27,10 @@
         </div>
 
         <div *ngIf="templateToShow" [@slideRight]>
-            <cim-template [template]="templateToShow">
+            <cim-template
+                    [template]="templateToShow"
+                    [addWorkFunction]="addNewFunction"
+                    (cancelAddFunction)="onCancelAddFunction($event)">
             </cim-template>
         </div>
     </div>

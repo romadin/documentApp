@@ -75,7 +75,7 @@ export class ProjectService {
      * Doing a post project but this call does also do folders and documents. That is the default template.
      */
     public postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
-        const params = { template: 'default', organisationId: organisation.id };
+        const params = { organisationId: organisation.id };
 
         return new Promise<Project>((resolve) => {
             this.apiService.post('/projects', data, params)

@@ -39,15 +39,17 @@
     <!--</mat-expansion-panel>-->
 <!--</mat-accordion>-->
 <div class="content-row">
-    <div class="container" [@resizeWidth]="templateItemToEdit ? 'smallWidth' : 'fullWidth'">
+    <div class="container" [@resizeWidth]="templateItemToEdit || showWorkFunctionDetail ? 'smallWidth' : 'fullWidth'">
         <div *ngFor="let workFunction of template.workFunctions">
             <mat-accordion>
                 <mat-expansion-panel class="card expansion-panel">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="toggleTitle">
-                            <i class="material-icons"> folder_open </i>
-                            <span> {{ workFunction.name }} </span>
-                            <div class="actionsEditDelete">
+                            <div class="rowTitle">
+                                <i class="material-icons"> folder_open </i>
+                                <span> {{ workFunction.name }} </span>
+                            </div>
+                            <div class="actions">
                                 <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
                                 <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
                             </div>
@@ -86,11 +88,19 @@
 
         </div>
     </div>
-    <div class="container" [@toggleInView]="templateItemToEdit ? 'open' : 'close'">
+    <div class="container" *ngIf="templateItemToEdit" [@toggleInView]="templateItemToEdit ? 'open' : 'close'">
         <cim-template-item-detail
                 [itemEdit]="templateItemToEdit"
                 [template]="template"
                 (closeView)="onCloseItemView()">
         </cim-template-item-detail>
+    </div>
+
+    <div class="container" *ngIf="showWorkFunctionDetail" [@toggleInView]="showWorkFunctionDetail ? 'open' : 'close'">
+        <cim-work-function-edit
+                [workFunction]="workFunctionToEdit"
+                [template]="template"
+                (closeView)="onCloseItemView()">
+        </cim-work-function-edit>
     </div>
 </div>
