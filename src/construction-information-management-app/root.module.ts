@@ -51,6 +51,7 @@ import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisa
 import { UsersCommunicationService } from '../shared/service/communication/users-communication.service';
 import { TemplateService } from '../shared/packages/template-package/template.service';
 import { TemplateCommunicationService } from '../shared/service/communication/template.communication.service';
+import { WorkFunctionService } from '../shared/packages/work-function-package/work-function.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -117,7 +118,9 @@ const appRoutes: Routes = [
         RouterService,
         ScrollingService,
         RoleService,
+
         TemplateService,
+        WorkFunctionService,
 
         EventCommunicationService,
         ActionCommunicationService,

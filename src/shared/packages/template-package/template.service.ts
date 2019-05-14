@@ -3,14 +3,13 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Template } from './template.model';
-import { TemplateItem, templateItemType } from './templateItem.model';
 import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
 import {
     TemplateApiResponseInterface,
-    TemplateItemInterface,
     TemplatePostData
 } from './interface/template-api-response.interface';
+import { WorkFunctionService } from '../work-function-package/work-function.service';
 
 interface Cache {
     [id: number]: Template;
@@ -20,7 +19,7 @@ interface Cache {
 export class TemplateService {
     private path = '/templates';
     private cache: Cache = {};
-    constructor(private apiService: ApiService) {  }
+    constructor(private apiService: ApiService, private workFunctionService: WorkFunctionService) {  }
 
     getTemplates(organisation: Organisation): Observable<Template[]> {
         return this.apiService.get(this.path, {organisationId: organisation.id}).pipe(
@@ -63,22 +62,12 @@ export class TemplateService {
         template.id = result.id;
         template.name = result.name;
         template.organisationId = result.organisationId;
-        template.folders = result.folders.map(item => this.makeTemplateItem(item, 'folder'));
-        template.subFolders = result.subFolders.map(item => this.makeTemplateItem(item, 'folder'));
-        template.documents = result.documents.map(item => this.makeTemplateItem(item, 'document'));
-        template.subDocuments = result.subDocuments;
+        template.isDefault = result.isDefault;
+        this.workFunctionService.getWorkFunctionsByTemplate(template).subscribe(workFunctions => {
+            template.workFunctions = workFunctions;
+        });
 
         this.cache[template.id] = template;
         return template;
-    }
-
-    private makeTemplateItem(data: TemplateItemInterface, type: templateItemType): TemplateItem {
-        const item: TemplateItem = new TemplateItem();
-        item.name = data.name;
-        item.content = data.content;
-        item.order = data.order;
-        item.type = type;
-
-        return item;
     }
 }

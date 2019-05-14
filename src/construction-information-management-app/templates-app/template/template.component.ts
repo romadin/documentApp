@@ -51,12 +51,12 @@ export class TemplateComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
-        this.setItems();
+        // this.setItems();
     }
 
-    getSubDocuments(parentName: string): TemplateItemInterface[] {
-        return this.template.subDocuments.find((parentItem: TemplateParentItemInterface) => parentItem.name === parentName).items;
-    }
+    // getSubDocuments(parentName: string): TemplateItemInterface[] {
+    //     return this.template.subDocuments.find((parentItem: TemplateParentItemInterface) => parentItem.name === parentName).items;
+    // }
 
     onDocumentClick(item: TemplateItemInterface, parentName?: string): void {
         if (!this.templateItemToEdit) {
@@ -73,8 +73,8 @@ export class TemplateComponent implements OnInit {
         this.templateItemToEdit = undefined;
     }
 
-    private setItems(): void {
-        this.items = this.template.documents.concat(this.template.subFolders);
-        this.items.sort((a: TemplateItemInterface, b: TemplateItemInterface) => a.order - b.order);
-    }
+    // private setItems(): void {
+    //     this.items = this.template.documents.concat(this.template.subFolders);
+    //     this.items.sort((a: TemplateItemInterface, b: TemplateItemInterface) => a.order - b.order);
+    // }
 }

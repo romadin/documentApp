@@ -1,14 +1,11 @@
-import { TemplateParentItemInterface } from './interface/template-api-response.interface';
-import { TemplateItem } from './templateItem.model';
+import { WorkFunction } from '../work-function-package/work-function.model';
 
 export class Template {
     private _id: number;
     private _name: string;
     private _organisationId: number;
-    private _folders: TemplateItem[];
-    private _subFolders: TemplateItem[];
-    private _documents: TemplateItem[];
-    private _subDocuments: TemplateParentItemInterface[];
+    private _isDefault: boolean;
+    private _workFunctions: WorkFunction[];
 
     constructor() { }
 
@@ -36,35 +33,19 @@ export class Template {
         this._organisationId = value;
     }
 
-    get folders(): TemplateItem[] {
-        return this._folders;
+    get isDefault(): boolean {
+        return this._isDefault;
     }
 
-    set folders(value: TemplateItem[]) {
-        this._folders = value;
+    set isDefault(value: boolean) {
+        this._isDefault = value;
     }
 
-    get subFolders(): TemplateItem[] {
-        return this._subFolders;
+    get workFunctions(): WorkFunction[] {
+        return this._workFunctions;
     }
 
-    set subFolders(value: TemplateItem[]) {
-        this._subFolders = value;
-    }
-
-    get documents(): TemplateItem[] {
-        return this._documents;
-    }
-
-    set documents(value: TemplateItem[]) {
-        this._documents = value;
-    }
-
-    get subDocuments(): TemplateParentItemInterface[] {
-        return this._subDocuments;
-    }
-
-    set subDocuments(value: TemplateParentItemInterface[]) {
-        this._subDocuments = value;
+    set workFunctions(value: WorkFunction[]) {
+        this._workFunctions = value;
     }
 }

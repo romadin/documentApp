@@ -2,10 +2,8 @@ export interface TemplateApiResponseInterface {
     id: number;
     name: string;
     organisationId: number;
-    folders: TemplateItemInterface[];
-    subFolders: TemplateItemInterface[];
-    documents: TemplateItemInterface[];
-    subDocuments: TemplateParentItemInterface[];
+    isDefault: boolean;
+    workFunctions: TemplateItemInterface[];
 }
 
 export interface TemplateItemInterface {
