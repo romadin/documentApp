@@ -5,10 +5,15 @@ import {
     TemplateParentItemInterface
 } from '../../../shared/packages/template-package/interface/template-api-response.interface';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { TemplateItemEdit } from './item-detail/item-detail.component';
+import { ChapterPackage } from './item-detail/chapter-detail.component';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 import { ToastService } from '../../../shared/toast.service';
+import { Headline } from '../../../shared/packages/headline-package/headline.model';
+import { Chapter } from '../../../shared/packages/chapter-package/chapter.model';
+import { Document } from '../../../shared/packages/document-package/document.model';
+import { Folder } from '../../../shared/packages/folder-package/folder.model';
+import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
 
 @Component({
     selector: 'cim-template',
@@ -59,7 +64,9 @@ import { ToastService } from '../../../shared/toast.service';
 export class TemplateComponent implements OnInit {
     @Input() template: Template;
     @Output() cancelAddFunction: EventEmitter<boolean> = new EventEmitter<boolean>();
-    templateItemToEdit: TemplateItemEdit;
+    chapterToEdit: Chapter;
+    chapterParent: WorkFunction | Headline;
+    showChapterDetail: boolean;
     workFunctionToEdit: WorkFunction;
     showWorkFunctionDetail: boolean;
     items: TemplateItemInterface[];
@@ -75,39 +82,73 @@ export class TemplateComponent implements OnInit {
         this.showWorkFunctionDetail = add;
     }
 
-    onDocumentClick(item: TemplateItemInterface, parentName?: string): void {
-        if (!this.templateItemToEdit) {
-            this.templateItemToEdit = { item: item, parentName: parentName};
-        } else {
-            this.templateItemToEdit = undefined;
+    onChapterClick(chapterPackage: ChapterPackage): void {
+        if (!this.chapterToEdit) {
+            this.chapterToEdit = chapterPackage.chapter;
+            this.chapterParent = chapterPackage.parent;
+            this.showChapterDetail = true;
+        } else if (chapterPackage.chapter.id !== this.chapterToEdit.id) {
+            this.chapterToEdit = undefined;
             this.showWorkFunctionDetail = false;
+            this.showChapterDetail = false;
             setTimeout(() => {
-                this.templateItemToEdit = { item: item, parentName: parentName };
+                this.chapterToEdit = chapterPackage.chapter;
+                this.chapterParent = chapterPackage.parent;
+                this.showChapterDetail = true;
             }, 290);
         }
     }
 
     onCloseItemView(): void {
-        this.templateItemToEdit = undefined;
+        this.chapterToEdit = undefined;
         this.workFunctionToEdit = undefined;
         this.showWorkFunctionDetail = false;
+        this.showChapterDetail = false;
         this.cancelAddFunction.emit(true);
     }
 
     deleteWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
-        this.workFunctionService.deleteWorkFunction(workFunction).subscribe((message) => {
-            this.template.workFunctions.splice(this.template.workFunctions.findIndex(w => w.id === workFunction.id), 1);
-            this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
-        });
+        if (!workFunction.isMainFunction) {
+            this.workFunctionService.deleteWorkFunction(workFunction).subscribe(() => {
+                this.template.workFunctions.splice(this.template.workFunctions.findIndex(w => w.id === workFunction.id), 1);
+                this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
+            });
+        }
     }
 
     editWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
-        this.templateItemToEdit = undefined;
+        this.chapterToEdit = undefined;
         setTimeout(() => {
             this.showWorkFunctionDetail = true;
             this.workFunctionToEdit = workFunction;
         }, 290);
+    }
+
+    addChapter(e: Event, workFunction: WorkFunction) {
+        e.stopPropagation();
+        this.chapterParent = workFunction;
+        this.showChapterDetail = true;
+    }
+
+    addHeadline(e: Event, workFunction: WorkFunction) {
+        e.stopPropagation();
+    }
+
+    checkIfChapter(item: Chapter | Headline): boolean {
+        return isChapter(item);
+    }
+
+    getItemsFromWorkFunction(workFunction: WorkFunction): Array <Headline | Chapter> {
+        let items: (Chapter | Headline)[] = [];
+
+        if (workFunction.chapters && workFunction.headlines) {
+            items = workFunction.chapters;
+            items = items.concat(workFunction.headlines);
+            items.sort((a: Chapter | Headline, b: Chapter | Headline ) => a.order - b.order);
+        }
+
+        return items;
     }
 }

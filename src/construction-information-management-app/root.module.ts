@@ -52,6 +52,8 @@ import { UsersCommunicationService } from '../shared/service/communication/users
 import { TemplateService } from '../shared/packages/template-package/template.service';
 import { TemplateCommunicationService } from '../shared/service/communication/template.communication.service';
 import { WorkFunctionService } from '../shared/packages/work-function-package/work-function.service';
+import { HeadlineService } from '../shared/packages/headline-package/headline.service';
+import { ChapterService } from '../shared/packages/chapter-package/chapter.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -121,6 +123,8 @@ const appRoutes: Routes = [
 
         TemplateService,
         WorkFunctionService,
+        HeadlineService,
+        ChapterService,
 
         EventCommunicationService,
         ActionCommunicationService,

@@ -1,45 +1,5 @@
-<!--<mat-accordion *ngFor="let foldersTemplate of template.folders">-->
-    <!--<mat-expansion-panel class="toggleRow">-->
-        <!--<mat-expansion-panel-header>-->
-            <!--<mat-panel-title class="toggleTitle">-->
-                <!--<i class="material-icons"> folder_open </i>-->
-                <!--<span> {{ foldersTemplate.name }} </span>-->
-            <!--</mat-panel-title>-->
-        <!--</mat-expansion-panel-header>-->
-
-        <!--<div *ngFor="let workFunction of items">-->
-            <!--<div *ngIf="workFunction.type === 'folder' ; then folderBlock; else documentBlock"></div>-->
-            <!--<ng-template #folderBlock>-->
-                <!--<mat-accordion>-->
-                    <!--<mat-expansion-panel class="toggleRow">-->
-                        <!--<mat-expansion-panel-header>-->
-                            <!--<mat-panel-title class="toggleTitle">-->
-                                <!--<i class="material-icons"> folder_open </i>-->
-                                <!--<span> {{ workFunction.name }} </span>-->
-                            <!--</mat-panel-title>-->
-                        <!--</mat-expansion-panel-header>-->
-
-                        <!--<div *ngFor="let subDocument of getSubDocuments(workFunction.name)">-->
-                            <!--<div class="card rippleRow" (click)="onDocumentClick(subDocument)">-->
-                                <!--<i class="material-icons"> description </i>-->
-                                <!--{{ subDocument.name }}-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</mat-expansion-panel>-->
-                <!--</mat-accordion>-->
-            <!--</ng-template>-->
-
-            <!--<ng-template #documentBlock>-->
-                <!--<div class="card rippleRow" (click)="onDocumentClick(workFunction)">-->
-                    <!--<i class="material-icons"> description </i>-->
-                    <!--{{ workFunction.name }}-->
-                <!--</div>-->
-            <!--</ng-template>-->
-        <!--</div>-->
-    <!--</mat-expansion-panel>-->
-<!--</mat-accordion>-->
 <div class="content-row">
-    <div class="container" [@resizeWidth]="templateItemToEdit || showWorkFunctionDetail ? 'smallWidth' : 'fullWidth'">
+    <div class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail ? 'smallWidth' : 'fullWidth'">
         <div *ngFor="let workFunction of template.workFunctions">
             <mat-accordion>
                 <mat-expansion-panel class="card expansion-panel">
@@ -50,50 +10,59 @@
                                 <span> {{ workFunction.name }} </span>
                             </div>
                             <div class="actions">
+                                <i class="material-icons" (click)="addChapter($event, workFunction)"> note_add </i>
+                                <i class="material-icons" (click)="addHeadline($event, workFunction)"> create_new_folder </i>
                                 <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
                                 <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
                             </div>
                         </mat-panel-title>
                     </mat-expansion-panel-header>
 
-                    <div *ngIf="workFunction.type === 'folder' ; then folderBlock; else documentBlock"></div>
-                    <ng-template #folderBlock>
-                        <mat-accordion>
-                            <mat-expansion-panel class="card expansion-panel">
-                                <mat-expansion-panel-header>
-                                    <mat-panel-title class="toggleTitle">
-                                        <i class="material-icons"> folder_open </i>
-                                        <span> {{ workFunction.name }} </span>
-                                    </mat-panel-title>
-                                </mat-expansion-panel-header>
+                    <div *ngFor="let item of getItemsFromWorkFunction(workFunction)">
+                        <div *ngIf="checkIfChapter(item); then chapterBlock; else headlineBlock"></div>
 
-                                <!--<div *ngFor="let subDocument of getSubDocuments(workFunction.name)">-->
-                                <!--<div class="card rippleRow" (click)="onDocumentClick(subDocument, workFunction.name)">-->
-                                <!--<i class="material-icons"> description </i>-->
-                                <!--{{ subDocument.name }}-->
-                                <!--</div>-->
-                                <!--</div>-->
-                            </mat-expansion-panel>
-                        </mat-accordion>
-                    </ng-template>
+                        <ng-template #headlineBlock>
+                            <mat-accordion>
+                                <mat-expansion-panel class="card expansion-panel">
+                                    <mat-expansion-panel-header>
+                                        <mat-panel-title class="toggleTitle">
+                                            <div class="rowTitle">
+                                                <i class="material-icons"> folder_open </i>
+                                                <span> {{ item.name }} </span>
+                                            </div>
+                                        </mat-panel-title>
+                                    </mat-expansion-panel-header>
 
-                    <ng-template #documentBlock>
-                        <div class="card rippleRow" (click)="onDocumentClick(workFunction)">
-                            <i class="material-icons"> description </i>
-                            {{ workFunction.name }}
-                        </div>
-                    </ng-template>
+                                    <div *ngFor="let subChapter of item.chapters">
+                                        <cim-chapter
+                                                [chapter]="subChapter"
+                                                [parentItem]="item"
+                                                (editChapter)="onChapterClick($event)">
+                                        </cim-chapter>
+                                    </div>
+                                </mat-expansion-panel>
+                            </mat-accordion>
+                        </ng-template>
+
+                        <ng-template #chapterBlock>
+                            <cim-chapter [chapter]="item"
+                                         [parentItem]="workFunction"
+                                         (editChapter)="onChapterClick($event)">
+                            </cim-chapter>
+                        </ng-template>
+                    </div>
+
                 </mat-expansion-panel>
             </mat-accordion>
 
         </div>
     </div>
-    <div class="container" *ngIf="templateItemToEdit" [@toggleInView]="templateItemToEdit ? 'open' : 'close'">
-        <cim-template-item-detail
-                [itemEdit]="templateItemToEdit"
-                [template]="template"
+    <div class="container" *ngIf="showChapterDetail" [@toggleInView]="showChapterDetail ? 'open' : 'close'">
+        <cim-chapter-detail
+                [chapterPackage]="chapterToEdit"
+                [parent]="chapterParent"
                 (closeView)="onCloseItemView()">
-        </cim-template-item-detail>
+        </cim-chapter-detail>
     </div>
 
     <div class="container" *ngIf="showWorkFunctionDetail" [@toggleInView]="showWorkFunctionDetail ? 'open' : 'close'">

@@ -1,0 +1,9 @@
+<div class="card rippleRow" (click)="onChapterClick()">
+    <div class="title">
+        <i class="material-icons"> description </i>
+        {{ chapter.name }}
+    </div>
+    <div class="actions">
+        <i class="material-icons" (click)="deleteChapter($event)"> delete_forever </i>
+    </div>
+</div>

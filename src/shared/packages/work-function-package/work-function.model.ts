@@ -1,6 +1,6 @@
 import { Template } from '../template-package/template.model';
-import { Headline } from '../../headline-package/headline.model';
-import { Chapter } from '../../chapter-package/chapter.model';
+import { Headline } from '../headline-package/headline.model';
+import { Chapter } from '../chapter-package/chapter.model';
 
 export class WorkFunction {
     private _id: number;
@@ -53,7 +53,7 @@ export class WorkFunction {
         this._template = value;
     }
 
-    get headlines(): Headline[]{
+    get headlines(): Headline[] {
         return this._headlines;
     }
 

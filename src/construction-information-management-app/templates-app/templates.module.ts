@@ -4,11 +4,12 @@ import { SharedModule } from '../../shared/shared.module';
 import { TemplatesOverviewComponent } from './templates-overview/templates-overview.component';
 import { TemplatesListComponent } from './templates-overview/templates-list/templates-list.component';
 import { TemplateComponent } from './template/template.component';
-import { ItemDetailComponent } from './template/item-detail/item-detail.component';
+import { ChapterDetailComponent } from './template/item-detail/chapter-detail.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AddTemplatePopupComponent } from './popup/add-template-popup/add-template-popup.component';
 import { TemplateEditComponent } from './templates-overview/template-edit/template-edit.component';
 import { WorkFunctionEditComponent } from './template/work-function-edit/work-function-edit.component';
+import { ChapterComponent } from './template/chapter/chapter.component';
 
 const routes: Routes = [
     {
@@ -22,10 +23,11 @@ const routes: Routes = [
         TemplatesOverviewComponent,
         TemplatesListComponent,
         TemplateComponent,
-        ItemDetailComponent,
+        ChapterDetailComponent,
         AddTemplatePopupComponent,
         TemplateEditComponent,
-        WorkFunctionEditComponent
+        WorkFunctionEditComponent,
+        ChapterComponent
     ],
     imports: [
         SharedModule,

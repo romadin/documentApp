@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
 import { WorkFunctionApiResponseInterface } from './interface/work-function-api-response.interface';
+import { HeadlineService } from '../headline-package/headline.service';
+import { ChapterService } from '../chapter-package/chapter.service';
 
 interface WorkFunctionCache {
     [id: number]: WorkFunction;
@@ -15,7 +17,10 @@ export class WorkFunctionService {
     private path = '/workFunctions';
     private cache: WorkFunctionCache = {};
 
-    constructor(private apiService: ApiService) {  }
+    constructor(private apiService: ApiService,
+                private headlineService: HeadlineService,
+                private chapterService: ChapterService,
+    ) {  }
 
     getWorkFunctionsByTemplate(template: Template): Observable<WorkFunction[]> {
         return this.apiService.get(this.path, {templateId: template.id}).pipe(
@@ -53,6 +58,12 @@ export class WorkFunctionService {
         workFunction.isMainFunction = data.isMainFunction;
         workFunction.order = data.order;
         workFunction.template = template;
+        this.headlineService.getHeadlinesByWorkFunction(workFunction).subscribe(headlines => {
+            workFunction.headlines = headlines;
+        });
+        this.chapterService.getChaptersByWorkFunction(workFunction).subscribe(chapters => {
+            workFunction.chapters = chapters;
+        });
 
         this.cache[workFunction.id] = workFunction;
 
