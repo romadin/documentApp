@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
@@ -16,6 +16,15 @@ import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-templ
     styleUrls: ['./templates-overview.component.css'],
     animations: [
         trigger('slideLeftAndRight', [
+            state('fullOpen', style({
+                width: '100%'
+            })),
+            state('halfOpen', style({
+                width: '50%'
+            })),
+            transition('fullOpen <=> halfOpen', [
+                animate('400ms cubic-bezier(0.0, 0.0, 0.2, 1)')
+            ]),
             transition('void => *', [
                 style({ width: '0'}),
                 animate('700ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ width: '100%'})),
@@ -26,10 +35,16 @@ import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-templ
                 ])),
             ])
         ]),
-
         trigger('slideRight', [
             transition('* => void', [
                 animate('700ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
+                    style({ transform: 'translateX(0)', offset: 1 }),
+                ])),
+            ])
+        ]),
+        trigger('slideRightOutView', [
+            transition('* => void', [
+                animate('200ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
                     style({ transform: 'translateX(0)', offset: 1 }),
                 ])),
             ])
@@ -39,6 +54,7 @@ import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-templ
 export class TemplatesOverviewComponent implements OnInit {
     templates: Template[];
     title = 'Template beheer';
+    templateToShow: Template;
     templateToEdit: Template;
     readonly organisation: Organisation;
 
@@ -63,15 +79,29 @@ export class TemplatesOverviewComponent implements OnInit {
     backToListView(event: Event): void {
         event.stopPropagation();
         event.preventDefault();
-        this.templateToEdit = undefined;
+        this.templateToShow = undefined;
     }
 
     onTemplateClick(template: Template): void {
+        this.templateToShow = template;
+    }
+
+    editTemplate(template: Template): void {
         this.templateToEdit = template;
     }
 
+    OnCloseTemplateEdit(close: boolean): void {
+        if (close) {
+            this.templateToEdit = undefined;
+        }
+    }
+
+    OnTemplateEdited(template: Template): void {
+        this.templates[this.templates.findIndex(t => t.id === template.id)] = template;
+    }
+
     private showAddTemplateView(): void {
-        this.templateToEdit = undefined;
+        this.templateToShow = undefined;
         const data: DefaultPopupData = {
             title: 'Voeg een template toe',
             placeholder: 'Template naam',

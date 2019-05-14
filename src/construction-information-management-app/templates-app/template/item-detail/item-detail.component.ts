@@ -58,7 +58,7 @@ export class ItemDetailComponent implements OnInit {
             const body = this.parentName ? this.patchBodyWithParent() : this.createPatchBody();
 
             this.templateService.updateTemplate(this.template, body).subscribe(template => {
-                this.toast.showSuccess('Template item: ' + this.item.name + ' is bewerkt', 'Bewerkt');
+                this.toast.showSuccess('Template workFunction: ' + this.item.name + ' is bewerkt', 'Bewerkt');
             });
         }
     }

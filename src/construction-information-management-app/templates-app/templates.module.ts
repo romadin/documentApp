@@ -7,6 +7,7 @@ import { TemplateComponent } from './template/template.component';
 import { ItemDetailComponent } from './template/item-detail/item-detail.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AddTemplatePopupComponent } from './popup/add-template-popup/add-template-popup.component';
+import { TemplateEditComponent } from './templates-overview/template-edit/template-edit.component';
 
 const routes: Routes = [
     {
@@ -21,7 +22,8 @@ const routes: Routes = [
         TemplatesListComponent,
         TemplateComponent,
         ItemDetailComponent,
-        AddTemplatePopupComponent
+        AddTemplatePopupComponent,
+        TemplateEditComponent
     ],
     imports: [
         SharedModule,

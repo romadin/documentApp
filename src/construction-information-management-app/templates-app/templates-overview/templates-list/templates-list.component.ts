@@ -11,6 +11,7 @@ import { ToastService } from '../../../../shared/toast.service';
 export class TemplatesListComponent implements OnInit {
     @Input() templates: Template[];
     @Output() showTemplate: EventEmitter<Template> = new EventEmitter();
+    @Output() onTemplateEdit: EventEmitter<Template> = new EventEmitter();
 
     constructor(
         private templateService: TemplateService,
@@ -34,6 +35,12 @@ export class TemplatesListComponent implements OnInit {
                 1
             );
         });
+    }
+
+    editWorkFunction(e: Event, template: Template): void {
+        e.preventDefault();
+        e.stopPropagation();
+        this.onTemplateEdit.emit(template);
     }
 
 }

@@ -329,7 +329,7 @@ Api.prototype.removePlugin = function (plugin, uninstallOptions) {
  *         type: 'app'
  *     }
  *
- * The return value in most cases will contain only one item but in some cases
+ * The return value in most cases will contain only one workFunction but in some cases
  *   there could be multiple items in output array, e.g. when multiple
  *   arhcitectures is specified.
  */

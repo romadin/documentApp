@@ -3,5 +3,9 @@
         <i class="material-icons"> collections </i>
         {{ template.name }}
     </div>
-    <i class="material-icons delete" *ngIf="template.organisationId !== 0" (click)="deleteTemplate($event, template)"> delete_forever </i>
+    <div class="actions">
+        <i class="material-icons" (click)="editWorkFunction($event, template)"> edit </i>
+        <i class="material-icons delete" *ngIf="!template.isDefault" (click)="deleteTemplate($event, template)"> delete_forever </i>
+    </div>
+
 </div>

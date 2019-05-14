@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="header">
+        <button mat-button (click)="onCancel($event)" > <i class="material-icons"> close </i> </button>
+        <h3 class="title">Wijzig Template: {{ template.name }}</h3>
+    </div>
+    <form [formGroup]="templateForm" (ngSubmit)="onSubmit()">
+        <div class="content">
+            <div mat-dialog-content class="formFields">
+                <mat-form-field>
+                    <input matInput placeholder="Template naam" formControlName="name" required="required" value="{{template.name}}">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="actionButtons">
+            <button mat-raised-button type="submit">Opslaan</button>
+            <button mat-button (click)="onCancel($event)">Annuleren</button>
+        </div>
+    </form>
+</div>

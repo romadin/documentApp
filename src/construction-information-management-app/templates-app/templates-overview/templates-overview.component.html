@@ -1,18 +1,29 @@
 <div class="card">
     <div class="header">
-        <button mat-button [ngClass]="{'show': templateToEdit}" (click)="backToListView($event)">
+        <button mat-button [ngClass]="{'show': templateToShow}" (click)="backToListView($event)">
             <i class="material-icons"> arrow_back_ios </i>
         </button>
         <h3 class="title">{{ title }}</h3>
     </div>
     <div class="container">
-        <div *ngIf="!templateToEdit" [@slideLeftAndRight]>
-            <cim-templates-list [templates]="templates" (showTemplate)="onTemplateClick($event)">
+        <div *ngIf="!templateToShow" [@slideLeftAndRight]="templateToEdit ? 'halfOpen' : 'fullOpen' " [ngClass]="{'halfOpen' : templateToEdit}">
+            <cim-templates-list
+                    [templates]="templates"
+                    (showTemplate)="onTemplateClick($event)"
+                    (onTemplateEdit)="editTemplate($event)">
             </cim-templates-list>
         </div>
 
-        <div *ngIf="templateToEdit" [@slideRight]>
-            <cim-template [template]="templateToEdit">
+        <div *ngIf="templateToEdit" [@slideRightOutView]>
+            <cim-template-edit
+                    [template]="templateToEdit"
+                    (closeDetail)="OnCloseTemplateEdit($event)"
+                    (templateEdited)="OnTemplateEdited($event)">
+            </cim-template-edit>
+        </div>
+
+        <div *ngIf="templateToShow" [@slideRight]>
+            <cim-template [template]="templateToShow">
             </cim-template>
         </div>
     </div>

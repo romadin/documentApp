@@ -7,19 +7,19 @@
             <!--</mat-panel-title>-->
         <!--</mat-expansion-panel-header>-->
 
-        <!--<div *ngFor="let item of items">-->
-            <!--<div *ngIf="item.type === 'folder' ; then folderBlock; else documentBlock"></div>-->
+        <!--<div *ngFor="let workFunction of items">-->
+            <!--<div *ngIf="workFunction.type === 'folder' ; then folderBlock; else documentBlock"></div>-->
             <!--<ng-template #folderBlock>-->
                 <!--<mat-accordion>-->
                     <!--<mat-expansion-panel class="toggleRow">-->
                         <!--<mat-expansion-panel-header>-->
                             <!--<mat-panel-title class="toggleTitle">-->
                                 <!--<i class="material-icons"> folder_open </i>-->
-                                <!--<span> {{ item.name }} </span>-->
+                                <!--<span> {{ workFunction.name }} </span>-->
                             <!--</mat-panel-title>-->
                         <!--</mat-expansion-panel-header>-->
 
-                        <!--<div *ngFor="let subDocument of getSubDocuments(item.name)">-->
+                        <!--<div *ngFor="let subDocument of getSubDocuments(workFunction.name)">-->
                             <!--<div class="card rippleRow" (click)="onDocumentClick(subDocument)">-->
                                 <!--<i class="material-icons"> description </i>-->
                                 <!--{{ subDocument.name }}-->
@@ -30,9 +30,9 @@
             <!--</ng-template>-->
 
             <!--<ng-template #documentBlock>-->
-                <!--<div class="card rippleRow" (click)="onDocumentClick(item)">-->
+                <!--<div class="card rippleRow" (click)="onDocumentClick(workFunction)">-->
                     <!--<i class="material-icons"> description </i>-->
-                    <!--{{ item.name }}-->
+                    <!--{{ workFunction.name }}-->
                 <!--</div>-->
             <!--</ng-template>-->
         <!--</div>-->
@@ -40,34 +40,50 @@
 <!--</mat-accordion>-->
 <div class="content-row">
     <div class="container" [@resizeWidth]="templateItemToEdit ? 'smallWidth' : 'fullWidth'">
-        <div *ngFor="let item of items">
-            <div *ngIf="item.type === 'folder' ; then folderBlock; else documentBlock"></div>
-            <ng-template #folderBlock>
-                <mat-accordion>
-                    <mat-expansion-panel class="card expansion-panel">
-                        <mat-expansion-panel-header>
-                            <mat-panel-title class="toggleTitle">
-                                <i class="material-icons"> folder_open </i>
-                                <span> {{ item.name }} </span>
-                            </mat-panel-title>
-                        </mat-expansion-panel-header>
+        <div *ngFor="let workFunction of template.workFunctions">
+            <mat-accordion>
+                <mat-expansion-panel class="card expansion-panel">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title class="toggleTitle">
+                            <i class="material-icons"> folder_open </i>
+                            <span> {{ workFunction.name }} </span>
+                            <div class="actionsEditDelete">
+                                <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
+                                <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
+                            </div>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
 
-                        <!--<div *ngFor="let subDocument of getSubDocuments(item.name)">-->
-                            <!--<div class="card rippleRow" (click)="onDocumentClick(subDocument, item.name)">-->
+                    <div *ngIf="workFunction.type === 'folder' ; then folderBlock; else documentBlock"></div>
+                    <ng-template #folderBlock>
+                        <mat-accordion>
+                            <mat-expansion-panel class="card expansion-panel">
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title class="toggleTitle">
+                                        <i class="material-icons"> folder_open </i>
+                                        <span> {{ workFunction.name }} </span>
+                                    </mat-panel-title>
+                                </mat-expansion-panel-header>
+
+                                <!--<div *ngFor="let subDocument of getSubDocuments(workFunction.name)">-->
+                                <!--<div class="card rippleRow" (click)="onDocumentClick(subDocument, workFunction.name)">-->
                                 <!--<i class="material-icons"> description </i>-->
                                 <!--{{ subDocument.name }}-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    </mat-expansion-panel>
-                </mat-accordion>
-            </ng-template>
+                                <!--</div>-->
+                                <!--</div>-->
+                            </mat-expansion-panel>
+                        </mat-accordion>
+                    </ng-template>
 
-            <ng-template #documentBlock>
-                <div class="card rippleRow" (click)="onDocumentClick(item)">
-                    <i class="material-icons"> description </i>
-                    {{ item.name }}
-                </div>
-            </ng-template>
+                    <ng-template #documentBlock>
+                        <div class="card rippleRow" (click)="onDocumentClick(workFunction)">
+                            <i class="material-icons"> description </i>
+                            {{ workFunction.name }}
+                        </div>
+                    </ng-template>
+                </mat-expansion-panel>
+            </mat-accordion>
+
         </div>
     </div>
     <div class="container" [@toggleInView]="templateItemToEdit ? 'open' : 'close'">

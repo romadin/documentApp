@@ -25,3 +25,6 @@ i.material-icons {
 .card > .container > div:first-child {
     float:left
 }
+.card > .container > div.halfOpen{
+    margin-right: 20px;
+}

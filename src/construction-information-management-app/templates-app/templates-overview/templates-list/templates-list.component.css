@@ -18,7 +18,7 @@
 .rippleRow > div.header > i.material-icons {
     margin-right: 15px;
 }
-.rippleRow > i.delete {
+.rippleRow > .actions > i.material-icons {
     font-size: 18px;
     padding: 3px 10px;
 }

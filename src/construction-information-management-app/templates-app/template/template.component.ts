@@ -6,6 +6,7 @@ import {
 } from '../../../shared/packages/template-package/interface/template-api-response.interface';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { TemplateItemEdit } from './item-detail/item-detail.component';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 @Component({
     selector: 'cim-template',
@@ -51,6 +52,7 @@ export class TemplateComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        console.log(this.template);
         // this.setItems();
     }
 
@@ -73,6 +75,17 @@ export class TemplateComponent implements OnInit {
         this.templateItemToEdit = undefined;
     }
 
+    deleteWorkFunction(event: Event, workFunction: WorkFunction) {
+        event.stopPropagation();
+        // delete workFunction
+        console.log(workFunction);
+    }
+
+    editWorkFunction(event: Event, workFunction: WorkFunction) {
+        event.stopPropagation();
+        // edit workFunction
+        console.log(workFunction);
+    }
     // private setItems(): void {
     //     this.items = this.template.documents.concat(this.template.subFolders);
     //     this.items.sort((a: TemplateItemInterface, b: TemplateItemInterface) => a.order - b.order);
