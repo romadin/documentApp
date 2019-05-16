@@ -74,7 +74,8 @@ export class ChapterDetailComponent implements AfterViewInit {
             } else {
                 const body: ChapterPostBody = {
                     name: this.chapterForm.controls.name.value,
-                    content: this.content
+                    content: this.content,
+                    headlineId: isWorkFunction(this.parent) ? null : this.parent.id
                 };
                 this.chapterService.createChapter(body, params).subscribe(chapter => {
                     this.chapter = chapter;

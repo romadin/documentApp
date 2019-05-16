@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
-import { ChapterPackage } from '../item-detail/chapter-detail.component';
+import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
 import { Headline } from '../../../../shared/packages/headline-package/headline.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';

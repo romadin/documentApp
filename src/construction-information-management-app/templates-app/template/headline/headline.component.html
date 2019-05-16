@@ -1,0 +1,25 @@
+<mat-accordion>
+    <mat-expansion-panel class="card expansion-panel">
+        <mat-expansion-panel-header>
+            <mat-panel-title class="toggleTitle">
+                <div class="rowTitle">
+                    <i class="material-icons"> folder_open </i>
+                    <span> {{ headline.name }} </span>
+                </div>
+                <div class="actions">
+                    <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
+                    <i class="material-icons" (click)="onEditHeadline($event)"> edit </i>
+                    <i class="material-icons" (click)="deleteHeadline($event)"> delete_forever </i>
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div *ngFor="let subChapter of headline.chapters">
+            <cim-chapter
+                    [chapter]="subChapter"
+                    [parentItem]="headline"
+                    (editChapter)="onChapterClick($event)">
+            </cim-chapter>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

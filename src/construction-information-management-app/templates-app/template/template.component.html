@@ -1,16 +1,16 @@
 <div class="content-row">
-    <div class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail ? 'smallWidth' : 'fullWidth'">
+    <div class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail || showHeadlineDetail ? 'smallWidth' : 'fullWidth'">
         <div *ngFor="let workFunction of template.workFunctions">
             <mat-accordion>
                 <mat-expansion-panel class="card expansion-panel">
                     <mat-expansion-panel-header>
                         <mat-panel-title class="toggleTitle">
                             <div class="rowTitle">
-                                <i class="material-icons"> folder_open </i>
+                                <i class="material-icons"> work_outline </i>
                                 <span> {{ workFunction.name }} </span>
                             </div>
                             <div class="actions">
-                                <i class="material-icons" (click)="addChapter($event, workFunction)"> note_add </i>
+                                <i class="material-icons" (click)="addChapter(workFunction, $event)"> note_add </i>
                                 <i class="material-icons" (click)="addHeadline($event, workFunction)"> create_new_folder </i>
                                 <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
                                 <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
@@ -22,26 +22,12 @@
                         <div *ngIf="checkIfChapter(item); then chapterBlock; else headlineBlock"></div>
 
                         <ng-template #headlineBlock>
-                            <mat-accordion>
-                                <mat-expansion-panel class="card expansion-panel">
-                                    <mat-expansion-panel-header>
-                                        <mat-panel-title class="toggleTitle">
-                                            <div class="rowTitle">
-                                                <i class="material-icons"> folder_open </i>
-                                                <span> {{ item.name }} </span>
-                                            </div>
-                                        </mat-panel-title>
-                                    </mat-expansion-panel-header>
-
-                                    <div *ngFor="let subChapter of item.chapters">
-                                        <cim-chapter
-                                                [chapter]="subChapter"
-                                                [parentItem]="item"
-                                                (editChapter)="onChapterClick($event)">
-                                        </cim-chapter>
-                                    </div>
-                                </mat-expansion-panel>
-                            </mat-accordion>
+                            <cim-headline [headline]="item"
+                                          [workFunction]="workFunction"
+                                          (editHeadline)="onEditHeadlineClick($event)"
+                                          (editChapter)="onChapterClick($event)"
+                                          (addChapter)="addChapter($event)">
+                            </cim-headline>
                         </ng-template>
 
                         <ng-template #chapterBlock>
@@ -54,7 +40,6 @@
 
                 </mat-expansion-panel>
             </mat-accordion>
-
         </div>
     </div>
     <div class="container" *ngIf="showChapterDetail" [@toggleInView]="showChapterDetail ? 'open' : 'close'">
@@ -64,12 +49,18 @@
                 (closeView)="onCloseItemView()">
         </cim-chapter-detail>
     </div>
-
     <div class="container" *ngIf="showWorkFunctionDetail" [@toggleInView]="showWorkFunctionDetail ? 'open' : 'close'">
         <cim-work-function-edit
                 [workFunction]="workFunctionToEdit"
                 [template]="template"
                 (closeView)="onCloseItemView()">
         </cim-work-function-edit>
+    </div>
+    <div class="container" *ngIf="showHeadlineDetail" [@toggleInView]="showHeadlineDetail ? 'open' : 'close'">
+        <cim-headline-detail
+                [headline]="headlineToEdit"
+                [workFunction]="headlineParent"
+                (closeView)="onCloseItemView()">
+        </cim-headline-detail>
     </div>
 </div>

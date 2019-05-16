@@ -5,7 +5,7 @@ import {
     TemplateParentItemInterface
 } from '../../../shared/packages/template-package/interface/template-api-response.interface';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { ChapterPackage } from './item-detail/chapter-detail.component';
+import { ChapterPackage } from './chapter-detail/chapter-detail.component';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 import { ToastService } from '../../../shared/toast.service';
@@ -14,6 +14,7 @@ import { Chapter } from '../../../shared/packages/chapter-package/chapter.model'
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
+import { HeadlinePackage } from './headline/headline.component';
 
 @Component({
     selector: 'cim-template',
@@ -69,6 +70,9 @@ export class TemplateComponent implements OnInit {
     showChapterDetail: boolean;
     workFunctionToEdit: WorkFunction;
     showWorkFunctionDetail: boolean;
+    showHeadlineDetail: boolean;
+    headlineParent: WorkFunction;
+    headlineToEdit: Headline;
     items: TemplateItemInterface[];
 
     constructor(private workFunctionService: WorkFunctionService,
@@ -83,14 +87,12 @@ export class TemplateComponent implements OnInit {
     }
 
     onChapterClick(chapterPackage: ChapterPackage): void {
-        if (!this.chapterToEdit) {
+        if (!this.showChapterDetail) {
             this.chapterToEdit = chapterPackage.chapter;
             this.chapterParent = chapterPackage.parent;
             this.showChapterDetail = true;
-        } else if (chapterPackage.chapter.id !== this.chapterToEdit.id) {
-            this.chapterToEdit = undefined;
-            this.showWorkFunctionDetail = false;
-            this.showChapterDetail = false;
+        } else if (this.showChapterDetail || chapterPackage.chapter.id !== this.chapterToEdit.id) {
+            this.resetVariables();
             setTimeout(() => {
                 this.chapterToEdit = chapterPackage.chapter;
                 this.chapterParent = chapterPackage.parent;
@@ -100,10 +102,7 @@ export class TemplateComponent implements OnInit {
     }
 
     onCloseItemView(): void {
-        this.chapterToEdit = undefined;
-        this.workFunctionToEdit = undefined;
-        this.showWorkFunctionDetail = false;
-        this.showChapterDetail = false;
+        this.resetVariables();
         this.cancelAddFunction.emit(true);
     }
 
@@ -119,21 +118,46 @@ export class TemplateComponent implements OnInit {
 
     editWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
-        this.chapterToEdit = undefined;
+        this.resetVariables();
         setTimeout(() => {
             this.showWorkFunctionDetail = true;
             this.workFunctionToEdit = workFunction;
         }, 290);
     }
 
-    addChapter(e: Event, workFunction: WorkFunction) {
-        e.stopPropagation();
-        this.chapterParent = workFunction;
-        this.showChapterDetail = true;
+    onEditHeadlineClick(headlinePackage: HeadlinePackage) {
+        this.resetVariables();
+        setTimeout(() => {
+            this.showHeadlineDetail = true;
+            this.headlineToEdit = headlinePackage.headline;
+            this.headlineParent = headlinePackage.parent;
+        }, 290);
+    }
+
+    addChapter(parent: WorkFunction | Headline, e?: Event) {
+        if (e) {
+            e.stopPropagation();
+        }
+
+        if (this.showChapterDetail) {
+            this.resetVariables();
+            setTimeout(() => {
+                this.chapterParent = parent;
+                this.showChapterDetail = true;
+            }, 290);
+        } else {
+            this.chapterParent = parent;
+            this.showChapterDetail = true;
+        }
     }
 
     addHeadline(e: Event, workFunction: WorkFunction) {
         e.stopPropagation();
+        this.resetVariables();
+        setTimeout(() => {
+            this.showHeadlineDetail = true;
+            this.headlineParent = workFunction;
+        }, 290);
     }
 
     checkIfChapter(item: Chapter | Headline): boolean {
@@ -150,5 +174,15 @@ export class TemplateComponent implements OnInit {
         }
 
         return items;
+    }
+
+    private resetVariables(): void {
+        this.chapterToEdit = undefined;
+        this.showWorkFunctionDetail = false;
+        this.showChapterDetail = false;
+        this.workFunctionToEdit = undefined;
+        this.showHeadlineDetail = false;
+        this.headlineParent = undefined;
+        this.headlineToEdit = undefined;
     }
 }
