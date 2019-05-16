@@ -15,6 +15,9 @@ import { Document } from '../../../shared/packages/document-package/document.mod
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
 import { HeadlinePackage } from './headline/headline.component';
+import { MatDialog } from '@angular/material';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../popups/confirm-popup/confirm-popup.component';
+import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 
 @Component({
     selector: 'cim-template',
@@ -75,8 +78,10 @@ export class TemplateComponent implements OnInit {
     headlineToEdit: Headline;
     items: TemplateItemInterface[];
 
-    constructor(private workFunctionService: WorkFunctionService,
-                private toast: ToastService) { }
+    constructor(private dialog: MatDialog,
+                private workFunctionService: WorkFunctionService,
+                private toast: ToastService
+    ) { }
 
     ngOnInit() {
     }
@@ -109,9 +114,18 @@ export class TemplateComponent implements OnInit {
     deleteWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
         if (!workFunction.isMainFunction) {
-            this.workFunctionService.deleteWorkFunction(workFunction).subscribe(() => {
-                this.template.workFunctions.splice(this.template.workFunctions.findIndex(w => w.id === workFunction.id), 1);
-                this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
+            const popupData: ConfirmPopupData = {
+                title: 'Functie verwijderen',
+                name: workFunction.name,
+                action: 'verwijderen'
+            };
+            this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+                if (action) {
+                    this.workFunctionService.deleteWorkFunction(workFunction).subscribe(() => {
+                        this.template.workFunctions.splice(this.template.workFunctions.findIndex(w => w.id === workFunction.id), 1);
+                        this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
+                    });
+                }
             });
         }
     }

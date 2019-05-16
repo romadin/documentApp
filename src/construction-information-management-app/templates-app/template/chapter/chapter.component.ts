@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
+import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
+import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
 import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
 import { Headline } from '../../../../shared/packages/headline-package/headline.model';
-import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
-import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
 import { ToastService } from '../../../../shared/toast.service';
-import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'cim-chapter',
@@ -17,7 +19,7 @@ export class ChapterComponent implements OnInit {
     @Input() parentItem: Headline | WorkFunction;
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
 
-    constructor(private chapterService: ChapterService, private toast: ToastService) { }
+    constructor(private dialog: MatDialog, private chapterService: ChapterService, private toast: ToastService) { }
 
     ngOnInit() {
     }
@@ -29,10 +31,19 @@ export class ChapterComponent implements OnInit {
     deleteChapter(e: Event): void {
         e.stopPropagation();
         e.preventDefault();
-        const params = isWorkFunction(this.parentItem) ? {workFunctionId: this.parentItem.id} : {};
-        this.chapterService.deleteChapter(this.chapter, params).subscribe(message => {
-            this.parentItem.chapters.splice(this.parentItem.chapters.findIndex(c => c.id === this.chapter.id), 1);
-            this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is verwijderd', 'Verwijderd');
+        const popupData: ConfirmPopupData = {
+            title: 'Hoofdstuk verwijderen',
+            name: this.chapter.name,
+            action: 'verwijderen'
+        };
+        this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+            if (action) {
+                const params = isWorkFunction(this.parentItem) ? {workFunctionId: this.parentItem.id} : {};
+                this.chapterService.deleteChapter(this.chapter, params).subscribe(message => {
+                    this.parentItem.chapters.splice(this.parentItem.chapters.findIndex(c => c.id === this.chapter.id), 1);
+                    this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is verwijderd', 'Verwijderd');
+                });
+            }
         });
     }
 

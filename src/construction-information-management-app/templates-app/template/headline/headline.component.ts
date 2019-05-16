@@ -4,6 +4,8 @@ import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { HeadlineService } from '../../../../shared/packages/headline-package/headline.service';
 import { ToastService } from '../../../../shared/toast.service';
+import { MatDialog } from '@angular/material';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 
 export interface HeadlinePackage {
     headline: Headline;
@@ -22,16 +24,28 @@ export class HeadlineComponent implements OnInit {
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
     @Output() addChapter: EventEmitter<Headline> = new EventEmitter<Headline>();
 
-    constructor(private headlineService: HeadlineService, private toast: ToastService) { }
+    constructor(private dialog: MatDialog,
+                private headlineService: HeadlineService,
+                private toast: ToastService
+    ) { }
 
     ngOnInit() {
     }
 
     deleteHeadline(event: Event) {
         event.stopPropagation();
-        this.headlineService.deleteHeadline(this.headline, this.workFunction).subscribe(() => {
-            this.workFunction.headlines.splice(this.workFunction.headlines.findIndex(h => h.id === this.headline.id), 1);
-            this.toast.showSuccess('Functie: ' + this.headline.name + ' is verwijderd', 'Verwijderd');
+        const popupData: ConfirmPopupData = {
+            title: 'Kop verwijderen',
+            name: this.headline.name,
+            action: 'verwijderen'
+        };
+        this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+            if (action) {
+                this.headlineService.deleteHeadline(this.headline, this.workFunction).subscribe(() => {
+                    this.workFunction.headlines.splice(this.workFunction.headlines.findIndex(h => h.id === this.headline.id), 1);
+                    this.toast.showSuccess('Functie: ' + this.headline.name + ' is verwijderd', 'Verwijderd');
+                });
+            }
         });
     }
 
