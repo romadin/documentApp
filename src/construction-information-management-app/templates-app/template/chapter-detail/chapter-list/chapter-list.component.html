@@ -1,7 +1,7 @@
 <div class="header">
     <h3> Voeg een bestaande hoofdstuk toe</h3>
 </div>
-<div class="warning" *ngIf="chapters && chapters.length === 0">
+<div class="warning" [@toggleInView] *ngIf="chapters && chapters.length === 0">
     <div class="content">
         <i class="material-icons"> warning </i>
         <span>
@@ -10,8 +10,8 @@
         </span>
     </div>
 </div>
-<mat-selection-list #list *ngIf="chapters" [(ngModel)]="chaptersSelected">
-    <mat-list-option *ngFor="let chapter of chapters" [value]="chapter.id">
+<mat-selection-list #list *ngIf="chapters" [@toggleInView] [(ngModel)]="chaptersSelected">
+    <mat-list-option class="listOption" *ngFor="let chapter of chapters" [value]="chapter.id">
         <div class="content">
             <i class="material-icons"> insert_drive_file </i>
             {{chapter.name}}
