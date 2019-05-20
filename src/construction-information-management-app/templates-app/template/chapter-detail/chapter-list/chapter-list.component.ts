@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 import { Chapter } from '../../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../../shared/packages/chapter-package/chapter.service';
@@ -8,7 +9,6 @@ import { WorkFunction } from '../../../../../shared/packages/work-function-packa
 import {
     WorkFunctionUpdateBody
 } from '../../../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 @Component({
     selector: 'cim-chapter-list',

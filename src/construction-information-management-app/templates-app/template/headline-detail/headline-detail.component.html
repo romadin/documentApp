@@ -1,21 +1,14 @@
-<div class="card editDocument">
+<div class="card">
     <div class="header">
-        <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
-        <h3 class="title">{{ headline ? headline.name : 'Voeg een kop toe' }}</h3>
+        <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
+        <mat-button-toggle-group *ngIf="!headline" name="itemPicker" aria-label="Font Style" class="switchItemButton">
+            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande hoofdstuk</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe hoofdstuk</mat-button-toggle>
+        </mat-button-toggle-group>
     </div>
-    <div class="formBody">
-        <form [formGroup]="headlineForm" (ngSubmit)="onSubmit()">
-            <div class="content">
-                <div mat-dialog-content class="formFields">
-                    <mat-form-field>
-                        <input matInput placeholder="Functie naam" formControlName="name" required="required">
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="actionButtons">
-                <button mat-raised-button type="submit">Opslaan</button>
-                <button mat-button (click)="onCloseView($event)">Annuleren</button>
-            </div>
-        </form>
-    </div>
+    <cim-headline-edit [@toggleInView] *ngIf="view === 'new' || headline"
+            [headline]="headline"
+            [workFunction]="workFunction"
+            (closeView)="onCloseView()">
+    </cim-headline-edit>
 </div>

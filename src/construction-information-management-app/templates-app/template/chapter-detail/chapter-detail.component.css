@@ -4,7 +4,3 @@ mat-form-field.mat-form-field {
 .editDocument > .header {
     justify-content: space-between;
 }
-div.card > div.formBody > form > div.actionButtons {
-    padding-top: 10px;
-}
-

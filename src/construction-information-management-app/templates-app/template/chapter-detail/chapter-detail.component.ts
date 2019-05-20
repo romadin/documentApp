@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material';
 
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { Headline } from '../../../../shared/packages/headline-package/headline.model';
-import { MatButtonToggleChange } from '@angular/material';
 import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 
 export interface ChapterPackage {

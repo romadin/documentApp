@@ -14,6 +14,8 @@ import { HeadlineDetailComponent } from './template/headline-detail/headline-det
 import { HeadlineComponent } from './template/headline/headline.component';
 import { ChapterEditComponent } from './template/chapter-detail/chapter-edit/chapter-edit.component';
 import { ChapterListComponent } from './template/chapter-detail/chapter-list/chapter-list.component';
+import { HeadlineEditComponent } from './template/headline-detail/headline-edit/headline-edit.component';
+import { HeadlineListComponent } from './template/headline-detail/headline-list/headline-list.component';
 
 const routes: Routes = [
     {
@@ -35,7 +37,9 @@ const routes: Routes = [
         HeadlineDetailComponent,
         HeadlineComponent,
         ChapterEditComponent,
-        ChapterListComponent
+        ChapterListComponent,
+        HeadlineEditComponent,
+        HeadlineListComponent
     ],
     imports: [
         SharedModule,
