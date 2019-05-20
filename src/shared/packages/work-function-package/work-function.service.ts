@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
-import { WorkFunctionApiResponseInterface } from './interface/work-function-api-response.interface';
+import { WorkFunctionApiResponseInterface, WorkFunctionUpdateBody } from './interface/work-function-api-response.interface';
 import { HeadlineService } from '../headline-package/headline.service';
 import { ChapterService } from '../chapter-package/chapter.service';
 
@@ -34,7 +34,7 @@ export class WorkFunctionService {
         );
     }
 
-    updateWorkFunction(workFunction: WorkFunction, body): Observable<WorkFunction> {
+    updateWorkFunction(workFunction: WorkFunction, body: WorkFunctionUpdateBody): Observable<WorkFunction> {
         return this.apiService.post(this.path + '/' + workFunction.id, body).pipe(
             map((result: WorkFunctionApiResponseInterface) => {
                 const index = workFunction.template.workFunctions.findIndex(w => w.id === workFunction.id);

@@ -1,27 +1,10 @@
 mat-form-field.mat-form-field {
     width: 100%;
 }
+.editDocument > .header {
+    justify-content: space-between;
+}
 div.card > div.formBody > form > div.actionButtons {
     padding-top: 10px;
 }
-div.card > div.formBody > div.warning {
-    display: flex;
-    justify-content: center;
-}
-div.card > div.formBody > div.warning > div.content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 210px;
-    padding: 10px;
-    border: 2px solid #d78b3d;
-    border-radius: 5px;
-    background-color: #FFD800;
-}
-div.card > div.formBody > div.warning > div.content > i.material-icons {
-    margin-right: 15px;
-    color: #CC3300;
-}
-div.card > div.formBody > div.warning > div.content > span {
-    font-size: 14px;
-}
+

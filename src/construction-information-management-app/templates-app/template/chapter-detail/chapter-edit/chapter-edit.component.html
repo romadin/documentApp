@@ -1,0 +1,20 @@
+<div class="header">
+    <button mat-button (click)="onCloseView($event)" *ngIf="chapter"> <i class="material-icons"> close </i> </button>
+    <h3 class="title">{{ chapter ? chapter.name : parent.isMainFunction !== undefined ? 'Voeg een nieuwe hoofdstuk toe' : 'Voeg een nieuw subhoofdstuk toe' }}</h3>
+</div>
+<div class="formBody">
+    <form [formGroup]="chapterForm" (ngSubmit)="onSubmit()">
+        <div class="content">
+            <div mat-dialog-content class="formFields">
+                <mat-form-field>
+                    <input matInput placeholder="Hoofdstuk naam" formControlName="name" required="required">
+                </mat-form-field>
+                <angular-editor #editor [(ngModel)]="content" [config]="editorConfig" [ngModelOptions]="{standalone: true}"></angular-editor>
+            </div>
+        </div>
+        <div class="actionButtons">
+            <button mat-button (click)="onCloseView($event)">Annuleren</button>
+            <button mat-raised-button type="submit">Opslaan</button>
+        </div>
+    </form>
+</div>

@@ -2158,7 +2158,7 @@ utils.createUUID = function () {
 utils.extend = (function () {
     // proxy used to establish prototype chain
     var F = function () {};
-    // extend Child from Parent
+    // extend Child from parent
     return function (Child, Parent) {
 
         F.prototype = Parent.prototype;

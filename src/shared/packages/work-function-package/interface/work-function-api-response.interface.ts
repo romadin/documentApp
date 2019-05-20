@@ -5,3 +5,10 @@ export interface WorkFunctionApiResponseInterface {
     order: number;
     templateId: number;
 }
+
+export interface WorkFunctionUpdateBody {
+    name?: string;
+    chapters?: number[];
+    headlines?: number[];
+    order?: number;
+}

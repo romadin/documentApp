@@ -44,7 +44,7 @@
     </div>
     <div class="container" *ngIf="showChapterDetail" [@toggleInView]="showChapterDetail ? 'open' : 'close'">
         <cim-chapter-detail
-                [chapterPackage]="chapterToEdit"
+                [chapter]="chapterToEdit"
                 [parent]="chapterParent"
                 (closeView)="onCloseItemView()">
         </cim-chapter-detail>

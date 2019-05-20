@@ -12,6 +12,8 @@ import { WorkFunctionEditComponent } from './template/work-function-edit/work-fu
 import { ChapterComponent } from './template/chapter/chapter.component';
 import { HeadlineDetailComponent } from './template/headline-detail/headline-detail.component';
 import { HeadlineComponent } from './template/headline/headline.component';
+import { ChapterEditComponent } from './template/chapter-detail/chapter-edit/chapter-edit.component';
+import { ChapterListComponent } from './template/chapter-detail/chapter-list/chapter-list.component';
 
 const routes: Routes = [
     {
@@ -31,7 +33,9 @@ const routes: Routes = [
         WorkFunctionEditComponent,
         ChapterComponent,
         HeadlineDetailComponent,
-        HeadlineComponent
+        HeadlineComponent,
+        ChapterEditComponent,
+        ChapterListComponent
     ],
     imports: [
         SharedModule,
