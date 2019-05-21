@@ -1,24 +1,25 @@
 <div class="content-row">
     <div class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail || showHeadlineDetail ? 'smallWidth' : 'fullWidth'">
-        <div *ngFor="let workFunction of template.workFunctions">
-            <mat-accordion>
-                <mat-expansion-panel class="card expansion-panel">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title class="toggleTitle">
-                            <div class="rowTitle">
-                                <i class="material-icons"> work_outline </i>
-                                <span> {{ workFunction.name }} </span>
-                            </div>
-                            <div class="actions">
-                                <i class="material-icons" (click)="addChapter(workFunction, $event)"> note_add </i>
-                                <i class="material-icons" (click)="addHeadline($event, workFunction)"> create_new_folder </i>
-                                <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
-                                <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
-                            </div>
-                        </mat-panel-title>
-                    </mat-expansion-panel-header>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let workFunction of template.workFunctions" class="card expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title class="toggleTitle">
+                        <div class="rowTitle">
+                            <i class="material-icons"> work_outline </i>
+                            <span> {{ workFunction.name }} </span>
+                        </div>
+                        <div class="actions">
+                            <i class="material-icons" (click)="addChapter(workFunction, $event)"> note_add </i>
+                            <i class="material-icons" (click)="addHeadline($event, workFunction)"> create_new_folder </i>
+                            <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
+                            <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
+                        </div>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
 
+                <mat-accordion [displayMode]="flat">
                     <div *ngFor="let item of getItemsFromWorkFunction(workFunction)">
+
                         <div *ngIf="checkIfChapter(item); then chapterBlock; else headlineBlock"></div>
 
                         <ng-template #headlineBlock>
@@ -37,10 +38,9 @@
                             </cim-chapter>
                         </ng-template>
                     </div>
-
-                </mat-expansion-panel>
-            </mat-accordion>
-        </div>
+                </mat-accordion>
+            </mat-expansion-panel>
+        </mat-accordion>
     </div>
     <div class="container" *ngIf="showChapterDetail" [@toggleInView]="showChapterDetail ? 'open' : 'close'">
         <cim-chapter-detail
