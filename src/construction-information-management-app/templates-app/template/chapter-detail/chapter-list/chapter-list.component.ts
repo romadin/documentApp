@@ -9,6 +9,7 @@ import { WorkFunction } from '../../../../../shared/packages/work-function-packa
 import {
     WorkFunctionUpdateBody
 } from '../../../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
+import { ToastService } from '../../../../../shared/toast.service';
 
 @Component({
     selector: 'cim-chapter-list',
@@ -34,7 +35,7 @@ export class ChapterListComponent implements OnInit {
     chapters: Chapter[];
     chaptersSelected;
 
-    constructor(private chapterService: ChapterService, private workFunctionService: WorkFunctionService) { }
+    constructor(private chapterService: ChapterService, private workFunctionService: WorkFunctionService, private toast: ToastService) { }
 
     ngOnInit() {
         const workFunctions = this.parent.template.workFunctions.filter(w => w.id !== this.parent.id);
@@ -53,7 +54,13 @@ export class ChapterListComponent implements OnInit {
             const body: WorkFunctionUpdateBody = {
                 chapters: this.chaptersSelected
             };
-            this.workFunctionService.updateWorkFunction(this.parent, body).subscribe();
+            const message = this.chaptersSelected.length === 1 ?
+                'Hoofdstuk: ' + this.chapters.find(h => h.id === this.chaptersSelected[0]).name + ' is toegevoegd'
+                : 'De hoofdstukken zijn toegevoegd';
+            this.workFunctionService.updateWorkFunction(this.parent, body).subscribe(() => {
+                this.toast.showSuccess(message, 'Toegevoegd');
+                this.onCloseView(e);
+            });
         }
     }
 
@@ -73,7 +80,7 @@ export class ChapterListComponent implements OnInit {
         // remove already linked chapters
         this.parent.chapters.map((currentChapter) => {
             const index = this.chapters.findIndex(newChapter => newChapter.id === currentChapter.id);
-            if (index !== undefined) {
+            if (index !== -1) {
                 this.chapters.splice(index, 1);
             }
         });
