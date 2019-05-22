@@ -34,6 +34,7 @@ export class ProjectDetailComponent implements OnInit {
             this.currentUser = user;
         });
         this.folderService.getFoldersByProject(this.projectId).subscribe(folders => {
+            folders = folders.sort((a, b) => a.order - b.order);
             this.folders = folders;
         });
     }
