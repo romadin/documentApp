@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Headline } from '../../../../shared/packages/headline-package/headline.model';
 import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
@@ -6,6 +6,8 @@ import { HeadlineService } from '../../../../shared/packages/headline-package/he
 import { ToastService } from '../../../../shared/toast.service';
 import { MatDialog } from '@angular/material';
 import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
 
 export interface HeadlinePackage {
     headline: Headline;
@@ -24,8 +26,12 @@ export class HeadlineComponent implements OnInit {
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
     @Output() addChapter: EventEmitter<Headline> = new EventEmitter<Headline>();
 
+    private currentDragItem: EventTarget;
+    private currentDragOver: HTMLElement;
+
     constructor(private dialog: MatDialog,
                 private headlineService: HeadlineService,
+                private chapterService: ChapterService,
                 private toast: ToastService
     ) { }
 
@@ -65,5 +71,11 @@ export class HeadlineComponent implements OnInit {
 
     onChapterClick(chapterPackage: ChapterPackage): void {
         this.editChapter.emit(chapterPackage);
+    }
+
+    drop(event: CdkDragDrop<string[]>) {
+        moveItemInArray(this.headline.chapters, event.previousIndex, event.currentIndex);
+        const chapter = event.item.data;
+        this.chapterService.updateChapter(chapter, {order: event.currentIndex + 1}, {}).subscribe((value) => { event.item.data = value; });
     }
 }

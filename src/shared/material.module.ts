@@ -18,6 +18,7 @@ import {
     MatTableModule,
     MatToolbarModule,
 } from '@angular/material';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
     exports: [
@@ -40,7 +41,8 @@ import {
         MatProgressSpinnerModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        MatSelectModule
+        MatSelectModule,
+        DragDropModule,
     ]
 })
 export class MaterialModule { }

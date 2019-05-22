@@ -19,7 +19,13 @@ export class HeadlineService {
         return this.apiService.get(this.path, param).pipe(
             map((result: HeadlineApiResponseInterface[]) => result.map((response) => {
                 const headline = this.makeHeadline(response);
-                this.chapterService.getChaptersByHeadline(headline, workFunction).subscribe(chapters => headline.chapters = chapters );
+                let chaptersContainer;
+                this.chapterService.getChaptersByHeadline(headline, workFunction).subscribe(
+                    (chapters) => {
+                        chaptersContainer = chapters.sort((a, b) => a.order - b.order);
+                        headline.chapters = chaptersContainer;
+                    }
+                );
                 return headline;
             }))
         );
