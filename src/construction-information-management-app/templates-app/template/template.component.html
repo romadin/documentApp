@@ -1,7 +1,7 @@
 <div class="content-row">
-    <div class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail || showHeadlineDetail ? 'smallWidth' : 'fullWidth'">
-        <mat-accordion>
-            <mat-expansion-panel *ngFor="let workFunction of template.workFunctions" class="card expansion-panel">
+    <div  class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail || showHeadlineDetail ? 'smallWidth' : 'fullWidth'">
+        <mat-accordion cdkDropList (cdkDropListDropped)="dropItem($event)">
+            <mat-expansion-panel *ngFor="let workFunction of template.workFunctions" class="card expansion-panel dragItem"  cdkDrag [cdkDragData]="workFunction">
                 <mat-expansion-panel-header>
                     <mat-panel-title class="toggleTitle">
                         <div class="rowTitle">

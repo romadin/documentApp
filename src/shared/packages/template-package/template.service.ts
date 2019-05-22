@@ -64,6 +64,7 @@ export class TemplateService {
         template.organisationId = result.organisationId;
         template.isDefault = result.isDefault;
         this.workFunctionService.getWorkFunctionsByTemplate(template).subscribe(workFunctions => {
+            workFunctions = workFunctions.sort((a, b) => a.order - b.order);
             template.workFunctions = workFunctions;
         });
 

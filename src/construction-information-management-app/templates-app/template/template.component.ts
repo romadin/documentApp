@@ -16,6 +16,7 @@ import { ChapterService } from '../../../shared/packages/chapter-package/chapter
 import { ConfirmPopupComponent, ConfirmPopupData } from '../../popups/confirm-popup/confirm-popup.component';
 import { HeadlinePackage } from './headline/headline.component';
 import { ToastService } from '../../../shared/toast.service';
+import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 
 interface ItemsContainer {
     [workFunctionId: number]: (Chapter | Headline)[];
@@ -181,11 +182,16 @@ export class TemplateComponent implements OnInit {
 
     dropItem(event: CdkDragDrop<any>) {
         const workFunction: WorkFunction = event.container.data;
-        const item: Chapter | Headline = event.item.data;
-        const params = {workFunctionId: workFunction.id};
+        const item: Chapter | Headline | WorkFunction = event.item.data;
+        const params = workFunction ? {workFunctionId: workFunction.id} : {};
         const body: any  = {order: event.currentIndex + 1};
 
-        if (isChapter(item)) {
+        if (isWorkFunction(item)) {
+            moveItemInArray(this.template.workFunctions, event.previousIndex, event.currentIndex);
+            this.workFunctionService.updateWorkFunction(item, body).subscribe((value) => {
+                event.item.data = value;
+            });
+        } else if (isChapter(item)) {
             moveItemInArray(this.itemsContainer[workFunction.id], event.previousIndex, event.currentIndex);
             this.chaptersService.updateChapter(item, body, params).subscribe((value) => {
                 event.item.data = value;
