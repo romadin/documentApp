@@ -1,23 +1,25 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Template } from '../../../shared/packages/template-package/template.model';
-import {
-    TemplateItemInterface,
-    TemplateParentItemInterface
-} from '../../../shared/packages/template-package/interface/template-api-response.interface';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material';
+
 import { ChapterPackage } from './chapter-detail/chapter-detail.component';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
-import { ToastService } from '../../../shared/toast.service';
 import { Headline } from '../../../shared/packages/headline-package/headline.model';
+import { isHeadline } from '../../../shared/packages/headline-package/interface/headline-api-response.interface';
+import { HeadlineService } from '../../../shared/packages/headline-package/headline.service';
 import { Chapter } from '../../../shared/packages/chapter-package/chapter.model';
-import { Document } from '../../../shared/packages/document-package/document.model';
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
-import { HeadlinePackage } from './headline/headline.component';
-import { MatDialog } from '@angular/material';
+import { ChapterService } from '../../../shared/packages/chapter-package/chapter.service';
 import { ConfirmPopupComponent, ConfirmPopupData } from '../../popups/confirm-popup/confirm-popup.component';
-import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
+import { HeadlinePackage } from './headline/headline.component';
+import { ToastService } from '../../../shared/toast.service';
+
+interface ItemsContainer {
+    [workFunctionId: number]: (Chapter | Headline)[];
+}
 
 @Component({
     selector: 'cim-template',
@@ -76,14 +78,17 @@ export class TemplateComponent implements OnInit {
     showHeadlineDetail: boolean;
     headlineParent: WorkFunction;
     headlineToEdit: Headline;
-    items: TemplateItemInterface[];
+    itemsContainer: ItemsContainer = {};
 
     constructor(private dialog: MatDialog,
                 private workFunctionService: WorkFunctionService,
+                private chaptersService: ChapterService,
+                private headlinesService: HeadlineService,
                 private toast: ToastService
     ) { }
 
     ngOnInit() {
+        this.template.workFunctions.forEach((workFunction) => this.setItemsInContainer(workFunction));
     }
 
     @Input()
@@ -174,20 +179,35 @@ export class TemplateComponent implements OnInit {
         }, 290);
     }
 
+    dropItem(event: CdkDragDrop<any>) {
+        const workFunction: WorkFunction = event.container.data;
+        const item: Chapter | Headline = event.item.data;
+        const params = {workFunctionId: workFunction.id};
+        const body: any  = {order: event.currentIndex + 1};
+
+        if (isChapter(item)) {
+            moveItemInArray(this.itemsContainer[workFunction.id], event.previousIndex, event.currentIndex);
+            this.chaptersService.updateChapter(item, body, params).subscribe((value) => {
+                event.item.data = value;
+            });
+        } else if (isHeadline(item)) {
+            moveItemInArray(this.itemsContainer[workFunction.id], event.previousIndex, event.currentIndex);
+            this.headlinesService.updateHeadline(body, item, workFunction).subscribe((value) => {
+                event.item.data = value;
+            });
+        }
+    }
+
     checkIfChapter(item: Chapter | Headline): boolean {
         return isChapter(item);
     }
 
-    getItemsFromWorkFunction(workFunction: WorkFunction): Array <Headline | Chapter> {
-        let items: (Chapter | Headline)[] = [];
-
+    private setItemsInContainer(workFunction: WorkFunction) {
         if (workFunction.chapters && workFunction.headlines) {
-            items = workFunction.chapters;
-            items = items.concat(workFunction.headlines);
-            items.sort((a: Chapter | Headline, b: Chapter | Headline ) => a.order - b.order);
+            this.itemsContainer[workFunction.id] = workFunction.chapters;
+            this.itemsContainer[workFunction.id] = this.itemsContainer[workFunction.id].concat(workFunction.headlines);
+            this.itemsContainer[workFunction.id].sort((a: Chapter | Headline, b: Chapter | Headline ) => a.order - b.order);
         }
-
-        return items;
     }
 
     private resetVariables(): void {

@@ -330,7 +330,7 @@ Api.prototype.removePlugin = function (plugin, uninstallOptions) {
  *     }
  *
  * The return value in most cases will contain only one workFunction but in some cases
- *   there could be multiple items in output array, e.g. when multiple
+ *   there could be multiple itemsContainer in output array, e.g. when multiple
  *   arhcitectures is specified.
  */
 Api.prototype.build = function (buildOptions) {

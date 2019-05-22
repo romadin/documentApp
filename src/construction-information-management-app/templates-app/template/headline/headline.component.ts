@@ -26,9 +26,6 @@ export class HeadlineComponent implements OnInit {
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
     @Output() addChapter: EventEmitter<Headline> = new EventEmitter<Headline>();
 
-    private currentDragItem: EventTarget;
-    private currentDragOver: HTMLElement;
-
     constructor(private dialog: MatDialog,
                 private headlineService: HeadlineService,
                 private chapterService: ChapterService,

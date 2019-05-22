@@ -1,3 +1,5 @@
+import { Headline } from '../headline.model';
+
 export interface HeadlineApiResponseInterface {
     id: number;
     name: string;
@@ -11,4 +13,11 @@ export interface HeadlinePostBody {
 export interface HeadlineUpdateBody {
     name?: string;
     order?: string;
+}
+
+export function isHeadline(arg: any): arg is Headline {
+    return arg.id !== undefined &&
+        arg.name !== undefined &&
+        arg.chapters !== undefined &&
+        arg.order !== undefined;
 }
