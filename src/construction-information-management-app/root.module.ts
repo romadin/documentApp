@@ -3,7 +3,6 @@ import { LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ng6-toastr-notifications';
-import { AgmCoreModule } from '@agm/core';
 import { registerLocaleData } from '@angular/common';
 import localeNl from '@angular/common/locales/nl';
 
@@ -54,6 +53,7 @@ import { TemplateCommunicationService } from '../shared/service/communication/te
 import { WorkFunctionService } from '../shared/packages/work-function-package/work-function.service';
 import { HeadlineService } from '../shared/packages/headline-package/headline.service';
 import { ChapterService } from '../shared/packages/chapter-package/chapter.service';
+import { CacheService } from '../shared/service/cache.service';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -114,6 +114,7 @@ const appRoutes: Routes = [
     providers: [
         { provide: LOCALE_ID, useValue: 'nl'},
         ApiService,
+        CacheService,
 
         ProjectService,
         UserService,
