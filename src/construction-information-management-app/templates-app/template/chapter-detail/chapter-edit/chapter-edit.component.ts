@@ -35,6 +35,7 @@ export class ChapterEditComponent implements AfterViewInit {
     content = '';
     private _chapter: Chapter;
     private formHasChanged = false;
+    private startValue = '';
 
     constructor(private chapterService: ChapterService, private toast: ToastService) { }
 
@@ -62,7 +63,7 @@ export class ChapterEditComponent implements AfterViewInit {
                     content: this.content
                 };
 
-                this.chapterService.updateChapter(this.chapter, body, params).subscribe(chapter => {
+                this.chapterService.updateChapter(this.chapter, body, params, this.parent).subscribe(chapter => {
                     this.chapter = chapter;
                     const index = this.parent.chapters.findIndex(c => c.id === chapter.id);
                     this.parent.chapters[index] = chapter;
@@ -74,13 +75,17 @@ export class ChapterEditComponent implements AfterViewInit {
                     content: this.content,
                     headlineId: isWorkFunction(this.parent) ? null : this.parent.id
                 };
-                this.chapterService.createChapter(body, params).subscribe(chapter => {
+                this.chapterService.createChapter(body, params, this.parent).subscribe(chapter => {
                     this.chapter = chapter;
                     this.parent.chapters.push(chapter);
                     this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + 'is toegevoegd', 'Toegevoegd');
                 });
             }
         }
+    }
+
+    dataChanged(): void {
+        this.formHasChanged = this.content !== this.startValue;
     }
 
     onCloseView(e: Event): void {
@@ -91,7 +96,7 @@ export class ChapterEditComponent implements AfterViewInit {
 
     private updateForm(): void {
         this.chapterForm.controls.name.setValue(this.chapter.name);
-        this.content = this.chapter.content;
+        this.startValue = this.content = this.chapter.content;
     }
 
     private onFormChanges() {

@@ -6,7 +6,7 @@ import { ApiService } from './api.service';
 
 export type CacheItemName = 'cacheChaptersWorkFunction' | 'cacheChaptersHeadline';
 
-interface CacheItem {
+export interface CacheItem {
     id: number;
     hash: string;
     items?: any[];
@@ -71,8 +71,10 @@ export class CacheService {
         );
     }
 
-    post(path: string, body: any, params: any): Observable<any> {
-        return this.apiService.post(path, body, params);
+    post(path: string, body: any, params: any, cacheItem: CacheItem): Observable<any> {
+        return this.updateCacheHash(cacheItem.id).pipe(
+            mergeMap(v => this.apiService.post(path, body, params))
+        );
     }
 
     delete(path: string, params: any): Observable<any> {
@@ -88,6 +90,17 @@ export class CacheService {
 
     private getCacheItem(body: CacheGetParam): Observable<CacheItem> {
         return this.apiService.get(this.path, body).pipe(
+            map(result => {
+                return <CacheItem>{
+                    id: result.id,
+                    hash: result.hash,
+                };
+            })
+        );
+    }
+
+    private updateCacheHash(cacheId: number) {
+        return this.apiService.post(this.path + '/' + cacheId, {}).pipe(
             map(result => {
                 return <CacheItem>{
                     id: result.id,

@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 
 import { WorkFunction } from '../work-function-package/work-function.model';
 import { ApiService } from '../../service/api.service';
-import { CacheItemName, CacheService } from '../../service/cache.service';
+import { CacheItem, CacheItemName, CacheService } from '../../service/cache.service';
 import { Headline } from '../headline-package/headline.model';
 import { Chapter } from './chapter.model';
 import { ChapterApiResponseInterface, ChapterParam, ChapterPostBody, ChapterUpdateBody } from './interface/chapter-api-response.interface';
+import { isWorkFunction } from '../work-function-package/interface/work-function.interface';
 
 @Injectable()
 export class ChapterService {
@@ -39,14 +40,14 @@ export class ChapterService {
         );
     }
 
-    createChapter(body: ChapterPostBody, params?): Observable<Chapter> {
-        return this.cacheService.post(this.path, body, params).pipe(
+    createChapter(body: ChapterPostBody, params: ChapterParam, parent: Headline| WorkFunction): Observable<Chapter> {
+        return this.cacheService.post(this.path, body, params, this.getCacheItem(parent)).pipe(
             map((result: ChapterApiResponseInterface) => this.makeChapter(result) )
         );
     }
 
-    updateChapter(chapter: Chapter, body: ChapterUpdateBody, params: ChapterParam, ): Observable<Chapter> {
-        return this.cacheService.post(this.path + '/' + chapter.id, body, params).pipe(
+    updateChapter(chapter: Chapter, body: ChapterUpdateBody, params: ChapterParam, parent: Headline| WorkFunction ): Observable<Chapter> {
+        return this.cacheService.post(this.path + '/' + chapter.id, body, params, this.getCacheItem(parent)).pipe(
             map((result: ChapterApiResponseInterface) => this.makeChapter(result) )
         );
     }
@@ -66,5 +67,10 @@ export class ChapterService {
         chapter.headlineId = data.headlineId;
 
         return chapter;
+    }
+
+    private getCacheItem(parent: Headline| WorkFunction): CacheItem {
+        const cacheName: CacheItemName = isWorkFunction(parent) ? this.cacheItemNameWorkFunction : this.cacheItemNameHeadline;
+        return this.cacheService.cacheContainer[cacheName][parent.id];
     }
 }

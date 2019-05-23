@@ -193,7 +193,7 @@ export class TemplateComponent implements OnInit {
             });
         } else if (isChapter(item)) {
             moveItemInArray(this.itemsContainer[workFunction.id], event.previousIndex, event.currentIndex);
-            this.chaptersService.updateChapter(item, body, params).subscribe((value) => {
+            this.chaptersService.updateChapter(item, body, params, workFunction).subscribe((value) => {
                 event.item.data = value;
             });
         } else if (isHeadline(item)) {
