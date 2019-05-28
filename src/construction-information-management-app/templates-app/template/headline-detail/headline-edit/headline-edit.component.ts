@@ -46,7 +46,9 @@ export class HeadlineEditComponent implements OnInit {
                 });
             } else if (this.headline === undefined) {
                 this.headlineService.createHeadline(body, this.workFunction).subscribe(headline => {
-                    this.workFunction.headlines.push(headline);
+                    const headlines: Headline[] = this.workFunction.headlines.getValue();
+                    headlines.push(headline);
+                    this.workFunction.headlines.next(headlines);
                     this.headline = headline;
                     this.toast.showSuccess('Functie: ' +  headline.name + ' is toegevoegd', 'Toegevoegd');
                 });

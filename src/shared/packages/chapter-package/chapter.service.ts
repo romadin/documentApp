@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { WorkFunction } from '../work-function-package/work-function.model';
-import { ApiService } from '../../service/api.service';
 import { CacheItem, CacheItemName, CacheService } from '../../service/cache.service';
 import { Headline } from '../headline-package/headline.model';
 import { Chapter } from './chapter.model';
@@ -18,26 +17,31 @@ export class ChapterService {
 
     constructor(private cacheService: CacheService) {  }
 
-    getChaptersByWorkFunction(workFunction: WorkFunction): Observable<Chapter[]> {
+    getChaptersByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Chapter[]> {
         const param = {workFunctionId: workFunction.id};
-        return this.cacheService.get(this.cacheItemNameWorkFunction, this.path, param, workFunction.id).pipe(
-            map((result: ChapterApiResponseInterface[]) => {
+        const chaptersContainer: BehaviorSubject<Chapter[]> = new BehaviorSubject<Chapter[]>([]);
+        this.cacheService.get(this.cacheItemNameWorkFunction, this.path, param, workFunction.id).subscribe(
+            (result: ChapterApiResponseInterface[]) => {
                 const chapters = result.map(response => this.makeChapter(response));
                 this.cacheService.cacheContainer[this.cacheItemNameWorkFunction][workFunction.id].items = chapters;
-                return chapters;
-            })
+                chaptersContainer.next(chapters);
+            }
         );
+        return chaptersContainer;
     }
-    getChaptersByHeadline(headline: Headline, workFunction: WorkFunction): Observable<Chapter[]> {
+    getChaptersByHeadline(headline: Headline, workFunction: WorkFunction): BehaviorSubject<Chapter[]> {
         const param = {headlineId: headline.id, workFunctionId: workFunction.id};
+        const chaptersContainer: BehaviorSubject<Chapter[]> = new BehaviorSubject<Chapter[]>([]);
 
-        return this.cacheService.get(this.cacheItemNameHeadline, this.path, param, headline.id).pipe(
-            map((result: ChapterApiResponseInterface[]) => {
-                const chapters = result.map(response => this.makeChapter(response));
+        this.cacheService.get(this.cacheItemNameHeadline, this.path, param, headline.id).subscribe(
+            (result: ChapterApiResponseInterface[]) => {
+                let chapters = result.map(response => this.makeChapter(response));
+                chapters = chapters.sort((a, b) => a.order - b.order);
                 this.cacheService.cacheContainer[this.cacheItemNameHeadline][headline.id].items = chapters;
-                return chapters;
-            })
+                    return chapters;
+            }
         );
+        return chaptersContainer;
     }
 
     createChapter(body: ChapterPostBody, params: ChapterParam, parent: Headline| WorkFunction): Observable<Chapter> {

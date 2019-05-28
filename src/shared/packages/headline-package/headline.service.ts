@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ApiService } from '../../service/api.service';
@@ -14,21 +14,17 @@ export class HeadlineService {
 
     constructor(private apiService: ApiService, private chapterService: ChapterService) {  }
 
-    getHeadlinesByWorkFunction(workFunction: WorkFunction): Observable<Headline[]> {
+    getHeadlinesByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Headline[]> {
         const param = {workFunctionId: workFunction.id};
-        return this.apiService.get(this.path, param).pipe(
-            map((result: HeadlineApiResponseInterface[]) => result.map((response) => {
+        const headlines: BehaviorSubject<Headline[]> = new BehaviorSubject<Headline[]>([]);
+        this.apiService.get(this.path, param).subscribe((result: HeadlineApiResponseInterface[]) => {
+            headlines.next(result.map((response) => {
                 const headline = this.makeHeadline(response);
-                let chaptersContainer;
-                this.chapterService.getChaptersByHeadline(headline, workFunction).subscribe(
-                    (chapters) => {
-                        chaptersContainer = chapters.sort((a, b) => a.order - b.order);
-                        headline.chapters = chaptersContainer;
-                    }
-                );
+                headline.chapters = this.chapterService.getChaptersByHeadline(headline, workFunction);
                 return headline;
-            }))
-        );
+            }));
+        });
+        return headlines;
     }
 
     createHeadline(body: HeadlinePostBody, workFunction: WorkFunction): Observable<Headline> {
@@ -43,8 +39,10 @@ export class HeadlineService {
         return this.apiService.post(this.path + '/' + headline.id, body, param).pipe(
             map((result: HeadlineApiResponseInterface) => {
                 const updatedHeadline = this.makeHeadline(result);
-                const index = workFunction.headlines.findIndex(h => h.id === headline.id);
-                workFunction.headlines[index] = updatedHeadline;
+                const headlines = workFunction.headlines.getValue();
+                const index = headlines.findIndex(h => h.id === headline.id);
+                headlines[index] = updatedHeadline;
+                workFunction.headlines.next(headlines);
                 return updatedHeadline;
             })
         );

@@ -73,8 +73,10 @@ export class HeadlineListComponent implements OnInit {
             return index === pos;
         });
 
+        const headlines: Headline[] = this.workFunction.headlines.getValue();
+
         // remove already linked chapters
-        this.workFunction.headlines.map((currentHeadline) => {
+        headlines.map((currentHeadline) => {
             const index = this.headlines.findIndex(newHeadline => newHeadline.id === currentHeadline.id);
             if (index !== -1) {
                 this.headlines.splice(index, 1);

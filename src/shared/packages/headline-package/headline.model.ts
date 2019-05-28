@@ -1,9 +1,10 @@
 import { Chapter } from '../chapter-package/chapter.model';
+import { BehaviorSubject } from 'rxjs';
 
 export class Headline {
     private _id: number;
     private _name: string;
-    private _chapters: Chapter[];
+    private _chapters: BehaviorSubject<Chapter[]>;
     private _order: number;
 
     constructor() {}
@@ -24,11 +25,11 @@ export class Headline {
         this._name = value;
     }
 
-    get chapters(): Chapter[] {
+    get chapters(): BehaviorSubject<Chapter[]> {
         return this._chapters;
     }
 
-    set chapters(value: Chapter[]) {
+    set chapters(value: BehaviorSubject<Chapter[]>) {
         this._chapters = value;
     }
 

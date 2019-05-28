@@ -14,7 +14,7 @@
     </mat-expansion-panel-header>
 
     <div cdkDropList class="dragList" (cdkDropListDropped)="drop($event)">
-        <div class="dragItem" *ngFor="let subChapter of headline.chapters" cdkDrag [cdkDragData]="subChapter">
+        <div class="dragItem" *ngFor="let subChapter of headline.chapters.getValue()" cdkDrag [cdkDragData]="subChapter">
             <cim-chapter
                     [chapter]="subChapter"
                     [parentItem]="headline"

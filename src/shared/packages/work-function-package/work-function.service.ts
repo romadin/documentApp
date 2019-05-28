@@ -58,12 +58,8 @@ export class WorkFunctionService {
         workFunction.isMainFunction = data.isMainFunction;
         workFunction.order = data.order;
         workFunction.template = template;
-        this.headlineService.getHeadlinesByWorkFunction(workFunction).subscribe(headlines => {
-            workFunction.headlines = headlines;
-        });
-        this.chapterService.getChaptersByWorkFunction(workFunction).subscribe(chapters => {
-            workFunction.chapters = chapters;
-        });
+        workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
+        workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
 
         this.cache[workFunction.id] = workFunction;
 

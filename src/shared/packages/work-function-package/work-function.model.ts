@@ -1,6 +1,7 @@
 import { Template } from '../template-package/template.model';
 import { Headline } from '../headline-package/headline.model';
 import { Chapter } from '../chapter-package/chapter.model';
+import { BehaviorSubject } from 'rxjs';
 
 export class WorkFunction {
     private _id: number;
@@ -8,8 +9,8 @@ export class WorkFunction {
     private _isMainFunction: boolean;
     private _order: number;
     private _template: Template;
-    private _headlines: Headline[];
-    private _chapters: Chapter[];
+    private _headlines: BehaviorSubject<Headline[]>;
+    private _chapters: BehaviorSubject<Chapter[]>;
 
     constructor() { }
 
@@ -53,19 +54,19 @@ export class WorkFunction {
         this._template = value;
     }
 
-    get headlines(): Headline[] {
+    get headlines(): BehaviorSubject<Headline[]> {
         return this._headlines;
     }
 
-    set headlines(value: Headline[]) {
+    set headlines(value: BehaviorSubject<Headline[]>) {
         this._headlines = value;
     }
 
-    get chapters(): Chapter[] {
+    get chapters(): BehaviorSubject<Chapter[]> {
         return this._chapters;
     }
 
-    set chapters(value: Chapter[]) {
+    set chapters(value: BehaviorSubject<Chapter[]>) {
         this._chapters = value;
     }
 }

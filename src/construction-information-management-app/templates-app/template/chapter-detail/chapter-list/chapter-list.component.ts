@@ -77,8 +77,9 @@ export class ChapterListComponent implements OnInit {
             return index === pos;
         });
 
+        const chaptersFromParent = this.parent.chapters.getValue();
         // remove already linked chapters
-        this.parent.chapters.map((currentChapter) => {
+        chaptersFromParent.map((currentChapter) => {
             const index = this.chapters.findIndex(newChapter => newChapter.id === currentChapter.id);
             if (index !== -1) {
                 this.chapters.splice(index, 1);

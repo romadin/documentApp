@@ -45,7 +45,9 @@ export class HeadlineComponent implements OnInit {
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {
                 this.headlineService.deleteHeadline(this.headline, this.workFunction).subscribe(() => {
-                    this.workFunction.headlines.splice(this.workFunction.headlines.findIndex(h => h.id === this.headline.id), 1);
+                    const headlines: Headline[] = this.workFunction.headlines.getValue();
+                    headlines.splice(headlines.findIndex(h => h.id === this.headline.id), 1);
+                    this.workFunction.headlines.next(headlines);
                     this.toast.showSuccess('Functie: ' + this.headline.name + ' is verwijderd', 'Verwijderd');
                 });
             }
@@ -71,7 +73,7 @@ export class HeadlineComponent implements OnInit {
     }
 
     drop(event: CdkDragDrop<string[]>) {
-        moveItemInArray(this.headline.chapters, event.previousIndex, event.currentIndex);
+        moveItemInArray(this.headline.chapters.getValue(), event.previousIndex, event.currentIndex);
         const chapter = event.item.data;
         this.chapterService.updateChapter(chapter, {order: event.currentIndex + 1}, {}, this.headline).subscribe((value) => {
             event.item.data = value;

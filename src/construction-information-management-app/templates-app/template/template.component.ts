@@ -17,6 +17,8 @@ import { ConfirmPopupComponent, ConfirmPopupData } from '../../popups/confirm-po
 import { HeadlinePackage } from './headline/headline.component';
 import { ToastService } from '../../../shared/toast.service';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
+import { combineLatest, forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface ItemsContainer {
     [workFunctionId: number]: (Chapter | Headline)[];
@@ -209,11 +211,11 @@ export class TemplateComponent implements OnInit {
     }
 
     private setItemsInContainer(workFunction: WorkFunction) {
-        if (workFunction.chapters && workFunction.headlines) {
-            this.itemsContainer[workFunction.id] = workFunction.chapters;
-            this.itemsContainer[workFunction.id] = this.itemsContainer[workFunction.id].concat(workFunction.headlines);
+        combineLatest(workFunction.headlines, workFunction.chapters).subscribe(([headlines, chapters]) => {
+            this.itemsContainer[workFunction.id] = chapters;
+            this.itemsContainer[workFunction.id] = this.itemsContainer[workFunction.id].concat(headlines);
             this.itemsContainer[workFunction.id].sort((a: Chapter | Headline, b: Chapter | Headline ) => a.order - b.order);
-        }
+        });
     }
 
     private resetVariables(): void {
