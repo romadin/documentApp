@@ -1,13 +1,16 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Headline } from '../../../../shared/packages/headline-package/headline.model';
-import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
-import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
-import { HeadlineService } from '../../../../shared/packages/headline-package/headline.service';
-import { ToastService } from '../../../../shared/toast.service';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
+import { Headline } from '../../../../shared/packages/headline-package/headline.model';
+import { HeadlineService } from '../../../../shared/packages/headline-package/headline.service';
+import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
+import { ToastService } from '../../../../shared/toast.service';
+
+import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 
 export interface HeadlinePackage {
     headline: Headline;
@@ -25,6 +28,7 @@ export class HeadlineComponent implements OnInit {
     @Output() editHeadline: EventEmitter<HeadlinePackage> = new EventEmitter<HeadlinePackage>();
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
     @Output() addChapter: EventEmitter<Headline> = new EventEmitter<Headline>();
+    chapters: Chapter[];
 
     constructor(private dialog: MatDialog,
                 private headlineService: HeadlineService,
@@ -33,6 +37,9 @@ export class HeadlineComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.headline.chapters.subscribe(chapters => {
+            this.chapters = chapters;
+        });
     }
 
     deleteHeadline(event: Event) {

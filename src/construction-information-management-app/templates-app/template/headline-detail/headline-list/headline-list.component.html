@@ -11,7 +11,7 @@
     </div>
 </div>
 <mat-selection-list #list *ngIf="headlines" [@toggleInView] [(ngModel)]="headlineSelected">
-    <mat-list-option class="listOption" *ngFor="let headline of headlines" [value]="headline.id">
+    <mat-list-option class="listOption" *ngFor="let headline of headlines" [value]="headline">
         <div class="content">
             <i class="material-icons"> folder </i>
             {{headline.name}}

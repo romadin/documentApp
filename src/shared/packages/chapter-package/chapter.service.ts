@@ -7,7 +7,7 @@ import { isWorkFunction } from '../work-function-package/interface/work-function
 import { ChapterApiResponseInterface, ChapterParam, ChapterPostBody, ChapterUpdateBody } from './interface/chapter-api-response.interface';
 import { Chapter } from './chapter.model';
 import { Headline } from '../headline-package/headline.model';
-import { CacheItem, CacheItemName, CacheService } from '../../service/cache.service';
+import { CacheGetParam, CacheItem, CacheItemName, CacheService } from '../../service/cache.service';
 
 @Injectable()
 export class ChapterService {
@@ -38,7 +38,7 @@ export class ChapterService {
                 let chapters = result.map(response => this.makeChapter(response));
                 chapters = chapters.sort((a, b) => a.order - b.order);
                 this.cacheService.cacheContainer[this.cacheItemNameHeadline][headline.id].items = chapters;
-                    return chapters;
+                chaptersContainer.next(chapters);
             }
         );
         return chaptersContainer;
@@ -73,8 +73,16 @@ export class ChapterService {
         return chapter;
     }
 
-    private getCacheItem(parent: Headline| WorkFunction): CacheItem {
+    private getCacheItem(parent: Headline| WorkFunction): CacheItem | CacheGetParam {
         const cacheName: CacheItemName = isWorkFunction(parent) ? this.cacheItemNameWorkFunction : this.cacheItemNameHeadline;
+        if (!this.cacheService.cacheContainer[cacheName][parent.id]) {
+            return {
+                name: cacheName,
+                url: this.path,
+                parent: parent,
+            };
+        }
+
         return this.cacheService.cacheContainer[cacheName][parent.id];
     }
 }

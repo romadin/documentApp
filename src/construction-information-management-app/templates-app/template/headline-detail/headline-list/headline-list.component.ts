@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
 
 import { Headline } from '../../../../../shared/packages/headline-package/headline.model';
 import { HeadlineService } from '../../../../../shared/packages/headline-package/headline.service';
@@ -31,7 +31,7 @@ export class HeadlineListComponent implements OnInit {
     @Input() workFunction: WorkFunction;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     headlines: Headline[];
-    headlineSelected;
+    headlineSelected: Headline[];
 
     constructor(
         private workFunctionService: WorkFunctionService,
@@ -42,7 +42,7 @@ export class HeadlineListComponent implements OnInit {
         const workFunctions = this.workFunction.template.workFunctions.filter(w => w.id !== this.workFunction.id);
         const observables = [];
         workFunctions.forEach((workFunction) => observables.push(this.headlineService.getHeadlinesByWorkFunction(workFunction)));
-        forkJoin(observables).subscribe((headlinesContainer: Headline[][]) => {
+        combineLatest(observables).subscribe((headlinesContainer: Headline[][]) => {
             this.headlines = [];
             headlinesContainer.forEach(headline => this.headlines = this.headlines.concat(headline));
             this.filterExistingHeadlines();
@@ -51,12 +51,16 @@ export class HeadlineListComponent implements OnInit {
     submit(e: Event): void {
         e.preventDefault();
         if (this.headlineSelected && this.headlineSelected.length > 0) {
+            const selectedHeadlinesId: number[] = this.headlineSelected.map(h => h.id);
             const body: WorkFunctionUpdateBody = {
-                headlines: this.headlineSelected
+                headlines: selectedHeadlinesId
             };
             const message = this.headlineSelected.length === 1 ?
-                'Kop: ' + this.headlines.find(h => h.id === this.headlineSelected[0]).name + ' is toegevoegd' : 'De koppen zijn toegevoegd';
+                'Kop: ' + this.headlineSelected[0].name + ' is toegevoegd' : 'De koppen zijn toegevoegd';
             this.workFunctionService.updateWorkFunction(this.workFunction, body).subscribe(() => {
+                let headlines = this.workFunction.headlines.getValue();
+                headlines = headlines.concat(this.headlineSelected);
+                this.workFunction.headlines.next(headlines);
                 this.toast.showSuccess(message, 'Toegevoegd');
                 this.onCloseView(e);
             });

@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ApiService } from '../../service/api.service';
+import { Chapter } from '../chapter-package/chapter.model';
 import { ChapterService } from '../chapter-package/chapter.service';
 import { WorkFunction } from '../work-function-package/work-function.model';
-import { HeadlineApiResponseInterface, HeadlinePostBody, HeadlineUpdateBody } from './interface/headline-api-response.interface';
 import { Headline } from './headline.model';
+import { HeadlineApiResponseInterface, HeadlinePostBody, HeadlineUpdateBody } from './interface/headline-api-response.interface';
+import { ApiService } from '../../service/api.service';
 
 @Injectable()
 export class HeadlineService {
@@ -18,11 +19,7 @@ export class HeadlineService {
         const param = {workFunctionId: workFunction.id};
         const headlines: BehaviorSubject<Headline[]> = new BehaviorSubject<Headline[]>([]);
         this.apiService.get(this.path, param).subscribe((result: HeadlineApiResponseInterface[]) => {
-            headlines.next(result.map((response) => {
-                const headline = this.makeHeadline(response);
-                headline.chapters = this.chapterService.getChaptersByHeadline(headline, workFunction);
-                return headline;
-            }));
+            headlines.next(result.map(response => this.makeHeadline(response, workFunction)));
         });
         return headlines;
     }
@@ -30,7 +27,7 @@ export class HeadlineService {
     createHeadline(body: HeadlinePostBody, workFunction: WorkFunction): Observable<Headline> {
         const param = {workFunctionId: workFunction.id};
         return this.apiService.post(this.path, body, param).pipe(
-            map((result: HeadlineApiResponseInterface) => this.makeHeadline(result))
+            map((result: HeadlineApiResponseInterface) => this.makeHeadline(result, workFunction))
         );
     }
 
@@ -38,7 +35,7 @@ export class HeadlineService {
         const param = {workFunctionId: workFunction.id};
         return this.apiService.post(this.path + '/' + headline.id, body, param).pipe(
             map((result: HeadlineApiResponseInterface) => {
-                const updatedHeadline = this.makeHeadline(result);
+                const updatedHeadline = this.makeHeadline(result, workFunction);
                 const headlines = workFunction.headlines.getValue();
                 const index = headlines.findIndex(h => h.id === headline.id);
                 headlines[index] = updatedHeadline;
@@ -55,11 +52,12 @@ export class HeadlineService {
         );
     }
 
-    private makeHeadline(data: HeadlineApiResponseInterface): Headline {
+    private makeHeadline(data: HeadlineApiResponseInterface, workFunction: WorkFunction): Headline {
         const headline = new Headline();
         headline.id = data.id;
         headline.name = data.name;
         headline.order = data.order;
+        headline.chapters = this.chapterService.getChaptersByHeadline(headline, workFunction);
         return headline;
     }
 }

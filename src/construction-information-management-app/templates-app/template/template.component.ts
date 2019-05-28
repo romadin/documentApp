@@ -214,6 +214,7 @@ export class TemplateComponent implements OnInit {
             this.itemsContainer[workFunction.id] = chapters;
             this.itemsContainer[workFunction.id] = this.itemsContainer[workFunction.id].concat(headlines);
             this.itemsContainer[workFunction.id].sort((a: Chapter | Headline, b: Chapter | Headline ) => a.order - b.order);
+            this.template.workFunctions[this.template.workFunctions.findIndex(w => w.id === workFunction.id)] = workFunction;
         });
     }
 

@@ -40,7 +40,7 @@ export class ChapterListComponent implements OnInit {
     ngOnInit() {
         const workFunctions = this.parent.template.workFunctions.filter(w => w.id !== this.parent.id);
         const observables = [];
-        workFunctions.forEach((workFunction) => observables.push(this.chapterService.getChaptersByWorkFunction(workFunction)));
+        workFunctions.forEach((workFunction) => observables.push(workFunction.chapters));
         combineLatest(observables).subscribe((chaptersContainer: Chapter[][]) => {
             this.chapters = [];
             chaptersContainer.forEach(chapters => this.chapters = this.chapters.concat(chapters));
@@ -57,10 +57,11 @@ export class ChapterListComponent implements OnInit {
             };
             const message = this.chaptersSelected.length === 1 ?
                 'Hoofdstuk: ' + this.chapters[0].name + ' is toegevoegd' : 'De hoofdstukken zijn toegevoegd';
-            let chapters = this.parent.chapters.getValue();
-            chapters = chapters.concat(this.chaptersSelected);
-            this.parent.chapters.next(chapters);
             this.workFunctionService.updateWorkFunction(this.parent, body).subscribe(() => {
+                let chapters = this.parent.chapters.getValue();
+                chapters = chapters.concat(this.chaptersSelected);
+                this.parent.chapters.next(chapters);
+                console.log(this.parent.chapters.getValue());
                 this.toast.showSuccess(message, 'Toegevoegd');
                 this.onCloseView(e);
             });

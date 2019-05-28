@@ -19,11 +19,12 @@ interface CacheContainer {
     [name: string]: CacheItem | CacheParent;
 }
 
-interface CacheGetParam {
+export interface CacheGetParam {
     name?: string;
     url?: string;
     options?: any;
     hash?: string;
+    parent?: any;
 }
 
 @Injectable()
@@ -71,9 +72,29 @@ export class CacheService {
         );
     }
 
-    post(path: string, body: any, params: any, cacheItem: CacheItem): Observable<any> {
-        return this.updateCacheHash(cacheItem.id).pipe(
-            mergeMap(v => this.apiService.post(path, body, params))
+    post(path: string, body: any, params: any, cacheItem: CacheItem | CacheGetParam): Observable<any> {
+        if (cacheItem.hasOwnProperty('id')) {
+            return this.updateCacheHash((<CacheItem>cacheItem).id).pipe(
+                mergeMap(v => this.apiService.post(path, body, params))
+            );
+        }
+        return this.getCacheItem(<CacheGetParam>cacheItem).pipe(
+            mergeMap((cachedItem: CacheItem) =>  {
+                cacheItem = <CacheGetParam>cacheItem;
+                if (!this.cacheContainer) {
+                    this.cacheContainer = {};
+                }
+                if (cacheItem.parent) {
+                    if (!this.cacheContainer[cacheItem.name]) {
+                        this.cacheContainer[cacheItem.name] = {};
+                    }
+                    this.cacheContainer[cacheItem.name][cacheItem.parent] = cachedItem;
+
+                } else {
+                    this.cacheContainer[cacheItem.name] = cachedItem;
+                }
+                return this.apiService.post(path, body, params);
+            }),
         );
     }
 
@@ -81,14 +102,7 @@ export class CacheService {
         return this.apiService.delete(path, params);
     }
 
-    private checkCacheHash(cacheItem: CacheItem): Observable<boolean> {
-        const param: CacheGetParam = { hash: cacheItem.hash };
-        return this.apiService.get(this.path + '/' + cacheItem.id, param).pipe(
-            map(result => result.sameHash )
-        );
-    }
-
-    private getCacheItem(body: CacheGetParam): Observable<CacheItem> {
+    getCacheItem(body: CacheGetParam): Observable<CacheItem> {
         return this.apiService.get(this.path, body).pipe(
             map(result => {
                 return <CacheItem>{
@@ -98,6 +112,15 @@ export class CacheService {
             })
         );
     }
+
+    private checkCacheHash(cacheItem: CacheItem): Observable<boolean> {
+        const param: CacheGetParam = { hash: cacheItem.hash };
+        return this.apiService.get(this.path + '/' + cacheItem.id, param).pipe(
+            map(result => result.sameHash )
+        );
+    }
+
+
 
     private updateCacheHash(cacheId: number) {
         return this.apiService.post(this.path + '/' + cacheId, {}).pipe(
