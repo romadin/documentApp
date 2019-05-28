@@ -1,12 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { filter, map } from 'rxjs/operators';
 
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../../shared/packages/folder-package/folder.service';
-import { DocumentService } from '../../../shared/packages/document-package/document.service';
-import { Document } from '../../../shared/packages/document-package/document.model';
 import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
-import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
+import { Document } from '../../../shared/packages/document-package/document.model';
 
 @Component({
   selector: 'cim-item-list',

@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { forkJoin } from 'rxjs';
+
 import { Headline } from '../../../../../shared/packages/headline-package/headline.model';
+import { HeadlineService } from '../../../../../shared/packages/headline-package/headline.service';
 import { WorkFunction } from '../../../../../shared/packages/work-function-package/work-function.model';
 import { WorkFunctionUpdateBody } from '../../../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
 import { WorkFunctionService } from '../../../../../shared/packages/work-function-package/work-function.service';
-import { forkJoin } from 'rxjs';
-import { HeadlineService } from '../../../../../shared/packages/headline-package/headline.service';
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 import { ToastService } from '../../../../../shared/toast.service';
 
 @Component({

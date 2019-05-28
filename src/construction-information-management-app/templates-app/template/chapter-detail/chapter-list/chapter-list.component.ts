@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { forkJoin } from 'rxjs';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { combineLatest } from 'rxjs';
 
 import { Chapter } from '../../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../../shared/packages/chapter-package/chapter.service';
@@ -33,7 +33,7 @@ export class ChapterListComponent implements OnInit {
     @Input() parent: WorkFunction;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     chapters: Chapter[];
-    chaptersSelected;
+    chaptersSelected: Chapter[];
 
     constructor(private chapterService: ChapterService, private workFunctionService: WorkFunctionService, private toast: ToastService) { }
 
@@ -41,7 +41,7 @@ export class ChapterListComponent implements OnInit {
         const workFunctions = this.parent.template.workFunctions.filter(w => w.id !== this.parent.id);
         const observables = [];
         workFunctions.forEach((workFunction) => observables.push(this.chapterService.getChaptersByWorkFunction(workFunction)));
-        forkJoin(observables).subscribe((chaptersContainer: Chapter[][]) => {
+        combineLatest(observables).subscribe((chaptersContainer: Chapter[][]) => {
             this.chapters = [];
             chaptersContainer.forEach(chapters => this.chapters = this.chapters.concat(chapters));
             this.filterExistingChapters();
@@ -51,12 +51,15 @@ export class ChapterListComponent implements OnInit {
     submit(e: Event): void {
         e.preventDefault();
         if (this.chaptersSelected && this.chaptersSelected.length > 0) {
+            const selectedChaptersId: number[] = this.chaptersSelected.map(chapter => chapter.id);
             const body: WorkFunctionUpdateBody = {
-                chapters: this.chaptersSelected
+                chapters: selectedChaptersId
             };
             const message = this.chaptersSelected.length === 1 ?
-                'Hoofdstuk: ' + this.chapters.find(h => h.id === this.chaptersSelected[0]).name + ' is toegevoegd'
-                : 'De hoofdstukken zijn toegevoegd';
+                'Hoofdstuk: ' + this.chapters[0].name + ' is toegevoegd' : 'De hoofdstukken zijn toegevoegd';
+            let chapters = this.parent.chapters.getValue();
+            chapters = chapters.concat(this.chaptersSelected);
+            this.parent.chapters.next(chapters);
             this.workFunctionService.updateWorkFunction(this.parent, body).subscribe(() => {
                 this.toast.showSuccess(message, 'Toegevoegd');
                 this.onCloseView(e);

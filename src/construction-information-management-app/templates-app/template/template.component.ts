@@ -17,8 +17,7 @@ import { ConfirmPopupComponent, ConfirmPopupData } from '../../popups/confirm-po
 import { HeadlinePackage } from './headline/headline.component';
 import { ToastService } from '../../../shared/toast.service';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
-import { combineLatest, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
 
 interface ItemsContainer {
     [workFunctionId: number]: (Chapter | Headline)[];

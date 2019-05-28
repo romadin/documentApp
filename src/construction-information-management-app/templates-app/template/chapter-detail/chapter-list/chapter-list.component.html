@@ -11,7 +11,7 @@
     </div>
 </div>
 <mat-selection-list #list *ngIf="chapters" [@toggleInView] [(ngModel)]="chaptersSelected">
-    <mat-list-option class="listOption" *ngFor="let chapter of chapters" [value]="chapter.id">
+    <mat-list-option class="listOption" *ngFor="let chapter of chapters" [value]="chapter">
         <div class="content">
             <i class="material-icons"> insert_drive_file </i>
             {{chapter.name}}

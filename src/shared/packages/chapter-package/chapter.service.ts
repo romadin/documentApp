@@ -3,11 +3,11 @@ import { map } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { WorkFunction } from '../work-function-package/work-function.model';
-import { CacheItem, CacheItemName, CacheService } from '../../service/cache.service';
-import { Headline } from '../headline-package/headline.model';
-import { Chapter } from './chapter.model';
-import { ChapterApiResponseInterface, ChapterParam, ChapterPostBody, ChapterUpdateBody } from './interface/chapter-api-response.interface';
 import { isWorkFunction } from '../work-function-package/interface/work-function.interface';
+import { ChapterApiResponseInterface, ChapterParam, ChapterPostBody, ChapterUpdateBody } from './interface/chapter-api-response.interface';
+import { Chapter } from './chapter.model';
+import { Headline } from '../headline-package/headline.model';
+import { CacheItem, CacheItemName, CacheService } from '../../service/cache.service';
 
 @Injectable()
 export class ChapterService {

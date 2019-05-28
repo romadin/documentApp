@@ -54,7 +54,7 @@ export class ChapterEditComponent implements AfterViewInit {
         return this._chapter;
     }
 
-    onSubmit(): void {
+    onSubmit(e: Event): void {
         if (this.chapterForm.valid && this.formHasChanged) {
             const chapters: Chapter[] = this.parent.chapters.getValue();
             const params: ChapterParam = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : {};
@@ -81,6 +81,7 @@ export class ChapterEditComponent implements AfterViewInit {
                     this.chapter = chapter;
                     chapters.push(chapter);
                     this.parent.chapters.next(chapters);
+                    this.onCloseView(e);
                     this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + 'is toegevoegd', 'Toegevoegd');
                 });
             }
