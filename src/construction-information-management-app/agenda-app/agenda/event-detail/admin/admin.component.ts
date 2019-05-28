@@ -59,6 +59,7 @@ export class AdminComponent implements AfterViewInit {
             this.setFormValue();
         } else {
             this.eventForm.reset();
+            this.setFormValueOfToday();
         }
     }
     get event(): Event {
@@ -75,6 +76,8 @@ export class AdminComponent implements AfterViewInit {
                 this.eventService.editEvent(this.event).subscribe(() => {});
                 this.toast.showSuccess('Activiteit: ' + this.event.name + 'is gewijziged', 'Wijzigen');
             } else {
+                console.log(this.event);
+                debugger;
                 this.eventService.createEvent(this.event).subscribe(event => {
                     this.toast.showSuccess('Activiteit: ' + event.name + 'toegevoegd', 'Toegevoegd');
                     this.event = event;
@@ -98,22 +101,30 @@ export class AdminComponent implements AfterViewInit {
     }
 
     private setFormValue(): void {
-        this.eventForm.controls.name.setValue(this._event.name);
-        this.eventForm.controls.description.setValue(this._event.description);
-        this.eventForm.controls.startDate.setValue(this._event.startDate);
-        this.eventForm.controls.startTime.setValue(this.datePipe.transform(this._event.startDate, 'HH:mm'));
-        this.eventForm.controls.endDate.setValue(this._event.endDate);
-        this.eventForm.controls.endTime.setValue(this.datePipe.transform(this._event.endDate, 'HH:mm'));
+        this.eventForm.controls.name.setValue(this.event.name);
+        this.eventForm.controls.description.setValue(this.event.description);
+        this.eventForm.controls.startDate.setValue(this.event.startDate);
+        this.eventForm.controls.startTime.setValue(this.datePipe.transform(this.event.startDate, 'HH:mm'));
+        this.eventForm.controls.endDate.setValue(this.event.endDate);
+        this.eventForm.controls.endTime.setValue(this.datePipe.transform(this.event.endDate, 'HH:mm'));
         if (this.event.location) {
-            this.eventForm.controls.streetName.setValue(this._event.location.streetName);
-            this.eventForm.controls.residence.setValue(this._event.location.residence);
+            this.eventForm.controls.streetName.setValue(this.event.location.streetName);
+            this.eventForm.controls.residence.setValue(this.event.location.residence);
         }
+    }
+
+    private setFormValueOfToday(): void {
+        const now = new Date();
+        this.eventForm.controls.startDate.setValue(now);
+        this.eventForm.controls.startTime.setValue(this.datePipe.transform(now, 'HH:mm'));
+        this.eventForm.controls.endDate.setValue(now);
+        this.eventForm.controls.endTime.setValue(this.datePipe.transform(now.setMinutes(now.getMinutes() + 5), 'HH:mm'));
     }
 
     private updateOrMakeEvent(): void {
         let event: Event;
         if (this.event) {
-            event = this._event;
+            event = this.event;
         } else {
             event = new Event();
             event.location = { streetName: '', residence: '' };
@@ -125,15 +136,15 @@ export class AdminComponent implements AfterViewInit {
         event.location.residence = this.eventForm.controls.residence.value;
 
         event.startDate = this.getFullDateTime(
-            new Date(this.createDateFromStringTime(this.eventForm.controls.startTime.value)),
+            this.createDateFromStringTime(this.eventForm.controls.startTime.value),
             this.eventForm.controls.startDate
         );
         event.endDate = this.getFullDateTime(
-            new Date(this.createDateFromStringTime(this.eventForm.controls.endTime.value)),
+            this.createDateFromStringTime(this.eventForm.controls.endTime.value),
             this.eventForm.controls.startDate
         );
         event.projectId = this.projectId;
-        this._event = event;
+        this.event = event;
     }
 
     private onFormChanges() {
@@ -165,11 +176,11 @@ export class AdminComponent implements AfterViewInit {
     /**
      * Create date object from string time format is 00:00.
      */
-    private createDateFromStringTime(time: string): string {
+    private createDateFromStringTime(time: string): Date {
         const date = new Date();
         const times = time.split(':');
         date.setHours(parseInt(times[0], 10 ));
         date.setMinutes(parseInt(times[1], 10 ));
-        return date.toLocaleString();
+        return date;
     }
 }
