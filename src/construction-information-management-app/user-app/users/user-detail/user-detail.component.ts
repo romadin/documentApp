@@ -111,7 +111,6 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
             const data = new FormData();
 
             data.append('firstName', this.userForm.controls.firstName.value);
-            data.append('insertion', this.userForm.controls.insertion.value);
             data.append('lastName', this.userForm.controls.lastName.value);
             data.append('email', this.userForm.controls.email.value);
             data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
@@ -121,6 +120,9 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
 
             if (this.imageToUpload) {
                 data.append('image', this.imageToUpload, this.imageToUpload.name);
+            }
+            if (this.userForm.controls.insertion.value !== null) {
+                data.append('insertion', this.userForm.controls.insertion.value);
             }
 
             if (this.user) {

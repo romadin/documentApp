@@ -107,7 +107,7 @@ export class User {
     }
 
     public getFullName(): string {
-        if (this.insertion) {
+        if (this.insertion !== null) {
             return this.firstName + ' ' + this.insertion + ' ' + this.lastName;
         }
         return this.firstName + ' ' + this.lastName;
