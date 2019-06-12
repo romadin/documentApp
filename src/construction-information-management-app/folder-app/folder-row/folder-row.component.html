@@ -1,13 +1,13 @@
-<div *ngIf="folder.getProjectId() !== null ; then folderBlock; else subFolderBlock"></div>
+<div *ngIf="folder.projectId !== null ; then folderBlock; else subFolderBlock"></div>
 <ng-template #folderBlock>
-    <div class="folderWrapper" *ngIf="currentUser.isAdmin() || folder.getIsOn() === true" (click)="redirectToFolderOrShowDocs($event)">
+    <div class="folderWrapper" *ngIf="currentUser.isAdmin() || folder.isOn === true" (click)="redirectToFolderOrShowDocs($event)">
         <div class="header">
             <i class="material-icons"> folder_open </i>
-            <h3> {{ folder.getName()}}</h3>
+            <h3> {{ folder.name }}</h3>
         </div>
         <div class="actions">
-            <label class="switch" *ngIf="folderEditable() && currentUser.isAdmin()" (click)="toggleFolderOn($event, !folder.getIsOn())">
-                <input type="checkbox" [checked]="folder.getIsOn()">
+            <label class="switch" *ngIf="folderEditable() && currentUser.isAdmin()" (click)="toggleFolderOn($event, !folder.isOn)">
+                <input type="checkbox" [checked]="folder.isOn">
                 <span class="slider round">
                     <span class="on">AAN</span>
                     <span class="off">UIT</span>
@@ -20,12 +20,12 @@
 
 <ng-template #subFolderBlock>
     <div class="folderToggleDocument" *ngIf="documents">
-        <mat-accordion *ngIf="currentUser.isAdmin() || folder.getIsOn() === true">
+        <mat-accordion *ngIf="currentUser.isAdmin() || folder.isOn === true">
             <mat-expansion-panel class="toggleRow">
                 <mat-expansion-panel-header>
                     <mat-panel-title class="toggleTitle">
                         <i class="material-icons"> folder_open </i>
-                        <h3> {{ folder.getName()}} </h3>
+                        <h3> {{ folder.name }} </h3>
                     </mat-panel-title>
                     <div class="actions">
                         <button *ngIf="currentUser.isAdmin()" (click)="editFolder($event)" class="mat-button editFolderButton">

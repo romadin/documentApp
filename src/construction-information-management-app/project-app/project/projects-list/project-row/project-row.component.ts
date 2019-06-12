@@ -38,8 +38,8 @@ export class ProjectRowComponent implements OnInit {
         event.preventDefault();
         event.stopPropagation();
         const data: DefaultPopupData = {
-            title: 'Wijzig project ' + this.project.getName(),
-            placeholder: this.project.getName(),
+            title: 'Wijzig projectId ' + this.project.name,
+            placeholder: this.project.name,
             submitButton: 'Wijzigen',
             id: id,
             organisation: this.currentOrganisation,
@@ -56,13 +56,13 @@ export class ProjectRowComponent implements OnInit {
         event.stopPropagation();
         const popupData: ConfirmPopupData = {
             title: 'Project verwijderen',
-            name: this.project.getName(),
+            name: this.project.name,
             action: 'verwijderen'
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {
                 this.projectService.deleteProject(id, this.currentOrganisation);
-                this.toast.showSuccess('Project: ' + this.project.getName() + ' is verwijderd', 'Verwijderd');
+                this.toast.showSuccess('Project: ' + this.project.name + ' is verwijderd', 'Verwijderd');
             }
         });
     }
@@ -73,7 +73,7 @@ export class ProjectRowComponent implements OnInit {
         }
 
         const hasProjectId: number | undefined = this.currentUser.projectsId.find((projectId) => {
-            return projectId === this.project.getId();
+            return projectId === this.project.id;
         });
 
         return !!hasProjectId;

@@ -150,11 +150,11 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     }
     public onProjectSelect(project: Project, option?: MatListOption): void {
         if (option && !option.selected) {
-            delete this.selectedProjects[project.getId()];
+            delete this.selectedProjects[project.id];
             return;
         }
 
-        this.selectedProjects[project.getId()] = project;
+        this.selectedProjects[project.id] = project;
     }
 
 
@@ -168,7 +168,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
 
     checkProjectSelected(project: Project): boolean {
         if (this.user) {
-            if ( this.user.projectsId.find(projectId => projectId === project.getId()) ) {
+            if ( this.user.projectsId.find(projectId => projectId === project.id) ) {
                 this.onProjectSelect(project);
                 return true;
             }

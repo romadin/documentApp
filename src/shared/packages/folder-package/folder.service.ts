@@ -133,9 +133,9 @@ export class FolderService {
 
         const folder = new Folder();
         folder.id = folderData.id;
-        folder.setName(folderData.name);
-        folder.setProjectId(folderData.projectId);
-        folder.setOn(folderData.on);
+        folder.name = folderData.name;
+        folder.projectId = folderData.projectId;
+        folder.isOn = folderData.on;
         folder.isMainFolder = folderData.isMain;
 
         folder.order = folderData.order;
@@ -155,20 +155,20 @@ export class FolderService {
         // check if sub folders exist then set the sub folder-app.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
             folderData.subFolders.forEach((subFolderResponse) => {
-                folder.setSubFolder(this.makeFolder(subFolderResponse));
+                folder.subFolder = this.makeFolder(subFolderResponse);
             });
         }
 
-        folder.setDocuments(this.documentService.getDocuments(folderData.id));
+        folder.documents = this.documentService.getDocuments(folderData.id);
 
         return folder;
     }
 
     private setFoldersByProjectCache(folder: Folder): void {
-        if ( this.foldersByProjectCache[folder.getProjectId()] ) {
-            this.foldersByProjectCache[folder.getProjectId()].push(folder);
+        if ( this.foldersByProjectCache[folder.projectId] ) {
+            this.foldersByProjectCache[folder.projectId].push(folder);
         } else {
-            this.foldersByProjectCache[folder.getProjectId()] = [folder];
+            this.foldersByProjectCache[folder.projectId] = [folder];
         }
     }
 
@@ -179,10 +179,10 @@ export class FolderService {
             response.subFolders.forEach((subFolderResponse) => {
                 subFolders.push(this.makeFolder(subFolderResponse));
             });
-            folder.setSubFolders(subFolders);
+            folder.subFolders = subFolders;
         }
 
-        folder.setDocuments(this.documentService.getDocuments(folder.id));
+        folder.documents = this.documentService.getDocuments(folder.id);
         return folder;
     }
 }

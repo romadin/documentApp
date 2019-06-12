@@ -31,7 +31,7 @@ export class ItemListComponent implements OnInit {
     constructor(private folderService: FolderService) { }
 
     ngOnInit() {
-        this.getAvailableFolder(this.mainFolder.getSubFolders(), this.currentFolder.getSubFolders());
+        this.getAvailableFolder(this.mainFolder.subFolders, this.currentFolder.subFolders);
 
         this.getDocumentAvailable().then((documents: Document[]) => {
             documents.forEach(document => this.items.push(document));
@@ -58,8 +58,8 @@ export class ItemListComponent implements OnInit {
 
     private getDocumentAvailable(): Promise<any[]> {
         return new Promise((resolve) => {
-            this.mainFolder.getDocuments().subscribe((documents) => {
-                this.currentFolder.getDocuments().subscribe((currentDocs) => {
+            this.mainFolder.documents.subscribe((documents) => {
+                this.currentFolder.documents.subscribe((currentDocs) => {
                     if (currentDocs.length === 0 ) {
                         return resolve(documents);
                     }

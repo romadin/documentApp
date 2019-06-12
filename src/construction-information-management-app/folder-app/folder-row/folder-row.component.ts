@@ -31,14 +31,14 @@ export class FolderRowComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.folder.getDocuments().subscribe((documents) => {
+        this.folder.documents.subscribe((documents) => {
             this.documents = documents;
         });
     }
 
     public folderEditable(): boolean {
         const folder = this.editableFolders.find( (folderName) => {
-            return folderName === this.folder.getName();
+            return folderName === this.folder.name;
         });
         return folder !== undefined;
     }
@@ -55,7 +55,7 @@ export class FolderRowComponent implements OnInit {
     public toggleFolderOn(e: MouseEvent, turnOn: boolean): void {
         e.preventDefault();
         e.stopPropagation();
-        this.folder.setOn(turnOn);
+        this.folder.isOn = turnOn;
 
         if (this.timerId) {
             clearTimeout(this.timerId);
@@ -78,7 +78,7 @@ export class FolderRowComponent implements OnInit {
             const params = this.parent && this.parent.isMainFolder ? {} : { parentFolderId: this.parent.id };
             this.folderService.deleteFolder(this.folder, params).subscribe((deleted) => {
                 if (deleted) {
-                    (<Folder>this.parent).getSubFolders().splice((<Folder>this.parent).getSubFolders()
+                    (<Folder>this.parent).subFolders.splice((<Folder>this.parent).subFolders
                         .findIndex((subFolder => subFolder === this.folder)), 1);
                     this.sendDeletedFolderToFolderComponent.emit(this.folder);
                 }

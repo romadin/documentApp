@@ -37,7 +37,7 @@ export class TemplatesListComponent implements OnInit {
         });
     }
 
-    editWorkFunction(e: Event, template: Template): void {
+    editTemplate(e: Event, template: Template): void {
         e.preventDefault();
         e.stopPropagation();
         this.onTemplateEdit.emit(template);

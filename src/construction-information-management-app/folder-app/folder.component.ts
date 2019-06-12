@@ -131,14 +131,14 @@ export class FolderComponent implements OnInit, OnDestroy {
         this.folderService.getFolder(folderId).subscribe((folder: Folder) => {
             if (folder) {
                 this.currentFolder = folder;
-                this.currentFolder.getDocuments().subscribe((documents) => {
+                this.currentFolder.documents.subscribe((documents) => {
                     let itemsContainer: (Document | Folder)[];
                     itemsContainer = documents;
-                    itemsContainer = itemsContainer.concat(this.currentFolder.getSubFolders());
+                    itemsContainer = itemsContainer.concat(this.currentFolder.subFolders);
                     itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
                     this.itemsSubscription.next(itemsContainer);
                 });
-                this.folderService.getMainFolderFromProject(folder.getProjectId()).subscribe((mainFolder: Folder) => {
+                this.folderService.getMainFolderFromProject(folder.projectId).subscribe((mainFolder: Folder) => {
                     this.mainFolder = mainFolder;
                 });
             }
@@ -146,10 +146,10 @@ export class FolderComponent implements OnInit, OnDestroy {
     }
 
     private setNewItems(folder: Folder) {
-        folder.getDocuments().subscribe((documents) => {
+        folder.documents.subscribe((documents) => {
             let itemsContainer: (Document | Folder)[];
             itemsContainer = documents;
-            itemsContainer = itemsContainer.concat(folder.getSubFolders());
+            itemsContainer = itemsContainer.concat(folder.subFolders);
             itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
             this.itemsSubscription.next(itemsContainer);
         });

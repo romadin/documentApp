@@ -72,7 +72,7 @@ export class ProjectService {
     }
 
     /**
-     * Doing a post project but this call does also do folders and documents. That is the default template.
+     * Doing a post projectId but this call does also do folders and documents. That is the default projectId.
      */
     public postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
         const params = { organisationId: organisation.id };
@@ -101,7 +101,7 @@ export class ProjectService {
             if (this.projectsCache.hasOwnProperty(id) ) {
                 delete this.projectsCache[id];
             }
-            const index = this.projectsByOrganisationCache[organisation.id].findIndex(project => project.getId() === id);
+            const index = this.projectsByOrganisationCache[organisation.id].findIndex(project => project.id === id);
             this.projectsByOrganisationCache[organisation.id].splice(index, 1);
         }, (error) => {
             // @todo show error the right way.
@@ -112,11 +112,11 @@ export class ProjectService {
     private makeProject(apiResponse: ApiProjectResponse, organisation: Organisation): Project {
         const project: Project = new Project();
 
-        project.setId(apiResponse.id);
-        project.setName(apiResponse.name);
+        project.id = apiResponse.id;
+        project.name = apiResponse.name;
         project.organisation = organisation;
 
-        this.projectsCache[ project.getId() ] = project;
+        this.projectsCache[ project.id ] = project;
         return project;
     }
 

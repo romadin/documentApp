@@ -49,7 +49,7 @@
         <mat-selection-list #projects>
             <h4> Kies project </h4>
             <mat-list-option mat-line *ngFor="let project of allProjects" (click)="onProjectSelect(project)">
-                {{ project.getName() }}
+                {{ project.name }}
             </mat-list-option>
         </mat-selection-list>
     </div>

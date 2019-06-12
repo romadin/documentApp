@@ -65,7 +65,7 @@ export class UserPopupComponent {
 
     public onSubmit() {
         if ( objectIsEmpty(this.selectedProjects) ) {
-            return alert('Er is geen project gekozen!');
+            return alert('Er is geen projectId gekozen!');
         }
         this.loadingService.isLoading.next(true);
 
@@ -96,12 +96,12 @@ export class UserPopupComponent {
     }
 
     public onProjectSelect(project: Project): void {
-        if (this.selectedProjects.hasOwnProperty(project.getId())) {
-            delete this.selectedProjects[project.getId()];
+        if (this.selectedProjects.hasOwnProperty(project.id)) {
+            delete this.selectedProjects[project.id];
             return;
         }
 
-        this.selectedProjects[project.getId()] = project;
+        this.selectedProjects[project.id] = project;
     }
 
     public onImageUpload(event: Event): void {

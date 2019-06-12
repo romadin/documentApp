@@ -1,9 +1,10 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CanActivateLoggedIn } from '../../../../can-activate/CanActivateLoggedIn';
+import { SharedProjectModule } from '../../shared-project.module';
 import { ProjectDetailComponent } from './project-detail.component';
 import { SharedModule } from '../../../../shared/shared.module';
-import { ProjectWorkFunctionEditComponent } from './project-work-function-edit/project-work-function-edit.component';
+import { ProjectWorkFunctionComponent } from './project-work-function/project-work-function.component';
 
 const routes: Routes = [
     { path: '', component: ProjectDetailComponent, canActivate: [ CanActivateLoggedIn ] },
@@ -13,11 +14,12 @@ const routes: Routes = [
 @NgModule({
     imports: [
         SharedModule,
+        SharedProjectModule,
         RouterModule.forChild(routes),
     ],
     declarations: [
         ProjectDetailComponent,
-        ProjectWorkFunctionEditComponent,
+        ProjectWorkFunctionComponent,
     ],
     exports: [RouterModule]
 })

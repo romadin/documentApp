@@ -1,7 +1,7 @@
 <div #fullDocument>
     <mat-card class="documentsReader" *ngIf="project" >
         <mat-card-header>
-            <mat-card-title>{{ project.getName() }}</mat-card-title>
+            <mat-card-title>{{ project.name }}</mat-card-title>
             <button mat-button (click)="close($event)">
                 <i class="material-icons"> close </i>
             </button>

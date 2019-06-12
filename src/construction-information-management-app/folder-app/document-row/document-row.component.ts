@@ -68,9 +68,9 @@ export class DocumentRowComponent implements OnInit {
     }
 
     private removeFromParentFolder(): void {
-        const documentsArray: Document[] = this.parentFolder.getDocuments().getValue();
+        const documentsArray: Document[] = this.parentFolder.documents.getValue();
         documentsArray.splice(documentsArray.findIndex((document => document === this.document)), 1);
-        this.parentFolder.getDocuments().next(documentsArray);
+        this.parentFolder.documents.next(documentsArray);
     }
 
 }

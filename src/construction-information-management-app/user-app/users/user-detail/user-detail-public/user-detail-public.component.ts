@@ -16,7 +16,7 @@ export class UserDetailPublicComponent implements OnInit {
     constructor() {}
 
     ngOnInit() {
-        this.projects = this.projects.filter(project => this.user.projectsId.find(projectId => projectId === project.getId()));
+        this.projects = this.projects.filter(project => this.user.projectsId.find(projectId => projectId === project.id));
     }
 
     onCloseDetailView(e: Event): void {

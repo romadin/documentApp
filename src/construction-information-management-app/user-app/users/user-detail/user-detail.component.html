@@ -55,7 +55,7 @@
                     <span class="title"> Projecten</span>
                     <mat-selection-list #projectsList>
                         <mat-list-option #option *ngFor="let project of projects" [selected]="checkProjectSelected(project)" (click)="onProjectSelect(project, option)">
-                            {{ project.getName() }}
+                            {{ project.name }}
                         </mat-list-option>
                     </mat-selection-list>
                 </div>

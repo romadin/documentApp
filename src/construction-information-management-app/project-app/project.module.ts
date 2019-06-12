@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
 import { ProjectComponent } from './project/project.component';
 import { ProjectsListComponent } from './project/projects-list/projects-list.component';

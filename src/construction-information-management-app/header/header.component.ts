@@ -261,7 +261,7 @@ export class HeaderComponent implements OnInit {
 
     private openDialogAddProject(): void {
         const data: DefaultPopupData =  {
-            title: 'Voeg een project toe',
+            title: 'Voeg een projectId toe',
             placeholder: 'Project naam',
             submitButton: 'Voeg toe',
             organisation: this.currentOrganisation

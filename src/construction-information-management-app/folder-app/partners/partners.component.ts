@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
-import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
-import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
-import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({

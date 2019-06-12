@@ -1,5 +1,5 @@
 import { Document } from '../document-package/document.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 export class Folder {
     private _id: number;
@@ -25,52 +25,52 @@ export class Folder {
         this._id = value;
     }
 
-    public getName(): string {
+    get name(): string {
         return this._name;
     }
 
-    public setName(value: string) {
+    set name(value: string) {
         this._name = value;
     }
 
-    public getProjectId(): number {
+    get projectId(): number {
         return this._projectId;
     }
 
-    public setProjectId(value: number) {
+    set projectId(value: number) {
         this._projectId = value;
     }
 
-    public getIsOn(): boolean {
+    get isOn(): boolean {
         return this._isOn;
     }
 
-    public setOn(value: boolean) {
+    set isOn(value: boolean) {
         this._isOn = value;
     }
 
-    public getDocuments(): BehaviorSubject<Document[]> {
+    get documents(): BehaviorSubject<Document[]> {
         return this._documents;
     }
 
-    public setDocuments(value: BehaviorSubject<Document[]>) {
+    set documents(value: BehaviorSubject<Document[]>) {
         this._documents = value;
     }
 
     public addDocument(document: Document): void {
         this._documents.getValue().push(document);
-        this.getDocuments().next(this._documents.getValue());
+        this.documents.next(this._documents.getValue());
     }
 
-    public getSubFolders(): Folder[] {
+    get subFolders(): Folder[] {
         return this._subFolders;
     }
 
-    public setSubFolder(subFolder: Folder) {
+    set subFolder(subFolder: Folder) {
         this._subFolders.push(subFolder);
     }
 
-    public setSubFolders(subFolders: Folder[]) {
+    set subFolders(subFolders: Folder[]) {
         this._subFolders = subFolders;
     }
 
@@ -109,11 +109,4 @@ export class Folder {
     set parentFolders(value: BehaviorSubject<Folder[]>) {
         this._parentFolders = value;
     }
-
-    public update(data): void {
-        this.id = data.id;
-        this.setName(data.name);
-        this.setDocuments(data.documents);
-    }
-
 }

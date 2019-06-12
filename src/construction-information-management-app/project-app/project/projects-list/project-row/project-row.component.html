@@ -1,12 +1,12 @@
-<mat-card class="projectRow" *ngIf="userViewProject()" routerLink="{{ project.getId() }}">
+<mat-card class="projectRow" *ngIf="userViewProject()" routerLink="{{ project.id }}">
     <mat-card-header>
-        <mat-card-title> {{ project.getName() }}</mat-card-title>
+        <mat-card-title> {{ project.name }}</mat-card-title>
     </mat-card-header>
 
     <mat-card-actions class="actionButton">
         <div class="actionsEditDelete" *ngIf="currentUser.isAdmin()">
-            <i class="material-icons" (click)="editProject($event, project.getId())"> edit </i>
-            <i class="material-icons" (click)="deleteProject($event, project.getId())"> delete_forever </i>
+            <i class="material-icons" (click)="editProject($event, project.id)"> edit </i>
+            <i class="material-icons" (click)="deleteProject($event, project.id)"> delete_forever </i>
         </div>
         <i class="material-icons"> arrow_right </i>
     </mat-card-actions>

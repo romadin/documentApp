@@ -46,7 +46,7 @@ export class DetailFolderComponent implements OnInit {
 
     ngOnInit() {
         if (this.folder) {
-            this.folderForm.controls.name.setValue(this.folder.getName());
+            this.folderForm.controls.name.setValue(this.folder.name);
         }
 
     }
@@ -92,9 +92,9 @@ export class DetailFolderComponent implements OnInit {
         e.preventDefault();
         this.documentService.deleteDocumentLink(documentToDelete, this.folder).subscribe((deleted: boolean) => {
             if ( deleted ) {
-                const documentsArray: Document[] = this.folder.getDocuments().getValue();
+                const documentsArray: Document[] = this.folder.documents.getValue();
                 documentsArray.splice(documentsArray.findIndex((document => document === documentToDelete)), 1);
-                this.folder.getDocuments().next(documentsArray);
+                this.folder.documents.next(documentsArray);
             }
         });
     }
@@ -104,7 +104,7 @@ export class DetailFolderComponent implements OnInit {
     }
 
     private getDocuments(): void {
-        this.folder.getDocuments().subscribe((documents) => {
+        this.folder.documents.subscribe((documents) => {
             this.documents = documents;
         });
     }
