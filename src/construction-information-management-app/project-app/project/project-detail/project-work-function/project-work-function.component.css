@@ -1,0 +1,128 @@
+.card.rippleRow {
+    flex-direction: row;
+    padding: 12px 18px;
+    cursor: pointer;
+    align-items: center;
+    background-position: center;
+    transition: background 0.8s;
+    justify-content: space-between;
+}
+.rippleRow:hover {
+    background: #ececec radial-gradient(circle, transparent 1%, #ececec 1%) center/15000%;
+}
+.rippleRow:active {
+    background-color: #f7f7f7;
+    background-size: 100%;
+    transition: background 0s;
+}
+.rippleRow > .title {
+    display: flex;
+    align-items: center;
+}
+
+.rippleRow > .title >  h3 {
+    margin: 0;
+}
+
+.rippleRow > .title > i.material-icons {
+    margin-right: 15px;
+}
+
+.rippleRow > div.actions {
+    display: flex;
+    align-items: center;
+}
+
+/*.rippleRow > div.actions > i.material-icons {*/
+    /*font-size: 18px;*/
+    /*margin-right: 0;*/
+    /*padding: 7px 8px 0 2px;*/
+/*}*/
+/*.rippleRow > div.actions > i.material-icons:last-child {*/
+    /*padding-right: 0;*/
+/*}*/
+
+/* For the switch buttons*/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 65px;
+    height: 25px;
+}
+
+/* hide the input checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #dadada;
+    box-shadow: 0 0 1px #dadada;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input[type="checkbox"]:focus{
+    outline:0;
+}
+input:checked + .slider {
+    background-color: #53d76a;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(38px);
+    -ms-transform: translateX(38px);
+    transform: translateX(38px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.on {
+    display: none;
+    right: 43%;
+}
+
+.on, .off {
+    color: white;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    font-size: 10px;
+}
+
+.off {
+    left: 73%;
+}
+
+input:checked + .slider .on {
+    display: block;
+}
+
+input:checked + .slider .off
+{
+    display: none;
+}

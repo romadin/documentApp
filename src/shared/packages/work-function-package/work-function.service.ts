@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
+import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
-import { WorkFunctionApiResponseInterface, WorkFunctionUpdateBody } from './interface/work-function-api-response.interface';
+import {
+    WorkFunctionApiResponseInterface,
+    WorkFunctionGetParam,
+    WorkFunctionUpdateBody
+} from './interface/work-function-api-response.interface';
 import { HeadlineService } from '../headline-package/headline.service';
 import { ChapterService } from '../chapter-package/chapter.service';
 
@@ -22,9 +27,9 @@ export class WorkFunctionService {
                 private chapterService: ChapterService,
     ) {  }
 
-    getWorkFunctionsByTemplate(template: Template): Observable<WorkFunction[]> {
-        return this.apiService.get(this.path, {templateId: template.id}).pipe(
-            map((result: WorkFunctionApiResponseInterface[]) => result.map(response => this.makeWorkFunction(response, template)))
+    getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
+        return this.apiService.get(this.path, params).pipe(
+            map((result: WorkFunctionApiResponseInterface[]) => result.map(response => this.makeWorkFunction(response, parent)))
         );
     }
 
@@ -37,9 +42,9 @@ export class WorkFunctionService {
     updateWorkFunction(workFunction: WorkFunction, body: WorkFunctionUpdateBody): Observable<WorkFunction> {
         return this.apiService.post(this.path + '/' + workFunction.id, body).pipe(
             map((result: WorkFunctionApiResponseInterface) => {
-                const index = workFunction.template.workFunctions.findIndex(w => w.id === workFunction.id);
-                const updatedWorkFunction = this.makeWorkFunction(result, workFunction.template);
-                workFunction.template.workFunctions[index] = updatedWorkFunction;
+                const index = workFunction.parent.workFunctions.findIndex(w => w.id === workFunction.id);
+                const updatedWorkFunction = this.makeWorkFunction(result, workFunction.parent);
+                workFunction.parent.workFunctions[index] = updatedWorkFunction;
                 return updatedWorkFunction;
             })
         );
@@ -51,13 +56,13 @@ export class WorkFunctionService {
         );
     }
 
-    private makeWorkFunction(data: WorkFunctionApiResponseInterface, template: Template): WorkFunction {
+    private makeWorkFunction(data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
         const workFunction: WorkFunction = new WorkFunction();
         workFunction.id = data.id;
         workFunction.name = data.name;
         workFunction.isMainFunction = data.isMainFunction;
         workFunction.order = data.order;
-        workFunction.template = template;
+        workFunction.parent = parent;
         workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
 

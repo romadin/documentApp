@@ -76,7 +76,7 @@ export class DocumentService {
 
     public deleteDocumentLink(document: Document, folder: Folder) {
         const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete('/folders/' + folder.id + '/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {
+        this.apiService.delete('/workFunctions/' + folder.id + '/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {
             if (this.documentsCache.hasOwnProperty(document.id) ) {
                 delete this.documentsCache[document.id];
             }

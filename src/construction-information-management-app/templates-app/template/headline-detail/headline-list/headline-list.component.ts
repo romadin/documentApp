@@ -39,7 +39,7 @@ export class HeadlineListComponent implements OnInit {
         private toast: ToastService) { }
 
     ngOnInit() {
-        const workFunctions = this.workFunction.template.workFunctions.filter(w => w.id !== this.workFunction.id);
+        const workFunctions = this.workFunction.parent.workFunctions.filter(w => w.id !== this.workFunction.id);
         const observables = [];
         workFunctions.forEach((workFunction) => observables.push(this.headlineService.getHeadlinesByWorkFunction(workFunction)));
         combineLatest(observables).subscribe((headlinesContainer: Headline[][]) => {

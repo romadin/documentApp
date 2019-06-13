@@ -394,7 +394,7 @@ module.exports.create_image = function (name, target) {
             console.error(error);
         });
     } else {
-        console.log('WARNING : Project target not found, creating avd with a different target but the project may fail to install.');
+        console.log('WARNING : Project target not found, creating avd with a different target but the projectId may fail to install.');
         // TODO: there's a more robust method for finding targets in android_sdk.js
         return superspawn.spawn('android', ['create', 'avd', '--name', name, '--target', this.list_targets()[0]]).then(function () {
             // TODO: This seems like another error case, even though it always happens.
@@ -411,7 +411,7 @@ module.exports.create_image = function (name, target) {
 module.exports.resolveTarget = function (target) {
     return this.list_started().then(function (emulator_list) {
         if (emulator_list.length < 1) {
-            return Q.reject('No running Android emulators found, please start an emulator before deploying your project.');
+            return Q.reject('No running Android emulators found, please start an emulator before deploying your projectId.');
         }
 
         // default emulator

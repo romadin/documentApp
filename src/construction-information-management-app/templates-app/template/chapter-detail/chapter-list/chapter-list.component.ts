@@ -38,7 +38,7 @@ export class ChapterListComponent implements OnInit {
     constructor(private chapterService: ChapterService, private workFunctionService: WorkFunctionService, private toast: ToastService) { }
 
     ngOnInit() {
-        const workFunctions = this.parent.template.workFunctions.filter(w => w.id !== this.parent.id);
+        const workFunctions = this.parent.parent.workFunctions.filter(w => w.id !== this.parent.id);
         const observables = [];
         workFunctions.forEach((workFunction) => observables.push(workFunction.chapters));
         combineLatest(observables).subscribe((chaptersContainer: Chapter[][]) => {

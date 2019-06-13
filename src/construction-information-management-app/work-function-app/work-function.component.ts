@@ -15,10 +15,10 @@ import { ActiveItemPackage } from './folder-detail/folder-detail.component';
 
 @Component({
   selector: 'cim-folder',
-  templateUrl: './folder.component.html',
-  styleUrls: ['./folder.component.css']
+  templateUrl: './work-function.component.html',
+  styleUrls: ['./work-function.component.css']
 })
-export class FolderComponent implements OnInit, OnDestroy {
+export class WorkFunctionComponent implements OnInit, OnDestroy {
     public documents: Document[];
     public currentFolder: Folder;
     public mainFolder: Folder;

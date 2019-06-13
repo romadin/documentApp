@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 
-import { FolderRowComponent } from '../construction-information-management-app/folder-app/folder-row/folder-row.component';
-import { DocumentRowComponent } from '../construction-information-management-app/folder-app/document-row/document-row.component';
+import { FolderRowComponent } from '../construction-information-management-app/work-function-app/folder-row/folder-row.component';
+import { DocumentRowComponent } from '../construction-information-management-app/work-function-app/document-row/document-row.component';
 import { UserRowComponent } from '../construction-information-management-app/user-app/users/user-row/user-row.component';
 import { UserDetailComponent } from '../construction-information-management-app/user-app/users/user-detail/user-detail.component';
 import {

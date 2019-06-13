@@ -24,8 +24,6 @@ export class FolderRowComponent implements OnInit {
 
     public documents: Document[];
 
-    private editableFolders = ['BIM Regisseur', 'BIM Manager'];
-    private timerId: number;
 
     constructor(private folderService: FolderService, private router: Router, private activatedRoute: ActivatedRoute) {
     }
@@ -34,13 +32,6 @@ export class FolderRowComponent implements OnInit {
         this.folder.documents.subscribe((documents) => {
             this.documents = documents;
         });
-    }
-
-    public folderEditable(): boolean {
-        const folder = this.editableFolders.find( (folderName) => {
-            return folderName === this.folder.name;
-        });
-        return folder !== undefined;
     }
 
     public redirectToFolderOrShowDocs(e: MouseEvent) {
@@ -52,18 +43,6 @@ export class FolderRowComponent implements OnInit {
         }
     }
 
-    public toggleFolderOn(e: MouseEvent, turnOn: boolean): void {
-        e.preventDefault();
-        e.stopPropagation();
-        this.folder.isOn = turnOn;
-
-        if (this.timerId) {
-            clearTimeout(this.timerId);
-        }
-        this.timerId = setTimeout(() => {
-            this.folderService.postFolder(this.folder.id, {turnOn: turnOn});
-        }, 500);
-    }
 
     public editFolder(e: MouseEvent) {
         e.stopPropagation();

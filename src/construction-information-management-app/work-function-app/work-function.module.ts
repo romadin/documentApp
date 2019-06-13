@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { SharedProjectModule } from '../project-app/shared-project.module';
-import { FolderComponent } from './folder.component';
+import { WorkFunctionComponent } from './work-function.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ItemListComponent } from './item-list/item-list.component';
 import { ItemCreateComponent } from './item-create/item-create.component';
@@ -15,7 +15,7 @@ import { FolderDetailComponent } from './folder-detail/folder-detail.component';
 const routes: Routes = [
     {
         path: '',
-        component: FolderComponent
+        component: WorkFunctionComponent
     }
 ];
 
@@ -27,7 +27,7 @@ const routes: Routes = [
         RouterModule.forChild( routes )
     ],
     declarations: [
-        FolderComponent,
+        WorkFunctionComponent,
         CreateDocumentComponent,
         ItemListComponent,
         ItemCreateComponent,
@@ -37,4 +37,4 @@ const routes: Routes = [
     ],
 })
 
-export class FolderModule { }
+export class WorkFunctionModule { }

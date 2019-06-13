@@ -112,7 +112,7 @@ StudioBuilder.prototype.extractRealProjectNameFromManifest = function () {
     return packageName.substring(lastDotIndex + 1);
 };
 
-// Makes the project buildable, minus the gradle wrapper.
+// Makes the projectId buildable, minus the gradle wrapper.
 StudioBuilder.prototype.prepBuildFiles = function () {
     // Update the version of build.gradle in each dependent library.
     var pluginBuildGradle = path.join(this.root, 'cordova', 'lib', 'plugin-build.gradle');
@@ -145,7 +145,7 @@ StudioBuilder.prototype.prepBuildFiles = function () {
         var libName = realDir.replace(name + '-', '');
         var str = 'include ":' + libName + '"\n';
         if (realDir.indexOf(name + '-') !== -1) {
-            str += 'project(":' + libName + '").projectDir = new File("' + p + '")\n';
+            str += 'projectId(":' + libName + '").projectDir = new File("' + p + '")\n';
         }
         return str;
     });
@@ -171,7 +171,7 @@ StudioBuilder.prototype.prepBuildFiles = function () {
         events.emit('log', 'Subproject Path: ' + p);
         var libName = p.replace(/[/\\]/g, ':').replace(name + '-', '');
         if (libName !== 'app') {
-            depsList += '    implementation(project(path: ":' + libName + '"))';
+            depsList += '    implementation(projectId(path: ":' + libName + '"))';
             insertExclude(p);
         }
     });
@@ -240,7 +240,7 @@ StudioBuilder.prototype.prepEnv = function (opts) {
 };
 
 /*
- * Builds the project with gradle.
+ * Builds the projectId with gradle.
  * Returns a promise.
  */
 StudioBuilder.prototype.build = function (opts) {

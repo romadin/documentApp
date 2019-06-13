@@ -124,7 +124,7 @@ function parseOpts (options, resolvedTarget, projectRoot) {
 }
 
 /*
- * Builds the project with the specifed options
+ * Builds the projectId with the specifed options
  * Returns a promise.
  */
 module.exports.runClean = function (options) {
@@ -136,7 +136,7 @@ module.exports.runClean = function (options) {
 };
 
 /**
- * Builds the project with the specifed options.
+ * Builds the projectId with the specifed options.
  *
  * @param   {BuildOptions}  options      A set of options. See PlatformApi.build
  *   method documentation for reference.
@@ -274,10 +274,10 @@ PackageInfo.prototype = {
 module.exports.help = function () {
     console.log('Usage: ' + path.relative(process.cwd(), path.join('../build')) + ' [flags] [Signed APK flags]');
     console.log('Flags:');
-    console.log('    \'--debug\': will build project in debug mode (default)');
-    console.log('    \'--release\': will build project for release');
-    console.log('    \'--ant\': will build project with ant');
-    console.log('    \'--gradle\': will build project with gradle (default)');
+    console.log('    \'--debug\': will build projectId in debug mode (default)');
+    console.log('    \'--release\': will build projectId for release');
+    console.log('    \'--ant\': will build projectId with ant');
+    console.log('    \'--gradle\': will build projectId with gradle (default)');
     console.log('    \'--nobuild\': will skip build process (useful when using run command)');
     console.log('    \'--prepenv\': don\'t build, but copy in build scripts where necessary');
     console.log('    \'--versionCode=#\': Override versionCode for this build. Useful for uploading multiple APKs. Requires --gradle.');

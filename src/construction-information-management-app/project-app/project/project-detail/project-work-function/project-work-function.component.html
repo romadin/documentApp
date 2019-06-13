@@ -1,3 +1,16 @@
-<p>
-  project-work-function works!
-</p>
+<div class="card rippleRow" *ngIf="currentUser.isAdmin() || workFunction.on === true" routerLink="functies/{{workFunction.id}}">
+    <div class="title">
+        <i class="material-icons"> folder_open </i>
+        <h3> {{ workFunction.name }}</h3>
+    </div>
+    <div class="actions">
+        <label class="switch" *ngIf="folderEditable() && currentUser.isAdmin()" (click)="toggleFolderOn($event, !workFunction.on)">
+            <input type="checkbox" [checked]="workFunction.on">
+            <span class="slider round">
+                    <span class="on">AAN</span>
+                    <span class="off">UIT</span>
+                </span>
+        </label>
+        <i class="material-icons"> arrow_right </i>
+    </div>
+</div>

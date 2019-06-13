@@ -72,7 +72,7 @@ export class ProjectService {
     }
 
     /**
-     * Doing a post projectId but this call does also do folders and documents. That is the default projectId.
+     * Doing a post projectId but this call does also do workFunctions and documents. That is the default projectId.
      */
     public postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
         const params = { organisationId: organisation.id };

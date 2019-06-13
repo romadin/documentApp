@@ -239,8 +239,8 @@ function copyFile (plugin_dir, src, project_dir, dest, link) {
 
     dest = path.resolve(project_dir, dest);
 
-    // check that dest path is located in project directory
-    if (dest.indexOf(project_dir) !== 0) { throw new CordovaError('Destination "' + dest + '" for source file "' + src + '" is located outside the project'); }
+    // check that dest path is located in projectId directory
+    if (dest.indexOf(project_dir) !== 0) { throw new CordovaError('Destination "' + dest + '" for source file "' + src + '" is located outside the projectId'); }
 
     shell.mkdir('-p', path.dirname(dest));
     if (link) {

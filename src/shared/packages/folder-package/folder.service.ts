@@ -32,7 +32,7 @@ export class FolderService {
             return folders;
         }
 
-        this.apiService.get('/folders', {projectId: projectId}).subscribe((foldersResponse: ApiFolderResponse[]) => {
+        this.apiService.get('/workFunctions', {projectId: projectId}).subscribe((foldersResponse: ApiFolderResponse[]) => {
             const mainFolders: Folder[] = [];
             foldersResponse.forEach((folderResponse) => {
                 const folder = this.makeFolder(folderResponse);
@@ -53,7 +53,7 @@ export class FolderService {
             folder.next(this.foldersCache[id]);
             return folder;
         }
-        this.apiService.get('/folders/' + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
+        this.apiService.get('/workFunctions/' + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(folderResponse));
         }, (error) => {
             throw new Error(error.error);
@@ -65,7 +65,7 @@ export class FolderService {
     public createFolder(data: NewFolderPostData): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
 
-        this.apiService.post('/folders', data).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post('/workFunctions', data).subscribe((foldersResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(foldersResponse));
         }, (error) => {
             throw new Error(error.error);
@@ -78,7 +78,7 @@ export class FolderService {
     public postFolder(id: number, data: FolderPostData): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
 
-        this.apiService.post('/folders/' + id, data).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post('/workFunctions/' + id, data).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
                 return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
@@ -94,13 +94,13 @@ export class FolderService {
         const folder: Subject<Folder> = new Subject();
         const documentsId: number[] = [];
         items.forEach((item) => {
-            // @todo need to remove the if, when i can link folders to folders.
+            // @todo need to remove the if, when i can link workFunctions to workFunctions.
             if (item instanceof Document) {
                 documentsId.push(item.id);
             }
         });
         const body = {documentsId: documentsId};
-        this.apiService.post('/folders/' + id + '/documents', body).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post('/workFunctions/' + id + '/documents', body).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
                 return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
@@ -113,7 +113,7 @@ export class FolderService {
 
     public deleteFolder(folder: Folder, params: any): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete('/folders/' + folder.id, params).subscribe((response: ApiDocResponse) => {
+        this.apiService.delete('/workFunctions/' + folder.id, params).subscribe((response: ApiDocResponse) => {
             if (this.foldersCache.hasOwnProperty(folder.id) ) {
                 delete this.foldersCache[folder.id];
             }
@@ -152,7 +152,7 @@ export class FolderService {
             });
         });
 
-        // check if sub folders exist then set the sub folder-app.
+        // check if sub workFunctions exist then set the sub workFunction-app.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
             folderData.subFolders.forEach((subFolderResponse) => {
                 folder.subFolder = this.makeFolder(subFolderResponse);
@@ -173,7 +173,7 @@ export class FolderService {
     }
 
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        // check if sub folders exist then set the sub folder-app.
+        // check if sub workFunctions exist then set the sub workFunction-app.
         if ( response.subFolders !== null && response.subFolders.length > 0 ) {
             const subFolders: Folder[] = [];
             response.subFolders.forEach((subFolderResponse) => {

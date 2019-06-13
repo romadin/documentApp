@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FolderComponent } from './folder.component';
+import { WorkFunctionComponent } from './work-function.component';
 
-describe('FolderComponent', () => {
-  let component: FolderComponent;
-  let fixture: ComponentFixture<FolderComponent>;
+describe('WorkFunctionComponent', () => {
+  let component: WorkFunctionComponent;
+  let fixture: ComponentFixture<WorkFunctionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FolderComponent ]
+      declarations: [ WorkFunctionComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FolderComponent);
+    fixture = TestBed.createComponent(WorkFunctionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

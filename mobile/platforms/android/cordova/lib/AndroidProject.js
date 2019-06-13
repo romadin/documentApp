@@ -87,7 +87,7 @@ AndroidProject.purgeCache = function (projectDir) {
 /**
  * Reads the package name out of the Android Manifest file
  *
- * @param   {String}  projectDir  The absolute path to the directory containing the project
+ * @param   {String}  projectDir  The absolute path to the directory containing the projectId
  *
  * @return  {String}              The name of the package
  */
@@ -197,7 +197,7 @@ AndroidProject.prototype.getUninstaller = function (type) {
 };
 
 /*
- * This checks if an Android project is clean or has old build artifacts
+ * This checks if an Android projectId is clean or has old build artifacts
  */
 
 AndroidProject.prototype.isClean = function () {

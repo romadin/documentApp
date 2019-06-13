@@ -2060,7 +2060,7 @@ utils.arrayIndexOf = function (a, item) {
 };
 
 /**
- * Returns whether the workFunction was found in the array.
+ * Returns whether the workFunctionFolder was found in the array.
  */
 utils.arrayRemove = function (a, item) {
     var index = utils.arrayIndexOf(a, item);

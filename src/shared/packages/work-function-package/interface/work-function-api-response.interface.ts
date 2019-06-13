@@ -11,4 +11,10 @@ export interface WorkFunctionUpdateBody {
     chapters?: number[];
     headlines?: number[];
     order?: number;
+    on?: boolean;
+}
+
+export interface WorkFunctionGetParam {
+    templateId?: number;
+    projectId?: number;
 }

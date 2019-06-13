@@ -1,7 +1,7 @@
 /*
- *  This is a simple routine that checks if project is an Android Studio Project
+ *  This is a simple routine that checks if projectId is an Android Studio Project
  *
- *  @param {String} root Root folder-app of the project
+ *  @param {String} root Root workFunction-app of the projectId
  */
 
 /* jshint esnext: false */

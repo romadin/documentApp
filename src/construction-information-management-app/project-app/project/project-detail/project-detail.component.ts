@@ -1,11 +1,14 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Project } from '../../../../shared/packages/project-package/project.model';
 
-import { FolderService } from '../../../../shared/packages/folder-package/folder.service';
-import { Folder } from '../../../../shared/packages/folder-package/folder.model';
 import { UserService } from '../../../../shared/packages/user-package/user.service';
 import { User } from '../../../../shared/packages/user-package/user.model';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
+import { WorkFunctionService } from '../../../../shared/packages/work-function-package/work-function.service';
+import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
+import { ProjectService } from '../../../../shared/packages/project-package/project.service';
 import { RouterService } from '../../../../shared/service/router.service';
 
 @Component({
@@ -56,29 +59,33 @@ import { RouterService } from '../../../../shared/service/router.service';
 })
 
 export class ProjectDetailComponent implements OnInit {
-    folders: Folder[];
+    workFunctions: WorkFunction[];
     currentUser: User;
     folderUrlToRedirect: string;
-    projectId: number;
+    project: Project;
     showFunctionDetail = false;
 
     constructor(private activatedRoute: ActivatedRoute,
-                private folderService: FolderService,
+                private workFunctionService: WorkFunctionService,
                 private userService: UserService,
+                private projectService: ProjectService,
                 private routerService: RouterService) {
-        this.folderUrlToRedirect = 'folder/';
+        this.folderUrlToRedirect = 'workFunction/';
     }
 
     ngOnInit() {
         this.routerService.setBackRoute('/projecten');
-        this.projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
-
+        const projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
         this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
         });
-        this.folderService.getFoldersByProject(this.projectId).subscribe(folders => {
-            folders = folders.sort((a, b) => a.order - b.order);
-            this.folders = folders;
+
+        this.projectService.getProject(projectId, <Organisation>this.activatedRoute.snapshot.data.organisation).then(project => {
+            this.project = project;
+            this.workFunctionService.getWorkFunctionsByParent({projectId: projectId}, project).subscribe(workFunction => {
+                workFunction = workFunction.sort((a, b) => a.order - b.order);
+                this.workFunctions = workFunction;
+            });
         });
     }
 

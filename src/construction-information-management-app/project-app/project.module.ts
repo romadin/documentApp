@@ -18,8 +18,8 @@ const routes: Routes = [
         component: ProjectComponent,
         children: [
             {
-                path: 'folder/:id',
-                loadChildren: '../folder-app/folder.module#FolderModule',
+                path: 'functies/:id',
+                loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
                 canActivate: [ CanActivateLoggedIn ],
                 resolve: { organisation: OrganisationResolver }
             },

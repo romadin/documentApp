@@ -49,8 +49,8 @@ module.exports.isDarwin = function () {
     return (os.platform() === 'darwin');
 };
 
-// Get valid target from framework/project.properties if run from this repo
-// Otherwise get target from project.properties file within a generated cordova-android project
+// Get valid target from framework/projectId.properties if run from this repo
+// Otherwise get target from projectId.properties file within a generated cordova-android projectId
 module.exports.get_target = function () {
     function extractFromFile (filePath) {
         var target = shelljs.grep(/\btarget=/, filePath);
@@ -65,7 +65,7 @@ module.exports.get_target = function () {
     }
     var project_file = path.join(PROJECT_ROOT, 'project.properties');
     if (fs.existsSync(project_file)) {
-        // if no target found, we're probably in a project and project.properties is in PROJECT_ROOT.
+        // if no target found, we're probably in a projectId and projectId.properties is in PROJECT_ROOT.
         return extractFromFile(project_file);
     }
     throw new Error('Could not find android target in either ' + repo_file + ' nor ' + project_file);

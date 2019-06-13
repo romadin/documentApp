@@ -74,13 +74,13 @@ function Api (platform, platformRootDir, events) {
         build: path.join(self.root, 'build'),
         javaSrc: path.join(self.root, 'src'),
         // NOTE: Due to platformApi spec we need to return relative paths here
-        cordovaJs: 'bin/templates/project/assets/www/cordova.js',
+        cordovaJs: 'bin/templates/projectId/assets/www/cordova.js',
         cordovaJsSrc: 'cordova-js-src'
     };
 
     // XXX Override some locations for Android Studio projects
     if (AndroidStudio.isAndroidStudioProject(self.root) === true) {
-        selfEvents.emit('log', 'Android Studio project detected');
+        selfEvents.emit('log', 'Android Studio projectId detected');
         this.builder = 'studio';
         this.android_studio = true;
         this.locations.configXml = path.join(self.root, 'app/src/main/res/xml/config.xml');
@@ -94,13 +94,13 @@ function Api (platform, platformRootDir, events) {
 }
 
 /**
- * Installs platform to specified directory and creates a platform project.
+ * Installs platform to specified directory and creates a platform projectId.
  *
  * @param  {String}  destination Destination directory, where insatll platform to
  * @param  {ConfigParser}  [config] ConfgiParser instance, used to retrieve
- *   project creation options, such as package id and project name.
+ *   projectId creation options, such as package id and projectId name.
  * @param  {Object}  [options]  An options object. The most common options are:
- * @param  {String}  [options.customTemplate]  A path to custom template, that
+ * @param  {String}  [options.customTemplate]  A path to custom projectId, that
  *   should override the default one from platform.
  * @param  {Boolean}  [options.link]  Flag that indicates that platform's
  *   sources will be linked to installed platform instead of copying.
@@ -120,7 +120,7 @@ Api.createPlatform = function (destination, config, options, events) {
             return new PlatformApi(PLATFORM, destination, events);
         });
     } catch (e) {
-        events.emit('error', 'createPlatform is not callable from the android project API.');
+        events.emit('error', 'createPlatform is not callable from the android projectId API.');
         throw (e);
     }
     return result;
@@ -131,7 +131,7 @@ Api.createPlatform = function (destination, config, options, events) {
  *
  * @param  {String}  destination Destination directory, where platform installed
  * @param  {Object}  [options]  An options object. The most common options are:
- * @param  {String}  [options.customTemplate]  A path to custom template, that
+ * @param  {String}  [options.customTemplate]  A path to custom projectId, that
  *   should override the default one from platform.
  * @param  {Boolean}  [options.link]  Flag that indicates that platform's
  *   sources will be linked to installed platform instead of copying.
@@ -151,7 +151,7 @@ Api.updatePlatform = function (destination, options, events) {
             return new PlatformApi('android', destination, events);
         });
     } catch (e) {
-        events.emit('error', 'updatePlatform is not callable from the android project API, you will need to do this manually.');
+        events.emit('error', 'updatePlatform is not callable from the android projectId API, you will need to do this manually.');
         throw (e);
     }
     return result;
@@ -181,8 +181,8 @@ Api.prototype.getPlatformInfo = function () {
  *   code, will be applied to platform.
  *
  * @param {CordovaProject} cordovaProject A CordovaProject instance, that defines a
- *   project structure and configuration, that should be applied to platform
- *   (contains project's www location and ConfigParser instance for project's
+ *   projectId structure and configuration, that should be applied to platform
+ *   (contains projectId's www location and ConfigParser instance for projectId's
  *   config).
  *
  * @return  {Promise}  Return a promise either fulfilled, or rejected with
@@ -329,7 +329,7 @@ Api.prototype.removePlugin = function (plugin, uninstallOptions) {
  *         type: 'app'
  *     }
  *
- * The return value in most cases will contain only one workFunction but in some cases
+ * The return value in most cases will contain only one workFunctionFolder but in some cases
  *   there could be multiple itemsContainer in output array, e.g. when multiple
  *   arhcitectures is specified.
  */

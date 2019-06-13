@@ -6,7 +6,7 @@ export class DocumentIconService {
     public getIconByName(documentName: string): string {
         switch ( documentName ) {
             case 'Projectgegevens':
-                return 'folder';
+                return 'workFunction';
             case 'Doelstelling':
                 return 'star_border';
             case 'Proces':
