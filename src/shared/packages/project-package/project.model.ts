@@ -1,4 +1,3 @@
-import { BehaviorSubject } from 'rxjs';
 import { WorkFunction } from '../work-function-package/work-function.model';
 import { ProjectUpdateData } from './api-project.interface';
 import { Organisation } from '../organisation-package/organisation.model';
@@ -7,7 +6,7 @@ export class Project {
     private _id: number;
     private _name: string;
     private _organisation: Organisation;
-    private _workFunctions: BehaviorSubject<WorkFunction[]> = new BehaviorSubject<WorkFunction[]>([]);
+    private _workFunctions: WorkFunction[] = [];
 
     public constructor() {
         //
@@ -37,11 +36,11 @@ export class Project {
         this._organisation = value;
     }
 
-    get workFunctions(): BehaviorSubject<WorkFunction[]> {
+    get workFunctions(): WorkFunction[] {
         return this._workFunctions;
     }
 
-    set workFunctions(value: BehaviorSubject<WorkFunction[]>) {
+    set workFunctions(value: WorkFunction[]) {
         this._workFunctions = value;
     }
 

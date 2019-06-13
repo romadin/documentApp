@@ -1,5 +1,5 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Project } from '../../../../shared/packages/project-package/project.model';
 
@@ -9,6 +9,7 @@ import { WorkFunction } from '../../../../shared/packages/work-function-package/
 import { WorkFunctionService } from '../../../../shared/packages/work-function-package/work-function.service';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { ProjectService } from '../../../../shared/packages/project-package/project.service';
+import { ProjectCommunicationService } from '../../../../shared/service/communication/project.communication.service';
 import { RouterService } from '../../../../shared/service/router.service';
 
 @Component({
@@ -58,7 +59,7 @@ import { RouterService } from '../../../../shared/service/router.service';
     ]
 })
 
-export class ProjectDetailComponent implements OnInit {
+export class ProjectDetailComponent implements OnInit, OnDestroy {
     workFunctions: WorkFunction[];
     currentUser: User;
     folderUrlToRedirect: string;
@@ -69,7 +70,8 @@ export class ProjectDetailComponent implements OnInit {
                 private workFunctionService: WorkFunctionService,
                 private userService: UserService,
                 private projectService: ProjectService,
-                private routerService: RouterService) {
+                private routerService: RouterService,
+                private communicationService: ProjectCommunicationService) {
         this.folderUrlToRedirect = 'workFunction/';
     }
 
@@ -87,6 +89,20 @@ export class ProjectDetailComponent implements OnInit {
                 this.workFunctions = workFunction;
             });
         });
+
+        this.communicationService.triggerAddWorkFunction.subscribe(show => {
+            this.showFunctionDetail = show;
+        });
     }
 
+    ngOnDestroy() {
+        this.communicationService.triggerAddWorkFunction.next(false);
+    }
+    onCloseItemView() {
+        this.showFunctionDetail = false;
+        this.communicationService.triggerAddWorkFunction.next(false);
+    }
+    onWorkFunctionAdded(workFunction: WorkFunction): void {
+        this.workFunctions.push(workFunction);
+    }
 }

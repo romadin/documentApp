@@ -1,7 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
+import { ProjectService } from '../../shared/packages/project-package/project.service';
 
+import { WorkFunction } from '../../shared/packages/work-function-package/work-function.model';
+import { WorkFunctionService } from '../../shared/packages/work-function-package/work-function.service';
 import { RouterService } from '../../shared/service/router.service';
 import { FolderService } from '../../shared/packages/folder-package/folder.service';
 import { Folder } from '../../shared/packages/folder-package/folder.model';
@@ -19,14 +23,14 @@ import { ActiveItemPackage } from './folder-detail/folder-detail.component';
   styleUrls: ['./work-function.component.css']
 })
 export class WorkFunctionComponent implements OnInit, OnDestroy {
-    public documents: Document[];
-    public currentFolder: Folder;
-    public mainFolder: Folder;
-    public currentUser: User;
-    public items: (Document | Folder)[];
-    public showReadMode: boolean;
-    public showReadModeAnimation: boolean;
-    public activeItem: ActiveItemPackage;
+    documents: Document[];
+    workFunction: WorkFunction;
+    mainFolder: Folder;
+    currentUser: User;
+    items: (Document | Folder)[];
+    showReadMode: boolean;
+    showReadModeAnimation: boolean;
+    activeItem: ActiveItemPackage;
 
     private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
     private subscriptions: Subscription[] = [];
@@ -34,6 +38,8 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
     constructor(private folderService: FolderService,
                 private documentService: DocumentService,
                 private userService: UserService,
+                private projectService: ProjectService,
+                private workFunctionService: WorkFunctionService,
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
                 private headerCommunicationService: HeaderWithFolderCommunicationService,
@@ -41,7 +47,21 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        const folderId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+        const workFunctionId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+        const projectId: number = parseInt(location.pathname.split('/')[2], 10);
+        this.projectService.getProject(projectId, this.activatedRoute.snapshot.data.organisation).then(project => {
+            this.workFunctionService.getWorkFunction(workFunctionId, project).subscribe(workFunction => {
+                this.workFunction = workFunction;
+
+                this.workFunction.folders.pipe(mergeMap(folders => {
+                    const items: (Document | Folder)[] = folders;
+                    return this.workFunction.documents.pipe(map(documents => items.concat(documents)));
+                })).subscribe(items => {
+                    this.items = items;
+                    this.items = this.items.sort((a, b) => a.order - b.order);
+                });
+            });
+        });
 
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
 
@@ -49,7 +69,6 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
             this.currentUser = user;
         }));
         this.subscriptions.push(this.itemsSubscription.subscribe((items: (Document | Folder)[]) => {
-            this.items = items;
         }));
 
         this.subscriptions.push(this.headerCommunicationService.triggerAddItem.subscribe((trigger: boolean) => {
@@ -70,7 +89,6 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
         }));
 
         this.headerCommunicationService.showAddUserButton.next(false);
-        this.getItems(folderId);
     }
 
     ngOnDestroy() {
@@ -79,7 +97,7 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
     }
 
     onFolderDeleted(folder: Folder) {
-        this.items.splice(this.items.findIndex((item) => item === folder), 1);
+        // this.items.splice(this.items.findIndex((item) => item === folder), 1);
     }
 
     onCloseReadMode(close: boolean) {
@@ -102,14 +120,13 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
     }
 
     public onItemsAdded(item: Folder | Document): void {
-        this.setNewItems(<Folder>item);
-        this.currentFolder = <Folder>item;
+        // this.setNewItems(<Folder>item);
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
     public addItem() {
         this.resetView();
-        if (this.currentFolder && this.currentFolder.isMainFolder) {
+        if (this.workFunction) {
             this.activeItem = {
                 component: 'cim-item-create',
                 item: null
@@ -125,24 +142,6 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
 
     public checkItemIsFolder(item): boolean {
         return item instanceof Folder;
-    }
-
-    private getItems(folderId: number): void {
-        this.folderService.getFolder(folderId).subscribe((folder: Folder) => {
-            if (folder) {
-                this.currentFolder = folder;
-                this.currentFolder.documents.subscribe((documents) => {
-                    let itemsContainer: (Document | Folder)[];
-                    itemsContainer = documents;
-                    itemsContainer = itemsContainer.concat(this.currentFolder.subFolders);
-                    itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
-                    this.itemsSubscription.next(itemsContainer);
-                });
-                this.folderService.getMainFolderFromProject(folder.projectId).subscribe((mainFolder: Folder) => {
-                    this.mainFolder = mainFolder;
-                });
-            }
-        });
     }
 
     private setNewItems(folder: Folder) {

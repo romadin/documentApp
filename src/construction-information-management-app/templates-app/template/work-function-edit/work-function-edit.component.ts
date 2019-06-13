@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Project } from '../../../../shared/packages/project-package/project.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WorkFunctionService } from '../../../../shared/packages/work-function-package/work-function.service';
@@ -11,8 +12,9 @@ import { ToastService } from '../../../../shared/toast.service';
   styleUrls: ['./work-function-edit.component.css']
 })
 export class WorkFunctionEditComponent implements OnInit {
-    @Input() template: Template;
+    @Input() parent: Template|Project;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() workFunctionAdded: EventEmitter<WorkFunction> = new EventEmitter<WorkFunction>();
     workFunctionForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
@@ -50,11 +52,12 @@ export class WorkFunctionEditComponent implements OnInit {
                     this.toast.showSuccess('Gebruiker: ' +  workFunction.name + ' is bewerkt', 'Bewerkt');
                 });
             } else {
-                body['templateId'] = this.template.id;
-                this.workFunctionService.createWorkFunction(this.template, body).subscribe(workFunction => {
-                    this.template.workFunctions.push(workFunction);
+                this.parent instanceof Template ? body['templateId'] = this.parent.id : body['projectId'] = this.parent.id;
+                this.workFunctionService.createWorkFunction(this.parent, body).subscribe(workFunction => {
+                    this.parent.workFunctions.push(workFunction);
                     this.workFunction = workFunction;
                     this.toast.showSuccess('Functie: ' +  workFunction.name + ' is toegevoegd', 'Toegevoegd');
+                    this.workFunctionAdded.emit(workFunction);
                 });
             }
         }

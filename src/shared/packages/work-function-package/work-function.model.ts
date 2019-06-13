@@ -1,4 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
+import { Document } from '../document-package/document.model';
+import { Folder } from '../folder-package/folder.model';
 
 import { Project } from '../project-package/project.model';
 import { Template } from '../template-package/template.model';
@@ -13,6 +15,8 @@ export class WorkFunction {
     private _parent: Template|Project;
     private _headlines: BehaviorSubject<Headline[]>;
     private _chapters: BehaviorSubject<Chapter[]>;
+    private _folders: BehaviorSubject<Folder[]>;
+    private _documents: BehaviorSubject<Document[]>;
     private _on: boolean;
 
     constructor() { }
@@ -71,6 +75,22 @@ export class WorkFunction {
 
     set chapters(value: BehaviorSubject<Chapter[]>) {
         this._chapters = value;
+    }
+
+    get folders(): BehaviorSubject<Folder[]> {
+        return this._folders;
+    }
+
+    set folders(value: BehaviorSubject<Folder[]>) {
+        this._folders = value;
+    }
+
+    get documents(): BehaviorSubject<Document[]> {
+        return this._documents;
+    }
+
+    set documents(value: BehaviorSubject<Document[]>) {
+        this._documents = value;
     }
 
     get on(): boolean {

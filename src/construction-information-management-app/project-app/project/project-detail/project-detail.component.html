@@ -1,5 +1,5 @@
-<div *ngIf="workFunctions && currentUser">
-    <div class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail || showHeadlineDetail ? 'smallWidth' : 'fullWidth'">
+<div *ngIf="workFunctions && currentUser" class="wrapper">
+    <div class="container" [@resizeWidth]="showFunctionDetail ? 'smallWidth' : 'fullWidth'">
         <cim-project-work-function *ngFor="let workFunction of workFunctions"
                                    [workFunction]="workFunction"
                                    [parent]="project"
@@ -25,9 +25,11 @@
         </div>
     </div>
     <div class="container" *ngIf="showFunctionDetail" [@toggleInView]="showFunctionDetail ? 'open' : 'close'">
-        <cim-detail-folder [currentUser]="currentUser"
-                           [folder]="workFunction"
-                           (closeEditForm)="onCloseView($event)">
-        </cim-detail-folder>
+        <cim-work-function-edit
+                [workFunction]="workFunctionToEdit"
+                [parent]="project"
+                (closeView)="onCloseItemView()"
+                (workFunctionAdded)="onWorkFunctionAdded($event)">
+        </cim-work-function-edit>
     </div>
 </div>

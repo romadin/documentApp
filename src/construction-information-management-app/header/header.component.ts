@@ -6,6 +6,7 @@ import { filter, takeLast } from 'rxjs/operators';
 
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
+import { ProjectCommunicationService } from '../../shared/service/communication/project.communication.service';
 import { ProjectPopupComponent, DefaultPopupData } from '../popups/project-popup/project-popup.component';
 import { RouterService } from '../../shared/service/router.service';
 import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
@@ -27,7 +28,8 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/projecten' | '/gebruikers' | '/projecten/:id/folder/:id'| '/projecten/:id/acties'| '/projecten/:id/agenda' | '/templates';
+type UrlGroup = '/projecten' | '/projecten/:id' | '/gebruikers' | '/projecten/:id/functies/:id'|
+    '/projecten/:id/acties'| '/projecten/:id/agenda' | '/templates';
 
 @Component({
   selector: 'cim-header',
@@ -64,6 +66,7 @@ export class HeaderComponent implements OnInit {
         private eventCommunicationService: EventCommunicationService,
         private usersCommunicationService: UsersCommunicationService,
         private templateCommunicationService: TemplateCommunicationService,
+        private projectCommunicationService: ProjectCommunicationService,
         private organisationService: OrganisationService,
     ) {
         this.defineActions();
@@ -130,7 +133,7 @@ export class HeaderComponent implements OnInit {
             name: 'Gebruiker toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/gebruikers', '/projecten/:id/folder/:id'],
+            urlGroup: ['/gebruikers', '/projecten/:id/functies/:id'],
         };
         const addItemToFolder: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerAddItem.next(true); },
@@ -138,7 +141,7 @@ export class HeaderComponent implements OnInit {
             name: 'Hoofdstuk toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/projecten/:id/folder/:id'],
+            urlGroup: ['/projecten/:id/functies/:id'],
         };
         const readMode: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerReadMode.next(true); },
@@ -146,7 +149,7 @@ export class HeaderComponent implements OnInit {
             name: 'Boek modus',
             show: false,
             needsAdmin: false,
-            urlGroup: ['/projecten/:id/folder/:id'],
+            urlGroup: ['/projecten/:id/functies/:id'],
         };
         const documentToPdf: MenuAction = {
             onClick: () => { this.folderCommunicationService.exportToPdf.next(true); },
@@ -154,7 +157,7 @@ export class HeaderComponent implements OnInit {
             name: 'Exporteer naar pdf',
             show: false,
             needsAdmin: false,
-            urlGroup: ['/projecten/:id/folder/:id'],
+            urlGroup: ['/projecten/:id/functies/:id'],
         };
         const addAction: MenuAction = {
             onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },
@@ -196,6 +199,14 @@ export class HeaderComponent implements OnInit {
             needsAdmin: true,
             urlGroup: ['/templates'],
         };
+        const addWorkFunction: MenuAction = {
+            onClick: () => { this.projectCommunicationService.triggerAddWorkFunction.next(true); },
+            iconName: 'add',
+            name: 'Functie toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten/:id'],
+        };
         this.actionMenu = {
             onClick: () => { this.sideNavigation.toggle(); },
             iconName: 'menu',
@@ -207,7 +218,7 @@ export class HeaderComponent implements OnInit {
             addProject, addUser,
             documentToPdf, readMode, addItemToFolder,
             actionsToPdf, showArchivedActions, addAction,
-            addEvent, addTemplate
+            addEvent, addTemplate, addWorkFunction
         );
     }
 

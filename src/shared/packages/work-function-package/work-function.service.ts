@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { DocumentService } from '../document-package/document.service';
+import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
 import { map } from 'rxjs/operators';
@@ -25,6 +27,8 @@ export class WorkFunctionService {
     constructor(private apiService: ApiService,
                 private headlineService: HeadlineService,
                 private chapterService: ChapterService,
+                private documentService: DocumentService,
+                private foldersService: FolderService,
     ) {  }
 
     getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
@@ -33,9 +37,15 @@ export class WorkFunctionService {
         );
     }
 
-    createWorkFunction(template: Template, body): Observable<WorkFunction> {
+    getWorkFunction(id: number, parent: Template|Project): Observable<WorkFunction> {
+        return this.apiService.get(this.path + '/' + id, {}).pipe(
+            map((result: WorkFunctionApiResponseInterface) => this.makeWorkFunction(result, parent))
+        );
+    }
+
+    createWorkFunction(parent: Template|Project, body): Observable<WorkFunction> {
         return this.apiService.post(this.path, body).pipe(
-            map((result: WorkFunctionApiResponseInterface) => this.makeWorkFunction(result, template))
+            map((result: WorkFunctionApiResponseInterface) => this.makeWorkFunction(result, parent))
         );
     }
 
@@ -65,6 +75,8 @@ export class WorkFunctionService {
         workFunction.parent = parent;
         workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
+        workFunction.folders = this.foldersService.getFoldersByWorkFunction(workFunction);
+        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
 
         this.cache[workFunction.id] = workFunction;
 

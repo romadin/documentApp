@@ -1,3 +1,6 @@
+div.wrapper {
+    display: flex;
+}
 div.cardRow {
     padding: 12px 18px;
 }

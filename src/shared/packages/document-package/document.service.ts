@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { Chapter } from '../chapter-package/chapter.model';
+import { ChapterApiResponseInterface } from '../chapter-package/interface/chapter-api-response.interface';
+import { WorkFunction } from '../work-function-package/work-function.model';
 
 import { Document } from './document.model';
 import { ApiDocResponse, DocPostData } from './api-document.interface';
@@ -13,14 +16,15 @@ interface DocumentsCache {
 @Injectable()
 export class DocumentService {
     private documentsCache: DocumentsCache = {};
+    private path = '/documents';
 
     constructor(private apiService: ApiService) { }
 
-    public getDocuments(folderId: number): BehaviorSubject<Document[]> {
+    getDocumentsByFolder(folderId: number): BehaviorSubject<Document[]> {
         const documents: BehaviorSubject<Document[]> = new BehaviorSubject([]);
         const params = { folderId: folderId, template: 'default' };
 
-        this.apiService.get('/documents', params).subscribe((documentsResponse: ApiDocResponse[]) => {
+        this.apiService.get(this.path, params).subscribe((documentsResponse: ApiDocResponse[]) => {
                 const documentsContainer: Document[] = [];
 
                 documentsResponse.forEach((documentResponse: ApiDocResponse) => {
@@ -38,10 +42,20 @@ export class DocumentService {
         return documents;
     }
 
+    getDocumentsByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Document[]> {
+        const param = {workFunctionId: workFunction.id};
+        const documentsContainer: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
+        this.apiService.get(this.path, param).subscribe((result: ApiDocResponse[]) => {
+                const documents = result.map(response => this.makeDocument(response));
+                documentsContainer.next(documents);
+            });
+        return documentsContainer;
+    }
+
     public postDocument(postData: DocPostData): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
 
-        this.apiService.post('/documents', postData).subscribe((response: ApiDocResponse) => {
+        this.apiService.post(this.path, postData).subscribe((response: ApiDocResponse) => {
             newDocument.next(this.makeDocument(response));
         }, (error) => {
             newDocument.error(error.error);
@@ -53,7 +67,7 @@ export class DocumentService {
     public updateDocument(document: Document, postData: DocPostData): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
 
-        this.apiService.post('/documents/' + document.id, postData).subscribe((response: ApiDocResponse) => {
+        this.apiService.post(this.path + '/' + document.id, postData).subscribe((response: ApiDocResponse) => {
             this.updateDocumentModel(document, response);
             newDocument.next(document);
         }, (error) => {
@@ -65,7 +79,7 @@ export class DocumentService {
 
     public deleteDocument(document: Document): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete('/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {
+        this.apiService.delete(this.path + '/' + document.id, {}).subscribe((response: ApiDocResponse) => {
             if (this.documentsCache.hasOwnProperty(document.id) ) {
                 delete this.documentsCache[document.id];
             }
@@ -74,6 +88,9 @@ export class DocumentService {
         return deleted;
     }
 
+    /**
+     * @todo still need to fix this.
+     */
     public deleteDocumentLink(document: Document, folder: Folder) {
         const deleted: Subject<boolean> = new Subject<boolean>();
         this.apiService.delete('/workFunctions/' + folder.id + '/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {

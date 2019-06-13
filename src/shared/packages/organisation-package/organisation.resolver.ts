@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { EMPTY, Observable, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 
 import { Organisation } from './organisation.model';
 import { OrganisationService } from './organisation.service';
-import { mergeMap } from 'rxjs/operators';
 
 @Injectable()
 export class OrganisationResolver implements Resolve<Observable<Organisation> | Observable<never>> {

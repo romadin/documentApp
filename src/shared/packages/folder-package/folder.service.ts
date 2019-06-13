@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { find, map } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Folder } from './folder.model';
-import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-folder.interface';
-import { ApiService } from '../../service/api.service';
+import { ApiDocResponse } from '../document-package/api-document.interface';
 import { DocumentService } from '../document-package/document.service';
 import { Document} from '../document-package/document.model';
-import { ApiDocResponse } from '../document-package/api-document.interface';
+import { WorkFunction } from '../work-function-package/work-function.model';
+import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-folder.interface';
+import { ApiService } from '../../service/api.service';
+import { Folder } from './folder.model';
 
 interface FoldersByProjectCache {
     [projectId: number]: Folder[];
@@ -21,22 +22,22 @@ interface FoldersCache {
 export class FolderService {
     private foldersByProjectCache: FoldersByProjectCache = {};
     private foldersCache: FoldersCache = {};
+    private path = '/folders/';
 
     constructor(private apiService: ApiService, private documentService: DocumentService) { }
 
-    public getFoldersByProject(projectId: number): BehaviorSubject<Folder[]> {
+    public getFoldersByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Folder[]> {
         const folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
 
-        if ( this.foldersByProjectCache[projectId] ) {
-            folders.next(this.foldersByProjectCache[projectId]);
+        if ( this.foldersByProjectCache[workFunction.id] ) {
+            folders.next(this.foldersByProjectCache[workFunction.id]);
             return folders;
         }
 
-        this.apiService.get('/workFunctions', {projectId: projectId}).subscribe((foldersResponse: ApiFolderResponse[]) => {
+        this.apiService.get(this.path, {workFunctionId: workFunction.id}).subscribe((foldersResponse: ApiFolderResponse[]) => {
             const mainFolders: Folder[] = [];
             foldersResponse.forEach((folderResponse) => {
                 const folder = this.makeFolder(folderResponse);
-                this.setFoldersByProjectCache(folder);
                 mainFolders.push(folder);
             });
 
@@ -53,7 +54,7 @@ export class FolderService {
             folder.next(this.foldersCache[id]);
             return folder;
         }
-        this.apiService.get('/workFunctions/' + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
+        this.apiService.get(this.path + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(folderResponse));
         }, (error) => {
             throw new Error(error.error);
@@ -65,7 +66,7 @@ export class FolderService {
     public createFolder(data: NewFolderPostData): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
 
-        this.apiService.post('/workFunctions', data).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post(this.path, data).subscribe((foldersResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(foldersResponse));
         }, (error) => {
             throw new Error(error.error);
@@ -78,7 +79,7 @@ export class FolderService {
     public postFolder(id: number, data: FolderPostData): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
 
-        this.apiService.post('/workFunctions/' + id, data).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post(this.path + id, data).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
                 return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
@@ -94,13 +95,13 @@ export class FolderService {
         const folder: Subject<Folder> = new Subject();
         const documentsId: number[] = [];
         items.forEach((item) => {
-            // @todo need to remove the if, when i can link workFunctions to workFunctions.
+            // @todo need to remove the if, when i can link folder to folder.
             if (item instanceof Document) {
                 documentsId.push(item.id);
             }
         });
         const body = {documentsId: documentsId};
-        this.apiService.post('/workFunctions/' + id + '/documents', body).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post(this.path + id + '/documents', body).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
                 return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
@@ -113,17 +114,13 @@ export class FolderService {
 
     public deleteFolder(folder: Folder, params: any): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete('/workFunctions/' + folder.id, params).subscribe((response: ApiDocResponse) => {
+        this.apiService.delete(this.path + folder.id, params).subscribe((response: ApiDocResponse) => {
             if (this.foldersCache.hasOwnProperty(folder.id) ) {
                 delete this.foldersCache[folder.id];
             }
             deleted.next(true );
         });
         return deleted;
-    }
-
-    public getMainFolderFromProject(projectId: number) {
-        return this.getFoldersByProject(projectId).pipe(map(folders => folders.find(folder => folder.isMainFolder)));
     }
 
     public makeFolder(folderData: ApiFolderResponse) {
@@ -134,46 +131,25 @@ export class FolderService {
         const folder = new Folder();
         folder.id = folderData.id;
         folder.name = folderData.name;
-        folder.projectId = folderData.projectId;
-        folder.isOn = folderData.on;
-        folder.isMainFolder = folderData.isMain;
 
         folder.order = folderData.order;
         folder.fromTemplate = folderData.fromTemplate;
         this.foldersCache[folder.id] = folder;
 
-        const parentsFolders: Folder[] = [];
-        folderData.parentFoldersId.forEach((parentId) => {
-            this.getFolder(parentId).subscribe((parentFolder: Folder) => {
-                if (parentFolder) {
-                    parentsFolders.push(parentFolder);
-                    folder.parentFolders.next(parentsFolders);
-                }
-            });
-        });
-
-        // check if sub workFunctions exist then set the sub workFunction-app.
+        // check if sub folder exist then set the sub workFunction-app.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
             folderData.subFolders.forEach((subFolderResponse) => {
                 folder.subFolder = this.makeFolder(subFolderResponse);
             });
         }
 
-        folder.documents = this.documentService.getDocuments(folderData.id);
+        folder.documents = this.documentService.getDocumentsByFolder(folderData.id);
 
         return folder;
     }
 
-    private setFoldersByProjectCache(folder: Folder): void {
-        if ( this.foldersByProjectCache[folder.projectId] ) {
-            this.foldersByProjectCache[folder.projectId].push(folder);
-        } else {
-            this.foldersByProjectCache[folder.projectId] = [folder];
-        }
-    }
-
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        // check if sub workFunctions exist then set the sub workFunction-app.
+        // check if sub folder exist then set the sub workFunction-app.
         if ( response.subFolders !== null && response.subFolders.length > 0 ) {
             const subFolders: Folder[] = [];
             response.subFolders.forEach((subFolderResponse) => {
@@ -182,7 +158,7 @@ export class FolderService {
             folder.subFolders = subFolders;
         }
 
-        folder.documents = this.documentService.getDocuments(folder.id);
+        folder.documents = this.documentService.getDocumentsByFolder(folder.id);
         return folder;
     }
 }

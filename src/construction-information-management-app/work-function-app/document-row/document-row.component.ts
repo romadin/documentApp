@@ -24,10 +24,6 @@ export class DocumentRowComponent implements OnInit {
 
     ngOnInit() {
         this.iconName = this.documentIconService.getIconByName(this.document.originalName);
-
-        this.parentFolder.parentFolders.subscribe((parentFolders: Folder[]) => {
-            this.highestLevelParentFolders = parentFolders;
-        });
     }
 
     public editDocument(event: Event): void {
@@ -38,7 +34,7 @@ export class DocumentRowComponent implements OnInit {
 
     public deleteDocument(e: Event): void {
         e.stopPropagation();
-        if ( this.parentFolder.isMainFolder ) {
+        if ( this.parentFolder ) {
             this.documentService.deleteDocument(this.document).subscribe((deleted: boolean) => {
                 if ( deleted ) {
                     this.removeFromParentFolder();
@@ -58,10 +54,8 @@ export class DocumentRowComponent implements OnInit {
             if (!this.document.fromTemplate) {
                 return true;
             }
-            if ( this.parentFolder.isMainFolder ) {
+            if ( this.parentFolder ) {
                 return !this.document.fromTemplate;
-            } else {
-                return !this.highestLevelParentFolders.find((parentFolder: Folder) => parentFolder.isMainFolder);
             }
         }
         return false;

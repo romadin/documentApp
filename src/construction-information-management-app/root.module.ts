@@ -23,6 +23,7 @@ import { FolderService } from '../shared/packages/folder-package/folder.service'
 import { DocumentService } from '../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../shared/packages/document-package/document-icon.service';
 import { ActionService } from '../shared/packages/action-package/action.service';
+import { ProjectCommunicationService } from '../shared/service/communication/project.communication.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { RouterService } from '../shared/service/router.service';
 import { HeaderWithFolderCommunicationService } from '../shared/service/communication/HeaderWithFolder.communication.service';
@@ -133,6 +134,7 @@ const appRoutes: Routes = [
         HeaderWithFolderCommunicationService,
         UsersCommunicationService,
         TemplateCommunicationService,
+        ProjectCommunicationService,
 
         FolderService,
         DocumentService,

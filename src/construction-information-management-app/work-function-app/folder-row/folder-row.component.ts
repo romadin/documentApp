@@ -6,7 +6,7 @@ import { FolderService } from '../../../shared/packages/folder-package/folder.se
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
-import { Project } from '../../../shared/packages/project-package/project.model';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 @Component({
   selector: 'cim-folder-row',
@@ -14,13 +14,13 @@ import { Project } from '../../../shared/packages/project-package/project.model'
   styleUrls: ['./folder-row.component.css']
 })
 export class FolderRowComponent implements OnInit {
-    @Input() parent: Folder | Project;
-    @Input() public folder: Folder;
-    @Input() public currentUser: User;
-    @Input() public redirectUrl: string;
-    @Output() public sendDocumentToFolder: EventEmitter<Document> = new EventEmitter<Document>();
-    @Output() public sendFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
-    @Output() public sendDeletedFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
+    @Input() parent: WorkFunction;
+    @Input() folder: Folder;
+    @Input() currentUser: User;
+    @Input() redirectUrl: string;
+    @Output() sendDocumentToFolder: EventEmitter<Document> = new EventEmitter<Document>();
+    @Output() sendFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
+    @Output() sendDeletedFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
 
     public documents: Document[];
 
@@ -53,16 +53,14 @@ export class FolderRowComponent implements OnInit {
     deleteFolder(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-        if (this.parent instanceof Folder) {
-            const params = this.parent && this.parent.isMainFolder ? {} : { parentFolderId: this.parent.id };
+            const params = this.parent && this.parent.isMainFunction ? {} : { parentFolderId: this.parent.id };
             this.folderService.deleteFolder(this.folder, params).subscribe((deleted) => {
                 if (deleted) {
-                    (<Folder>this.parent).subFolders.splice((<Folder>this.parent).subFolders
+                    this.parent.folders.getValue().splice((this.parent).folders.getValue()
                         .findIndex((subFolder => subFolder === this.folder)), 1);
                     this.sendDeletedFolderToFolderComponent.emit(this.folder);
                 }
             });
-        }
     }
 
     showDeleteButton(): boolean {
@@ -71,7 +69,7 @@ export class FolderRowComponent implements OnInit {
                 return true;
             }
             if (this.parent instanceof Folder) {
-                return !this.parent.isMainFolder;
+                return !this.parent.isMainFunction;
             }
             return false;
         }

@@ -54,7 +54,7 @@
     <div class="container" *ngIf="showWorkFunctionDetail" [@toggleInView]="showWorkFunctionDetail ? 'open' : 'close'">
         <cim-work-function-edit
                 [workFunction]="workFunctionToEdit"
-                [template]="template"
+                [parent]="template"
                 (closeView)="onCloseItemView()">
         </cim-work-function-edit>
     </div>

@@ -12,7 +12,7 @@
                 <ng-template #folderBlock>
                     <div>
                         <h3> {{ item.getName() }} </h3>
-                        <div *ngFor="let subDocument of item.getDocuments().getValue()">
+                        <div *ngFor="let subDocument of item.getDocumentsByFolder().getValue()">
                             <h4> {{ subDocument.getName() }} </h4>
                             <div #dataContentSubDocument >{{ setContent(subDocument, dataContentSubDocument) }}</div>
                         </div>

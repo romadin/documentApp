@@ -13,7 +13,7 @@
                          [parentFolder]="folder">
     </cim-create-document>
     <cim-detail-folder *ngIf="itemToEdit === 'workFunction'"
-                       [parentFolder]="folder"
+                       [parent]="folder"
                        (editedFolder)="onFolderEdit($event)">
     </cim-detail-folder>
 </div>

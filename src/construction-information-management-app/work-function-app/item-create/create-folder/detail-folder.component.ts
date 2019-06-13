@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Folder } from '../../../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../../../shared/packages/folder-package/folder.service';
 import { NewFolderPostData } from '../../../../shared/packages/folder-package/api-folder.interface';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { FolderCommunicationService } from '../../../../shared/service/communication/Folder.communication.service';
 import { Document } from '../../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../../shared/packages/document-package/document.service';
@@ -15,9 +16,9 @@ import { User } from '../../../../shared/packages/user-package/user.model';
   styleUrls: ['./detail-folder.component.css']
 })
 export class DetailFolderComponent implements OnInit {
-    @Input() parentFolder: Folder;
+    @Input() parent: WorkFunction;
     @Input() currentUser: User;
-    @Output() editedFolder: EventEmitter<Folder> = new EventEmitter<Folder>();
+    @Output() editedFolder: EventEmitter<WorkFunction> = new EventEmitter<WorkFunction>();
     public folderForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
@@ -30,14 +31,12 @@ export class DetailFolderComponent implements OnInit {
     set folder(folder: Folder) {
         this._folder = folder;
         this.getDocuments();
-        this.getHighestParentFolders();
+        // this.getHighestParentFolders();
     }
 
     get folder(): Folder {
         return this._folder;
     }
-
-    private highestLevelParentFolders: Folder[];
 
     constructor(
         private folderService: FolderService,
@@ -54,22 +53,17 @@ export class DetailFolderComponent implements OnInit {
     onSubmit() {
         const postData: NewFolderPostData = {
             name: this.folderForm.controls.name.value,
-            parentFolderId: this.parentFolder.id,
+            parentFolderId: this.parent.id,
         };
         this.folderService.createFolder(postData).subscribe((newFolder: Folder) => {
-            this.parentFolder.addSubFolder(newFolder);
-            this.editedFolder.emit(this.parentFolder);
+            const currentFolders = this.parent.folders.getValue();
+            currentFolders.push(newFolder);
+            this.parent.folders.next(currentFolders);
+            this.editedFolder.emit(this.parent);
         });
     }
 
     showDeleteButton(document: Document): boolean {
-        if ( document.fromTemplate ) {
-            if ( this.folder.isMainFolder ) {
-                return !document.fromTemplate;
-            } else {
-                return !this.highestLevelParentFolders.find((parentFolder: Folder) => parentFolder.isMainFolder);
-            }
-        }
         return true;
     }
 
@@ -106,12 +100,6 @@ export class DetailFolderComponent implements OnInit {
     private getDocuments(): void {
         this.folder.documents.subscribe((documents) => {
             this.documents = documents;
-        });
-    }
-
-    private getHighestParentFolders(): void {
-        this.folder.parentFolders.subscribe((parentFolders: Folder[]) => {
-            this.highestLevelParentFolders = parentFolders;
         });
     }
 

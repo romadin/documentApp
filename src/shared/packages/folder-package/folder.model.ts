@@ -5,7 +5,6 @@ export class Folder {
     private _id: number;
     private _name: string;
     private _projectId: number;
-    private _isOn: boolean;
     private _documents: BehaviorSubject<Document[]>;
     private _subFolders: Folder[] = [];
     private _isMain: boolean;
@@ -33,22 +32,6 @@ export class Folder {
         this._name = value;
     }
 
-    get projectId(): number {
-        return this._projectId;
-    }
-
-    set projectId(value: number) {
-        this._projectId = value;
-    }
-
-    get isOn(): boolean {
-        return this._isOn;
-    }
-
-    set isOn(value: boolean) {
-        this._isOn = value;
-    }
-
     get documents(): BehaviorSubject<Document[]> {
         return this._documents;
     }
@@ -62,28 +45,16 @@ export class Folder {
         this.documents.next(this._documents.getValue());
     }
 
-    get subFolders(): Folder[] {
-        return this._subFolders;
-    }
-
     set subFolder(subFolder: Folder) {
         this._subFolders.push(subFolder);
     }
 
+    get subFolders(): Folder[] {
+        return this._subFolders;
+    }
+
     set subFolders(subFolders: Folder[]) {
         this._subFolders = subFolders;
-    }
-
-    public addSubFolder(folder: Folder): void {
-        this._subFolders.push(folder);
-    }
-
-    get isMainFolder(): boolean {
-        return this._isMain;
-    }
-
-    set isMainFolder(value: boolean) {
-        this._isMain = value;
     }
 
     get order(): number {
@@ -102,11 +73,4 @@ export class Folder {
         this._fromTemplate = value;
     }
 
-    get parentFolders(): BehaviorSubject<Folder[]> {
-        return this._parentFolders;
-    }
-
-    set parentFolders(value: BehaviorSubject<Folder[]>) {
-        this._parentFolders = value;
-    }
 }

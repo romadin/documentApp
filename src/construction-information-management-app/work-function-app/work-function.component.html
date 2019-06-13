@@ -1,7 +1,7 @@
 <div class="wrapper" *ngIf="currentUser">
     <div class="overview" *ngIf="items && items.length > 0" [ngClass]="{'readModeEnabled': showReadModeAnimation}">
         <ng-container *ngFor="let item of items; let itemIndex = index">
-            <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && currentFolder.isMainFolder" (click)="onItemView('cim-partners')">
+            <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && workFunction.isMainFunction" (click)="onItemView('cim-partners')">
                 <div class="header">
                     <i class="material-icons"> people </i>
                     <h3> Partners</h3>
@@ -14,7 +14,7 @@
             <ng-template #folderBlock>
                 <cim-folder-row [folder]="item"
                                 [currentUser]="currentUser"
-                                [parent]="currentFolder"
+                                [parent]="workFunction"
                                 (sendDocumentToFolder)="onItemView('cim-document-detail', $event)"
                                 (sendFolderToFolderComponent)="onItemView('cim-detail-folder', $event)"
                                 (sendDeletedFolderToFolderComponent)="onFolderDeleted($event)">
@@ -24,7 +24,7 @@
             <ng-template #documentBlock>
                 <cim-document-row [document]="item"
                                   [currentUser]="currentUser"
-                                  [parentFolder]="currentFolder"
+                                  [parentFolder]="workFunction"
                                   (activatedDocument)="onItemView('cim-document-detail', $event)">
                 </cim-document-row>
             </ng-template>
@@ -32,7 +32,7 @@
     </div>
     <div class="card" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
         <cim-folder-detail
-                [currentFolder]="currentFolder"
+                [currentFolder]="workFunction"
                 [currentUser]="currentUser"
                 [activeSidePackage]="activeItem"
                 (itemsAdded)="onItemsAdded($event)"
