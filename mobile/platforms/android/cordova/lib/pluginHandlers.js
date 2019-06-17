@@ -54,7 +54,7 @@ var handlers = {
             if (obj.src.endsWith('java')) {
                 deleteJava(project.projectDir, dest);
             } else {
-                // Just remove the file, not the whole parent directory
+                // Just remove the file, not the whole workFunction directory
                 removeFile(project.projectDir, dest);
             }
         }
@@ -129,7 +129,7 @@ var handlers = {
                 var subRelativeDir = project.getCustomSubprojectRelativeDir(plugin.id, src);
                 removeFile(project.projectDir, subRelativeDir);
                 subDir = path.resolve(project.projectDir, subRelativeDir);
-                // If it's the last framework in the plugin, remove the parent directory.
+                // If it's the last framework in the plugin, remove the workFunction directory.
                 var parDir = path.dirname(subDir);
                 if (fs.existsSync(parDir) && fs.readdirSync(parDir).length === 0) {
                     fs.rmdirSync(parDir);

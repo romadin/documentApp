@@ -7,6 +7,7 @@ import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
+import { ToastService } from '../../../shared/toast.service';
 
 @Component({
   selector: 'cim-folder-row',
@@ -14,18 +15,23 @@ import { WorkFunction } from '../../../shared/packages/work-function-package/wor
   styleUrls: ['./folder-row.component.css']
 })
 export class FolderRowComponent implements OnInit {
-    @Input() parent: WorkFunction;
+    @Input() workFunction: WorkFunction;
     @Input() folder: Folder;
     @Input() currentUser: User;
     @Input() redirectUrl: string;
     @Output() sendDocumentToFolder: EventEmitter<Document> = new EventEmitter<Document>();
     @Output() sendFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
-    @Output() sendDeletedFolderToFolderComponent: EventEmitter<Folder> = new EventEmitter<Folder>();
+    @Output() closeRightView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     public documents: Document[];
 
 
-    constructor(private folderService: FolderService, private router: Router, private activatedRoute: ActivatedRoute) {
+    constructor(
+        private folderService: FolderService,
+        private router: Router,
+        private activatedRoute: ActivatedRoute,
+        private toast: ToastService,
+    ) {
     }
 
     public ngOnInit(): void {
@@ -53,12 +59,14 @@ export class FolderRowComponent implements OnInit {
     deleteFolder(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-            const params = this.parent && this.parent.isMainFunction ? {} : { parentFolderId: this.parent.id };
+            const params = { workFunctionId: this.workFunction.id };
             this.folderService.deleteFolder(this.folder, params).subscribe((deleted) => {
                 if (deleted) {
-                    this.parent.folders.getValue().splice((this.parent).folders.getValue()
-                        .findIndex((subFolder => subFolder === this.folder)), 1);
-                    this.sendDeletedFolderToFolderComponent.emit(this.folder);
+                    const folders = this.workFunction.folders.getValue();
+                    folders.splice(folders.findIndex((subFolder => subFolder === this.folder)), 1);
+                    this.workFunction.folders.next(folders);
+                    this.toast.showSuccess('Hoofdstuk: ' + this.folder.name + ' is verwijderd', 'Verwijderd');
+                    this.closeRightView.emit(true);
                 }
             });
     }
@@ -68,10 +76,7 @@ export class FolderRowComponent implements OnInit {
             if (!this.folder.fromTemplate) {
                 return true;
             }
-            if (this.parent instanceof Folder) {
-                return !this.parent.isMainFunction;
-            }
-            return false;
+            return !this.workFunction.isMainFunction;
         }
         return false;
     }

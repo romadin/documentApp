@@ -554,7 +554,7 @@ function include (parent, objects, clobber, merge) {
                 if (typeof parent[key] === 'undefined') {
                     assignOrWrapInDeprecateGetter(parent, key, result, obj.deprecated);
                 } else if (typeof obj.path !== 'undefined') {
-                    // If merging, merge properties onto parent, otherwise, clobber.
+                    // If merging, merge properties onto workFunction, otherwise, clobber.
                     if (merge) {
                         recursiveMerge(parent[key], result);
                     } else {
@@ -2152,13 +2152,13 @@ utils.createUUID = function () {
 };
 
 /**
- * Extends a child object from a parent object using classical inheritance
+ * Extends a child object from a workFunction object using classical inheritance
  * pattern.
  */
 utils.extend = (function () {
     // proxy used to establish prototype chain
     var F = function () {};
-    // extend Child from parent
+    // extend Child from workFunction
     return function (Child, Parent) {
 
         F.prototype = Parent.prototype;

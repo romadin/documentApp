@@ -63,7 +63,6 @@ export class DetailFolderComponent implements OnInit {
                 const index = currentFolders.findIndex(f => f.id === folder.id);
                 currentFolders[index] = folder;
                 this.parent.folders.next(currentFolders);
-                console.log(this.folder);
             });
         } else {
             this.folderService.createFolder(postData, this.parent).subscribe((newFolder: Folder) => {

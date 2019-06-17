@@ -100,10 +100,6 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
         this.subscriptions.map(s => s.unsubscribe());
     }
 
-    onFolderDeleted(folder: Folder) {
-        // this.items.splice(this.items.findIndex((item) => item === workFunction), 1);
-    }
-
     onCloseReadMode(close: boolean) {
         this.showReadModeAnimation = !close;
         setTimeout(() => {

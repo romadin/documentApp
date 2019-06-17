@@ -14,10 +14,10 @@
             <ng-template #folderBlock>
                 <cim-folder-row [folder]="item"
                                 [currentUser]="currentUser"
-                                [parent]="workFunction"
+                                [workFunction]="workFunction"
                                 (sendDocumentToFolder)="onItemView('cim-document-detail', $event)"
                                 (sendFolderToFolderComponent)="onItemView('cim-detail-folder', $event)"
-                                (sendDeletedFolderToFolderComponent)="onFolderDeleted($event)">
+                                (closeRightView)="onCloseRightSide($event)">
                 </cim-folder-row>
             </ng-template>
 

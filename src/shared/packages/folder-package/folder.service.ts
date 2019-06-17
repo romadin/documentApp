@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
 
-import { ApiDocResponse } from '../document-package/api-document.interface';
-import { DocumentService } from '../document-package/document.service';
-import { Document} from '../document-package/document.model';
+import {
+    ConfirmPopupComponent,
+    ConfirmPopupData
+} from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
 import { WorkFunction } from '../work-function-package/work-function.model';
-import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-folder.interface';
 import { ApiService } from '../../service/api.service';
+import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-folder.interface';
 import { Folder } from './folder.model';
+import { DocumentService } from '../document-package/document.service';
+import { ApiDocResponse } from '../document-package/api-document.interface';
+import { Document} from '../document-package/document.model';
 
 interface FoldersByProjectCache {
     [projectId: number]: Folder[];
@@ -24,7 +28,7 @@ export class FolderService {
     private foldersCache: FoldersCache = {};
     private path = '/folders/';
 
-    constructor(private apiService: ApiService, private documentService: DocumentService) { }
+    constructor(private apiService: ApiService, private documentService: DocumentService, private dialog: MatDialog) { }
 
     public getFoldersByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Folder[]> {
         const folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
@@ -116,11 +120,20 @@ export class FolderService {
 
     public deleteFolder(folder: Folder, params: any): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete(this.path + folder.id, params).subscribe((response: ApiDocResponse) => {
-            if (this.foldersCache.hasOwnProperty(folder.id) ) {
-                delete this.foldersCache[folder.id];
+        const popupData: ConfirmPopupData = {
+            title: 'Hoofdstuk verwijderen',
+            name: folder.name,
+            action: 'verwijderen'
+        };
+        this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+            if (action) {
+                this.apiService.delete(this.path + folder.id, params).subscribe((response: ApiDocResponse) => {
+                    if (this.foldersCache.hasOwnProperty(folder.id) ) {
+                        delete this.foldersCache[folder.id];
+                    }
+                    deleted.next(true );
+                });
             }
-            deleted.next(true );
         });
         return deleted;
     }
