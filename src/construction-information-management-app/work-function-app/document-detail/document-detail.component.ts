@@ -8,13 +8,14 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
-import { Document} from '../../../shared/packages/document-package/document.model';
-import { DocumentService } from '../../../shared/packages/document-package/document.service';
-import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { environment } from '../../../environments/environment';
 import { ToastService } from '../../../shared/toast.service';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
+import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
+import { DocumentService } from '../../../shared/packages/document-package/document.service';
+import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
+import { Document} from '../../../shared/packages/document-package/document.model';
 
 @Component({
     selector: 'cim-document-detail',
@@ -22,6 +23,7 @@ import { User } from '../../../shared/packages/user-package/user.model';
     styleUrls: ['./document-detail.component.css']
 })
 export class DocumentDetailComponent implements AfterViewInit {
+    @Input() workFunction: WorkFunction;
     @Input() parentFolder: Folder;
     @Input() currentUser: User;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
@@ -67,15 +69,14 @@ export class DocumentDetailComponent implements AfterViewInit {
                 content: this.content,
             };
             if ( this.document ) {
-                this.documentService.updateDocument(this.document, postData).subscribe((document) => {
+                this.documentService.updateDocument(this.document, postData, this.workFunction).subscribe((document) => {
                     if ( document ) {
                         this.document = document;
                         this.toast.showSuccess('Hoofdstuk: ' + this.document.getName() + ' is bewerkt', 'Bewerkt');
                     }
                 });
             } else {
-                postData.folderId = this.parentFolder.id;
-                this.documentService.postDocument(postData).subscribe((document) => {
+                this.documentService.postDocument(postData, this.workFunction, this.parentFolder).subscribe((document) => {
                     if ( document ) {
                         this.parentFolder.addDocument(document);
                         this.document = document;

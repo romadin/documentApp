@@ -40,6 +40,7 @@
     </form>
 </div>
 <cim-document-detail *ngIf="folder && showAddDocument"
+                     [workFunction]="parent"
                      [currentUser]="currentUser"
                      [parentFolder]="folder"
                      (closeEditForm)="onCloseAddDocument($event)">

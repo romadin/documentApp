@@ -52,10 +52,14 @@ export class DocumentService {
         return documentsContainer;
     }
 
-    public postDocument(postData: DocPostData): BehaviorSubject<Document> {
+    public postDocument(postData: DocPostData, workFunction: WorkFunction, folder?: Folder): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
+        const param = {workFunctionId: workFunction.id};
+        if (folder) {
+            param['folderId'] = folder.id;
+        }
 
-        this.apiService.post(this.path, postData).subscribe((response: ApiDocResponse) => {
+        this.apiService.post(this.path, postData, param).subscribe((response: ApiDocResponse) => {
             newDocument.next(this.makeDocument(response));
         }, (error) => {
             newDocument.error(error.error);
@@ -64,10 +68,11 @@ export class DocumentService {
         return newDocument;
     }
 
-    public updateDocument(document: Document, postData: DocPostData): BehaviorSubject<Document> {
+    public updateDocument(document: Document, postData: DocPostData, workFunction: WorkFunction): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
+        const param = {workFunctionId: workFunction.id};
 
-        this.apiService.post(this.path + '/' + document.id, postData).subscribe((response: ApiDocResponse) => {
+        this.apiService.post(this.path + '/' + document.id, postData, param).subscribe((response: ApiDocResponse) => {
             this.updateDocumentModel(document, response);
             newDocument.next(document);
         }, (error) => {

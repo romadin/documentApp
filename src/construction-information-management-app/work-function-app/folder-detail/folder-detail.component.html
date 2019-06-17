@@ -1,6 +1,7 @@
 <div #container [ngClass]="addFixedClass ? 'positionFixed' : 'normal'">
     <div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail'" [@fadeIn]>
         <cim-document-detail
+                [workFunction]="workFunction"
                 [currentUser]="currentUser"
                 [document]="activeItem.item"
                 (closeEditForm)="onCloseView($event)">
