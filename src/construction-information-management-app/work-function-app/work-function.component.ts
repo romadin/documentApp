@@ -47,6 +47,7 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        this.resetView();
         const workFunctionId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
         const projectId: number = parseInt(location.pathname.split('/')[2], 10);
         this.projectService.getProject(projectId, this.activatedRoute.snapshot.data.organisation).then(project => {
@@ -78,8 +79,10 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
         }));
 
         this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
-            this.resetView();
-            this.showReadMode = this.showReadModeAnimation = read;
+            if (read && !this.showReadMode) {
+                this.resetView();
+                this.showReadMode = this.showReadModeAnimation = read;
+            }
         }));
 
         this.subscriptions.push(this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
@@ -93,6 +96,7 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.headerCommunicationService.triggerAddItem.next(false);
+        this.headerCommunicationService.triggerReadMode.next(false);
         this.subscriptions.map(s => s.unsubscribe());
     }
 
