@@ -25,7 +25,8 @@ export class ProjectRowComponent implements OnInit {
                 private projectService: ProjectService,
                 private userService: UserService,
                 private activatedRoute: ActivatedRoute,
-                private toast: ToastService) { }
+                private toast: ToastService
+    ) { }
 
     ngOnInit() {
         this.currentOrganisation = <Organisation>this.activatedRoute.snapshot.data.organisation;

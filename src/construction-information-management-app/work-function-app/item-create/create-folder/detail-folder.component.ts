@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material';
 
 import { Folder } from '../../../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../../../shared/packages/folder-package/folder.service';
@@ -9,6 +10,8 @@ import { FolderCommunicationService } from '../../../../shared/service/communica
 import { Document } from '../../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../../shared/packages/document-package/document.service';
 import { User } from '../../../../shared/packages/user-package/user.model';
+import { ToastService } from '../../../../shared/toast.service';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'cim-detail-folder',
@@ -31,7 +34,6 @@ export class DetailFolderComponent implements OnInit {
     set folder(folder: Folder) {
         this._folder = folder;
         this.getDocuments();
-        // this.getHighestParentFolders();
     }
 
     get folder(): Folder {
@@ -41,7 +43,8 @@ export class DetailFolderComponent implements OnInit {
     constructor(
         private folderService: FolderService,
         private folderCommunicationService: FolderCommunicationService,
-        private documentService: DocumentService) { }
+        private documentService: DocumentService,
+        private toast: ToastService) { }
 
     ngOnInit() {
         if (this.folder) {
@@ -74,6 +77,9 @@ export class DetailFolderComponent implements OnInit {
     }
 
     showDeleteButton(document: Document): boolean {
+        if ( document.fromTemplate ) {
+            return !this.parent.isMainFunction;
+        }
         return true;
     }
 
@@ -94,11 +100,12 @@ export class DetailFolderComponent implements OnInit {
     deleteDocument(e: Event, documentToDelete: Document): void {
         e.stopPropagation();
         e.preventDefault();
-        this.documentService.deleteDocumentLink(documentToDelete, this.folder).subscribe((deleted: boolean) => {
+        this.documentService.deleteDocument(documentToDelete).subscribe((deleted: boolean) => {
             if ( deleted ) {
                 const documentsArray: Document[] = this.folder.documents.getValue();
                 documentsArray.splice(documentsArray.findIndex((document => document === documentToDelete)), 1);
                 this.folder.documents.next(documentsArray);
+                this.toast.showSuccess('Document: ' + documentToDelete.name + ' is verwijderd', 'Verwijderd');
             }
         });
     }

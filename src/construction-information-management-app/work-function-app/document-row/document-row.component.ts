@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../../../shared/packages/document-package/document-icon.service';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
+import { ToastService } from '../../../shared/toast.service';
 
 @Component({
   selector: 'cim-document-row',
@@ -19,7 +21,11 @@ export class DocumentRowComponent implements OnInit {
     public iconName: string;
 
     public highestLevelParentFolders: Folder[];
-    constructor(private documentIconService: DocumentIconService, private documentService: DocumentService) {
+    constructor(
+        private documentIconService: DocumentIconService,
+        private documentService: DocumentService,
+        private toast: ToastService
+        ) {
     }
 
     ngOnInit() {
@@ -38,6 +44,7 @@ export class DocumentRowComponent implements OnInit {
             this.documentService.deleteDocument(this.document).subscribe((deleted: boolean) => {
                 if ( deleted ) {
                     this.removeFromParentFolder();
+                    this.toast.showSuccess('Document: ' + this.document.name + ' is verwijderd', 'Verwijderd');
                 }
             });
             return;
@@ -45,6 +52,7 @@ export class DocumentRowComponent implements OnInit {
         this.documentService.deleteDocumentLink(this.document, this.parentFolder).subscribe((deleted: boolean) => {
             if ( deleted ) {
                 this.removeFromParentFolder();
+                this.toast.showSuccess('Document: ' + this.document.name + ' is verwijderd', 'Verwijderd');
             }
         });
     }

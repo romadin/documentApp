@@ -1,3 +1,8 @@
+:host >>> cim-document-detail > div > .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
 div.createFolder > form > .actionButtons {
     margin-top: 10px;
 }

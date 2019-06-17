@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Chapter } from '../chapter-package/chapter.model';
-import { ChapterApiResponseInterface } from '../chapter-package/interface/chapter-api-response.interface';
+import {
+    ConfirmPopupComponent,
+    ConfirmPopupData
+} from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
 import { WorkFunction } from '../work-function-package/work-function.model';
 
 import { Document } from './document.model';
@@ -18,7 +21,7 @@ export class DocumentService {
     private documentsCache: DocumentsCache = {};
     private path = '/documents';
 
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService, private dialog: MatDialog) { }
 
     getDocumentsByFolder(folderId: number): BehaviorSubject<Document[]> {
         const documents: BehaviorSubject<Document[]> = new BehaviorSubject([]);
@@ -84,11 +87,20 @@ export class DocumentService {
 
     public deleteDocument(document: Document): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete(this.path + '/' + document.id, {}).subscribe((response: ApiDocResponse) => {
-            if (this.documentsCache.hasOwnProperty(document.id) ) {
-                delete this.documentsCache[document.id];
+        const popupData: ConfirmPopupData = {
+            title: 'Document verwijderen',
+            name: document.name,
+            action: 'verwijderen'
+        };
+        this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+            if (action) {
+                this.apiService.delete(this.path + '/' + document.id, {}).subscribe((response: ApiDocResponse) => {
+                    if (this.documentsCache.hasOwnProperty(document.id) ) {
+                        delete this.documentsCache[document.id];
+                    }
+                    deleted.next(true );
+                });
             }
-            deleted.next(true );
         });
         return deleted;
     }
