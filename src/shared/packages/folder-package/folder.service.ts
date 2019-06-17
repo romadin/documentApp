@@ -63,10 +63,11 @@ export class FolderService {
         return folder;
     }
 
-    public createFolder(data: NewFolderPostData): Subject<Folder> {
+    public createFolder(data: NewFolderPostData, workFunction: WorkFunction): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
+        const param = {workFunctionId: workFunction.id};
 
-        this.apiService.post(this.path, data).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post(this.path, data, param).subscribe((foldersResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(foldersResponse));
         }, (error) => {
             throw new Error(error.error);
@@ -76,10 +77,11 @@ export class FolderService {
     }
 
 
-    public postFolder(id: number, data: FolderPostData): Subject<Folder> {
+    public postFolder(id: number, data: FolderPostData, workFunction: WorkFunction): Subject<Folder> {
         const folder: Subject<Folder> = new Subject();
+        const param = {workFunctionId: workFunction.id};
 
-        this.apiService.post(this.path + id, data).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post(this.path + id, data, param).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
                 return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
@@ -159,6 +161,7 @@ export class FolderService {
         }
 
         folder.documents = this.documentService.getDocumentsByFolder(folder.id);
+        folder.name = response.name;
         return folder;
     }
 }

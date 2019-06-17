@@ -12,12 +12,10 @@ export interface ApiFolderResponse {
 
 export interface FolderPostData {
     turnOn?: boolean;
-    subDocuments?: number[];
-    subFolders?: number[];
+    documents?: number[];
+    name?: string;
 }
 
 export interface NewFolderPostData {
     name: string;
-    parentFolderId: number;
-
 }

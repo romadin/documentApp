@@ -51,16 +51,26 @@ export class DetailFolderComponent implements OnInit {
     }
 
     onSubmit() {
+        const currentFolders = this.parent.folders.getValue();
         const postData: NewFolderPostData = {
             name: this.folderForm.controls.name.value,
-            parentFolderId: this.parent.id,
         };
-        this.folderService.createFolder(postData).subscribe((newFolder: Folder) => {
-            const currentFolders = this.parent.folders.getValue();
-            currentFolders.push(newFolder);
-            this.parent.folders.next(currentFolders);
-            this.editedFolder.emit(this.parent);
-        });
+
+        if (this.folder) {
+            this.folderService.postFolder(this.folder.id, postData, this.parent).subscribe(folder => {
+                this.folder = folder;
+                const index = currentFolders.findIndex(f => f.id === folder.id);
+                currentFolders[index] = folder;
+                this.parent.folders.next(currentFolders);
+                console.log(this.folder);
+            });
+        } else {
+            this.folderService.createFolder(postData, this.parent).subscribe((newFolder: Folder) => {
+                currentFolders.push(newFolder);
+                this.parent.folders.next(currentFolders);
+                this.editedFolder.emit(this.parent);
+            });
+        }
     }
 
     showDeleteButton(document: Document): boolean {

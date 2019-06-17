@@ -5,6 +5,7 @@ import { FolderService } from '../../../shared/packages/folder-package/folder.se
 import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
+import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 
 @Component({
   selector: 'cim-item-list',
@@ -29,7 +30,7 @@ export class ItemListComponent implements OnInit {
         return this._workFunction;
     }
 
-    constructor(private folderService: FolderService) { }
+    constructor(private workFunctionService: WorkFunctionService) { }
 
     ngOnInit() {
         this.getAvailableFolder(this.mainWorkFunction.folders.getValue(), this.workFunction.folders.getValue());
@@ -52,8 +53,9 @@ export class ItemListComponent implements OnInit {
     public saveItems(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.folderService.postFolder(this.workFunction.id, this.preparePostData(this.itemsSelected)).subscribe((folder) => {
-            this.saveItemsDone.emit(folder);
+        this.workFunctionService.updateWorkFunction(this.workFunction, this.preparePostData(this.itemsSelected)).subscribe(workFunction => {
+            // this.saveItemsDone.emit(workFunction);
+            console.log(workFunction);
         });
     }
 
@@ -95,14 +97,14 @@ export class ItemListComponent implements OnInit {
     }
 
     private preparePostData(itemsSelected): FolderPostData {
-        const postData: FolderPostData = {};
+        const postData = {};
 
         itemsSelected.forEach((item: Folder | Document) => {
-            if (this.isFolder(item)) {
-                postData.subFolders ? postData.subFolders.push((<Folder>item).id) : postData.subFolders = [(<Folder>item).id];
-            } else {
-                postData.subDocuments ? postData.subDocuments.push((<Document>item).id) : postData.subDocuments = [(<Document>item).id];
-            }
+            // if (this.isFolder(item)) {
+            //     postData. ? postData.subFolders.push((<Folder>item).id) : postData.subFolders = [(<Folder>item).id];
+            // } else {
+            //     postData.documents ? postData.documents.push((<Document>item).id) : postData.documents = [(<Document>item).id];
+            // }
         });
         return postData;
     }
