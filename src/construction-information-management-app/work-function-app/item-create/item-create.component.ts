@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 type ItemType = 'folder' | 'document';
 
@@ -10,7 +11,7 @@ type ItemType = 'folder' | 'document';
   styleUrls: ['./item-create.component.css']
 })
 export class ItemCreateComponent implements OnInit {
-    @Input() folder: Folder;
+    @Input() workFunction: WorkFunction;
     @Input() currentUser: User;
     @Output() folderChange: EventEmitter<Folder> = new EventEmitter<Folder>();
     @Output() public closeView: EventEmitter<boolean> = new EventEmitter();
@@ -19,9 +20,7 @@ export class ItemCreateComponent implements OnInit {
 
     constructor() { }
 
-    ngOnInit() {
-
-    }
+    ngOnInit() {}
 
     changeEditItemForm(event, itemType: ItemType) {
         this.itemToEdit = itemType;

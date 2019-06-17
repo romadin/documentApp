@@ -97,7 +97,7 @@ export class FolderService {
         const folder: Subject<Folder> = new Subject();
         const documentsId: number[] = [];
         items.forEach((item) => {
-            // @todo need to remove the if, when i can link folder to folder.
+            // @todo need to remove the if, when i can link workFunction to workFunction.
             if (item instanceof Document) {
                 documentsId.push(item.id);
             }
@@ -138,7 +138,7 @@ export class FolderService {
         folder.fromTemplate = folderData.fromTemplate;
         this.foldersCache[folder.id] = folder;
 
-        // check if sub folder exist then set the sub workFunction-app.
+        // check if sub workFunction exist then set the sub workFunction-app.
         if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
             folderData.subFolders.forEach((subFolderResponse) => {
                 folder.subFolder = this.makeFolder(subFolderResponse);
@@ -151,7 +151,7 @@ export class FolderService {
     }
 
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        // check if sub folder exist then set the sub workFunction-app.
+        // check if sub workFunction exist then set the sub workFunction-app.
         if ( response.subFolders !== null && response.subFolders.length > 0 ) {
             const subFolders: Folder[] = [];
             response.subFolders.forEach((subFolderResponse) => {

@@ -125,16 +125,6 @@ export class DocumentService {
     public updateDocumentModel(document: Document, data: ApiDocResponse): void {
         document.content = data.content;
         document.name = data.name;
-
-        const newFolderIds = data.foldersId.filter((folderId) => {
-            return document.parentFolders.find((id) => folderId !== id);
-        });
-
-        if ( newFolderIds ) {
-            newFolderIds.forEach((folderId) => {
-                document.parentFolders.push(folderId);
-            });
-        }
     }
 
     private makeDocument(data: ApiDocResponse): Document {

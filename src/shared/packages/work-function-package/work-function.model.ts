@@ -100,4 +100,10 @@ export class WorkFunction {
     set on(value: boolean) {
         this._on = value;
     }
+
+    addDocument(document: Document) {
+        const documents = this.documents.getValue();
+        documents.push(document);
+        this.documents.next(documents);
+    }
 }

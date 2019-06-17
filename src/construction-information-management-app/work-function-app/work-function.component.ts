@@ -101,7 +101,7 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
     }
 
     onFolderDeleted(folder: Folder) {
-        // this.items.splice(this.items.findIndex((item) => item === folder), 1);
+        // this.items.splice(this.items.findIndex((item) => item === workFunction), 1);
     }
 
     onCloseReadMode(close: boolean) {

@@ -78,7 +78,11 @@ export class DocumentDetailComponent implements AfterViewInit {
             } else {
                 this.documentService.postDocument(postData, this.workFunction, this.parentFolder).subscribe((document) => {
                     if ( document ) {
-                        this.parentFolder.addDocument(document);
+                        if (this.parentFolder) {
+                            this.parentFolder.addDocument(document);
+                        } else {
+                            this.workFunction.addDocument(document);
+                        }
                         this.document = document;
                         this.closeEditForm.emit(true);
                         this.toast.showSuccess('Hoofdstuk: ' + document.getName() + ' is toegevoegd', 'Toegevoegd');

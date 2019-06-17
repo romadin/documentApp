@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material';
 
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document} from '../../../shared/packages/document-package/document.model';

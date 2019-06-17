@@ -1,17 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material';
 
-import { Folder } from '../../../../shared/packages/folder-package/folder.model';
-import { FolderService } from '../../../../shared/packages/folder-package/folder.service';
-import { NewFolderPostData } from '../../../../shared/packages/folder-package/api-folder.interface';
-import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { FolderCommunicationService } from '../../../../shared/service/communication/Folder.communication.service';
-import { Document } from '../../../../shared/packages/document-package/document.model';
-import { DocumentService } from '../../../../shared/packages/document-package/document.service';
-import { User } from '../../../../shared/packages/user-package/user.model';
 import { ToastService } from '../../../../shared/toast.service';
-import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
+import { User } from '../../../../shared/packages/user-package/user.model';
+import { DocumentService } from '../../../../shared/packages/document-package/document.service';
+import { Document } from '../../../../shared/packages/document-package/document.model';
+import { NewFolderPostData } from '../../../../shared/packages/folder-package/api-folder.interface';
+import { FolderService } from '../../../../shared/packages/folder-package/folder.service';
+import { Folder } from '../../../../shared/packages/folder-package/folder.model';
 
 @Component({
   selector: 'cim-detail-folder',
