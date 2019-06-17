@@ -18,7 +18,7 @@ import { FolderCommunicationService } from '../../shared/service/communication/F
 import { ActiveItemPackage } from './folder-detail/folder-detail.component';
 
 @Component({
-  selector: 'cim-folder',
+  selector: 'cim-work-function',
   templateUrl: './work-function.component.html',
   styleUrls: ['./work-function.component.css']
 })

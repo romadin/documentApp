@@ -39,7 +39,7 @@ export class ProjectWorkFunctionComponent implements OnInit {
             clearTimeout(this.timerId);
         }
         this.timerId = setTimeout(() => {
-            this.workFunctionService.updateWorkFunction(this.workFunction, {on: turnOn});
+            this.workFunctionService.updateWorkFunction(this.workFunction, {on: turnOn}).subscribe();
         }, 500);
     }
 }

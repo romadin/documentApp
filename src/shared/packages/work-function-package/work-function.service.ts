@@ -72,6 +72,7 @@ export class WorkFunctionService {
         workFunction.name = data.name;
         workFunction.isMainFunction = data.isMainFunction;
         workFunction.order = data.order;
+        workFunction.on = data.on;
         workFunction.parent = parent;
         workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);

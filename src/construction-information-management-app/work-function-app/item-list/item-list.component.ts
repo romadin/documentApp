@@ -4,6 +4,7 @@ import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { FolderService } from '../../../shared/packages/folder-package/folder.service';
 import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
 import { Document } from '../../../shared/packages/document-package/document.model';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 @Component({
   selector: 'cim-item-list',
@@ -13,25 +14,25 @@ import { Document } from '../../../shared/packages/document-package/document.mod
 export class ItemListComponent implements OnInit {
     @Output() cancelAddItems: EventEmitter<boolean> = new EventEmitter();
     @Output() saveItemsDone: EventEmitter<Folder> = new EventEmitter();
-    @Input() mainFolder: Folder;
+    @Input() mainWorkFunction: WorkFunction;
     public items = [];
     public itemsSelected;
 
-    private _currentFolder: Folder;
+    private _workFunction: WorkFunction;
 
     @Input()
-    set currentFolder(currentFolder: Folder) {
-        this._currentFolder = currentFolder;
+    set workFunction(workFunction: WorkFunction) {
+        this._workFunction = workFunction;
     }
 
-    get currentFolder(): Folder {
-        return this._currentFolder;
+    get workFunction(): WorkFunction {
+        return this._workFunction;
     }
 
     constructor(private folderService: FolderService) { }
 
     ngOnInit() {
-        this.getAvailableFolder(this.mainFolder.subFolders, this.currentFolder.subFolders);
+        this.getAvailableFolder(this.mainWorkFunction.folders.getValue(), this.workFunction.folders.getValue());
 
         this.getDocumentAvailable().then((documents: Document[]) => {
             documents.forEach(document => this.items.push(document));
@@ -51,15 +52,15 @@ export class ItemListComponent implements OnInit {
     public saveItems(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.folderService.postFolder(this.currentFolder.id, this.preparePostData(this.itemsSelected)).subscribe((folder) => {
+        this.folderService.postFolder(this.workFunction.id, this.preparePostData(this.itemsSelected)).subscribe((folder) => {
             this.saveItemsDone.emit(folder);
         });
     }
 
     private getDocumentAvailable(): Promise<any[]> {
         return new Promise((resolve) => {
-            this.mainFolder.documents.subscribe((documents) => {
-                this.currentFolder.documents.subscribe((currentDocs) => {
+            this.mainWorkFunction.documents.subscribe((documents) => {
+                this.workFunction.documents.subscribe((currentDocs) => {
                     if (currentDocs.length === 0 ) {
                         return resolve(documents);
                     }

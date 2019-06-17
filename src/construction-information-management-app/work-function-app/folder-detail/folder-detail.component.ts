@@ -1,10 +1,12 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
+import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Subscription } from 'rxjs';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { ScrollingService } from '../../../shared/service/scrolling.service';
 
 export interface ActiveItemPackage {
@@ -33,15 +35,19 @@ export interface ActiveItemPackage {
 })
 export class FolderDetailComponent implements OnInit, OnDestroy {
     @ViewChild('container') container: ElementRef;
-    @Input() currentFolder: Folder;
+    @Input() workFunction: WorkFunction;
     @Input() currentUser: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() itemsAdded: EventEmitter<Folder | Document> = new EventEmitter<Folder | Document>();
-    public addFixedClass = false;
+    addFixedClass = false;
+    projectId: number;
     private _activeItem: ActiveItemPackage;
     private subscription: Subscription;
 
-    constructor(private changeDetection: ChangeDetectorRef, private scrollingService: ScrollingService) { }
+    constructor(private changeDetection: ChangeDetectorRef,
+                private scrollingService: ScrollingService,
+                private activatedRoute: ActivatedRoute
+    ) { }
 
     @Input()
     set activeSidePackage(activeItem: ActiveItemPackage) {
@@ -53,6 +59,7 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.projectId = parseInt(this.activatedRoute.parent.parent.snapshot.params.id, 10);
         this.setPositionByScroll();
     }
     ngOnDestroy() {

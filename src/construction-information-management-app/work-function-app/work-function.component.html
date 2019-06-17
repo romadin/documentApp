@@ -32,7 +32,7 @@
     </div>
     <div class="card" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
         <cim-folder-detail
-                [currentFolder]="workFunction"
+                [workFunction]="workFunction"
                 [currentUser]="currentUser"
                 [activeSidePackage]="activeItem"
                 (itemsAdded)="onItemsAdded($event)"
