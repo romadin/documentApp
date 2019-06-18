@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, Subject } from 'rxjs';
+import { WorkFunctionService } from '../work-function-package/work-function.service';
 
 import { Project } from './project.model';
 import { ApiProjectResponse, ProjectPostDataInterface, ProjectUpdateData } from './api-project.interface';
 import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
-import { map } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 
 interface ProjectCache {
     [id: number]: Project;
@@ -17,13 +18,11 @@ interface ProjectsCache {
 
 @Injectable()
 export class ProjectService {
-    private apiService: ApiService;
     private projectsCache: ProjectCache = {};
     private projectsByOrganisationCache: ProjectsCache = {};
     private allProjectSubject: Subject<Project[]> = new Subject();
 
-    constructor(apiService: ApiService) {
-        this.apiService = apiService;
+    constructor(private apiService: ApiService, private workFunctionService: WorkFunctionService) {
     }
 
     public getProjects(organisation: Organisation): Observable<Project[]> {
@@ -44,19 +43,18 @@ export class ProjectService {
         }));
     }
 
-    public getProject(id: number, organisation: Organisation): Promise<Project> {
-        if (this.projectsCache.hasOwnProperty(id)) {
-            return Promise.resolve(this.projectsCache[id]);
-        }
+    public getProject(id: number, organisation: Organisation): Observable<Project> {
         const params = {format: 'json', organisationId: organisation.id};
-
-        return new Promise<Project>((resolve) => {
-            this.apiService.get('/projects/' + id, params).subscribe((apiResponse: ApiProjectResponse) => {
-                resolve(this.makeProject(apiResponse, organisation));
-            }, (error) => {
-                resolve(error.error);
-            });
-        });
+        return this.apiService.get('/projects/' + id, params).pipe(
+            mergeMap(projectResponse => {
+                const project = this.makeProject(projectResponse, organisation);
+                return this.workFunctionService.getWorkFunctionsByParent({projectId: project.id}, project).pipe(map(workFunctions => {
+                    workFunctions = workFunctions.sort((a, b) => a.order - b.order);
+                    project.workFunctions = workFunctions;
+                    return project;
+                }));
+            })
+        );
     }
 
     public postProject(data: ProjectPostDataInterface, organisation: Organisation ): Promise<Project> {

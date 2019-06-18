@@ -12,7 +12,7 @@ import { ScrollingService } from '../../../shared/service/scrolling.service';
 export interface ActiveItemPackage {
     component: string;
     item: Folder | Document | null;
-    mainFolder?: Folder;
+    mainFunction?: WorkFunction;
 }
 
 @Component({
@@ -38,7 +38,7 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
     @Input() workFunction: WorkFunction;
     @Input() currentUser: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() itemsAdded: EventEmitter<Folder | Document> = new EventEmitter<Folder | Document>();
+    @Output() itemsAdded: EventEmitter<WorkFunction | Document> = new EventEmitter<WorkFunction | Document>();
     addFixedClass = false;
     projectId: number;
     private _activeItem: ActiveItemPackage;
@@ -67,7 +67,7 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    onItemsAdded(item: Folder| Document) {
+    onItemsAdded(item: WorkFunction| Document) {
         this.itemsAdded.emit(item);
         this._activeItem = undefined;
         this.closeView.emit(true);

@@ -82,7 +82,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.currentUser = user;
         });
 
-        this.projectService.getProject(projectId, <Organisation>this.activatedRoute.snapshot.data.organisation).then(project => {
+        this.projectService.getProject(projectId, <Organisation>this.activatedRoute.snapshot.data.organisation).subscribe(project => {
             this.project = project;
             this.workFunctionService.getWorkFunctionsByParent({projectId: projectId}, project).subscribe(workFunction => {
                 workFunction = workFunction.sort((a, b) => a.order - b.order);

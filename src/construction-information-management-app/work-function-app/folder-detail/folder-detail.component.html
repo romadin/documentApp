@@ -24,7 +24,7 @@
         </cim-partners>
     </div>
     <div *ngIf="activeItem && activeItem.component === 'cim-item-list'" [@fadeIn]>
-        <cim-item-list [mainWorkFunction]="activeItem.mainFolder"
+        <cim-item-list [mainWorkFunction]="activeItem.mainFunction"
                        [workFunction]="workFunction"
                        (cancelAddItems)="onCloseView($event)"
                        (saveItemsDone)="onItemsAdded($event)">

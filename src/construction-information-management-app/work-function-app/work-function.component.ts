@@ -25,14 +25,13 @@ import { ActiveItemPackage } from './folder-detail/folder-detail.component';
 export class WorkFunctionComponent implements OnInit, OnDestroy {
     documents: Document[];
     workFunction: WorkFunction;
-    mainFolder: Folder;
+    mainFunction: WorkFunction;
     currentUser: User;
     items: (Document | Folder)[];
     showReadMode: boolean;
     showReadModeAnimation: boolean;
     activeItem: ActiveItemPackage;
 
-    private itemsSubscription: Subject<(Document | Folder)[]> = new Subject<(Document | Folder)[]>();
     private subscriptions: Subscription[] = [];
 
     constructor(private folderService: FolderService,
@@ -50,26 +49,17 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
         this.resetView();
         const workFunctionId: number = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
         const projectId: number = parseInt(location.pathname.split('/')[2], 10);
-        this.projectService.getProject(projectId, this.activatedRoute.snapshot.data.organisation).then(project => {
-            this.workFunctionService.getWorkFunction(workFunctionId, project).subscribe(workFunction => {
-                this.workFunction = workFunction;
+        this.projectService.getProject(projectId, this.activatedRoute.snapshot.data.organisation).subscribe(project => {
+            this.workFunction = project.workFunctions.find(w => w.id === workFunctionId);
 
-                this.workFunction.folders.pipe(mergeMap(folders => {
-                    const items: (Document | Folder)[] = folders;
-                    return this.workFunction.documents.pipe(map(documents => items.concat(documents)));
-                })).subscribe(items => {
-                    this.items = items;
-                    this.items = this.items.sort((a, b) => a.order - b.order);
-                });
-            });
+            this.workFunction.items.subscribe(items => this.items = items );
+            this.mainFunction = project.workFunctions.find(w => w.isMainFunction);
         });
 
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
 
         this.subscriptions.push(this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
-        }));
-        this.subscriptions.push(this.itemsSubscription.subscribe((items: (Document | Folder)[]) => {
         }));
 
         this.subscriptions.push(this.headerCommunicationService.triggerAddItem.subscribe((trigger: boolean) => {
@@ -119,14 +109,14 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
         };
     }
 
-    public onItemsAdded(item: Folder | Document): void {
+    public onItemsAdded(item: WorkFunction | Document): void {
         // this.setNewItems(<Folder>item);
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
     public addItem() {
         this.resetView();
-        if (this.workFunction) {
+        if (this.workFunction.isMainFunction) {
             this.activeItem = {
                 component: 'cim-item-create',
                 item: null
@@ -135,23 +125,13 @@ export class WorkFunctionComponent implements OnInit, OnDestroy {
             this.activeItem = {
                 component: 'cim-item-list',
                 item: null,
-                mainFolder: this.mainFolder
+                mainFunction: this.mainFunction
             };
         }
     }
 
     public checkItemIsFolder(item): boolean {
         return item instanceof Folder;
-    }
-
-    private setNewItems(folder: Folder) {
-        folder.documents.subscribe((documents) => {
-            let itemsContainer: (Document | Folder)[];
-            itemsContainer = documents;
-            itemsContainer = itemsContainer.concat(folder.subFolders);
-            itemsContainer.sort((a: Document | Folder, b: Document | Folder ) => a.order - b.order);
-            this.itemsSubscription.next(itemsContainer);
-        });
     }
 
 

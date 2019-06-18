@@ -76,8 +76,6 @@ export class AdminComponent implements AfterViewInit {
                 this.eventService.editEvent(this.event).subscribe(() => {});
                 this.toast.showSuccess('Activiteit: ' + this.event.name + 'is gewijziged', 'Wijzigen');
             } else {
-                console.log(this.event);
-                debugger;
                 this.eventService.createEvent(this.event).subscribe(event => {
                     this.toast.showSuccess('Activiteit: ' + event.name + 'toegevoegd', 'Toegevoegd');
                     this.event = event;

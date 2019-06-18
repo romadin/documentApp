@@ -32,7 +32,7 @@ export class ItemReadComponent implements OnInit, OnDestroy {
         this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         const projectId = parseInt(this.router.url.split('/')[2], 10);
 
-        this.projectService.getProject(projectId, this.organisation).then((project: Project) => {
+        this.projectService.getProject(projectId, this.organisation).subscribe((project: Project) => {
             this.project = project;
         });
         this.subscriptions.push(this.folderCommunication.exportToPdf.subscribe(exportToPdf => {

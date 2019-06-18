@@ -139,10 +139,6 @@ export class FolderService {
     }
 
     public makeFolder(folderData: ApiFolderResponse) {
-        if ( this.foldersCache[folderData.id] ) {
-            return this.foldersCache[folderData.id];
-        }
-
         const folder = new Folder();
         folder.id = folderData.id;
         folder.name = folderData.name;
@@ -150,13 +146,6 @@ export class FolderService {
         folder.order = folderData.order;
         folder.fromTemplate = folderData.fromTemplate;
         this.foldersCache[folder.id] = folder;
-
-        // check if sub workFunction exist then set the sub workFunction-app.
-        if ( folderData.subFolders !== null && folderData.subFolders.length > 0 ) {
-            folderData.subFolders.forEach((subFolderResponse) => {
-                folder.subFolder = this.makeFolder(subFolderResponse);
-            });
-        }
 
         folder.documents = this.documentService.getDocumentsByFolder(folderData.id);
 

@@ -52,8 +52,8 @@ export class WorkFunctionService {
     updateWorkFunction(workFunction: WorkFunction, body: WorkFunctionUpdateBody): Observable<WorkFunction> {
         return this.apiService.post(this.path + '/' + workFunction.id, body).pipe(
             map((result: WorkFunctionApiResponseInterface) => {
+                const updatedWorkFunction = this.updateWorkFunctionModel(workFunction, result, workFunction.parent);
                 const index = workFunction.parent.workFunctions.findIndex(w => w.id === workFunction.id);
-                const updatedWorkFunction = this.makeWorkFunction(result, workFunction.parent);
                 workFunction.parent.workFunctions[index] = updatedWorkFunction;
                 return updatedWorkFunction;
             })
@@ -68,6 +68,24 @@ export class WorkFunctionService {
 
     private makeWorkFunction(data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
         const workFunction: WorkFunction = new WorkFunction();
+        workFunction.id = data.id;
+        workFunction.name = data.name;
+        workFunction.isMainFunction = data.isMainFunction;
+        workFunction.order = data.order;
+        workFunction.on = data.on;
+        workFunction.parent = parent;
+        workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
+        workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
+        workFunction.folders = this.foldersService.getFoldersByWorkFunction(workFunction);
+        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
+        workFunction.items = workFunction.getItems();
+
+        this.cache[workFunction.id] = workFunction;
+
+        return workFunction;
+    }
+
+    private updateWorkFunctionModel(workFunction: WorkFunction, data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
         workFunction.id = data.id;
         workFunction.name = data.name;
         workFunction.isMainFunction = data.isMainFunction;

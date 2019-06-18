@@ -1,4 +1,5 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { Document } from '../document-package/document.model';
 import { Folder } from '../folder-package/folder.model';
 
@@ -17,6 +18,7 @@ export class WorkFunction {
     private _chapters: BehaviorSubject<Chapter[]>;
     private _folders: BehaviorSubject<Folder[]>;
     private _documents: BehaviorSubject<Document[]>;
+    private _items: BehaviorSubject<(Document | Folder)[]>;
     private _on: boolean;
 
     constructor() { }
@@ -101,9 +103,35 @@ export class WorkFunction {
         this._on = value;
     }
 
+    get items(): BehaviorSubject<(Document | Folder)[]> {
+        return this._items;
+    }
+
+    set items(value: BehaviorSubject<(Document | Folder)[]>) {
+        this._items = value;
+    }
+
     addDocument(document: Document) {
         const documents = this.documents.getValue();
         documents.push(document);
         this.documents.next(documents);
+    }
+
+    getItems(): BehaviorSubject<(Document | Folder)[]> {
+        const workFunctionItems = this.items ? this.items : new BehaviorSubject<(Document|Folder)[]>([]);
+        this.folders.pipe(mergeMap(folders => {
+            const items: (Document | Folder)[] = folders;
+            return this.documents.pipe(map(documents => items.concat(documents)));
+        })).pipe(map(items => {
+            items = items.sort((a, b) => a.order - b.order);
+            workFunctionItems.next(items);
+        })).subscribe();
+
+        return workFunctionItems;
+    }
+
+    addItems(items: (Document | Folder)[]): void {
+        const currentItems = this.items.getValue();
+        this.items.next(currentItems.concat(items));
     }
 }

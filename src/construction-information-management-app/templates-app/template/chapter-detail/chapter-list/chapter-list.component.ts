@@ -63,7 +63,6 @@ export class ChapterListComponent implements OnInit {
                 let chapters = this.parent.chapters.getValue();
                 chapters = chapters.concat(this.chaptersSelected);
                 this.parent.chapters.next(chapters);
-                console.log(this.parent.chapters.getValue());
                 this.toast.showSuccess(message, 'Toegevoegd');
                 this.onCloseView(e);
             });
