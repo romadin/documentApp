@@ -4,13 +4,15 @@
         <h3> {{ workFunction.name }}</h3>
     </div>
     <div class="actions">
-        <label class="switch" *ngIf="folderEditable() && currentUser.isAdmin()" (click)="toggleFolderOn($event, !workFunction.on)">
+        <label class="switch" *ngIf="workFunctionEditable() && currentUser.isAdmin()" (click)="toggleOn($event, !workFunction.on)">
             <input type="checkbox" [checked]="workFunction.on">
             <span class="slider round">
                     <span class="on">AAN</span>
                     <span class="off">UIT</span>
                 </span>
         </label>
+        <i class="material-icons" *ngIf="currentUser.isAdmin() && !workFunction.fromTemplate" (click)="onEditWorkFunction($event)"> edit </i>
+        <i class="material-icons" *ngIf="currentUser.isAdmin() && !workFunction.fromTemplate" (click)="deleteWorkFunction($event)"> delete_forever </i>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>

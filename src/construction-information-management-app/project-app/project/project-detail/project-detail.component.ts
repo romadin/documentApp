@@ -60,11 +60,11 @@ import { RouterService } from '../../../../shared/service/router.service';
 })
 
 export class ProjectDetailComponent implements OnInit, OnDestroy {
-    workFunctions: WorkFunction[];
     currentUser: User;
     folderUrlToRedirect: string;
     project: Project;
     showFunctionDetail = false;
+    workFunctionToEdit: WorkFunction;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private workFunctionService: WorkFunctionService,
@@ -84,10 +84,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         this.projectService.getProject(projectId, <Organisation>this.activatedRoute.snapshot.data.organisation).subscribe(project => {
             this.project = project;
-            this.workFunctionService.getWorkFunctionsByParent({projectId: projectId}, project).subscribe(workFunction => {
-                workFunction = workFunction.sort((a, b) => a.order - b.order);
-                this.workFunctions = workFunction;
-            });
         });
 
         this.communicationService.triggerAddWorkFunction.subscribe(show => {
@@ -102,7 +98,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.showFunctionDetail = false;
         this.communicationService.triggerAddWorkFunction.next(false);
     }
-    onWorkFunctionAdded(workFunction: WorkFunction): void {
-        this.workFunctions.push(workFunction);
+    onEditWorkFunction(workFunction: WorkFunction) {
+        this.onCloseItemView();
+        setTimeout(() => {
+            this.showFunctionDetail = true;
+            this.workFunctionToEdit = workFunction;
+        }, 290);
     }
 }

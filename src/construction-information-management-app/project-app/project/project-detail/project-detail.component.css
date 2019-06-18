@@ -12,6 +12,7 @@ div.cardRow > .header > .material-icons {
 }
 
 div.cardRow > .actions {
+    cursor: pointer;
     display: flex;
     align-items: center;
 }

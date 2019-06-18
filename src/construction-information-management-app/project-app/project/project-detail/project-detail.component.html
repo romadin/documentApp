@@ -1,9 +1,10 @@
-<div *ngIf="workFunctions && currentUser" class="wrapper">
+<div *ngIf="project && currentUser" class="wrapper">
     <div class="container" [@resizeWidth]="showFunctionDetail ? 'smallWidth' : 'fullWidth'">
-        <cim-project-work-function *ngFor="let workFunction of workFunctions"
+        <cim-project-work-function *ngFor="let workFunction of project.workFunctions"
                                    [workFunction]="workFunction"
                                    [parent]="project"
-                                   [currentUser]="currentUser">
+                                   [currentUser]="currentUser"
+                                   (editWorkFunction)="onEditWorkFunction($event)">
         </cim-project-work-function>
         <div class="cardRow" routerLink="acties">
             <div class="header">
@@ -28,8 +29,7 @@
         <cim-work-function-edit
                 [workFunction]="workFunctionToEdit"
                 [parent]="project"
-                (closeView)="onCloseItemView()"
-                (workFunctionAdded)="onWorkFunctionAdded($event)">
+                (closeView)="onCloseItemView()">
         </cim-work-function-edit>
     </div>
 </div>

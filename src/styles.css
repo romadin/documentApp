@@ -94,6 +94,12 @@ div.warning > div.content > i.material-icons {
 div.warning > div.content > span {
     font-size: 14px;
 }
+.actions > i.material-icons {
+    font-size: 18px;
+    margin-right: 0;
+    padding: 7px 8px 0 2px;
+    cursor: pointer;
+}
 .dragItem {
     cursor: move;
 }

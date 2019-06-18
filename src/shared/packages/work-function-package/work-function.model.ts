@@ -20,6 +20,7 @@ export class WorkFunction {
     private _documents: BehaviorSubject<Document[]>;
     private _items: BehaviorSubject<(Document | Folder)[]>;
     private _on: boolean;
+    private _fromTemplate: boolean;
 
     constructor() { }
 
@@ -109,6 +110,14 @@ export class WorkFunction {
 
     set items(value: BehaviorSubject<(Document | Folder)[]>) {
         this._items = value;
+    }
+
+    get fromTemplate(): boolean {
+        return this._fromTemplate;
+    }
+
+    set fromTemplate(value: boolean) {
+        this._fromTemplate = value;
     }
 
     addDocument(document: Document) {

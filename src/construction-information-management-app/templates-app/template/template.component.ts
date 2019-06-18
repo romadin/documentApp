@@ -1,23 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Template } from '../../../shared/packages/template-package/template.model';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { combineLatest } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { ChapterPackage } from './chapter-detail/chapter-detail.component';
-import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
-import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
-import { Headline } from '../../../shared/packages/headline-package/headline.model';
-import { isHeadline } from '../../../shared/packages/headline-package/interface/headline-api-response.interface';
-import { HeadlineService } from '../../../shared/packages/headline-package/headline.service';
-import { Chapter } from '../../../shared/packages/chapter-package/chapter.model';
-import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
-import { ChapterService } from '../../../shared/packages/chapter-package/chapter.service';
-import { ConfirmPopupComponent, ConfirmPopupData } from '../../popups/confirm-popup/confirm-popup.component';
 import { HeadlinePackage } from './headline/headline.component';
-import { ToastService } from '../../../shared/toast.service';
+import { Template } from '../../../shared/packages/template-package/template.model';
+import { HeadlineService } from '../../../shared/packages/headline-package/headline.service';
+import { isHeadline } from '../../../shared/packages/headline-package/interface/headline-api-response.interface';
+import { Headline } from '../../../shared/packages/headline-package/headline.model';
+import { ChapterService } from '../../../shared/packages/chapter-package/chapter.service';
+import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
+import { Chapter } from '../../../shared/packages/chapter-package/chapter.model';
+import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
-import { combineLatest } from 'rxjs';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 interface ItemsContainer {
     [workFunctionId: number]: (Chapter | Headline)[];
@@ -86,7 +84,6 @@ export class TemplateComponent implements OnInit {
                 private workFunctionService: WorkFunctionService,
                 private chaptersService: ChapterService,
                 private headlinesService: HeadlineService,
-                private toast: ToastService
     ) { }
 
     ngOnInit() {
@@ -121,19 +118,7 @@ export class TemplateComponent implements OnInit {
     deleteWorkFunction(event: Event, workFunction: WorkFunction) {
         event.stopPropagation();
         if (!workFunction.isMainFunction) {
-            const popupData: ConfirmPopupData = {
-                title: 'Functie verwijderen',
-                name: workFunction.name,
-                action: 'verwijderen'
-            };
-            this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
-                if (action) {
-                    this.workFunctionService.deleteWorkFunction(workFunction).subscribe(() => {
-                        this.template.workFunctions.splice(this.template.workFunctions.findIndex(w => w.id === workFunction.id), 1);
-                        this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
-                    });
-                }
-            });
+            this.workFunctionService.deleteWorkFunction(workFunction, this.template).subscribe();
         }
     }
 

@@ -5,6 +5,7 @@ export interface WorkFunctionApiResponseInterface {
     order: number;
     templateId: number;
     on: boolean;
+    fromTemplate: boolean;
 }
 
 export interface WorkFunctionUpdateBody {

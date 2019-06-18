@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Project } from '../../../../../shared/packages/project-package/project.model';
 import { User } from '../../../../../shared/packages/user-package/user.model';
@@ -15,6 +15,7 @@ export class ProjectWorkFunctionComponent implements OnInit {
     @Input() workFunction: WorkFunction;
     @Input() currentUser: User;
     @Input() redirectUrl: string;
+    @Output() editWorkFunction: EventEmitter<WorkFunction> = new EventEmitter<WorkFunction>();
     private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     private timerId: number;
 
@@ -23,14 +24,14 @@ export class ProjectWorkFunctionComponent implements OnInit {
     ngOnInit() {
     }
 
-    folderEditable(): boolean {
+    workFunctionEditable(): boolean {
         const folder = this.editableFolders.find( (folderName) => {
             return folderName === this.workFunction.name;
         });
         return folder !== undefined;
     }
 
-    toggleFolderOn(e: MouseEvent, turnOn: boolean): void {
+    toggleOn(e: MouseEvent, turnOn: boolean): void {
         e.preventDefault();
         e.stopPropagation();
         this.workFunction.on = turnOn;
@@ -41,5 +42,17 @@ export class ProjectWorkFunctionComponent implements OnInit {
         this.timerId = setTimeout(() => {
             this.workFunctionService.updateWorkFunction(this.workFunction, {on: turnOn}).subscribe();
         }, 500);
+    }
+
+    onEditWorkFunction(e: Event): void {
+        e.preventDefault();
+        e.stopPropagation();
+        this.editWorkFunction.emit(this.workFunction);
+    }
+
+    deleteWorkFunction(e: Event): void {
+        e.preventDefault();
+        e.stopPropagation();
+        this.workFunctionService.deleteWorkFunction(this.workFunction, this.parent).subscribe();
     }
 }

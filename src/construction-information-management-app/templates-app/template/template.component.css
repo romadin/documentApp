@@ -33,10 +33,7 @@ i.material-icons {
     justify-content: space-between;
 }
 .toggleTitle > div.actions > i.material-icons {
-    font-size: 18px;
     margin-right: 0;
-    padding: 7px 8px 0 2px;
-    cursor: pointer;
 }
 .toggleTitle > div.actions > i.material-icons:last-child {
     padding-right: 0;

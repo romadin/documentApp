@@ -10,15 +10,19 @@ mat-card.projectRow {
 mat-card.projectRow.mat-card:hover {
     background: #f7f7f7;
 }
-mat-card-actions.actionButton {
+mat-card-actions.actions {
     display: flex;
     align-items: center;
 }
-mat-card-actions.actionButton > .actionsEditDelete {
+mat-card-actions.actions > .actionsEditDelete {
     display: inline;
     padding-right: 5px;
 }
-mat-card-actions.actionButton > .actionsEditDelete > i.material-icons {
-    font-size: 18px;
-    margin-right: 5px;
+mat-card-actions.actions > .actionsEditDelete > i.material-icons:last-child {
+    padding-right: 0;
+}
+
+mat-card-actions.actions > i.material-icons.arrow {
+    font-size: 25px;
+    padding-left: 0;
 }

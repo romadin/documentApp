@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import {
+    ConfirmPopupComponent,
+    ConfirmPopupData
+} from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
+import { ToastService } from '../../toast.service';
+import { ApiDocResponse } from '../document-package/api-document.interface';
 import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
-import { map } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
@@ -29,6 +36,8 @@ export class WorkFunctionService {
                 private chapterService: ChapterService,
                 private documentService: DocumentService,
                 private foldersService: FolderService,
+                private dialog: MatDialog,
+                private toast: ToastService
     ) {  }
 
     getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
@@ -60,10 +69,28 @@ export class WorkFunctionService {
         );
     }
 
-    deleteWorkFunction(workFunction: WorkFunction): Observable<string> {
-        return this.apiService.delete(this.path + '/' + workFunction.id, {}).pipe(
-            map((result: string) => result )
-        );
+    deleteWorkFunction(workFunction: WorkFunction, parent: Template|Project): Observable<boolean> {
+        const popupData: ConfirmPopupData = {
+            title: 'Functie verwijderen',
+            name: workFunction.name,
+            action: 'verwijderen'
+        };
+
+        return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {
+            if (action) {
+                return this.apiService.delete(this.path + '/' + workFunction.id, {}).pipe(
+                    map(() => {
+                        parent.workFunctions.splice(
+                            parent.workFunctions.findIndex(w => w.id === workFunction.id),
+                            1
+                        );
+                        this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
+                        return true;
+                    })
+                );
+            }
+            return of(false);
+        }));
     }
 
     private makeWorkFunction(data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
@@ -73,6 +100,7 @@ export class WorkFunctionService {
         workFunction.isMainFunction = data.isMainFunction;
         workFunction.order = data.order;
         workFunction.on = data.on;
+        workFunction.fromTemplate = data.fromTemplate;
         workFunction.parent = parent;
         workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
@@ -85,20 +113,21 @@ export class WorkFunctionService {
         return workFunction;
     }
 
-    private updateWorkFunctionModel(workFunction: WorkFunction, data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
-        workFunction.id = data.id;
-        workFunction.name = data.name;
-        workFunction.isMainFunction = data.isMainFunction;
-        workFunction.order = data.order;
-        workFunction.on = data.on;
-        workFunction.parent = parent;
-        workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
-        workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
-        workFunction.folders = this.foldersService.getFoldersByWorkFunction(workFunction);
-        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
+    private updateWorkFunctionModel(work: WorkFunction, data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
+        work.id = data.id;
+        work.name = data.name;
+        work.isMainFunction = data.isMainFunction;
+        work.order = data.order;
+        work.on = data.on;
+        work.fromTemplate = data.fromTemplate;
+        work.parent = parent;
+        work.headlines = this.headlineService.getHeadlinesByWorkFunction(work);
+        work.chapters = this.chapterService.getChaptersByWorkFunction(work);
+        work.folders = this.foldersService.getFoldersByWorkFunction(work);
+        work.documents = this.documentService.getDocumentsByWorkFunction(work);
 
-        this.cache[workFunction.id] = workFunction;
+        this.cache[work.id] = work;
 
-        return workFunction;
+        return work;
     }
 }
