@@ -121,7 +121,7 @@ export class TemplatesOverviewComponent implements OnInit {
     private showAddTemplateView(): void {
         this.templateToShow = undefined;
         const data: DefaultPopupData = {
-            title: 'Voeg een projectId toe',
+            title: 'Voeg een template toe',
             placeholder: 'Template naam',
             submitButton: 'Voeg toe',
             organisation: this.organisation

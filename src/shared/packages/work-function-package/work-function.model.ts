@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { Document } from '../document-package/document.model';
 import { Folder } from '../folder-package/folder.model';

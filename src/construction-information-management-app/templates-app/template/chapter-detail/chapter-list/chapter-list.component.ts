@@ -4,8 +4,6 @@ import { combineLatest } from 'rxjs';
 
 import { Chapter } from '../../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../../shared/packages/chapter-package/chapter.service';
-import { Project } from '../../../../../shared/packages/project-package/project.model';
-import { Template } from '../../../../../shared/packages/template-package/template.model';
 import { WorkFunctionService } from '../../../../../shared/packages/work-function-package/work-function.service';
 import { WorkFunction } from '../../../../../shared/packages/work-function-package/work-function.model';
 import {

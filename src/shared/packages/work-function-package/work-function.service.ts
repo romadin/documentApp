@@ -5,7 +5,6 @@ import {
     ConfirmPopupData
 } from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
 import { ToastService } from '../../toast.service';
-import { ApiDocResponse } from '../document-package/api-document.interface';
 import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
@@ -42,7 +41,9 @@ export class WorkFunctionService {
 
     getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
         return this.apiService.get(this.path, params).pipe(
-            map((result: WorkFunctionApiResponseInterface[]) => result.map(response => this.makeWorkFunction(response, parent)))
+            map((result: WorkFunctionApiResponseInterface[]) => result.map(response => {
+                return this.cache[response.id] ? this.cache[response.id] : this.makeWorkFunction(response, parent);
+            }))
         );
     }
 
@@ -121,8 +122,6 @@ export class WorkFunctionService {
         work.on = data.on;
         work.fromTemplate = data.fromTemplate;
         work.parent = parent;
-        work.headlines = this.headlineService.getHeadlinesByWorkFunction(work);
-        work.chapters = this.chapterService.getChaptersByWorkFunction(work);
         work.folders = this.foldersService.getFoldersByWorkFunction(work);
         work.documents = this.documentService.getDocumentsByWorkFunction(work);
 

@@ -144,17 +144,11 @@ export class TemplateComponent implements OnInit {
         if (e) {
             e.stopPropagation();
         }
-
-        if (this.showChapterDetail) {
-            this.resetVariables();
-            setTimeout(() => {
-                this.chapterParent = parent;
-                this.showChapterDetail = true;
-            }, 290);
-        } else {
+        this.resetVariables();
+        setTimeout(() => {
             this.chapterParent = parent;
             this.showChapterDetail = true;
-        }
+        }, 290);
     }
 
     addHeadline(e: Event, workFunction: WorkFunction) {

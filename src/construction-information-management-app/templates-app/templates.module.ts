@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
+import { SharedProjectModule } from '../project-app/shared-project.module';
 import { TemplatesOverviewComponent } from './templates-overview/templates-overview.component';
 import { TemplatesListComponent } from './templates-overview/templates-list/templates-list.component';
 import { TemplateComponent } from './template/template.component';
@@ -8,7 +9,6 @@ import { ChapterDetailComponent } from './template/chapter-detail/chapter-detail
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AddTemplatePopupComponent } from './popup/add-template-popup/add-template-popup.component';
 import { TemplateEditComponent } from './templates-overview/template-edit/template-edit.component';
-import { WorkFunctionEditComponent } from './template/work-function-edit/work-function-edit.component';
 import { ChapterComponent } from './template/chapter/chapter.component';
 import { HeadlineDetailComponent } from './template/headline-detail/headline-detail.component';
 import { HeadlineComponent } from './template/headline/headline.component';
@@ -32,7 +32,6 @@ const routes: Routes = [
         ChapterDetailComponent,
         AddTemplatePopupComponent,
         TemplateEditComponent,
-        WorkFunctionEditComponent,
         ChapterComponent,
         HeadlineDetailComponent,
         HeadlineComponent,
@@ -45,6 +44,7 @@ const routes: Routes = [
         SharedModule,
         RouterModule.forChild(routes),
         AngularEditorModule,
+        SharedProjectModule,
     ],
     entryComponents: [
         AddTemplatePopupComponent
