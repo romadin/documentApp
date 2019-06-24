@@ -1,0 +1,17 @@
+<div class="card">
+    <div class="header">
+        <h3> Voeg een bedrijf toe aan de functie</h3>
+    </div>
+    <mat-selection-list #list *ngIf="companies" [(ngModel)]="companiesSelected">
+        <mat-list-option *ngFor="let company of companies" [value]="company">
+                <div class="content">
+                    <i class="material-icons"> business </i>
+                    {{company.name}}
+                </div>
+        </mat-list-option>
+    </mat-selection-list>
+    <div class="actions">
+        <button mat-raised-button (click)="saveCompany($event)">Toevoegen</button>
+        <button mat-button (click)="onCancel($event)">Annuleren </button>
+    </div>
+</div>

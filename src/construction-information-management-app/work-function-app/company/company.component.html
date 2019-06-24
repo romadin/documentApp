@@ -1,15 +1,23 @@
 <div class="wrapper">
-    <cim-company-row *ngFor="let company of workFunction.companies"
-                     [company]="company"
-                     [currentUser]="currentUser">
-    </cim-company-row>
+    <div class="rowWrapper">
+        <cim-company-row *ngFor="let company of workFunction.companies"
+                         [company]="company"
+                         [currentUser]="currentUser">
+        </cim-company-row>
+    </div>
 
-    <div class="reserveCompany card" *ngIf="companiesLinkedToProject && companiesLinkedToProject.length === 0">
+    <cim-add-companies-list *ngIf="companiesLinkedToProject && (companiesLinkedToProject.length > 0 && workFunction.companies.length === 0) || showAddCompaniesList"
+            [companies]="companiesLinkedToProject"
+            [workFunction]="workFunction"
+            (closeList)="resetView()">
+    </cim-add-companies-list>
+
+    <div class="reserveCompany card" *ngIf="companiesLinkedToProject && (companiesLinkedToProject.length === 0 && workFunction.companies.length === 0) || showWarningBox">
         <div class="warning">
             <div class="content">
                 <i class="material-icons"> warning </i>
                 <span>
-                    Er zijn geen bedrijven gekoppeld aan het project, wilt u een bedrijf reserveren of wilt u een gebruiker toevoegen aan dit project?
+                    Er zijn geen bedrijven gekoppeld aan het project of u heeft alle bedrijven al gekoppeld, wilt u een bedrijf reserveren of wilt u een gebruiker toevoegen aan dit project?
                 </span>
             </div>
         </div>

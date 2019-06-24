@@ -1,0 +1,20 @@
+:host {
+    flex: 1;
+}
+
+div.content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+div.content > i.material-icons {
+    margin-right: 10px;
+}
+div.actions {
+    padding-top: 10px;
+}
+
+div.card > .actions > button {
+    margin-right: 10px;
+}
