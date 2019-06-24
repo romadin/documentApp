@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { Company } from '../company-package/company.model';
 import { Document } from '../document-package/document.model';
 import { Folder } from '../folder-package/folder.model';
 
@@ -21,6 +22,7 @@ export class WorkFunction {
     private _items: BehaviorSubject<(Document | Folder)[]>;
     private _on: boolean;
     private _fromTemplate: boolean;
+    private _companies: Company[];
 
     constructor() { }
 
@@ -118,6 +120,14 @@ export class WorkFunction {
 
     set fromTemplate(value: boolean) {
         this._fromTemplate = value;
+    }
+
+    get companies(): Company[] {
+        return this._companies;
+    }
+
+    set companies(value: Company[]) {
+        this._companies = value;
     }
 
     addDocument(document: Document) {

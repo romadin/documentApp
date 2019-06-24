@@ -1,3 +1,5 @@
+import { ModuleApiResponseInterface } from '../../module-package/module-api-response.interface';
+
 export interface OrganisationApi {
     id: number;
     name: string;
@@ -5,6 +7,7 @@ export interface OrganisationApi {
     secondaryColor: string;
     maxUsers: number;
     logo: string | null;
+    modules: ModuleApiResponseInterface[];
 }
 
 export function isOrganisationApi(obj: any): obj is OrganisationApi {

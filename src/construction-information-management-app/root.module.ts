@@ -12,6 +12,7 @@ import { MaterialModule } from '../shared/material.module';
 // can Activate checks
 import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
+import { ModuleService } from '../shared/packages/module-package/module.service';
 
 
 // services
@@ -144,6 +145,7 @@ const appRoutes: Routes = [
         LoadingService,
         MailService,
 
+        ModuleService,
         OrganisationService,
         OrganisationResolver,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation

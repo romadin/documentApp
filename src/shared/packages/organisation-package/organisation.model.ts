@@ -1,4 +1,5 @@
 import { Subject } from 'rxjs';
+import { Module } from '../module-package/module.model';
 
 export class Organisation {
     private _id: number;
@@ -7,7 +8,9 @@ export class Organisation {
     private _secondaryColor: string;
     private _maxUser: number;
     private _logo: Subject<Blob>;
+    private _modules: Module[];
 
+    constructor() {}
 
     get id(): number {
         return this._id;
@@ -55,5 +58,13 @@ export class Organisation {
 
     set logo(value: Subject<Blob>) {
         this._logo = value;
+    }
+
+    get modules(): Module[] {
+        return this._modules;
+    }
+
+    set modules(value: Module[]) {
+        this._modules = value;
     }
 }

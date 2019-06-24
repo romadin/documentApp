@@ -35,6 +35,12 @@ const routes: Routes = [
                 canActivate: [ CanActivateLoggedIn ]
             },
             {
+                path: 'bedrijven/:id',
+                loadChildren: '../company-app/company-app.module#CompanyAppModule',
+                canActivate: [ CanActivateLoggedIn ],
+                resolve: { organisation: OrganisationResolver }
+            },
+            {
                 path: '',
                 loadChildren: './project/project-detail/project-detail.module#ProjectDetailModule',
                 canActivate: [ CanActivateLoggedIn ]

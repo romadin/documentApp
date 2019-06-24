@@ -1,0 +1,113 @@
+div.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+div.addItem {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    opacity: 0;
+    transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+div.addItem > div.addItemButton {
+    display: flex;
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    border: solid 1px #cecece;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 4px;
+    color: rgba(0,0,0,.87);
+    transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+    align-items: center;
+}
+div.addItem.showButton {
+    opacity: 1;
+}
+
+div.addItem > div.addItemButton:hover {
+    background: #f7f7f7;
+}
+
+div.addItem > div.addItemButton > i.material-icons {
+    margin-right: 10px;
+}
+
+div.wrapper > div.overview.readModeEnabled {
+    flex: 0;
+    width: 0;
+    margin: 0;
+    overflow: hidden;
+    height: 1px;
+}
+
+div.wrapper > div.overview {
+    height: 100%;
+    width: 0;
+    transition: all 1s ease;
+    flex: 1;
+    margin-right: 25px;
+}
+
+div.wrapper > div.editDocument {
+    flex: 1;
+}
+div.wrapper > div.addItemList {
+    flex: 1;
+}
+
+div.wrapper > div.overview > div.partnersWrapper > .header {
+    display: flex;
+}
+
+div.wrapper > div.overview > div.partnersWrapper > .header > h3 {
+    margin: 0;
+}
+div.wrapper > div.overview > div.partnersWrapper > .header > .material-icons {
+    margin-right: 18px;
+}
+
+div.wrapper > div.overview > div.partnersWrapper > .actions {
+    display: flex;
+    align-items: center;
+}
+
+div.wrapper > div.partners {
+    display: flex;
+    flex: 1;
+}
+div.wrapper > div.partners > cim-partners {
+    width: 100%;
+}
+
+div.wrapper > div.addItemForMainFolder {
+    flex: 1;
+}
+
+div.wrapper > div.readeModeContainer {
+    transition: all 1s ease;
+    flex: 0;
+    width: 0;
+}
+div.wrapper > div.readeModeContainer.animateDiv {
+    flex: 1;
+}
+
+div.card {
+    flex: 0;
+    width: 0;
+    padding: 0;
+    border: none;
+}
+
+div.card.show {
+    border: solid 1px #cecece;
+    padding: 18px;
+    flex: 1;
+}
+div.card.show.scrollBar {
+    height: 63vh;
+    overflow: auto;
+}

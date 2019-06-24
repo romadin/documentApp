@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { AppTokenParams, GetParams, OrganisationCache } from './interface/organisation-additional.interface';
+import { AppTokenParams, OrganisationCache } from './interface/organisation-additional.interface';
 import { isOrganisationApi, OrganisationApi } from './interface/organisation-api.interface';
 import { Organisation } from './organisation.model';
 import { ApiService } from '../../service/api.service';
 import { environment } from '../../../environments/environment';
+import { ModuleService } from '../module-package/module.service';
 
 @Injectable()
 export class OrganisationService {
     private APP_TOKEN = environment.APP_TOKEN;
     private organisationCache: OrganisationCache = [];
 
-    constructor(private apiService: ApiService) {  }
+    constructor(private apiService: ApiService, private moduleService: ModuleService) {  }
 
     getCurrentOrganisation(): Observable<Organisation | null > {
         const currentOrganisationName: string = location.host.split('.')[0];
@@ -43,6 +44,12 @@ export class OrganisationService {
         organisation.primaryColor = data.primaryColor;
         organisation.secondaryColor = data.secondaryColor;
         organisation.maxUser = data.maxUsers;
+
+        const modules = [];
+        data.modules.forEach(module => {
+            modules.push(this.moduleService.makeModule(module));
+        });
+        organisation.modules = modules;
 
         // @todo need to add the logo
         this.organisationCache[organisation.id] = organisation;

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { ApiAuthResponse } from '../../construction-information-management-app/login-app/interfaces/api-auth.interface';
 import { environment } from '../../environments/environment';
 import { User } from '../packages/user-package/user.model';
-import { LoadingService } from '../loading.service';
 
 @Injectable()
 export class ApiService {

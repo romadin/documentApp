@@ -1,48 +1,6 @@
-<div class="wrapper" *ngIf="currentUser">
-    <div class="overview" *ngIf="items && items.length > 0" [ngClass]="{'readModeEnabled': showReadModeAnimation}">
-        <ng-container *ngFor="let item of items; let itemIndex = index">
-            <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && workFunction.isMainFunction" (click)="onItemView('cim-partners')">
-                <div class="header">
-                    <i class="material-icons"> people </i>
-                    <h3> Partners</h3>
-                </div>
-                <div class="actions">
-                    <i class="material-icons"> arrow_right </i>
-                </div>
-            </div>
-            <div *ngIf="checkItemIsFolder(item) ; then folderBlock; else documentBlock"></div>
-            <ng-template #folderBlock>
-                <cim-folder-row [folder]="item"
-                                [currentUser]="currentUser"
-                                [workFunction]="workFunction"
-                                (sendDocumentToFolder)="onItemView('cim-document-detail', $event)"
-                                (sendFolderToFolderComponent)="onItemView('cim-detail-folder', $event)"
-                                (closeRightView)="onCloseRightSide($event)">
-                </cim-folder-row>
-            </ng-template>
-
-            <ng-template #documentBlock>
-                <cim-document-row [document]="item"
-                                  [currentUser]="currentUser"
-                                  [parentFolder]="workFunction"
-                                  (activatedDocument)="onItemView('cim-document-detail', $event)">
-                </cim-document-row>
-            </ng-template>
-        </ng-container>
-    </div>
-    <div class="card" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
-        <cim-folder-detail
-                [workFunction]="workFunction"
-                [currentUser]="currentUser"
-                [activeSidePackage]="activeItem"
-                (itemsAdded)="onItemsAdded($event)"
-                (closeView)="onCloseRightSide($event)">
-        </cim-folder-detail>
-    </div>
-    <div class="readeModeContainer" [ngClass]="{'animateDiv': showReadModeAnimation}">
-        <cim-item-read *ngIf="showReadMode"
-                       [items]="items"
-                       (closeReadMode)="onCloseReadMode($event)">
-        </cim-item-read>
-    </div>
-</div>
+<cim-items-overview *ngIf="currentUser"
+        [items]="items"
+        [currentUser]="currentUser"
+        [workFunction]="workFunction"
+        [mainFunction]="mainFunction">
+</cim-items-overview>

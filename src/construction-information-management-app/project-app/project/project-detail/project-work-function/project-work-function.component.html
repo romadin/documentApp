@@ -1,4 +1,4 @@
-<div class="card rippleRow" *ngIf="currentUser.isAdmin() || workFunction.on === true" routerLink="functies/{{workFunction.id}}">
+<div class="card rippleRow" *ngIf="currentUser.isAdmin() || workFunction.on === true" (click)="redirectToModule($event)">
     <div class="title">
         <i class="material-icons"> folder_open </i>
         <h3> {{ workFunction.name }}</h3>

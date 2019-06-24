@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Organisation } from '../../../../../shared/packages/organisation-package/organisation.model';
 
 import { Project } from '../../../../../shared/packages/project-package/project.model';
 import { User } from '../../../../../shared/packages/user-package/user.model';
@@ -18,10 +20,12 @@ export class ProjectWorkFunctionComponent implements OnInit {
     @Output() editWorkFunction: EventEmitter<WorkFunction> = new EventEmitter<WorkFunction>();
     private editableFolders = ['BIM Regisseur', 'BIM Manager'];
     private timerId: number;
+    private organisation: Organisation;
 
-    constructor(private workFunctionService: WorkFunctionService) { }
+    constructor(private workFunctionService: WorkFunctionService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
+        this.organisation = this.activatedRoute.snapshot.data.organisation;
     }
 
     workFunctionEditable(): boolean {
@@ -42,6 +46,17 @@ export class ProjectWorkFunctionComponent implements OnInit {
         this.timerId = setTimeout(() => {
             this.workFunctionService.updateWorkFunction(this.workFunction, {on: turnOn}).subscribe();
         }, 500);
+    }
+
+    redirectToModule(e: MouseEvent): void {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (this.organisation.modules.find(module => module.id === 2) && !this.workFunction.isMainFunction) {
+            this.router.navigate(['bedrijven', this.workFunction.id], {relativeTo: this.activatedRoute});
+        } else {
+            this.router.navigate(['functies', this.workFunction.id], {relativeTo: this.activatedRoute});
+        }
     }
 
     onEditWorkFunction(e: Event): void {

@@ -5,6 +5,7 @@ import {
     ConfirmPopupData
 } from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
 import { ToastService } from '../../toast.service';
+import { CompanyService } from '../company-package/company.service';
 import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
@@ -108,6 +109,12 @@ export class WorkFunctionService {
         workFunction.folders = this.foldersService.getFoldersByWorkFunction(workFunction);
         workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
         workFunction.items = workFunction.getItems();
+
+        const companies = [];
+        data.companies.forEach(company => {
+            companies.push(CompanyService.makeCompany(company));
+        });
+        workFunction.companies = companies;
 
         this.cache[workFunction.id] = workFunction;
 

@@ -1,3 +1,5 @@
+import { CompanyApiResponseInterface } from '../../company-package/company-api-response.interface';
+
 export interface WorkFunctionApiResponseInterface {
     id: number;
     name: string;
@@ -6,6 +8,7 @@ export interface WorkFunctionApiResponseInterface {
     templateId: number;
     on: boolean;
     fromTemplate: boolean;
+    companies?: CompanyApiResponseInterface[];
 }
 
 export interface WorkFunctionUpdateBody {
