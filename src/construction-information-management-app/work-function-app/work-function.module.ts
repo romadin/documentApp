@@ -8,6 +8,7 @@ import { WorkFunctionComponent } from './work-function.component';
 import { SharedModule } from '../../shared/shared.module';
 import { CompanyRowComponent } from './company/company-row/company-row.component';
 import { CompanyPopupComponent } from '../popups/company-popup/company-popup.component';
+import { AddCompaniesListComponent } from './company/add-companies-list/add-companies-list.component';
 
 const routes: Routes = [
     {
@@ -27,6 +28,7 @@ const routes: Routes = [
         WorkFunctionComponent,
         CompanyRowComponent,
         CompanyPopupComponent,
+        AddCompaniesListComponent,
     ],
     providers: [
         CompanyService

@@ -63,5 +63,6 @@ export class WorkFunctionComponent implements OnInit {
         this.headerCommunicationService.showAddUserButton.next(false);
         this.headerCommunicationService.showReadModeButton.next(false);
         this.headerCommunicationService.showAddItemButton.next(false);
+        this.headerCommunicationService.addCompanyButton.next({show: false});
     }
 }

@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from '../../service/api.service';
 import { Project } from '../project-package/project.model';
+import { WorkFunction } from '../work-function-package/work-function.model';
 import { CompanyApiPostData, CompanyApiResponseInterface } from './company-api-response.interface';
 import { Company } from './company.model';
 

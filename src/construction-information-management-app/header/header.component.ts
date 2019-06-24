@@ -100,6 +100,11 @@ export class HeaderComponent implements OnInit {
         this.folderCommunicationService.showAddItemButton.subscribe(show => {
             this.actions.find((action) => action.name === 'Hoofdstuk toevoegen').show = show;
         });
+        this.folderCommunicationService.addCompanyButton.subscribe(buttonAttributes => {
+            if (buttonAttributes && buttonAttributes.show !== undefined) {
+                this.actions.find((action) => action.name === 'Bedrijf toevoegen').show = buttonAttributes.show;
+            }
+        });
 
         this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
             const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');
@@ -165,6 +170,14 @@ export class HeaderComponent implements OnInit {
             needsAdmin: false,
             urlGroup: ['/projecten/:id/functies/:id'],
         };
+        const addCompanies: MenuAction = {
+            onClick: () => { this.folderCommunicationService.addCompanyButton.next({trigger: true}); },
+            iconName: 'picture_as_pdf',
+            name: 'Bedrijf toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten/:id/functies/:id'],
+        };
         const addAction: MenuAction = {
             onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },
             iconName: 'add',
@@ -222,7 +235,7 @@ export class HeaderComponent implements OnInit {
         };
         this.actions.push(
             addProject, addUser,
-            documentToPdf, readMode, addItemToFolder,
+            documentToPdf, readMode, addItemToFolder, addCompanies,
             actionsToPdf, showArchivedActions, addAction,
             addEvent, addTemplate, addWorkFunction
         );
