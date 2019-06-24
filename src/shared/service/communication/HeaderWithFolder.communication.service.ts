@@ -8,6 +8,8 @@ export class HeaderWithFolderCommunicationService {
     private _triggerReadMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showAddUserButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showDocumentToPdfButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _showReadModeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _showAddItemButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _exportToPdfButton: Subject<boolean> = new Subject<boolean>();
 
     get triggerAddItem(): BehaviorSubject<boolean> {
@@ -26,5 +28,13 @@ export class HeaderWithFolderCommunicationService {
     }
     get exportToPdf(): Subject<boolean> {
         return this._exportToPdfButton;
+    }
+
+    get showReadModeButton(): BehaviorSubject<boolean> {
+        return this._showReadModeButton;
+    }
+
+    get showAddItemButton(): BehaviorSubject<boolean> {
+        return this._showAddItemButton;
     }
 }

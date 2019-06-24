@@ -1,0 +1,14 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+.wrapper > .reserveCompany {
+    max-width: 500px;
+}
+
+.wrapper > .reserveCompany > .actions {
+    padding-top: 40px;
+}
+.wrapper > .reserveCompany > .actions > button:first-child {
+    margin-right: 20px;
+}

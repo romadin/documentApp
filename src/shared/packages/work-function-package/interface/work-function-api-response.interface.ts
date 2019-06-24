@@ -19,6 +19,7 @@ export interface WorkFunctionUpdateBody {
     folders?: number[];
     order?: number;
     on?: boolean;
+    companies?: number[];
 }
 
 export interface WorkFunctionGetParam {

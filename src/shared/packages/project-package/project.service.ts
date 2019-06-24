@@ -15,10 +15,14 @@ interface ProjectCache {
 interface ProjectsCache {
     [id: number]: Project[];
 }
+interface ProjectCacheObservable {
+    [id: number]: Observable<Project>;
+}
 
 @Injectable()
 export class ProjectService {
     private projectsCache: ProjectCache = {};
+    private projectsObservableCache: ProjectCacheObservable = {};
     private projectsByOrganisationCache: ProjectsCache = {};
     private allProjectSubject: Subject<Project[]> = new Subject();
 
@@ -45,7 +49,11 @@ export class ProjectService {
 
     public getProject(id: number, organisation: Organisation): Observable<Project> {
         const params = {format: 'json', organisationId: organisation.id};
-        return this.apiService.get('/projects/' + id, params).pipe(
+        if (this.projectsObservableCache[id]) {
+            return this.projectsObservableCache[id];
+        }
+
+        return this.projectsObservableCache[id] = this.apiService.get('/projects/' + id, params).pipe(
             mergeMap(projectResponse => {
                 const project = this.makeProject(projectResponse, organisation);
                 return this.workFunctionService.getWorkFunctionsByParent({projectId: project.id}, project).pipe(map(workFunctions => {
@@ -116,14 +124,5 @@ export class ProjectService {
 
         this.projectsCache[ project.id ] = project;
         return project;
-    }
-
-    private objectIsEmpty(object: any): boolean {
-        for (const key in object ) {
-            if (object.hasOwnProperty(key)) {
-                return false;
-            }
-        }
-        return true;
     }
 }

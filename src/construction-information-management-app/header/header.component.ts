@@ -94,6 +94,12 @@ export class HeaderComponent implements OnInit {
         this.folderCommunicationService.showDocumentToPdfButton.subscribe((show: boolean) => {
             this.actions.find((action) => action.name === 'Exporteer naar pdf').show = show;
         });
+        this.folderCommunicationService.showReadModeButton.subscribe(show => {
+            this.actions.find((action) => action.name === 'Boek modus').show = show;
+        });
+        this.folderCommunicationService.showAddItemButton.subscribe(show => {
+            this.actions.find((action) => action.name === 'Hoofdstuk toevoegen').show = show;
+        });
 
         this.actionCommunicationService.showArchivedActionsButton.subscribe((show: boolean) => {
             const archiveAction = this.actions.find((action) => action.name === 'Gearchiveerde acties');

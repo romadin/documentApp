@@ -30,8 +30,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     ) { }
 
     ngOnInit() {
-
-        console.log(this.currentUser);
         this.resetView();
         this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
             if (read && !this.showReadMode) {
@@ -49,7 +47,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
                 this.resetView();
             }
         }));
-
+        this.headerCommunicationService.showReadModeButton.next(true);
         this.headerCommunicationService.showAddUserButton.next(false);
     }
 

@@ -1,0 +1,27 @@
+<div class="wrapper">
+    <cim-company-row *ngFor="let company of workFunction.companies"
+                     [company]="company"
+                     [currentUser]="currentUser">
+    </cim-company-row>
+
+    <div class="reserveCompany card" *ngIf="companiesLinkedToProject && companiesLinkedToProject.length === 0">
+        <div class="warning">
+            <div class="content">
+                <i class="material-icons"> warning </i>
+                <span>
+                    Er zijn geen bedrijven gekoppeld aan het project, wilt u een bedrijf reserveren of wilt u een gebruiker toevoegen aan dit project?
+                </span>
+            </div>
+        </div>
+        <div class="actions">
+            <button mat-raised-button color="primary" (click)="addCompany($event)">
+                <mat-icon aria-label="Icon"> business </mat-icon>
+                <span class="actionText"> Bredrijf reserveren</span>
+            </button>
+            <button mat-raised-button color="primary" (click)="addUser($event)">
+                <mat-icon aria-label="Icon"> person_add </mat-icon>
+                <span class="actionText"> Gebruiker toevoegen</span>
+            </button>
+        </div>
+    </div>
+</div>
