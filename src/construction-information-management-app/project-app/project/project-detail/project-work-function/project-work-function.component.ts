@@ -52,7 +52,11 @@ export class ProjectWorkFunctionComponent implements OnInit {
         e.preventDefault();
         e.stopPropagation();
 
-        this.router.navigate(['functies', this.workFunction.id], {relativeTo: this.activatedRoute});
+        if (this.organisation.modules.find(module => module.id === 2) && !this.workFunction.isMainFunction) {
+            this.router.navigate(['functies', this.workFunction.id, 'bedrijven'], {relativeTo: this.activatedRoute});
+        } else {
+            this.router.navigate(['functies', this.workFunction.id], {relativeTo: this.activatedRoute});
+        }
     }
 
     onEditWorkFunction(e: Event): void {

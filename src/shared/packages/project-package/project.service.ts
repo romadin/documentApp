@@ -29,7 +29,7 @@ export class ProjectService {
     constructor(private apiService: ApiService, private workFunctionService: WorkFunctionService) {
     }
 
-    public getProjects(organisation: Organisation): Observable<Project[]> {
+    getProjects(organisation: Organisation): Observable<Project[]> {
         if ( this.projectsByOrganisationCache[organisation.id] ) {
             return of(this.projectsByOrganisationCache[organisation.id]);
         }
@@ -47,7 +47,7 @@ export class ProjectService {
         }));
     }
 
-    public getProject(id: number, organisation: Organisation): Observable<Project> {
+    getProject(id: number, organisation: Organisation): Observable<Project> {
         const params = {format: 'json', organisationId: organisation.id};
         if (this.projectsObservableCache[id]) {
             return this.projectsObservableCache[id];
@@ -65,7 +65,7 @@ export class ProjectService {
         );
     }
 
-    public postProject(data: ProjectPostDataInterface, organisation: Organisation ): Promise<Project> {
+    postProject(data: ProjectPostDataInterface, organisation: Organisation ): Promise<Project> {
         return new Promise<Project>((resolve) => {
             this.apiService.post('/projects', data, {}).subscribe((apiResponse: ApiProjectResponse) => {
                     const newProject = this.makeProject(apiResponse, organisation);
@@ -80,7 +80,7 @@ export class ProjectService {
     /**
      * Doing a post projectId but this call does also do workFunctions and documents. That is the default projectId.
      */
-    public postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
+    postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
         const params = { organisationId: organisation.id };
 
         return new Promise<Project>((resolve) => {
@@ -95,14 +95,14 @@ export class ProjectService {
         });
     }
 
-    public updateProject(data: ProjectUpdateData, id: number): Observable<Project> {
+    updateProject(data: ProjectUpdateData, id: number): Observable<Project> {
         return this.apiService.post('/projects/' + id, data, ).pipe(map(() => {
             this.projectsCache[id].update(data);
             return this.projectsCache[id];
         }));
     }
 
-    public deleteProject(id: number, organisation: Organisation): void {
+    deleteProject(id: number, organisation: Organisation): void {
         this.apiService.delete('/projects/' + id, {organisationId: organisation.id}).subscribe((apiResponse: ApiProjectResponse[]) => {
             if (this.projectsCache.hasOwnProperty(id) ) {
                 delete this.projectsCache[id];

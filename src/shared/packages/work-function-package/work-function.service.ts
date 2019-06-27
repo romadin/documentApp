@@ -36,6 +36,7 @@ export class WorkFunctionService {
                 private chapterService: ChapterService,
                 private documentService: DocumentService,
                 private foldersService: FolderService,
+                private companyService: CompanyService,
                 private dialog: MatDialog,
                 private toast: ToastService
     ) {  }
@@ -112,7 +113,7 @@ export class WorkFunctionService {
 
         const companies = [];
         data.companies.forEach(company => {
-            companies.push(CompanyService.makeCompany(company));
+            companies.push(this.companyService.makeCompany(company));
         });
         workFunction.companies = companies;
 

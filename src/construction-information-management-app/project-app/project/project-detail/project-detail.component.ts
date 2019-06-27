@@ -72,7 +72,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 private projectService: ProjectService,
                 private routerService: RouterService,
                 private communicationService: ProjectCommunicationService) {
-        this.folderUrlToRedirect = 'workFunction/';
+        this.folderUrlToRedirect = 'parent/';
     }
 
     ngOnInit() {

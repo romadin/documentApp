@@ -5,6 +5,7 @@ import {
     ConfirmPopupComponent,
     ConfirmPopupData
 } from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
+import { Company } from '../company-package/company.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
 
 import { Document } from './document.model';
@@ -16,9 +17,14 @@ interface DocumentsCache {
     [id: number]: Document;
 }
 
+interface DocumentsCacheObservable {
+    [id: number]: BehaviorSubject<Document[]>;
+}
+
 @Injectable()
 export class DocumentService {
     private documentsCache: DocumentsCache = {};
+    private documentsByCompanyCache: DocumentsCacheObservable = {};
     private path = '/documents';
 
     constructor(private apiService: ApiService, private dialog: MatDialog) { }
@@ -53,6 +59,20 @@ export class DocumentService {
                 documentsContainer.next(documents);
             });
         return documentsContainer;
+    }
+
+    getDocumentsByCompany(company: Company): BehaviorSubject<Document[]> {
+        if (this.documentsByCompanyCache[company.id]) {
+            return this.documentsByCompanyCache[company.id];
+        }
+        const param = {companyId: company.id};
+        const documentsContainer: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
+        this.apiService.get(this.path, param).subscribe((result: ApiDocResponse[]) => {
+            documentsContainer.next(result.map(response => this.makeDocument(response)));
+        });
+
+        this.documentsByCompanyCache[company.id] = documentsContainer;
+        return this.documentsByCompanyCache[company.id];
     }
 
     public postDocument(postData: DocPostData, workFunction: WorkFunction, folder?: Folder): BehaviorSubject<Document> {

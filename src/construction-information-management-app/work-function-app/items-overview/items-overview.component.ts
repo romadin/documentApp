@@ -1,12 +1,16 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { Company } from '../../../shared/packages/company-package/company.model';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { User } from '../../../shared/packages/user-package/user.model';
+import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { FolderCommunicationService } from '../../../shared/service/communication/Folder.communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
+import { ChildItemPackage } from '../work-function-package-resolver.service';
 
 @Component({
   selector: 'cim-items-overview',
@@ -14,10 +18,10 @@ import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
   styleUrls: ['./items-overview.component.css']
 })
 export class ItemsOverviewComponent implements OnInit, OnDestroy  {
-    @Input() currentUser: User;
-    @Input() items: ( Document | Folder)[];
-    @Input() workFunction: WorkFunction;
-    @Input() mainFunction: WorkFunction;
+    currentUser: User;
+    parent: WorkFunction | Company;
+    mainFunction: WorkFunction;
+    items: ( Document | Folder)[];
     activeItem: ActiveItemPackage;
     showReadMode: boolean;
     showReadModeAnimation: boolean;
@@ -27,9 +31,16 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     constructor(
         private headerCommunicationService: HeaderWithFolderCommunicationService,
         private folderCommunicationService: FolderCommunicationService,
+        private activatedRoute: ActivatedRoute,
     ) { }
 
     ngOnInit() {
+        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
+        this.parent = functionPackage.parent;
+        this.currentUser = functionPackage.currentUser;
+        this.mainFunction = functionPackage.mainFunction;
+
+        this.parent.items.subscribe(items => this.items = items );
         this.resetView();
         this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
             if (read && !this.showReadMode) {
@@ -47,7 +58,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
                 this.resetView();
             }
         }));
-        this.headerCommunicationService.showReadModeButton.next(true);
         this.headerCommunicationService.showAddUserButton.next(false);
     }
 
@@ -81,7 +91,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     }
     private addItem() {
         this.resetView();
-        if (this.workFunction.isMainFunction) {
+        if (isWorkFunction(this.parent) && this.parent.isMainFunction) {
             this.activeItem = {
                 component: 'cim-item-create',
                 item: null

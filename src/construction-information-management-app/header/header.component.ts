@@ -28,8 +28,9 @@ export interface MenuAction {
     urlNotShow?: string;
 }
 
-type UrlGroup = '/projecten' | '/projecten/:id' | '/gebruikers' | '/projecten/:id/functies/:id'|
-    '/projecten/:id/acties'| '/projecten/:id/agenda' | '/templates';
+type UrlGroup = '/projecten' | '/projecten/:id' | '/projecten/:id/functies/:id' | '/projecten/:id/functies/:id/bedrijven' |
+    '/projecten/:id/functies/:id/bedrijven/:id' |
+    '/projecten/:id/acties'| '/projecten/:id/agenda' | '/templates' | '/gebruikers';
 
 @Component({
   selector: 'cim-header',
@@ -144,7 +145,7 @@ export class HeaderComponent implements OnInit {
             name: 'Gebruiker toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/gebruikers', '/projecten/:id/functies/:id'],
+            urlGroup: ['/gebruikers', '/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
         };
         const addItemToFolder: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerAddItem.next(true); },
@@ -152,7 +153,7 @@ export class HeaderComponent implements OnInit {
             name: 'Hoofdstuk toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/projecten/:id/functies/:id'],
+            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
         };
         const readMode: MenuAction = {
             onClick: () => { this.folderCommunicationService.triggerReadMode.next(true); },
@@ -160,7 +161,7 @@ export class HeaderComponent implements OnInit {
             name: 'Boek modus',
             show: false,
             needsAdmin: false,
-            urlGroup: ['/projecten/:id/functies/:id'],
+            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
         };
         const documentToPdf: MenuAction = {
             onClick: () => { this.folderCommunicationService.exportToPdf.next(true); },
@@ -168,7 +169,7 @@ export class HeaderComponent implements OnInit {
             name: 'Exporteer naar pdf',
             show: false,
             needsAdmin: false,
-            urlGroup: ['/projecten/:id/functies/:id'],
+            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
         };
         const addCompanies: MenuAction = {
             onClick: () => { this.folderCommunicationService.addCompanyButton.next({trigger: true}); },
@@ -176,7 +177,7 @@ export class HeaderComponent implements OnInit {
             name: 'Bedrijf toevoegen',
             show: false,
             needsAdmin: true,
-            urlGroup: ['/projecten/:id/functies/:id'],
+            urlGroup: ['/projecten/:id/functies/:id/bedrijven'],
         };
         const addAction: MenuAction = {
             onClick: () => { this.actionCommunicationService.triggerAddAction.next(true); },

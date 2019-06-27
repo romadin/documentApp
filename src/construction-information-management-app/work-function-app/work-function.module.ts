@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CompanyService } from '../../shared/packages/company-package/company.service';
+import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
 import { SharedWorkFunctionModule } from '../../shared/shared-work-function.module';
+import { CompanyPackageResolverService } from './company/company-package-resolver.service';
 import { CompanyComponent } from './company/company.component';
+import { ItemsOverviewComponent } from './items-overview/items-overview.component';
+import { WorkFunctionPackageResolverService } from './work-function-package-resolver.service';
 
 import { WorkFunctionComponent } from './work-function.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -15,6 +18,36 @@ const routes: Routes = [
         path: '',
         component: WorkFunctionComponent,
         children: [
+            {
+                path: 'bedrijven',
+                canActivate: [ CanActivateLoggedIn ],
+                resolve: {
+                    functionPackage: WorkFunctionPackageResolverService
+                },
+                children: [
+                    {
+                        path: ':id',
+                        component: ItemsOverviewComponent,
+                        canActivate: [ CanActivateLoggedIn ],
+                        resolve: {
+                            functionPackage: CompanyPackageResolverService
+                        }
+                    },
+                    {
+                        path: '',
+                        component: CompanyComponent,
+                        canActivate: [ CanActivateLoggedIn ],
+                    }
+                ]
+            },
+            {
+                path: '',
+                component: ItemsOverviewComponent,
+                canActivate: [ CanActivateLoggedIn ],
+                resolve: {
+                    functionPackage: WorkFunctionPackageResolverService
+                }
+            }
         ]
     }
 ];
@@ -33,7 +66,8 @@ const routes: Routes = [
         AddCompaniesListComponent,
     ],
     providers: [
-        CompanyService
+        WorkFunctionPackageResolverService,
+        CompanyPackageResolverService
     ],
     entryComponents: [
         CompanyPopupComponent,

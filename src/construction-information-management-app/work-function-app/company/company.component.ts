@@ -1,6 +1,7 @@
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 import { Project } from '../../../shared/packages/project-package/project.model';
@@ -10,6 +11,7 @@ import { WorkFunctionService } from '../../../shared/packages/work-function-pack
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { CompanyPopupComponent, CompanyPopupData } from '../../popups/company-popup/company-popup.component';
+import { ChildItemPackage } from '../work-function-package-resolver.service';
 
 @Component({
     selector: 'cim-company',
@@ -54,13 +56,22 @@ import { CompanyPopupComponent, CompanyPopupData } from '../../popups/company-po
             transition('fullWidth <=> smallWidth', [
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
+            transition('void => *', [
+                style({ opacity: '0'}),
+                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ opacity: '1'})),
+            ]),
+            transition('* => void', [
+                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
+                    style({ opacity: '0'})
+                ])),
+            ])
         ])
     ]
 })
 export class CompanyComponent implements OnInit {
-    @Input() workFunction: WorkFunction;
-    @Input() mainFunction: WorkFunction;
-    @Input() currentUser: User;
+    workFunction: WorkFunction;
+    mainFunction: WorkFunction;
+    currentUser: User;
     companiesLinkedToProject: Company[];
     showAddCompaniesList: boolean;
     showWarningBox: boolean;
@@ -72,10 +83,16 @@ export class CompanyComponent implements OnInit {
         private workFunctionService: WorkFunctionService,
         private userCommunicationService: UsersCommunicationService,
         private headerCommunicationService: HeaderWithFolderCommunicationService,
+        private activatedRoute: ActivatedRoute,
         private dialog: MatDialog,
     ) { }
 
     ngOnInit() {
+        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
+        this.workFunction = <WorkFunction>functionPackage.parent;
+        this.currentUser = functionPackage.currentUser;
+        this.mainFunction = functionPackage.mainFunction;
+
         this.companyService.getCompaniesByProject(<Project>this.workFunction.parent).subscribe(companies => {
             if (companies) {
                 this.allCompanies = companies;

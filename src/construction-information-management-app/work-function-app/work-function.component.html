@@ -1,12 +1,1 @@
-<cim-items-overview *ngIf="currentUser && workFunction && !hasCompanyModule()"
-        [items]="items"
-        [currentUser]="currentUser"
-        [workFunction]="workFunction"
-        [mainFunction]="mainFunction">
-</cim-items-overview>
-
-<cim-company *ngIf="currentUser && workFunction && hasCompanyModule()"
-             [workFunction]="workFunction"
-             [mainFunction]="mainFunction"
-             [currentUser]="currentUser">
-</cim-company>
+<router-outlet></router-outlet>

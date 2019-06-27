@@ -6,6 +6,7 @@ import {
     ConfirmPopupComponent,
     ConfirmPopupData
 } from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
+import { Company } from '../company-package/company.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
 import { ApiService } from '../../service/api.service';
 import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-folder.interface';
@@ -14,8 +15,8 @@ import { DocumentService } from '../document-package/document.service';
 import { ApiDocResponse } from '../document-package/api-document.interface';
 import { Document} from '../document-package/document.model';
 
-interface FoldersByProjectCache {
-    [projectId: number]: Folder[];
+interface FoldersParentCache {
+    [id: number]: BehaviorSubject<Folder[]>;
 }
 
 interface FoldersCache {
@@ -24,31 +25,35 @@ interface FoldersCache {
 
 @Injectable()
 export class FolderService {
-    private foldersByProjectCache: FoldersByProjectCache = {};
+    private foldersByFunctionCacheOB: FoldersParentCache = {};
+    private foldersCompanyCacheOB: FoldersParentCache = {};
     private foldersCache: FoldersCache = {};
     private path = '/folders/';
 
     constructor(private apiService: ApiService, private documentService: DocumentService, private dialog: MatDialog) { }
 
     public getFoldersByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Folder[]> {
+        if ( this.foldersByFunctionCacheOB[workFunction.id] ) {
+            return this.foldersByFunctionCacheOB[workFunction.id];
+        }
         const folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
 
-        if ( this.foldersByProjectCache[workFunction.id] ) {
-            folders.next(this.foldersByProjectCache[workFunction.id]);
-            return folders;
-        }
-
         this.apiService.get(this.path, {workFunctionId: workFunction.id}).subscribe((foldersResponse: ApiFolderResponse[]) => {
-            const mainFolders: Folder[] = [];
-            foldersResponse.forEach((folderResponse) => {
-                const folder = this.makeFolder(folderResponse);
-                mainFolders.push(folder);
-            });
-
-            folders.next(mainFolders);
+            folders.next(foldersResponse.map(folderResponse => this.makeFolder(folderResponse)));
         });
+        return this.foldersByFunctionCacheOB[workFunction.id] = folders;
+    }
 
-        return folders;
+    public getFoldersByCompany(company: Company): BehaviorSubject<Folder[]> {
+        if ( this.foldersCompanyCacheOB[company.id] ) {
+            return this.foldersCompanyCacheOB[company.id];
+        }
+        const folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
+
+        this.apiService.get(this.path, {companyId: company.id}).subscribe((foldersResponse: ApiFolderResponse[]) => {
+            folders.next(foldersResponse.map(folderResponse => this.makeFolder(folderResponse)));
+        });
+        return this.foldersCompanyCacheOB[company.id] = folders;
     }
 
     public getFolder(id: number): BehaviorSubject<Folder> {
@@ -101,7 +106,7 @@ export class FolderService {
         const folder: Subject<Folder> = new Subject();
         const documentsId: number[] = [];
         items.forEach((item) => {
-            // @todo need to remove the if, when i can link workFunction to workFunction.
+            // @todo need to remove the if, when i can link parent to parent.
             if (item instanceof Document) {
                 documentsId.push(item.id);
             }
@@ -153,7 +158,7 @@ export class FolderService {
     }
 
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        // check if sub workFunction exist then set the sub workFunction-app.
+        // check if sub parent exist then set the sub parent-app.
         if ( response.subFolders !== null && response.subFolders.length > 0 ) {
             const subFolders: Folder[] = [];
             response.subFolders.forEach((subFolderResponse) => {

@@ -1,5 +1,5 @@
 <div class="wrapper">
-    <div class="container" [@resizeWidth]="showAddCompaniesList || showWarningBox ? 'smallWidth' : 'fullWidth'">
+    <div class="container" *ngIf="workFunction.companies.length > 0" [@resizeWidth]="showAddCompaniesList || showWarningBox ? 'smallWidth' : 'fullWidth'">
         <cim-company-row *ngFor="let company of workFunction.companies"
                          [company]="company"
                          [currentUser]="currentUser">
@@ -16,7 +16,7 @@
 
     <div class="reserveCompany container card" *ngIf="showWarningBox" [@toggleInView]="showWarningBox ? 'open' : 'close'">
         <div class="header">
-            <button mat-button (click)="resetView()" > <i class="material-icons"> close </i> </button>
+            <button mat-button (click)="resetView()" *ngIf="workFunction.companies.length > 0"> <i class="material-icons"> close </i> </button>
             <h3 class="title">Voeg een bedrijf toe</h3>
         </div>
         <div class="warning">
