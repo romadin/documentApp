@@ -14,7 +14,7 @@
             <ng-template #folderBlock>
                 <cim-folder-row [folder]="item"
                                 [currentUser]="currentUser"
-                                [workFunction]="parent"
+                                [parent]="parent"
                                 (sendDocumentToFolder)="onItemView('cim-document-detail', $event)"
                                 (sendFolderToFolderComponent)="onItemView('cim-detail-folder', $event)"
                                 (closeRightView)="onCloseRightSide($event)">

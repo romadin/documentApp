@@ -102,27 +102,6 @@ export class FolderService {
         return folder;
     }
 
-    public postFolderLinkItems(id: number, items): Subject<Folder> {
-        const folder: Subject<Folder> = new Subject();
-        const documentsId: number[] = [];
-        items.forEach((item) => {
-            // @todo need to remove the if, when i can link parent to parent.
-            if (item instanceof Document) {
-                documentsId.push(item.id);
-            }
-        });
-        const body = {documentsId: documentsId};
-        this.apiService.post(this.path + id + '/documents', body).subscribe((foldersResponse: ApiFolderResponse) => {
-            if (this.foldersCache[id]) {
-                return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
-            }
-            folder.next(this.makeFolder(foldersResponse));
-        }, (error) => {
-            throw new Error(error.error);
-        });
-        return folder;
-    }
-
     public deleteFolder(folder: Folder, params: any): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
         const popupData: ConfirmPopupData = {
