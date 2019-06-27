@@ -29,8 +29,8 @@ export interface MenuAction {
 }
 
 type UrlGroup = '/projecten' | '/projecten/:id' | '/projecten/:id/functies/:id' | '/projecten/:id/functies/:id/bedrijven' |
-    '/projecten/:id/functies/:id/bedrijven/:id' |
-    '/projecten/:id/acties'| '/projecten/:id/agenda' | '/templates' | '/gebruikers';
+    '/projecten/:id/functies/:id/bedrijven/:id' | '/projecten/:id/acties'| '/projecten/:id/agenda' |
+    '/templates' | '/gebruikers';
 
 @Component({
   selector: 'cim-header',

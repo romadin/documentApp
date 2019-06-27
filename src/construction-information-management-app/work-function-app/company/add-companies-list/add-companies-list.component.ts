@@ -28,9 +28,12 @@ export class AddCompaniesListComponent implements OnInit {
         this.companiesSelected.forEach(company => {
             postData.companies ? postData.companies.push(company.id) : postData.companies = [company.id];
             this.workFunction.companies.push(company);
+            this.companies.splice(this.companies.findIndex(c => c.id === company.id), 1);
         });
         this.workFunctionService.updateWorkFunction(this.workFunction, postData).subscribe(() => {
-            this.closeList.emit(true);
+            if (this.companies.length === 0) {
+                this.closeList.emit(true);
+            }
         });
     }
 

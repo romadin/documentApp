@@ -1,12 +1,14 @@
 <div class="wrapper">
-    <div class="container" *ngIf="workFunction.companies.length > 0" [@resizeWidth]="showAddCompaniesList || showWarningBox ? 'smallWidth' : 'fullWidth'">
-        <cim-company-row *ngFor="let company of workFunction.companies"
-                         [company]="company"
-                         [currentUser]="currentUser">
-        </cim-company-row>
+    <div class="container" [@resizeWidth]="workFunction.companies.length === 0 ? 'noWidth' : showAddCompaniesList || showWarningBox ? 'smallWidth'  : 'fullWidth'">
+        <div [@items] *ngFor="let company of workFunction.companies">
+            <cim-company-row
+                    [company]="company"
+                    [currentUser]="currentUser">
+            </cim-company-row>
+        </div>
     </div>
 
-    <div class="container" *ngIf="showAddCompaniesList" [@toggleInView]="showAddCompaniesList ? 'open' : 'close'">
+    <div class="container" *ngIf="showAddCompaniesList" [@toggleInView]="workFunction.companies.length === 0 ? 'openFullWidth' : showAddCompaniesList ? 'open' : 'close'">
         <cim-add-companies-list
                 [companies]="companiesLinkedToProject"
                 [workFunction]="workFunction"

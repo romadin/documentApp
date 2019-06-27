@@ -15,6 +15,7 @@
 }
 .wrapper > .container {
     flex:none;
+    width: 100%;
 }
 .wrapper > .container:first-child {
     float: left;
@@ -23,4 +24,3 @@
 .wrapper > .container:first-child.reserveCompany {
     margin: auto;
 }
-

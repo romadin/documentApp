@@ -1,5 +1,5 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { animate, animateChild, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Company } from '../../../shared/packages/company-package/company.model';
@@ -26,10 +26,21 @@ import { ChildItemPackage } from '../work-function-package-resolver.service';
                 width: '48%',
                 transform: 'translateX(0)'
             })),
+            state('openFullWidth', style({
+                width: '100%',
+                transform: 'translateX(0)'
+            })),
             transition('close => open', [
                 animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
             transition('open => close', [
+                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
+                    style({ transform: 'translateX(5%)', offset: 0.1}),
+                    style({ transform: 'translateX(10%)', offset: 0.8}),
+                    style({ transform: 'translateX(110%)', offset: 1}),
+                ]))
+            ]),
+            transition('openFullWidth => open', [
                 animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
                     style({ transform: 'translateX(5%)', offset: 0.1}),
                     style({ transform: 'translateX(10%)', offset: 0.8}),
@@ -53,22 +64,30 @@ import { ChildItemPackage } from '../work-function-package-resolver.service';
             state('smallWidth', style({
                 width: '50%'
             })),
+            state('noWidth', style({
+                width: '0'
+            })),
             transition('fullWidth <=> smallWidth', [
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
-            transition('void => *', [
-                style({ opacity: '0'}),
-                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ opacity: '1'})),
+            transition('fullWidth <=> noWidth', [
+                animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
-            transition('* => void', [
-                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
-                    style({ opacity: '0'})
-                ])),
+            transition(':enter', [
+                query('@items', stagger(300, animateChild()))
+            ]),
+        ]),
+        trigger('items', [
+            transition('void => *', [
+                style({ transform: 'scale(0.5)', opacity: 0 }),  // initial
+                animate('1s cubic-bezier(.8, -0.6, 0.2, 1.5)',
+                    style({ transform: 'scale(1)', opacity: 1 })
+                )  // final
             ])
         ])
     ]
 })
-export class CompanyComponent implements OnInit {
+export class CompanyComponent implements OnInit, OnDestroy {
     workFunction: WorkFunction;
     mainFunction: WorkFunction;
     currentUser: User;
@@ -92,12 +111,19 @@ export class CompanyComponent implements OnInit {
         this.workFunction = <WorkFunction>functionPackage.parent;
         this.currentUser = functionPackage.currentUser;
         this.mainFunction = functionPackage.mainFunction;
+        let streamCounter = 0;
 
         this.companyService.getCompaniesByProject(<Project>this.workFunction.parent).subscribe(companies => {
             if (companies) {
                 this.allCompanies = companies;
                 this.filterCompanies();
                 this.headerCommunicationService.addCompanyButton.next({show: true});
+                streamCounter++;
+                console.log(streamCounter);
+                if (streamCounter === 1) {
+                    this.showAddCompaniesList = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
+                    this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0;
+                }
             }
         });
         this.headerCommunicationService.addCompanyButton.subscribe(buttonOptions => {
@@ -107,6 +133,10 @@ export class CompanyComponent implements OnInit {
                 this.warningMessage = 'Alle bedrijven voor dit project zijn toegevoegd.';
             }
         });
+    }
+
+    ngOnDestroy() {
+        this.headerCommunicationService.addCompanyButton.next({show: false});
     }
 
     addUser(e: Event): void {
@@ -128,7 +158,7 @@ export class CompanyComponent implements OnInit {
             if (company) {
                 this.workFunction.companies.push(company);
                 this.workFunctionService.updateWorkFunction(this.workFunction, {companies: [company.id]}).subscribe();
-                this.resetView();
+                // this.resetView();
             }
         });
     }
@@ -139,8 +169,6 @@ export class CompanyComponent implements OnInit {
     }
     private filterCompanies(): void {
         this.companiesLinkedToProject = this.allCompanies.filter(c => !this.workFunction.companies.find(wc => wc.id === c.id));
-        this.showAddCompaniesList = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
-        this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0;
     }
 
 
