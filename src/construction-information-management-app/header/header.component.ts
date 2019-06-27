@@ -172,7 +172,7 @@ export class HeaderComponent implements OnInit {
         };
         const addCompanies: MenuAction = {
             onClick: () => { this.folderCommunicationService.addCompanyButton.next({trigger: true}); },
-            iconName: 'picture_as_pdf',
+            iconName: 'business',
             name: 'Bedrijf toevoegen',
             show: false,
             needsAdmin: true,

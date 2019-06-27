@@ -1,23 +1,30 @@
 <div class="wrapper">
-    <div class="rowWrapper">
+    <div class="container" [@resizeWidth]="showAddCompaniesList || showWarningBox ? 'smallWidth' : 'fullWidth'">
         <cim-company-row *ngFor="let company of workFunction.companies"
                          [company]="company"
                          [currentUser]="currentUser">
         </cim-company-row>
     </div>
 
-    <cim-add-companies-list *ngIf="companiesLinkedToProject && (companiesLinkedToProject.length > 0 && workFunction.companies.length === 0) || showAddCompaniesList"
-            [companies]="companiesLinkedToProject"
-            [workFunction]="workFunction"
-            (closeList)="resetView()">
-    </cim-add-companies-list>
+    <div class="container" *ngIf="showAddCompaniesList" [@toggleInView]="showAddCompaniesList ? 'open' : 'close'">
+        <cim-add-companies-list
+                [companies]="companiesLinkedToProject"
+                [workFunction]="workFunction"
+                (closeList)="resetView()">
+        </cim-add-companies-list>
+    </div>
 
-    <div class="reserveCompany card" *ngIf="companiesLinkedToProject && (companiesLinkedToProject.length === 0 && workFunction.companies.length === 0) || showWarningBox">
+    <div class="reserveCompany container card" *ngIf="showWarningBox" [@toggleInView]="showWarningBox ? 'open' : 'close'">
+        <div class="header">
+            <button mat-button (click)="resetView()" > <i class="material-icons"> close </i> </button>
+            <h3 class="title">Voeg een bedrijf toe</h3>
+        </div>
         <div class="warning">
             <div class="content">
                 <i class="material-icons"> warning </i>
                 <span>
-                    Er zijn geen bedrijven gekoppeld aan het project of u heeft alle bedrijven al gekoppeld, wilt u een bedrijf reserveren of wilt u een gebruiker toevoegen aan dit project?
+                     {{warningMessage}} Wilt u een bedrijf reserveren of wilt u een gebruiker toevoegen aan dit project?
+                    Klik dan op één van de onderstaande knoppen.
                 </span>
             </div>
         </div>

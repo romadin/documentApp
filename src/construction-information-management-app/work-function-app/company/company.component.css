@@ -1,6 +1,7 @@
 .wrapper {
     display: flex;
-    justify-content: center;
+    /*justify-content: center;*/
+    align-items: flex-end;
 }
 .wrapper > .reserveCompany {
     max-width: 500px;
@@ -12,7 +13,11 @@
 .wrapper > .reserveCompany > .actions > button:first-child {
     margin-right: 20px;
 }
-
-.wrapper > .rowWrapper {
-    flex: 1;
+.wrapper > .container {
+    flex:none;
 }
+.wrapper > .container:first-child {
+    float: left;
+    margin-right: 20px;
+}
+

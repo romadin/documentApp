@@ -34,6 +34,7 @@ export class CompanyPopupComponent {
     }
 
     onSubmit() {
+        console.log(this.companyForm.invalid);
         if (!this.companyForm.invalid) {
             if (this.data.id) {
                 // this.companyService.updateProject({ name: companyName }, this.data.id).subscribe((value) => {

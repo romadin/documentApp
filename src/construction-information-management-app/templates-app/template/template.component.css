@@ -2,7 +2,6 @@
     display: flex;
 }
 .content-row > .container {
-    /*flex: 1;*/
     flex: none;
 }
 .content-row > .container:first-child {

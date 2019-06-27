@@ -13,7 +13,9 @@ import { AddCompaniesListComponent } from './company/add-companies-list/add-comp
 const routes: Routes = [
     {
         path: '',
-        component: WorkFunctionComponent
+        component: WorkFunctionComponent,
+        children: [
+        ]
     }
 ];
 
