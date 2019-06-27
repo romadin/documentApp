@@ -13,3 +13,9 @@ export interface DocPostData {
     content: string;
     folderId?: number;
 }
+
+export interface ParamDelete {
+    workFunctionId?: number;
+    folderId?: number;
+    companyId?: number;
+}

@@ -1,4 +1,4 @@
-import { CompanyApiResponseInterface } from '../../company-package/company-api-response.interface';
+import { CompanyApiResponseInterface } from '../../company-package/interface/company-api-response.interface';
 
 export interface WorkFunctionApiResponseInterface {
     id: number;

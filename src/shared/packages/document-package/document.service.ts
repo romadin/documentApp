@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import {
     ConfirmPopupComponent,
     ConfirmPopupData
 } from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
+import { ToastService } from '../../toast.service';
 import { Company } from '../company-package/company.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
 
 import { Document } from './document.model';
-import { ApiDocResponse, DocPostData } from './api-document.interface';
+import { ApiDocResponse, DocPostData, ParamDelete } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
 import { Folder } from '../folder-package/folder.model';
 
@@ -21,13 +23,15 @@ interface DocumentsCacheObservable {
     [id: number]: BehaviorSubject<Document[]>;
 }
 
+export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
+
 @Injectable()
 export class DocumentService {
     private documentsCache: DocumentsCache = {};
     private documentsByCompanyCache: DocumentsCacheObservable = {};
     private path = '/documents';
 
-    constructor(private apiService: ApiService, private dialog: MatDialog) { }
+    constructor(private apiService: ApiService, private dialog: MatDialog, private toast: ToastService) { }
 
     getDocumentsByFolder(folderId: number): BehaviorSubject<Document[]> {
         const documents: BehaviorSubject<Document[]> = new BehaviorSubject([]);
@@ -105,20 +109,21 @@ export class DocumentService {
         return newDocument;
     }
 
-    public deleteDocument(document: Document): Subject<boolean> {
+    public deleteDocument(document: Document, paramDelete?: ParamDelete): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
         const popupData: ConfirmPopupData = {
             title: 'Document verwijderen',
-            name: document.name,
+            name: document.getName(),
             action: 'verwijderen'
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {
-                this.apiService.delete(this.path + '/' + document.id, {}).subscribe((response: ApiDocResponse) => {
+                this.apiService.delete(this.path + '/' + document.id, paramDelete).subscribe(() => {
                     if (this.documentsCache.hasOwnProperty(document.id) ) {
                         delete this.documentsCache[document.id];
                     }
-                    deleted.next(true );
+                    this.toast.showSuccess('Document: ' + document.getName() + ' is verwijderd', 'Verwijderd');
+                    deleted.next(true);
                 });
             }
         });
@@ -126,17 +131,26 @@ export class DocumentService {
     }
 
     /**
-     * @todo still need to fix this.
+     * Only delete the link between the document and parent.
      */
-    public deleteDocumentLink(document: Document, folder: Folder) {
-        const deleted: Subject<boolean> = new Subject<boolean>();
-        this.apiService.delete('/workFunctions/' + folder.id + '/documents/' + document.id, {}).subscribe((response: ApiDocResponse) => {
-            if (this.documentsCache.hasOwnProperty(document.id) ) {
-                delete this.documentsCache[document.id];
+    deleteDocumentLink(url: DocumentParentUrl, document: Document, parent: Folder | Company | WorkFunction ) {
+        const popupData: ConfirmPopupData = {
+            title: 'Document link verwijderen',
+            name: document.getName(),
+            action: 'verwijderen'
+        };
+
+        return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {
+            if (action) {
+                return this.apiService.delete(url + parent.id, {}).pipe(
+                    map(() => {
+                        this.toast.showSuccess('Document: ' + Document.name + 'link is verwijderd', 'Verwijderd');
+                        return true;
+                    })
+                );
             }
-            deleted.next(true );
-        });
-        return deleted;
+            return of(false);
+        }));
     }
 
     /**

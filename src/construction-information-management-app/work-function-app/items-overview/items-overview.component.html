@@ -24,7 +24,7 @@
             <ng-template #documentBlock>
                 <cim-document-row [document]="item"
                                   [currentUser]="currentUser"
-                                  [parentFolder]="parent"
+                                  [parent]="parent"
                                   (activatedDocument)="onItemView('cim-document-detail', $event)">
                 </cim-document-row>
             </ng-template>

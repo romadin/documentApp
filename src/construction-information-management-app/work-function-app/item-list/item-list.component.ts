@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { combineLatest } from 'rxjs';
-import { CompanyApiUpdataData } from '../../../shared/packages/company-package/company-api-response.interface';
+import { CompanyApiUpdataData } from '../../../shared/packages/company-package/interface/company-api-response.interface';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 
@@ -53,8 +53,6 @@ export class ItemListComponent implements OnInit {
     saveItems(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        console.log(this.parent);
-        console.log(this.getPostData());
         if (isWorkFunction(this.parent)) {
             this.workFunctionService.updateWorkFunction(<WorkFunction>this.parent, this.getPostData()).subscribe(parent => {
                 this.parent.addItems(this.itemsSelected);

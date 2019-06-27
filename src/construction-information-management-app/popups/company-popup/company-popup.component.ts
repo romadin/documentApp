@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
-import { CompanyApiPostData } from '../../../shared/packages/company-package/company-api-response.interface';
+import { CompanyApiPostData } from '../../../shared/packages/company-package/interface/company-api-response.interface';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { ToastService } from '../../../shared/toast.service';

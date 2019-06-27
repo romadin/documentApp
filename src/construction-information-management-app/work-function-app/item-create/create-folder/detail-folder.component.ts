@@ -102,7 +102,6 @@ export class DetailFolderComponent implements OnInit {
                 const documentsArray: Document[] = this.folder.documents.getValue();
                 documentsArray.splice(documentsArray.findIndex((document => document === documentToDelete)), 1);
                 this.folder.documents.next(documentsArray);
-                this.toast.showSuccess('Document: ' + documentToDelete.name + ' is verwijderd', 'Verwijderd');
             }
         });
     }
