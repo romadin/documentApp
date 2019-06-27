@@ -6,7 +6,7 @@ import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
-import { CompanyApiPostData, CompanyApiResponseInterface } from './company-api-response.interface';
+import { CompanyApiPostData, CompanyApiResponseInterface, CompanyApiUpdataData } from './company-api-response.interface';
 import { Company } from './company.model';
 
 interface CompanyCacheObservable {
@@ -49,6 +49,13 @@ export class CompanyService {
     createCompany(body: CompanyApiPostData, projectsId: number[]): Observable<Company> {
         return this.apiService.post(this.path, body).pipe(map(result => {
             const company = this.makeCompany(result);
+            this.updateCache(company, projectsId);
+            return company;
+        }));
+    }
+
+    updateCompany(company: Company, body: CompanyApiUpdataData, projectsId: number[]): Observable<Company> {
+        return this.apiService.post(this.path + '/' + company.id, body).pipe(map(result => {
             this.updateCache(company, projectsId);
             return company;
         }));

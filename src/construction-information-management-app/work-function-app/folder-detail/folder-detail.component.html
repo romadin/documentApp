@@ -25,7 +25,7 @@
     </div>
     <div *ngIf="activeItem && activeItem.component === 'cim-item-list'" [@fadeIn]>
         <cim-item-list [mainWorkFunction]="activeItem.mainFunction"
-                       [workFunction]="workFunction"
+                       [parent]="workFunction"
                        (cancelAddItems)="onCloseView($event)"
                        (saveItemsDone)="onItemsAdded($event)">
         </cim-item-list>

@@ -1,10 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { combineLatest, forkJoin } from 'rxjs';
+import { combineLatest } from 'rxjs';
+import { CompanyApiUpdataData } from '../../../shared/packages/company-package/company-api-response.interface';
+import { Company } from '../../../shared/packages/company-package/company.model';
+import { CompanyService } from '../../../shared/packages/company-package/company.service';
 
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
-import { FolderPostData } from '../../../shared/packages/folder-package/api-folder.interface';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { WorkFunctionUpdateBody } from '../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
+import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 
@@ -15,50 +18,60 @@ import { WorkFunctionService } from '../../../shared/packages/work-function-pack
 })
 export class ItemListComponent implements OnInit {
     @Output() cancelAddItems: EventEmitter<boolean> = new EventEmitter();
-    @Output() saveItemsDone: EventEmitter<WorkFunction> = new EventEmitter();
+    @Output() saveItemsDone: EventEmitter<WorkFunction|Company> = new EventEmitter();
     @Input() mainWorkFunction: WorkFunction;
     public items = [];
     public itemsSelected: (Document|Folder)[];
 
-    private _workFunction: WorkFunction;
+    private _parent: WorkFunction | Company;
 
     @Input()
-    set workFunction(workFunction: WorkFunction) {
-        this._workFunction = workFunction;
+    set parent(parent: WorkFunction | Company) {
+        this._parent = parent;
     }
 
-    get workFunction(): WorkFunction {
-        return this._workFunction;
+    get parent(): WorkFunction|Company {
+        return this._parent;
     }
 
-    constructor(private workFunctionService: WorkFunctionService) { }
+    constructor(private workFunctionService: WorkFunctionService, private companyService: CompanyService) { }
 
     ngOnInit() {
         this.getAvailableItems();
     }
 
-    public isFolder(item: any) {
+    isFolder(item: any) {
         return item instanceof Folder;
     }
 
-    public cancelList(e: MouseEvent) {
+    cancelList(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
         this.cancelAddItems.emit(true);
     }
 
-    public saveItems(e: MouseEvent) {
+    saveItems(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        this.workFunctionService.updateWorkFunction(this.workFunction, this.getPostData()).subscribe(workFunction => {
-            this.workFunction.addItems(this.itemsSelected);
-            this.saveItemsDone.emit(workFunction);
-        });
+        console.log(this.parent);
+        console.log(this.getPostData());
+        if (isWorkFunction(this.parent)) {
+            this.workFunctionService.updateWorkFunction(<WorkFunction>this.parent, this.getPostData()).subscribe(parent => {
+                this.parent.addItems(this.itemsSelected);
+                this.saveItemsDone.emit(parent);
+            });
+        } else {
+            this.companyService.updateCompany(this.parent, <CompanyApiUpdataData>this.getPostData(), [this.mainWorkFunction.parent.id])
+                .subscribe(parent => {
+                    this.parent.addItems(this.itemsSelected);
+                    this.saveItemsDone.emit(parent);
+                });
+        }
     }
 
     private getAvailableItems(): void {
         combineLatest(
-            this.workFunction.items,
+            this.parent.items,
             this.mainWorkFunction.items
         ).subscribe(([items, mainWorkFunctionItems]) => {
             this.items = mainWorkFunctionItems.filter(mainWorkFunctionItem => {
