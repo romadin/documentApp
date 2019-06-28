@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-
-import { RouterService } from '../../shared/service/router.service';
 
 @Component({
   selector: 'cim-work-function',
@@ -10,9 +7,7 @@ import { RouterService } from '../../shared/service/router.service';
 })
 export class WorkFunctionComponent implements OnInit {
 
-    constructor(private activatedRoute: ActivatedRoute, private routerService: RouterService,) { }
+    constructor() { }
 
-    ngOnInit() {
-        this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
-    }
+    ngOnInit() {  }
 }

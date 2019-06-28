@@ -45,8 +45,9 @@ const routes: Routes = [
                 path: '',
                 component: ItemsOverviewComponent,
                 canActivate: [ CanActivateLoggedIn ],
+                data: {parentUrl: 'projecten/:id'},
                 resolve: {
-                    functionPackage: WorkFunctionPackageResolverService
+                    functionPackage: WorkFunctionPackageResolverService,
                 }
             }
         ]

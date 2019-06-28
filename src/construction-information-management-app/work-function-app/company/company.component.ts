@@ -1,6 +1,5 @@
 import { animate, animateChild, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
@@ -10,6 +9,7 @@ import { User } from '../../../shared/packages/user-package/user.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
+import { RouterService } from '../../../shared/service/router.service';
 import { ChildItemPackage } from '../work-function-package-resolver.service';
 
 export interface CompanyRightSidePackage {
@@ -103,14 +103,12 @@ export class CompanyComponent implements OnInit, OnDestroy {
         private companyService: CompanyService,
         private userCommunicationService: UsersCommunicationService,
         private headerCommunicationService: HeaderWithFolderCommunicationService,
+        private routerService: RouterService,
         private activatedRoute: ActivatedRoute,
     ) { }
 
     ngOnInit() {
-        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
-        this.rightSidePackage.workFunction = this.workFunction = <WorkFunction>functionPackage.parent;
-        this.currentUser = functionPackage.currentUser;
-        this.mainFunction = functionPackage.mainFunction;
+        this.setInitialValues();
         let streamCounter = 0;
 
         this.companyService.getCompaniesByProject(<Project>this.workFunction.parent).subscribe(companies => {
@@ -146,6 +144,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
         e.preventDefault();
         this.userCommunicationService.triggerAddUserPopup.next(true);
     }
+
     addCompany(e: Event | Company): void {
         this.rightSidePackage = { workFunction: this.workFunction };
         isCompany(e) ? this.rightSidePackage.editCompany = e : e.preventDefault();
@@ -154,17 +153,28 @@ export class CompanyComponent implements OnInit, OnDestroy {
             this.rightSideActive = true;
         }, 200);
     }
+
     onDeleteCompany(company: Company): void {
         this.filterCompanies();
         this.determineView();
     }
+
     resetView(): void {
         this.showWarningBox = false;
         this.rightSideActive = false;
     }
+
+    private setInitialValues(): void {
+        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
+        this.rightSidePackage.workFunction = this.workFunction = <WorkFunction>functionPackage.parent;
+        this.currentUser = functionPackage.currentUser;
+        this.mainFunction = functionPackage.mainFunction;
+        this.routerService.setBackRoute('/projecten/' + this.workFunction.parent.id);
+    }
     private filterCompanies(): void {
         this.companiesLinkedToProject = this.allCompanies.filter(c => !this.workFunction.companies.find(wc => wc.id === c.id));
     }
+
     private determineView(): void {
         this.rightSideActive = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
         this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;

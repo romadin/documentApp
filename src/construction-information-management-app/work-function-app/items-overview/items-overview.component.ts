@@ -9,6 +9,7 @@ import { isWorkFunction } from '../../../shared/packages/work-function-package/i
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { FolderCommunicationService } from '../../../shared/service/communication/Folder.communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
+import { RouterService } from '../../../shared/service/router.service';
 import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
 import { ChildItemPackage } from '../work-function-package-resolver.service';
 
@@ -31,17 +32,15 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     constructor(
         private headerCommunicationService: HeaderWithFolderCommunicationService,
         private folderCommunicationService: FolderCommunicationService,
+        private routerService: RouterService,
         private activatedRoute: ActivatedRoute,
     ) { }
 
     ngOnInit() {
-        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
-        this.parent = functionPackage.parent;
-        this.currentUser = functionPackage.currentUser;
-        this.mainFunction = functionPackage.mainFunction;
-
+        this.setInitialValues();
         this.parent.items.subscribe(items => this.items = items );
         this.resetView();
+
         this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
             if (read && !this.showReadMode) {
                 this.resetView();
@@ -74,21 +73,26 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
             item: item
         };
     }
+
     onCloseReadMode(close: boolean) {
         this.showReadModeAnimation = !close;
         setTimeout(() => {
             this.resetView();
         }, 900);
     }
+
     onCloseRightSide(close: boolean): void {
         this.resetView();
     }
+
     checkItemIsFolder(item): boolean {
         return item instanceof Folder;
     }
+
     onItemsAdded(item: WorkFunction | Document): void {
         this.headerCommunicationService.triggerAddItem.next(false);
     }
+
     private addItem() {
         this.resetView();
         if (isWorkFunction(this.parent) && this.parent.isMainFunction) {
@@ -104,6 +108,21 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
             };
         }
     }
+
+    private setInitialValues(): void {
+        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
+        this.parent = functionPackage.parent;
+        this.currentUser = functionPackage.currentUser;
+        this.mainFunction = functionPackage.mainFunction;
+
+        if (this.activatedRoute.snapshot.data.parentUrl) {
+            const url = <string>(this.activatedRoute.snapshot.data.parentUrl).replace(':id', this.mainFunction.parent.id);
+            this.routerService.setBackRoute(url);
+        } else {
+            this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute);
+        }
+    }
+
     private resetView(): void {
         this.activeItem = undefined;
         this.showReadMode = false;
