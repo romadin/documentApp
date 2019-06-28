@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
+import {
+    ConfirmPopupComponent,
+    ConfirmPopupData
+} from '../../../construction-information-management-app/popups/confirm-popup/confirm-popup.component';
 import { ApiService } from '../../service/api.service';
+import { ToastService } from '../../toast.service';
 import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
-import { CompanyApiPostData, CompanyApiResponseInterface, CompanyApiUpdateData } from './interface/company-api-response.interface';
+import {
+    CompanyApiPostData,
+    CompanyApiResponseInterface,
+    CompanyApiUpdateData,
+    CompanyDeleteParam
+} from './interface/company-api-response.interface';
 import { Company } from './company.model';
 
 interface CompanyCacheObservable {
@@ -19,6 +30,8 @@ export class CompanyService {
         private apiService: ApiService,
         private foldersService: FolderService,
         private documentService: DocumentService,
+        private toast: ToastService,
+        private dialog: MatDialog,
     ) {}
 
     makeCompany(data: CompanyApiResponseInterface): Company {
@@ -57,6 +70,24 @@ export class CompanyService {
         return this.apiService.post(this.path + '/' + company.id, body).pipe(map(result => {
             this.updateCache(company, projectsId);
             return company;
+        }));
+    }
+
+    deleteCompany(company, params: CompanyDeleteParam): Observable<boolean> {
+        const popupData: ConfirmPopupData = {
+            title: 'Bedrijf verwijderen',
+            name: company.name,
+            action: 'verwijderen'
+        };
+
+        return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {
+            if (action) {
+                return this.apiService.delete(this.path + '/' + company.id, params).pipe(map(result => {
+                    this.toast.showSuccess('Bedrijf: ' + company.name + ' is verwijderd', 'Verwijderd');
+                    return true;
+                }));
+            }
+            return of(false);
         }));
     }
 

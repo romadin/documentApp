@@ -5,7 +5,7 @@
     </div>
     <div class="actions">
         <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="onEditCompany($event)"> edit </i>
-        <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="deleteCompany($event)"> delete_forever </i>
+        <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="onDeleteCompany($event)"> delete_forever </i>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Company } from '../../../../shared/packages/company-package/company.model';
+import { CompanyService } from '../../../../shared/packages/company-package/company.service';
 import { User } from '../../../../shared/packages/user-package/user.model';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 
 @Component({
   selector: 'cim-company-row',
@@ -10,9 +12,11 @@ import { User } from '../../../../shared/packages/user-package/user.model';
 export class CompanyRowComponent implements OnInit {
     @Input() company: Company;
     @Input() currentUser: User;
+    @Input() workFunction: WorkFunction;
     @Output() editCompany: EventEmitter<Company> = new EventEmitter<Company>();
+    @Output() deleteCompany: EventEmitter<Company> = new EventEmitter<Company>();
 
-    constructor() { }
+    constructor(private companyService: CompanyService) { }
 
     ngOnInit() {
     }
@@ -23,10 +27,14 @@ export class CompanyRowComponent implements OnInit {
         this.editCompany.emit(this.company);
     }
 
-    deleteCompany(e: Event): void {
+    onDeleteCompany(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-        console.log('DELETE Company', this.company.name);
+        const param = {workFunctionId: this.workFunction.id};
+        this.companyService.deleteCompany(this.company, param).subscribe(() => {
+            this.workFunction.companies.splice(this.workFunction.companies.findIndex(c => c.id === this.company.id), 1);
+            this.deleteCompany.emit(this.company);
+        });
     }
 
 }

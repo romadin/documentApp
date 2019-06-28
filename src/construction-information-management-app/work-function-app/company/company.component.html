@@ -3,7 +3,10 @@
         <div [@items] *ngFor="let company of workFunction.companies">
             <cim-company-row
                     [company]="company"
-                    [currentUser]="currentUser" (editCompany)="addCompany($event)">
+                    [currentUser]="currentUser"
+                    [workFunction]="workFunction"
+                    (editCompany)="addCompany($event)"
+                    (deleteCompany)="onDeleteCompany($event)">
             </cim-company-row>
         </div>
     </div>

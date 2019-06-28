@@ -78,7 +78,7 @@ export interface CompanyRightSidePackage {
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
             transition(':enter', [
-                query('@items', stagger(300, animateChild()))
+                query('@items', stagger(300, animateChild()), { optional: true })
             ]),
         ]),
         trigger('items', [
@@ -124,9 +124,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
                 streamCounter++;
 
                 if (streamCounter === 1) {
-                    this.rightSideActive = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
-                    this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
-                    this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0;
+                    this.determineView();
                 }
             }
         });
@@ -159,13 +157,21 @@ export class CompanyComponent implements OnInit, OnDestroy {
             this.rightSideActive = true;
         }, 200);
     }
-
+    onDeleteCompany(company: Company): void {
+        this.filterCompanies();
+        this.determineView();
+    }
     resetView(): void {
         this.showWarningBox = false;
         this.rightSideActive = false;
     }
     private filterCompanies(): void {
         this.companiesLinkedToProject = this.allCompanies.filter(c => !this.workFunction.companies.find(wc => wc.id === c.id));
+    }
+    private determineView(): void {
+        this.rightSideActive = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
+        this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
+        this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0;
     }
 
 
