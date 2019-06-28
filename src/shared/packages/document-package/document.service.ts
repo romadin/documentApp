@@ -131,7 +131,7 @@ export class DocumentService {
     }
 
     /**
-     * Only delete the link between the document and parent.
+     * Only delete the link between the document and workFunction.
      */
     deleteDocumentLink(url: DocumentParentUrl, document: Document, parent: Folder | Company | WorkFunction ) {
         const popupData: ConfirmPopupData = {

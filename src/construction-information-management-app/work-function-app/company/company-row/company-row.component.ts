@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Company } from '../../../../shared/packages/company-package/company.model';
 import { User } from '../../../../shared/packages/user-package/user.model';
 
@@ -10,6 +10,7 @@ import { User } from '../../../../shared/packages/user-package/user.model';
 export class CompanyRowComponent implements OnInit {
     @Input() company: Company;
     @Input() currentUser: User;
+    @Output() editCompany: EventEmitter<Company> = new EventEmitter<Company>();
 
     constructor() { }
 
@@ -19,7 +20,7 @@ export class CompanyRowComponent implements OnInit {
     onEditCompany(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-        console.log('edit Company', this.company.name);
+        this.editCompany.emit(this.company);
     }
 
     deleteCompany(e: Event): void {

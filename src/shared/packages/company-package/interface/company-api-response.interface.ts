@@ -11,8 +11,8 @@ export interface CompanyApiGet {
 export interface CompanyApiPostData {
     name: string;
 }
-export interface CompanyApiUpdataData {
+export interface CompanyApiUpdateData {
     name?: string;
-    documentsId: number[];
-    foldersId: number[];
+    documentsId?: number[];
+    foldersId?: number[];
 }

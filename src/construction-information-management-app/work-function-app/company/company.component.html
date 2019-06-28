@@ -1,19 +1,16 @@
 <div class="wrapper">
-    <div class="container" [@resizeWidth]="workFunction.companies.length === 0 ? 'noWidth' : showAddCompaniesList || showWarningBox ? 'smallWidth'  : 'fullWidth'">
+    <div class="container" [@resizeWidth]="workFunction.companies.length === 0 ? 'noWidth' : rightSideActive || showWarningBox ? 'smallWidth'  : 'fullWidth'">
         <div [@items] *ngFor="let company of workFunction.companies">
             <cim-company-row
                     [company]="company"
-                    [currentUser]="currentUser">
+                    [currentUser]="currentUser" (editCompany)="addCompany($event)">
             </cim-company-row>
         </div>
     </div>
 
-    <div class="container" *ngIf="showAddCompaniesList" [@toggleInView]="workFunction.companies.length === 0 ? 'openFullWidth' : showAddCompaniesList ? 'open' : 'close'">
-        <cim-add-companies-list
-                [companies]="companiesLinkedToProject"
-                [workFunction]="workFunction"
-                (closeList)="resetView()">
-        </cim-add-companies-list>
+    <div class="container" *ngIf="rightSideActive" [@toggleInView]="workFunction.companies.length === 0 ? 'openFullWidth' : rightSideActive ? 'open' : 'close'">
+        <cim-company-right-side [package]="rightSidePackage" (closeSide)="resetView()">
+        </cim-company-right-side>
     </div>
 
     <div class="reserveCompany container card" *ngIf="showWarningBox" [@toggleInView]="showWarningBox ? 'open' : 'close'">

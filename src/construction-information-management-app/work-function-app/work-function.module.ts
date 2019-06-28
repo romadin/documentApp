@@ -10,8 +10,9 @@ import { WorkFunctionPackageResolverService } from './work-function-package-reso
 import { WorkFunctionComponent } from './work-function.component';
 import { SharedModule } from '../../shared/shared.module';
 import { CompanyRowComponent } from './company/company-row/company-row.component';
-import { CompanyPopupComponent } from '../popups/company-popup/company-popup.component';
-import { AddCompaniesListComponent } from './company/add-companies-list/add-companies-list.component';
+import { AddCompaniesListComponent } from './company/company-right-side/add-companies-list/add-companies-list.component';
+import { CompanyRightSideComponent } from './company/company-right-side/company-right-side.component';
+import { CompanyDetailComponent } from './company/company-right-side/company-detail/company-detail.component';
 
 const routes: Routes = [
     {
@@ -62,16 +63,14 @@ const routes: Routes = [
         CompanyComponent,
         WorkFunctionComponent,
         CompanyRowComponent,
-        CompanyPopupComponent,
         AddCompaniesListComponent,
+        CompanyRightSideComponent,
+        CompanyDetailComponent,
     ],
     providers: [
         WorkFunctionPackageResolverService,
         CompanyPackageResolverService
     ],
-    entryComponents: [
-        CompanyPopupComponent,
-    ]
 })
 
 export class WorkFunctionModule { }

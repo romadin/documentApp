@@ -4,15 +4,19 @@ import { MatDialog } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
+import { isCompany } from '../../../shared/packages/company-package/interface/company.interface';
 import { Project } from '../../../shared/packages/project-package/project.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
-import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
-import { CompanyPopupComponent, CompanyPopupData } from '../../popups/company-popup/company-popup.component';
 import { ChildItemPackage } from '../work-function-package-resolver.service';
 
+export interface CompanyRightSidePackage {
+    workFunction: WorkFunction;
+    editCompany?: Company;
+    companiesLinkedToProject?: Company[];
+}
 @Component({
     selector: 'cim-company',
     templateUrl: './company.component.html',
@@ -92,23 +96,22 @@ export class CompanyComponent implements OnInit, OnDestroy {
     mainFunction: WorkFunction;
     currentUser: User;
     companiesLinkedToProject: Company[];
-    showAddCompaniesList: boolean;
+    rightSidePackage: CompanyRightSidePackage = {workFunction: null};
+    rightSideActive: boolean;
     showWarningBox: boolean;
     warningMessage = 'Er zijn geen bedrijven gekoppeld aan het project.';
     private allCompanies: Company[];
 
     constructor(
         private companyService: CompanyService,
-        private workFunctionService: WorkFunctionService,
         private userCommunicationService: UsersCommunicationService,
         private headerCommunicationService: HeaderWithFolderCommunicationService,
         private activatedRoute: ActivatedRoute,
-        private dialog: MatDialog,
     ) { }
 
     ngOnInit() {
         const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
-        this.workFunction = <WorkFunction>functionPackage.parent;
+        this.rightSidePackage.workFunction = this.workFunction = <WorkFunction>functionPackage.parent;
         this.currentUser = functionPackage.currentUser;
         this.mainFunction = functionPackage.mainFunction;
         let streamCounter = 0;
@@ -119,9 +122,10 @@ export class CompanyComponent implements OnInit, OnDestroy {
                 this.filterCompanies();
                 this.headerCommunicationService.addCompanyButton.next({show: true});
                 streamCounter++;
-                console.log(streamCounter);
+
                 if (streamCounter === 1) {
-                    this.showAddCompaniesList = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
+                    this.rightSideActive = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
+                    this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
                     this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0;
                 }
             }
@@ -129,8 +133,12 @@ export class CompanyComponent implements OnInit, OnDestroy {
         this.headerCommunicationService.addCompanyButton.subscribe(buttonOptions => {
             if (buttonOptions && buttonOptions.trigger) {
                 this.filterCompanies();
-                this.companiesLinkedToProject.length === 0 ? this.showWarningBox = true : this.showAddCompaniesList = true;
+                this.resetView();
+                setTimeout(() => {
+                    this.companiesLinkedToProject.length === 0 ? this.showWarningBox = true : this.rightSideActive = true;
+                }, 200);
                 this.warningMessage = 'Alle bedrijven voor dit project zijn toegevoegd.';
+                this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
             }
         });
     }
@@ -143,29 +151,18 @@ export class CompanyComponent implements OnInit, OnDestroy {
         e.preventDefault();
         this.userCommunicationService.triggerAddUserPopup.next(true);
     }
-    addCompany(e: Event): void {
-        e.preventDefault();
-        const data: CompanyPopupData =  {
-            title: 'Voeg een Bedrijf toe',
-            placeholder: 'Bedrijfs naam',
-            submitButton: 'Voeg toe',
-            workFunction: this.workFunction,
-        };
-        this.dialog.open(CompanyPopupComponent, {
-            width: '400px',
-            data: data,
-        }).afterClosed().subscribe(company => {
-            if (company) {
-                this.workFunction.companies.push(company);
-                this.workFunctionService.updateWorkFunction(this.workFunction, {companies: [company.id]}).subscribe();
-                // this.resetView();
-            }
-        });
+    addCompany(e: Event | Company): void {
+        this.rightSidePackage = { workFunction: this.workFunction };
+        isCompany(e) ? this.rightSidePackage.editCompany = e : e.preventDefault();
+        this.resetView();
+        setTimeout(() => {
+            this.rightSideActive = true;
+        }, 200);
     }
 
     resetView(): void {
         this.showWarningBox = false;
-        this.showAddCompaniesList = false;
+        this.rightSideActive = false;
     }
     private filterCompanies(): void {
         this.companiesLinkedToProject = this.allCompanies.filter(c => !this.workFunction.companies.find(wc => wc.id === c.id));

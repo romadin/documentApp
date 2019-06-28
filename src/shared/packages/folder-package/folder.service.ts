@@ -137,7 +137,7 @@ export class FolderService {
     }
 
     private updateFolder(folder: Folder, response: ApiFolderResponse) {
-        // check if sub parent exist then set the sub parent-app.
+        // check if sub workFunction exist then set the sub workFunction-app.
         if ( response.subFolders !== null && response.subFolders.length > 0 ) {
             const subFolders: Folder[] = [];
             response.subFolders.forEach((subFolderResponse) => {
