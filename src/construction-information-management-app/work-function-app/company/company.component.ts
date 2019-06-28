@@ -46,17 +46,17 @@ export interface CompanyRightSidePackage {
             ]),
             transition('openFullWidth => open', [
                 animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
-                    style({ transform: 'translateX(5%)', offset: 0.1}),
-                    style({ transform: 'translateX(10%)', offset: 0.8}),
-                    style({ transform: 'translateX(110%)', offset: 1}),
+                    style({ width: '70%', offset: 0.1}),
+                    style({ width: '65%', offset: 0.8}),
+                    style({ width: '50%', offset: 1}),
                 ]))
             ]),
             transition('void => *', [
-                style({ opacity: '0'}),
-                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ opacity: '1'})),
+                style({ transform: 'translateX(110%)' }),
+                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ transform: 'translateX(0)'})),
             ]),
             transition('* => void', [
-                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
+                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
                     style({ opacity: '0'})
                 ])),
             ])
@@ -71,10 +71,7 @@ export interface CompanyRightSidePackage {
             state('noWidth', style({
                 width: '0'
             })),
-            transition('fullWidth <=> smallWidth', [
-                animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
-            ]),
-            transition('fullWidth <=> noWidth', [
+            transition('* <=> *', [
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
             transition(':enter', [

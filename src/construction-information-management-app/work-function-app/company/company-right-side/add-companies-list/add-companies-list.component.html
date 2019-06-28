@@ -12,6 +12,6 @@
     </mat-selection-list>
     <div class="actions">
         <button mat-raised-button (click)="saveCompany($event)">Toevoegen</button>
-        <button mat-button (click)="onCancel($event)">Annuleren </button>
+        <button mat-button (click)="onCancel($event)" *ngIf="workFunction.companies.length > 0">Annuleren </button>
     </div>
 </div>
