@@ -1,0 +1,11 @@
+<cim-add-companies-list *ngIf="package.companiesLinkedToProject"
+        [companies]="package.companiesLinkedToProject"
+        [workFunction]="package.workFunction"
+        (closeList)="onCancel()">
+</cim-add-companies-list>
+
+<cim-company-detail *ngIf="!package.companiesLinkedToProject"
+        [company]="package.editCompany"
+        [workFunction]="package.workFunction"
+        (closeView)="onCancel()">
+</cim-company-detail>

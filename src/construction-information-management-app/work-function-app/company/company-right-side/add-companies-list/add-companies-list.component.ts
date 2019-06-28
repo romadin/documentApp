@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Company } from '../../../../shared/packages/company-package/company.model';
-import { WorkFunctionUpdateBody } from '../../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
-import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
-import { WorkFunctionService } from '../../../../shared/packages/work-function-package/work-function.service';
+import { Company } from '../../../../../shared/packages/company-package/company.model';
+import { WorkFunctionUpdateBody } from '../../../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
+import { WorkFunction } from '../../../../../shared/packages/work-function-package/work-function.model';
+import { WorkFunctionService } from '../../../../../shared/packages/work-function-package/work-function.service';
 
 @Component({
   selector: 'cim-add-companies-list',
