@@ -41,4 +41,12 @@
             </button>
         </div>
     </div>
+    <div class="warning" *ngIf="!showWarningBox && !rightSideActive">
+        <div class="content">
+            <i class="material-icons"> warning </i>
+            <span>
+                 Er zijn geen nog geen bedrijven toegevoegd aan deze functie.
+            </span>
+        </div>
+    </div>
 </div>

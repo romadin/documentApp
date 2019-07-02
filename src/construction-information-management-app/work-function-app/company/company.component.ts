@@ -176,9 +176,9 @@ export class CompanyComponent implements OnInit, OnDestroy {
     }
 
     private determineView(): void {
-        this.rightSideActive = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0;
+        this.rightSideActive = this.companiesLinkedToProject.length > 0 && this.workFunction.companies.length === 0 && this.currentUser.isAdmin();
         this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
-        this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0;
+        this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0 && this.currentUser.isAdmin();
     }
 
 

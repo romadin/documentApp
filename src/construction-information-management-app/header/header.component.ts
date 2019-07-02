@@ -99,11 +99,11 @@ export class HeaderComponent implements OnInit {
             this.actions.find((action) => action.name === 'Boek modus').show = show;
         });
         this.folderCommunicationService.showAddItemButton.subscribe(show => {
-            this.actions.find((action) => action.name === 'Hoofdstuk toevoegen').show = show;
+            this.actions.find((action) => action.name === 'Hoofdstuk toevoegen').show = show && this.currentUser.isAdmin();
         });
         this.folderCommunicationService.addCompanyButton.subscribe(buttonAttributes => {
             if (buttonAttributes && buttonAttributes.show !== undefined) {
-                this.actions.find((action) => action.name === 'Bedrijf toevoegen').show = buttonAttributes.show;
+                this.actions.find(action => action.name === 'Bedrijf toevoegen').show = buttonAttributes.show && this.currentUser.isAdmin();
             }
         });
 

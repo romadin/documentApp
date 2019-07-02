@@ -24,3 +24,6 @@
 .wrapper > .container:first-child.reserveCompany {
     margin: auto;
 }
+.wrapper > .warning {
+    margin: auto;
+}
