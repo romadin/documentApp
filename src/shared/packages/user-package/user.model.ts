@@ -1,4 +1,5 @@
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { Company } from '../company-package/company.model';
 import { Role } from '../role-package/role.model';
 
 export class User {
@@ -12,9 +13,9 @@ export class User {
     private _projectsId: number[];
     private _phoneNumber: number;
     private _image: Subject<Blob>;
-    private _company: string;
+    private _company: Company;
 
-    public constructor() {
+    constructor() {
         //
     }
 
@@ -98,11 +99,11 @@ export class User {
         this._image = value;
     }
 
-    get company(): string {
+    get company(): Company {
         return this._company;
     }
 
-    set company(value: string) {
+    set company(value: Company) {
         this._company = value;
     }
 

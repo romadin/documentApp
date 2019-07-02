@@ -1,3 +1,5 @@
+import { CompanyApiResponseInterface } from '../company-package/interface/company-api-response.interface';
+
 export interface ApiUserResponse {
     id: number;
     firstName: string;
@@ -9,7 +11,7 @@ export interface ApiUserResponse {
     projectsId: number[];
     hasImage: boolean;
     phoneNumber: number;
-    company: string;
+    company: CompanyApiResponseInterface;
 }
 
 export interface UserBody {

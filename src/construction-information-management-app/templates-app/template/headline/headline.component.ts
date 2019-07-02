@@ -47,7 +47,9 @@ export class HeadlineComponent implements OnInit {
         const popupData: ConfirmPopupData = {
             title: 'Kop verwijderen',
             name: this.headline.name,
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${this.headline.name}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {

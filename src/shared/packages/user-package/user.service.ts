@@ -3,6 +3,8 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
+import { Company } from '../company-package/company.model';
+import { CompanyService } from '../company-package/company.service';
 
 import { ApiUserResponse, EditUserBody, isApiUserResponse } from './api-user.interface';
 import { ErrorMessage } from '../../type-guard/error-message';
@@ -33,7 +35,12 @@ export class UserService {
     private userCache: UserCache = {};
     private allUsers: BehaviorSubject<User[]> = new BehaviorSubject([]);
 
-    constructor(private apiService: ApiService, private roleService: RoleService, private router: Router) {
+    constructor(
+        private apiService: ApiService,
+        private roleService: RoleService,
+        private companyService: CompanyService,
+        private router: Router
+    ) {
         const user: ApiUserResponse = JSON.parse(sessionStorage.getItem('currentUser'));
         if ( user ) {
             this.setCurrentUser(this.makeUser(user));
@@ -157,8 +164,10 @@ export class UserService {
         user.role = this.roleService.makeRole(value.role);
         user.projectsId = value.projectsId;
         user.phoneNumber = value.phoneNumber;
-        user.company = value.company;
 
+        if (value.company) {
+            user.company = this.companyService.makeCompany(value.company);
+        }
         if (value.hasImage) {
             user.image = this.getUserImage(user.id);
         }

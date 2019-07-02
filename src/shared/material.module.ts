@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {
+    MatAutocompleteModule,
     MatButtonModule,
     MatButtonToggleModule,
     MatCardModule,
@@ -41,7 +42,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MatProgressSpinnerModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        MatSelectModule,
+        MatAutocompleteModule,
         DragDropModule,
     ]
 })

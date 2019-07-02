@@ -22,7 +22,6 @@ export class RouterService {
                 index + 1 !== urlSegments.length ? urlToRemove += segment.path +  '/' : urlToRemove += segment.path;
             });
             const url = location.pathname.replace(urlToRemove, '');
-            console.log(url)
             this.setBackRoute(url);
         });
     }

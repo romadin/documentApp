@@ -4,7 +4,9 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 export interface ConfirmPopupData {
     title: string;
     name: string;
-    action: string;
+    message: string;
+    firstButton: string;
+    secondButton: string;
 }
 
 @Component({
@@ -21,6 +23,12 @@ export class ConfirmPopupComponent implements OnInit {
 
     ngOnInit() {
 
+    }
+
+    onClose(e: MouseEvent): void {
+        e.preventDefault();
+        e.stopPropagation();
+        this.dialogRef.close('cancel');
     }
 
     onNoClick(e: MouseEvent): void {

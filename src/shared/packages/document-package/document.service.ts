@@ -114,7 +114,9 @@ export class DocumentService {
         const popupData: ConfirmPopupData = {
             title: 'Document verwijderen',
             name: document.getName(),
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${document.getName()}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {
@@ -137,7 +139,9 @@ export class DocumentService {
         const popupData: ConfirmPopupData = {
             title: 'Document link verwijderen',
             name: document.getName(),
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${document.getName()}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
 
         return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {

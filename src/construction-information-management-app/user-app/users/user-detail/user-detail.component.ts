@@ -2,10 +2,18 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MatListOption } from '@angular/material';
+import { MatDialog, MatListOption } from '@angular/material';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
 import { objectIsEmpty } from '../../../../shared/helpers/practice-functions';
+import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
+import { Company } from '../../../../shared/packages/company-package/company.model';
+import { CompanyService } from '../../../../shared/packages/company-package/company.service';
+import { isCompany } from '../../../../shared/packages/company-package/interface/company.interface';
+import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 import { SelectedProject } from '../../../popups/user-popup/user-popup.component';
 import { ToastService } from '../../../../shared/toast.service';
 import { ErrorMessage } from '../../../../shared/type-guard/error-message';
@@ -17,6 +25,9 @@ import { User } from '../../../../shared/packages/user-package/user.model';
 import { MailService } from '../../../../shared/service/mail.service';
 import { LoadingService } from '../../../../shared/loading.service';
 
+interface CompanyByProjectId {
+    [ id: number ]: Company[];
+}
 @Component({
   selector: 'cim-user-detail',
   templateUrl: './user-detail.component.html',
@@ -38,10 +49,12 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     imageToUpload: File;
     imageSrc: any;
     selectedProjects: SelectedProject = {};
+    companies: Company[];
     private fileReader: FileReader = new FileReader();
     private existingItems: string[] = [];
     private formHasChanged = false;
     private organisation: Organisation;
+    private companiesByProjectId: CompanyByProjectId = {};
     private _user: User;
     constructor(
         private projectService: ProjectService,
@@ -49,16 +62,11 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         private sanitizer: DomSanitizer,
         private activatedRoute: ActivatedRoute,
         private mailService: MailService,
+        private companyService: CompanyService,
         private toast: ToastService,
         private loadingService: LoadingService,
-    ) {
-        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
-        this.userForm.controls.email.setValidators([Validators.email]);
-
-        this.projectService.getProjects(this.organisation).subscribe((projects: Project[]) => {
-            this.projects = projects;
-        });
-    }
+        private dialog: MatDialog,
+    ) {}
 
     @Input()
     set user(user: User) {
@@ -83,12 +91,17 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.userForm.controls.email.setValidators([Validators.email]);
+
+        this.getProjectsAndCompanies();
+
         this.fileReader.addEventListener('loadend', () => {
             const imageString =  JSON.stringify(this.fileReader.result).replace(/\\n/g, '');
             this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('url(' + imageString + ')');
         }, false);
-
     }
+
     ngAfterViewInit() {
         this.onFormChanges();
     }
@@ -115,7 +128,6 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
             data.append('email', this.userForm.controls.email.value);
             data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
             data.append('function', this.userForm.controls.function.value);
-            data.append('company', this.userForm.controls.company.value);
             data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));
 
             if (this.imageToUpload) {
@@ -125,38 +137,48 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
                 data.append('insertion', this.userForm.controls.insertion.value);
             }
 
-            if (this.user) {
-                this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
-                    if (value instanceof User) {
-                        this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
-                        this.onCloseDetailView();
-                    } else {
-                        this.showErrorMessage(value);
-                    }
-                });
-            } else {
-                this.userService.postUser(data, {organisationId: this.organisation.id }).subscribe((user: User | ErrorMessage) => {
-                    this.loadingService.isLoading.next(false);
-                    if (user instanceof User) {
-                        this.mailService.sendUserActivation(user);
-                        this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
-                        this.user = user;
-                    } else {
-                        this.showErrorMessage(<ErrorMessage>user);
-                    }
-                });
-            }
+            this.promiseCompany().then((company: Company|false) => {
+                if (company) {
+                    data.append('companyId', company.id.toString(10));
+                }
+
+                if (this.user) {
+                    this.user.company = company ? company : this.user.company;
+                    this.userService.editUser(this.user, data).subscribe((value: User | ErrorMessage) => {
+                        if (value instanceof User) {
+                            this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
+                            this.onCloseDetailView();
+                        } else {
+                            this.showErrorMessage(value);
+                        }
+                    });
+                } else {
+                    this.userService.postUser(data, {organisationId: this.organisation.id }).subscribe((user: User | ErrorMessage) => {
+                        this.loadingService.isLoading.next(false);
+                        if (user instanceof User) {
+                            this.mailService.sendUserActivation(user);
+                            this.toast.showSuccess('Gebruiker: ' + this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
+                            this.user = user;
+                        } else {
+                            this.showErrorMessage(<ErrorMessage>user);
+                        }
+                    });
+                }
+            });
         }
     }
-    public onProjectSelect(project: Project, option?: MatListOption): void {
-        if (option && !option.selected) {
+
+    onProjectSelect(project: Project, option: MatListOption): void {
+        if (!option.selected) {
             delete this.selectedProjects[project.id];
-            return;
+        } else {
+            this.selectedProjects[project.id] = project;
         }
-
-        this.selectedProjects[project.id] = project;
+        this.companies = [];
+        Object.keys(this.selectedProjects).forEach(projectId => {
+            this.companies = this.companies.concat(this.companiesByProjectId[projectId]);
+        });
     }
-
 
     onImageUpload(event: Event): void {
         if ((<HTMLInputElement>event.target).files && (<HTMLInputElement>event.target).files[0]) {
@@ -169,12 +191,67 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     checkProjectSelected(project: Project): boolean {
         if (this.user) {
             if ( this.user.projectsId.find(projectId => projectId === project.id) ) {
-                this.onProjectSelect(project);
                 return true;
             }
             return false;
         }
         return false;
+    }
+    displayView(object?: any): string | undefined {
+        return object ? object.name : undefined;
+    }
+
+    private changeCompany(companyName: string): Subject<Company|false> {
+        const popupData: ConfirmPopupData = {
+            title: 'Verander Bedrijf',
+            name: companyName,
+            message: 'Wilt u een nieuwe bedrijf maken of wilt u de huidige bedrijf bewerken',
+            firstButton: 'Nieuwe bedrijf toevoegen',
+            secondButton: 'Huidige bedrijf bewerken'
+        };
+        const selectedProjectsId = Object.keys(this.selectedProjects).map(id => parseInt(id, 10));
+        const companySubject: Subject<Company|false> = new Subject<Company>();
+
+        this.dialog.open(ConfirmPopupComponent, {width: '450px', data: popupData}).afterClosed().subscribe((action) => {
+            if (action === 'cancel') {
+                companySubject.next(false);
+            } else if (action) {
+                this.companyService.createCompany({name: companyName}, selectedProjectsId)
+                    .subscribe(company => {
+                        companySubject.next(company);
+                    });
+            } else {
+                const currentCompany: Company = this.user.company;
+                currentCompany.name = companyName;
+                this.companyService.updateCompany(currentCompany, {name: companyName}, selectedProjectsId).subscribe(company => {
+                    companySubject.next(company);
+                });
+            }
+        });
+
+        return companySubject;
+    }
+
+    private promiseCompany(): Promise<Company|false> {
+        return new Promise((resolve) => {
+            const newCompany = this.userForm.controls.company.value;
+            if (typeof newCompany === 'string' && !this.user) {
+                const selectedProjectsId = Object.keys(this.selectedProjects).map(id => parseInt(id, 10));
+                this.companyService.createCompany({name: newCompany}, selectedProjectsId).subscribe(company => {
+                    resolve(company);
+                });
+            } else if (isCompany(newCompany) && !this.user) {
+                resolve(newCompany);
+            } else if (isCompany(newCompany) && newCompany.id !== this.user.company.id) {
+                resolve(newCompany);
+            } else if (typeof newCompany === 'string') {
+                this.changeCompany(newCompany).subscribe(company => {
+                    resolve(company);
+                });
+            } else {
+                resolve(false);
+            }
+        });
     }
 
     private setFormValue() {
@@ -202,17 +279,47 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         }
     }
 
-    private getLinkedProjects(): Promise<Project>[] {
-        const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
-        const projectPromise = [];
-        this.user.projectsId.forEach((projectId) => {
-            projectPromise.push(this.projectService.getProject(projectId, organisation));
+    private getProjectsAndCompanies(): void {
+        let observableContainer: Observable<Company[]>[] = [];
+
+        this.projectService.getProjects(this.organisation).subscribe((projects: Project[]) => {
+            this.projects = projects;
+            if (this.projects) {
+                this.projects.forEach(project => {
+                    observableContainer = observableContainer.concat(this.companyService.getCompaniesByProject(project).pipe(
+                        map(companies => {
+                            this.companiesByProjectId[project.id] = companies;
+                            return companies;
+                        })
+                    ));
+                    if (this.user && this.user.projectsId.find(projectId => projectId === project.id) ) {
+                        this.selectedProjects[project.id] = project;
+                    }
+                });
+                combineLatest(observableContainer).pipe(
+                    map(results => {
+                        let companies: any = [];
+                        results.map(companyArray => companies = companies.concat(companyArray));
+                        return companies;
+                    })
+                ).subscribe(companies => {
+                    if (companies.find(c => c === null || c === undefined) === undefined) {
+                        this.companies = [];
+                        Object.keys(this.selectedProjects).forEach(projectId => {
+                            this.companies = this.companies.concat(this.companiesByProjectId[projectId]);
+                        });
+                    }
+                });
+            }
         });
-        return projectPromise;
     }
 
     private projectsHasChanged() {
         if (this.user) {
+            if (this.user.projectsId.length !== Object.keys(this.selectedProjects).length) {
+                this.formHasChanged = true;
+                return;
+            }
             for (const selectedProjectId in this.selectedProjects) {
                 if (this.user.projectsId.find(projectId => projectId === parseInt(selectedProjectId, 10)) === undefined) {
                     this.formHasChanged = true;

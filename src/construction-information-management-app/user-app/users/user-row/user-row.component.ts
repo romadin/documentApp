@@ -54,7 +54,9 @@ export class UserRowComponent implements OnInit {
         const popupData: ConfirmPopupData = {
             title: 'Gebruiker verwijderen',
             name: this.user.getFullName(),
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${this.user.getFullName()}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {

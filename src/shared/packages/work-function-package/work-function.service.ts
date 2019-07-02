@@ -76,7 +76,9 @@ export class WorkFunctionService {
         const popupData: ConfirmPopupData = {
             title: 'Functie verwijderen',
             name: workFunction.name,
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${workFunction.name}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
 
         return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {

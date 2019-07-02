@@ -107,7 +107,9 @@ export class FolderService {
         const popupData: ConfirmPopupData = {
             title: 'Hoofdstuk verwijderen',
             name: folder.name,
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${folder.name}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {

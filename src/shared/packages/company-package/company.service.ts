@@ -19,13 +19,17 @@ import {
 } from './interface/company-api-response.interface';
 import { Company } from './company.model';
 
-interface CompanyCacheObservable {
+interface CompaniesCacheObservable {
     [id: number]: BehaviorSubject<Company[]>;
+}
+interface CompanyCacheObservable {
+    [id: number]: BehaviorSubject<Company>;
 }
 @Injectable()
 export class CompanyService {
     private path = '/companies';
-    private companiesByProjectCache: CompanyCacheObservable = {};
+    private companiesByProjectCache: CompaniesCacheObservable = {};
+    private companiesByIdCache: CompanyCacheObservable = {};
     constructor(
         private apiService: ApiService,
         private foldersService: FolderService,
@@ -58,6 +62,16 @@ export class CompanyService {
         return this.companiesByProjectCache[project.id];
     }
 
+    getCompanyById(id: number): BehaviorSubject<Company> {
+        if (this.companiesByIdCache[id]) {
+            return this.companiesByIdCache[id];
+        }
+        const newSubject: BehaviorSubject<Company> = new BehaviorSubject<Company>(null);
+        this.apiService.get(this.path + '/' + id , {}).subscribe(result => newSubject.next(this.makeCompany(result)));
+        this.companiesByIdCache[id] = newSubject;
+        return this.companiesByIdCache[id];
+    }
+
     createCompany(body: CompanyApiPostData, projectsId: number[]): Observable<Company> {
         return this.apiService.post(this.path, body).pipe(map(result => {
             const company = this.makeCompany(result);
@@ -77,7 +91,9 @@ export class CompanyService {
         const popupData: ConfirmPopupData = {
             title: 'Bedrijf verwijderen',
             name: company.name,
-            action: 'verwijderen'
+            message: `Weet u zeker dat u <strong>${company.name}</strong> wilt verwijderen`,
+            firstButton: 'ja',
+            secondButton: 'nee'
         };
 
         return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {
