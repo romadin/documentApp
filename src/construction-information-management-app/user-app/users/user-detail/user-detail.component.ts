@@ -205,8 +205,8 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         const popupData: ConfirmPopupData = {
             title: 'Verander Bedrijf',
             name: companyName,
-            message: 'Wilt u een nieuwe bedrijf maken of wilt u de huidige bedrijf bewerken',
-            firstButton: 'Nieuwe bedrijf toevoegen',
+            message: 'Wilt u een nieuwe bedrijf aanmaken of wilt u het huidige bedrijf bewerken',
+            firstButton: 'Nieuwe bedrijf aanmaken',
             secondButton: 'Huidige bedrijf bewerken'
         };
         const selectedProjectsId = Object.keys(this.selectedProjects).map(id => parseInt(id, 10));

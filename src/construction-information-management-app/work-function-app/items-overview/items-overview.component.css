@@ -28,7 +28,7 @@ div.addItem.showButton {
 }
 
 div.addItem > div.addItemButton:hover {
-    background: #f7f7f7;
+    background: var(--secondary-hover-color);
 }
 
 div.addItem > div.addItemButton > i.material-icons {

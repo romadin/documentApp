@@ -119,6 +119,7 @@ export class TemplatesOverviewComponent implements OnInit {
     }
 
     private showAddTemplateView(): void {
+        this.showAddWorkFunction = false;
         this.templateToShow = undefined;
         const data: DefaultPopupData = {
             title: 'Voeg een template toe',

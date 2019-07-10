@@ -5,9 +5,10 @@ mat-card.userRow {
     border-bottom: none;
     cursor: pointer;
     padding: 10px;
+    color: var(--primary-color);
 }
 mat-card.userRow.mat-card:hover {
-    background: #f7f7f7;
+    background: var(--secondary-hover-color);
 }
 mat-card.userRow > mat-card-header.mat-card-header > div.avatar {
     background-size: cover;

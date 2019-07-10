@@ -6,9 +6,10 @@ mat-card.projectRow {
     border-bottom: none;
     cursor: pointer;
     transition: background 0.5s;
+    color: var(--primary-color);
 }
 mat-card.projectRow.mat-card:hover {
-    background: #f7f7f7;
+    background: var(--secondary-hover-color);
 }
 mat-card-actions.actions {
     display: flex;

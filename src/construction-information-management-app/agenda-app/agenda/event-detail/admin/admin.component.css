@@ -6,7 +6,11 @@
     display: flex;
     justify-content: center;
 }
-div.formFields {
+form {
+    color: var(--primary-color);
+}
+
+form > div.formFields {
     display: flex;
     flex-direction: column;
     flex: 5;
@@ -22,4 +26,7 @@ div.formFields > .dateWrapper > mat-form-field.mat-form-field:nth-child(1) {
 
 .mat-icon.material-icons {
     font-size: 21px;
+}
+.mat-datepicker-toggle {
+    color: var(--primary-color);
 }

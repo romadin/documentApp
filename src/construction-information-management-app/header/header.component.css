@@ -1,11 +1,16 @@
 mat-toolbar.headerToolbar {
     display: flex;
     justify-content: space-between;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
 }
 mat-toolbar.headerToolbar > span.actions > button {
     margin-right: 10px;
 }
-
+.mat-raised-button.mat-primary {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
 span.actionText {
     margin-right: 10px;
 }

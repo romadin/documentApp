@@ -60,5 +60,5 @@ div.sideMenuAction {
 }
 
 div.sideMenuAction:hover {
-    background: rgba(0,0,0,.04);
+    background: var(--secondary-hover-color);
 }

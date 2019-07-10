@@ -17,7 +17,7 @@
     transition: background 0.8s;
 }
 .rippleRow:hover {
-    background: #ececec radial-gradient(circle, transparent 1%, #ececec 1%) center/15000%;
+    background: var(--secondary-hover-color) radial-gradient(circle, transparent 1%, var(--secondary-hover-color) 1%) center/15000%;
 }
 .rippleRow:active {
     background-color: #f7f7f7;

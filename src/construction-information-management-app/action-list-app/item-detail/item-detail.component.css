@@ -8,7 +8,7 @@ div.detailWrapper {
     border-bottom: none;
     padding: 10px;
     border-radius: 4px;
-    color: rgba(0,0,0,.87);
+    color: var(--primary-color);
 }
 div.detailWrapper > form {
     width: 100%;
