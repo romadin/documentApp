@@ -11,7 +11,7 @@
             </mat-icon>
         </button>
     </span>
-    <span> BIM Uitvoeringsplan</span>
+    <span> {{ headerTitle | titlecase }}</span>
     <span class="actions">
         <ng-template ngFor let-action [ngForOf]="actions">
             <button mat-raised-button color="primary" *ngIf="action.show && currentUser" (click)="action.onClick()">

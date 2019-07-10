@@ -5,6 +5,7 @@ import { Event } from '../../../shared/packages/agenda-package/event.model';
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { EventCommunicationService } from '../../../shared/service/communication/event.communication.service';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({
   selector: 'cim-agenda',
@@ -22,10 +23,12 @@ export class AgendaComponent implements OnInit {
         private route: ActivatedRoute,
         private userService: UserService,
         private eventCommunication: EventCommunicationService,
+        private headerCommunication: HeaderWithFolderCommunicationService
     ) { }
 
     ngOnInit() {
         this.events  = <Event[]>this.route.snapshot.data.events;
+        this.headerCommunication.headerTitle.next('Agenda');
         this.userService.getCurrentUser().subscribe((user) => {
             this.currentUser = user;
         });

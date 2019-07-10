@@ -9,6 +9,7 @@ import { WorkFunction } from '../../../../shared/packages/work-function-package/
 import { WorkFunctionService } from '../../../../shared/packages/work-function-package/work-function.service';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { ProjectService } from '../../../../shared/packages/project-package/project.service';
+import { HeaderWithFolderCommunicationService } from '../../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { ProjectCommunicationService } from '../../../../shared/service/communication/project.communication.service';
 import { RouterService } from '../../../../shared/service/router.service';
 
@@ -71,7 +72,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                 private userService: UserService,
                 private projectService: ProjectService,
                 private routerService: RouterService,
-                private communicationService: ProjectCommunicationService) {
+                private communicationService: ProjectCommunicationService,
+                private headerCommunicationService: HeaderWithFolderCommunicationService) {
         this.folderUrlToRedirect = 'workFunction/';
     }
 
@@ -84,6 +86,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         this.projectService.getProject(projectId, <Organisation>this.activatedRoute.snapshot.data.organisation).subscribe(project => {
             this.project = project;
+            this.headerCommunicationService.headerTitle.next(project.name);
         });
 
         this.communicationService.triggerAddWorkFunction.subscribe(show => {

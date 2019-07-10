@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../shared/service/auth.service';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { LoadingService } from '../../../shared/loading.service';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({
     selector: 'cim-login-app',
@@ -19,10 +20,14 @@ export class LoginComponent implements OnInit {
     });
     private organisation: Organisation;
 
-    constructor (private authService: AuthService,
-                 private router: Router,
-                 private activatedRoute: ActivatedRoute,
-                 private loadingService: LoadingService) {
+    constructor (
+        private authService: AuthService,
+        private router: Router,
+        private activatedRoute: ActivatedRoute,
+        private loadingService: LoadingService,
+        private headerCommunication: HeaderWithFolderCommunicationService,
+    ) {
+        this.headerCommunication.headerTitle.next('BIM Uitvoeringsplan');
         this.authService = authService;
         this.router = router;
     }

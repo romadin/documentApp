@@ -4,6 +4,7 @@ import { Project } from '../../../../shared/packages/project-package/project.mod
 import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { LoadingService } from '../../../../shared/loading.service';
+import { HeaderWithFolderCommunicationService } from '../../../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({
   selector: 'cim-projecten',
@@ -17,6 +18,7 @@ export class ProjectsListComponent implements OnInit {
         private projectService: ProjectService,
         private activatedRoute: ActivatedRoute,
         private loadingService: LoadingService,
+        private headerCommunicationService: HeaderWithFolderCommunicationService
     ) {
         this.loadingService.isLoading.next(true);
     }
@@ -27,6 +29,7 @@ export class ProjectsListComponent implements OnInit {
             this.loadingService.isLoading.next(false);
             this.projects = projects;
         });
+        this.headerCommunicationService.headerTitle.next('Projecten');
     }
 
 }

@@ -43,6 +43,7 @@ export class HeaderComponent implements OnInit {
     public actionBack: MenuAction;
     public actionMenu: MenuAction;
     public currentUser: User;
+    headerTitle = 'BIM Uitvoeringsplan';
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];
     private currentOrganisation: Organisation;
@@ -88,6 +89,11 @@ export class HeaderComponent implements OnInit {
             this.backRoute = backRoute;
         });
 
+        this.folderCommunicationService.headerTitle.subscribe(title => {
+            if (title) {
+                this.headerTitle = title;
+            }
+        });
         this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
             this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
         });

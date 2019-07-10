@@ -17,6 +17,7 @@ export class HeaderWithFolderCommunicationService {
     private _showReadModeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showAddItemButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _exportToPdfButton: Subject<boolean> = new Subject<boolean>();
+    private _headerTitle: Subject<string> = new Subject<string>();
 
     get triggerAddItem(): BehaviorSubject<boolean> {
         return this._triggerAddItem;
@@ -48,5 +49,9 @@ export class HeaderWithFolderCommunicationService {
 
     get showAddItemButton(): BehaviorSubject<boolean> {
         return this._showAddItemButton;
+    }
+
+    get headerTitle(): Subject<string> {
+        return this._headerTitle;
     }
 }

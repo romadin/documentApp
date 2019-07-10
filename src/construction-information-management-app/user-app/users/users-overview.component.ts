@@ -5,6 +5,7 @@ import { UserService } from '../../../shared/packages/user-package/user.service'
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { LoadingService } from '../../../shared/loading.service';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 
 @Component({
@@ -23,8 +24,10 @@ export class UsersOverviewComponent {
                 private activatedRoute: ActivatedRoute,
                 private loadingService: LoadingService,
                 private usersCommunication: UsersCommunicationService,
+                private headerCommunication: HeaderWithFolderCommunicationService,
     ) {
         this.loadingService.isLoading.next(true);
+        this.headerCommunication.headerTitle.next('Gebruikers beheer');
         const organisation: Organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.userService.getUsers({organisationId: organisation.id}).subscribe((users) => {
             this.loadingService.isLoading.next(false);

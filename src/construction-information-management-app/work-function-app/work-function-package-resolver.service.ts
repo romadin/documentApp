@@ -9,6 +9,7 @@ import { ProjectService } from '../../shared/packages/project-package/project.se
 import { WorkFunction } from '../../shared/packages/work-function-package/work-function.model';
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
+import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
 
 export interface ChildItemPackage {
     currentUser: User;
@@ -26,6 +27,7 @@ export class WorkFunctionPackageResolverService implements Resolve<Observable<Ch
         private userService: UserService,
         private activatedRoute: ActivatedRoute,
         private router: Router,
+        private headerCommunicationService: HeaderWithFolderCommunicationService,
     ) { }
 
     resolve(route: ActivatedRouteSnapshot): Observable<ChildItemPackage | never> {
@@ -44,6 +46,7 @@ export class WorkFunctionPackageResolverService implements Resolve<Observable<Ch
                     functionPackage.mainFunction = project.workFunctions.find(w => w.isMainFunction);
 
                     functionPackage.currentUser = this.userService.getCurrentUser().getValue();
+                    this.headerCommunicationService.headerTitle.next(functionPackage.parent.name);
                     return of(functionPackage);
                 } else { // no organisation
                     this.router.navigate(['not-found/organisation']);

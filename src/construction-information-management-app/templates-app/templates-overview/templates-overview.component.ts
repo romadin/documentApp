@@ -6,6 +6,7 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { TemplateCommunicationService } from '../../../shared/service/communication/template.communication.service';
 import { DefaultPopupData } from '../../popups/project-popup/project-popup.component';
 import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-template-popup.component';
@@ -53,7 +54,7 @@ import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-templ
 })
 export class TemplatesOverviewComponent implements OnInit {
     templates: Template[];
-    title = 'Template beheer';
+    title = 'Templates';
     templateToShow: Template;
     templateToEdit: Template;
     showAddWorkFunction: boolean;
@@ -64,9 +65,11 @@ export class TemplatesOverviewComponent implements OnInit {
         public dialog: MatDialog,
         private templateService: TemplateService,
         private route: ActivatedRoute,
-        private templateCommunication: TemplateCommunicationService
+        private templateCommunication: TemplateCommunicationService,
+        private headerCommunication: HeaderWithFolderCommunicationService,
     ) {
         this.organisation = <Organisation>this.route.snapshot.data.organisation;
+        this.headerCommunication.headerTitle.next('Template beheer');
         this.templateService.getTemplates(this.organisation).subscribe(templates => this.templates = templates);
         this.templateCommunication.triggerAddTemplate.subscribe(onAddTemplateClicked => {
             if (onAddTemplateClicked) {
@@ -83,6 +86,7 @@ export class TemplatesOverviewComponent implements OnInit {
         event.preventDefault();
         this.templateToShow = undefined;
         this.showAddWorkFunction = false;
+        this.title = 'Templates';
     }
 
     onTemplateClick(template: Template): void {
