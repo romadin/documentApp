@@ -127,7 +127,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                 this.router.navigate(['huisstijl']);
             },
             iconName: 'collections',
-            name: 'huist stijl',
+            name: 'huis stijl',
             show: true,
             needsAdmin: true,
             moduleName: 'Branding'

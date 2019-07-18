@@ -98,6 +98,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
     showWarningBox: boolean;
     warningMessage = 'Er zijn geen bedrijven gekoppeld aan het project.';
     private allCompanies: Company[];
+    private addedCompanyByUser = false;
 
     constructor(
         private companyService: CompanyService,
@@ -118,6 +119,15 @@ export class CompanyComponent implements OnInit, OnDestroy {
                 this.headerCommunicationService.addCompanyButton.next({show: true});
                 streamCounter++;
 
+                if (this.addedCompanyByUser) {
+                    this.resetView();
+                    setTimeout(() => {
+                        this.companiesLinkedToProject.length === 0 ? this.showWarningBox = true : this.rightSideActive = true;
+                    }, 500);
+                    this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
+                    this.addedCompanyByUser = false;
+                }
+
                 if (streamCounter === 1) {
                     this.determineView();
                 }
@@ -125,6 +135,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
         });
         this.headerCommunicationService.addCompanyButton.subscribe(buttonOptions => {
             if (buttonOptions && buttonOptions.trigger) {
+                this.addedCompanyByUser = false;
                 this.filterCompanies();
                 this.resetView();
                 setTimeout(() => {
@@ -143,9 +154,11 @@ export class CompanyComponent implements OnInit, OnDestroy {
     addUser(e: Event): void {
         e.preventDefault();
         this.userCommunicationService.triggerAddUserPopup.next(true);
+        this.addedCompanyByUser = true;
     }
 
     addCompany(e: Event | Company): void {
+        this.addedCompanyByUser = false;
         this.rightSidePackage = { workFunction: this.workFunction };
         isCompany(e) ? this.rightSidePackage.editCompany = e : e.preventDefault();
         this.resetView();
