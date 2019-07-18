@@ -1,6 +1,6 @@
 <div class="card">
     <div class="header">
-        <h3> Voeg een hoofdstuk toe aan het document</h3>
+        <h3> Voeg een hoofdstuk toe</h3>
     </div>
     <mat-selection-list #list *ngIf="items" [(ngModel)]="itemsSelected">
         <mat-list-option *ngFor="let item of items" [value]="item">
@@ -18,8 +18,16 @@
             </ng-container>
         </mat-list-option>
     </mat-selection-list>
+    <div class="warning" *ngIf="items.length < 1">
+        <div class="content">
+            <i class="material-icons"> warning </i>
+            <span>
+                U heeft alle hoofdstukken al tegevoegd.
+            </span>
+        </div>
+    </div>
     <div class="actions">
-        <button mat-raised-button (click)="saveItems($event)">Toevoegen</button>
+        <button mat-raised-button (click)="saveItems($event)" [disabled]="!itemsSelected || itemsSelected && itemsSelected.length < 1">Toevoegen</button>
         <button mat-stroked-button (click)="cancelList($event)">Annuleren </button>
     </div>
 </div>

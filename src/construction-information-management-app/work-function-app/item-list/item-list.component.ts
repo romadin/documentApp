@@ -53,17 +53,19 @@ export class ItemListComponent implements OnInit {
     saveItems(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
-        if (isWorkFunction(this.parent)) {
-            this.workFunctionService.updateWorkFunction(<WorkFunction>this.parent, this.getPostData()).subscribe(parent => {
-                this.parent.addItems(this.itemsSelected);
-                this.saveItemsDone.emit(parent);
-            });
-        } else {
-            this.companyService.updateCompany(this.parent, <CompanyApiUpdateData>this.getPostData(), [this.mainWorkFunction.parent.id])
-                .subscribe(parent => {
+        if (this.itemsSelected && this.itemsSelected.length > 0) {
+            if (isWorkFunction(this.parent)) {
+                this.workFunctionService.updateWorkFunction(<WorkFunction>this.parent, this.getPostData()).subscribe(parent => {
                     this.parent.addItems(this.itemsSelected);
                     this.saveItemsDone.emit(parent);
                 });
+            } else {
+                this.companyService.updateCompany(this.parent, <CompanyApiUpdateData>this.getPostData(), [this.mainWorkFunction.parent.id])
+                    .subscribe(parent => {
+                        this.parent.addItems(this.itemsSelected);
+                        this.saveItemsDone.emit(parent);
+                    });
+            }
         }
     }
 
