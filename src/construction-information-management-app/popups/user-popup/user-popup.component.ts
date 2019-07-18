@@ -1,6 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Company } from '../../../shared/packages/company-package/company.model';
+import { CompanyService } from '../../../shared/packages/company-package/company.service';
+import { isCompany } from '../../../shared/packages/company-package/interface/company.interface';
+import { CompanyByProjectId } from '../../user-app/users/user-detail/user-detail.component';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../confirm-popup/confirm-popup.component';
 
 import { DefaultPopupData } from '../project-popup/project-popup.component';
 import { UserService } from '../../../shared/packages/user-package/user.service';
@@ -33,12 +40,16 @@ export class UserPopupComponent {
         function: new FormControl(''),
         company: new FormControl(''),
     });
-    public projectsId = new FormControl();
-    public allProjects: Project[];
-    public selectedProjects: SelectedProject = {};
-    public imageSrc: any;
-    public imageToUpload: File;
+    projectsId = new FormControl();
+    allProjects: Project[];
+    selectedProjects: SelectedProject = {};
+    imageSrc: any;
+    imageToUpload: File;
+    companies: Company[];
+
     private existingItems: string[] = [];
+    private currentProject: Project;
+    private companiesByProjectId: CompanyByProjectId = {};
 
     constructor(
         public dialogRef: MatDialogRef<UserPopupComponent>,
@@ -46,12 +57,19 @@ export class UserPopupComponent {
         private userService: UserService,
         private mailService: MailService,
         private projectService: ProjectService,
+        private companyService: CompanyService,
         private loadingService: LoadingService,
         private toast: ToastService,
     ) {
         this.imageSrc = '/assets/images/defaultProfile.png';
+        const projectId: number = parseInt(location.pathname.split('/')[2], 10);
+
+        this.getProjectsAndCompanies();
+
         this.projectService.getProjects(this.data.organisation).subscribe((projects: Project[]) => {
             this.allProjects = projects;
+            this.currentProject = this.allProjects.find(project => project.id === projectId);
+            this.selectedProjects[this.currentProject.id] = this.currentProject;
         });
 
         this.userForm.controls.email.setValidators([Validators.email]);
@@ -63,7 +81,7 @@ export class UserPopupComponent {
         this.dialogRef.close();
     }
 
-    public onSubmit() {
+    onSubmit() {
         if ( objectIsEmpty(this.selectedProjects) ) {
             return alert('Er is geen projectId gekozen!');
         }
@@ -77,25 +95,29 @@ export class UserPopupComponent {
         data.append('email', this.userForm.controls.email.value);
         data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
         data.append('function', this.userForm.controls.function.value);
-        data.append('company', this.userForm.controls.company.value);
         data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));
 
         if (this.imageToUpload) {
             data.append('image', this.imageToUpload, this.imageToUpload.name);
         }
-        this.userService.postUser(data, {organisationId: this.data.organisation.id }).subscribe((user: User | ErrorMessage) => {
-            this.loadingService.isLoading.next(false);
-            if (user instanceof User) {
-                this.dialogRef.close(user);
-                this.mailService.sendUserActivation(user);
-                this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
-            } else {
-                this.showErrorMessage(<ErrorMessage>user);
+        this.promiseCompany().then((company: Company| false) => {
+            if (company) {
+                data.append('companyId', company.id.toString(10));
             }
+            this.userService.postUser(data, {organisationId: this.data.organisation.id }).subscribe((user: User | ErrorMessage) => {
+                this.loadingService.isLoading.next(false);
+                if (user instanceof User) {
+                    this.dialogRef.close(user);
+                    this.mailService.sendUserActivation(user);
+                    this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
+                } else {
+                    this.showErrorMessage(<ErrorMessage>user);
+                }
+            });
         });
     }
 
-    public onProjectSelect(project: Project): void {
+    onProjectSelect(project: Project): void {
         if (this.selectedProjects.hasOwnProperty(project.id)) {
             delete this.selectedProjects[project.id];
             return;
@@ -104,7 +126,7 @@ export class UserPopupComponent {
         this.selectedProjects[project.id] = project;
     }
 
-    public onImageUpload(event: Event): void {
+    onImageUpload(event: Event): void {
         if ((<HTMLInputElement>event.target).files && (<HTMLInputElement>event.target).files[0]) {
             this.imageToUpload = (<HTMLInputElement>event.target).files[0];
 
@@ -113,6 +135,10 @@ export class UserPopupComponent {
 
             reader.readAsDataURL(this.imageToUpload);
         }
+    }
+
+    displayView(object?: any): string | undefined {
+        return object ? object.name : undefined;
     }
 
     private showErrorMessage(message: ErrorMessage): void {
@@ -128,5 +154,52 @@ export class UserPopupComponent {
             this.userForm.controls[key].setValidators(validators);
             this.userForm.controls[key].setErrors({'duplicate': true});
         }
+    }
+    private getProjectsAndCompanies(): void {
+        let observableContainer: Observable<Company[]>[] = [];
+
+        this.projectService.getProjects(this.data.organisation).subscribe((projects: Project[]) => {
+            this.allProjects = projects;
+            if (this.allProjects) {
+                this.companies = [];
+                this.allProjects.forEach(project => {
+                    observableContainer = observableContainer.concat(this.companyService.getCompaniesByProject(project).pipe(
+                        map(companies => {
+                            this.companiesByProjectId[project.id] = companies;
+                            return companies;
+                        })
+                    ));
+                });
+                combineLatest(observableContainer).pipe(
+                    map(results => {
+                        let companies: any = [];
+                        results.map(companyArray => companies = companies.concat(companyArray));
+                        return companies;
+                    })
+                ).subscribe(companies => {
+                    if (companies.find(c => c === null || c === undefined) === undefined) {
+                        this.companies = [];
+                        Object.keys(this.selectedProjects).forEach(projectId => {
+                            this.companies = this.companies.concat(this.companiesByProjectId[projectId]);
+                        });
+                    }
+                });
+            }
+        });
+    }
+    private promiseCompany(): Promise<Company|false> {
+        return new Promise((resolve) => {
+            const newCompany = this.userForm.controls.company.value;
+            if (typeof newCompany === 'string') {
+                const selectedProjectsId = Object.keys(this.selectedProjects).map(id => parseInt(id, 10));
+                this.companyService.createCompany({name: newCompany}, selectedProjectsId).subscribe(company => {
+                    resolve(company);
+                });
+            } else if (isCompany(newCompany)) {
+                resolve(newCompany);
+            } else {
+                resolve(false);
+            }
+        });
     }
 }

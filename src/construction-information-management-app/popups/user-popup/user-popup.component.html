@@ -42,19 +42,25 @@
                 <input type="text" matInput placeholder="Functie" formControlName="function" required>
             </mat-form-field>
             <mat-form-field>
-                <input type="text" matInput placeholder="Bedrijfsnaam" formControlName="company" required>
+                <input type="text" matInput placeholder="Bedrijfsnaam" formControlName="company" [matAutocomplete]="auto" required>
+                <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="$event.preventDefault()">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayView">
+                    <mat-option *ngFor="let company of companies" [value]="company">{{company.name}}</mat-option>
+                </mat-autocomplete>
             </mat-form-field>
             <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
         </div>
         <mat-selection-list #projects>
             <h4> Kies project </h4>
-            <mat-list-option mat-line *ngFor="let project of allProjects" (click)="onProjectSelect(project)">
+            <mat-list-option mat-line *ngFor="let project of allProjects" (click)="onProjectSelect(project)" [disabled]="project === currentProject" [selected]="project === currentProject">
                 {{ project.name }}
             </mat-list-option>
         </mat-selection-list>
     </div>
     <div mat-dialog-actions>
-        <button mat-button (click)="onNoClick($event)">Annuleren</button>
         <button mat-raised-button type="submit">{{ data.submitButton }}</button>
+        <button mat-button (click)="onNoClick($event)">Annuleren</button>
     </div>
 </form>

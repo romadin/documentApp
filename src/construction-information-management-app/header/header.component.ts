@@ -316,9 +316,9 @@ export class HeaderComponent implements OnInit {
         }
         const data: DefaultPopupData = {
             title: 'Voeg een gebruiker toe',
-                placeholder: 'Project naam',
-                submitButton: 'Voeg toe',
-                organisation: this.currentOrganisation
+            placeholder: 'Gebruiker',
+            submitButton: 'Voeg toe',
+            organisation: this.currentOrganisation,
         };
         const dialogRef = this.dialog.open(UserPopupComponent, {
             width: '600px',

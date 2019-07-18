@@ -59,7 +59,7 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.projectId = parseInt(this.activatedRoute.parent.parent.snapshot.params.id, 10);
+        this.projectId = parseInt(location.pathname.split('/')[2], 10);
         this.setPositionByScroll();
     }
     ngOnDestroy() {

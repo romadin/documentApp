@@ -23,7 +23,7 @@ import { User } from '../../../../shared/packages/user-package/user.model';
 import { MailService } from '../../../../shared/service/mail.service';
 import { LoadingService } from '../../../../shared/loading.service';
 
-interface CompanyByProjectId {
+export interface CompanyByProjectId {
     [ id: number ]: Company[];
 }
 @Component({

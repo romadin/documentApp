@@ -31,6 +31,7 @@ div.profilePicture > label > div.overlay > div.text {
 div.profilePicture > label > img.mat-card-avatar {
     height: 80px;
     width: 80px;
+    border-radius: 50%;
 }
 
 form > div.formWrapper {
