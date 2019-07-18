@@ -13,7 +13,6 @@ import { ApiFolderResponse, FolderPostData, NewFolderPostData } from './api-fold
 import { Folder } from './folder.model';
 import { DocumentService } from '../document-package/document.service';
 import { ApiDocResponse } from '../document-package/api-document.interface';
-import { Document} from '../document-package/document.model';
 
 interface FoldersParentCache {
     [id: number]: BehaviorSubject<Folder[]>;
@@ -28,7 +27,7 @@ export class FolderService {
     private foldersByFunctionCacheOB: FoldersParentCache = {};
     private foldersCompanyCacheOB: FoldersParentCache = {};
     private foldersCache: FoldersCache = {};
-    private path = '/folders/';
+    private path = '/folders';
 
     constructor(private apiService: ApiService, private documentService: DocumentService, private dialog: MatDialog) { }
 
@@ -40,8 +39,23 @@ export class FolderService {
 
         this.apiService.get(this.path, {workFunctionId: workFunction.id}).subscribe((foldersResponse: ApiFolderResponse[]) => {
             folders.next(foldersResponse.map(folderResponse => this.makeFolder(folderResponse)));
+        }, (e) => {
+            console.log(e);
         });
         return this.foldersByFunctionCacheOB[workFunction.id] = folders;
+    }
+
+    public getFoldersByWorkFunctionId(workFunctionId: number): BehaviorSubject<Folder[]> {
+        const folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
+
+        this.apiService.get(this.path, {workFunctionId: workFunctionId}).subscribe((foldersResponse: ApiFolderResponse[]) => {
+            folders.next(foldersResponse.map(folderResponse => this.makeFolder(folderResponse)));
+        }, (e) => {
+            console.log(e);
+        });
+
+
+        return this.foldersByFunctionCacheOB[workFunctionId] = folders;
     }
 
     public getFoldersByCompany(company: Company): BehaviorSubject<Folder[]> {
@@ -63,7 +77,7 @@ export class FolderService {
             folder.next(this.foldersCache[id]);
             return folder;
         }
-        this.apiService.get(this.path + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
+        this.apiService.get(this.path + '/' + id, {}).subscribe((folderResponse: ApiFolderResponse) => {
             folder.next(this.makeFolder(folderResponse));
         }, (error) => {
             throw new Error(error.error);
@@ -90,7 +104,7 @@ export class FolderService {
         const folder: Subject<Folder> = new Subject();
         const param = {workFunctionId: workFunction.id};
 
-        this.apiService.post(this.path + id, data, param).subscribe((foldersResponse: ApiFolderResponse) => {
+        this.apiService.post(this.path + '/' + id, data, param).subscribe((foldersResponse: ApiFolderResponse) => {
             if (this.foldersCache[id]) {
                 return folder.next(this.updateFolder(this.foldersCache[id], foldersResponse));
             }
@@ -113,7 +127,7 @@ export class FolderService {
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {
-                this.apiService.delete(this.path + folder.id, params).subscribe((response: ApiDocResponse) => {
+                this.apiService.delete(this.path + '/' + folder.id, params).subscribe((response: ApiDocResponse) => {
                     if (this.foldersCache.hasOwnProperty(folder.id) ) {
                         delete this.foldersCache[folder.id];
                     }

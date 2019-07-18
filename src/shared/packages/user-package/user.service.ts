@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { Company } from '../company-package/company.model';
 import { CompanyService } from '../company-package/company.service';
 
 import { ApiUserResponse, EditUserBody, isApiUserResponse } from './api-user.interface';

@@ -155,6 +155,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
     }
 
     onDeleteCompany(company: Company): void {
+        this.allCompanies = this.allCompanies.filter(c => c.id !== company.id);
         this.filterCompanies();
         this.determineView();
     }

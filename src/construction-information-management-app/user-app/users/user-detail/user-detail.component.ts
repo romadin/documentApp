@@ -8,11 +8,9 @@ import { map } from 'rxjs/operators';
 
 import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
 import { objectIsEmpty } from '../../../../shared/helpers/practice-functions';
-import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { Company } from '../../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../../shared/packages/company-package/interface/company.interface';
-import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 import { SelectedProject } from '../../../popups/user-popup/user-popup.component';
 import { ToastService } from '../../../../shared/toast.service';
@@ -285,6 +283,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         this.projectService.getProjects(this.organisation).subscribe((projects: Project[]) => {
             this.projects = projects;
             if (this.projects) {
+                this.companies = [];
                 this.projects.forEach(project => {
                     observableContainer = observableContainer.concat(this.companyService.getCompaniesByProject(project).pipe(
                         map(companies => {

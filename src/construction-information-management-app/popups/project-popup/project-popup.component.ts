@@ -4,7 +4,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
-import { OrganisationService } from '../../../shared/packages/organisation-package/organisation.service';
 import { ToastService } from '../../../shared/toast.service';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
@@ -29,19 +28,21 @@ export class ProjectPopupComponent {
         projectName: new FormControl(''),
     });
     templates: Template[];
+    disableTemplateSelect = true;
 
     constructor(
         public dialogRef: MatDialogRef<ProjectPopupComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DefaultPopupData,
         private projectService: ProjectService,
-        private organisationService: OrganisationService,
         private toastService: ToastService,
         private templateService: TemplateService,
     ) {
+        const templateModule = this.data.organisation.modules.find(m => m.id === 1);
+        this.disableTemplateSelect = templateModule ? !templateModule.on : true;
         this.projectForm.controls.projectName.setValue(data.id ? data.placeholder : '');
         this.templateService.getTemplates(this.data.organisation).subscribe((templates) => {
             this.templates = templates;
-            this.templateId = 1;
+            this.templateId = templates[0].id;
         });
     }
 

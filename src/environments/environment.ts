@@ -4,8 +4,10 @@
 
 export const environment = {
     production: false,
-    API_URL: 'http://api.romario:8000',
-    APP_TOKEN: '}p/mo0nz"tz.-8z/HOThy6LO4jg[F_',
+    // API_URL: 'http://api.romario:8000',
+    // APP_TOKEN: '}p/mo0nz"tz.-8z/HOThy6LO4jg[F_',
+    API_URL: 'http://ec2-3-9-179-144.eu-west-2.compute.amazonaws.com',
+    APP_TOKEN: 'NeedsToBePrivate',
 };
 
 /*

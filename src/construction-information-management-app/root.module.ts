@@ -78,6 +78,11 @@ const appRoutes: Routes = [
         resolve: { organisation: OrganisationResolver }
     },
     {
+        path: 'huisstijl',
+        loadChildren: './corporate-identity-app/corporate-identity-app.module#CorporateIdentityAppModule',
+        resolve: { organisation: OrganisationResolver }
+    },
+    {
         path: 'projecten',
         loadChildren: './project-app/project.module#ProjectModule',
         canActivate: [ CanActivateLoggedIn ],

@@ -2,6 +2,7 @@ import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@
 import { MatDialog, MatDrawerContent } from '@angular/material';
 import { NavigationEnd, Router } from '@angular/router';
 import { delay, filter, takeLast } from 'rxjs/operators';
+import { Module } from '../shared/packages/module-package/module.model';
 import { Organisation } from '../shared/packages/organisation-package/organisation.model';
 import { OrganisationService } from '../shared/packages/organisation-package/organisation.service';
 
@@ -12,6 +13,11 @@ import { MenuAction } from './header/header.component';
 
 import { LoadingService } from '../shared/loading.service';
 
+export type ModuleName = 'Templates' | 'Assign chapter company' | 'Branding' | 'Basic ILS';
+
+export interface SideMenuNav extends MenuAction {
+    moduleName?: ModuleName;
+}
 @Component({
     selector: 'cim-root',
     templateUrl: './construction-information-management.component.html',
@@ -67,7 +73,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
                 if ( user && user.role ) {
-                    this.sideMenuActions.forEach(( action: MenuAction ) => {
+                    this.sideMenuActions.forEach(( action: SideMenuNav ) => {
                         // step 1 check if action only needs to show at an specific url.
                         if (action.urlGroup) {
                             action.urlGroup.forEach((urlGroup) => {
@@ -76,6 +82,11 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                         }
                         // step 2 check if action needs admin and if users has rights.
                         action.show = action.needsAdmin ? user.role.getName() === 'admin' : true;
+
+                        if (action.show && action.moduleName) {
+                            const m: Module = this.organisation.modules.find(module => module.name === action.moduleName);
+                            m ? action.show = m.on : action.show = false;
+                        }
                     });
                 }
             });
@@ -83,7 +94,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     }
 
     private defineSideMenuActions(): void {
-        const projects: MenuAction = {
+        const projects: SideMenuNav = {
             onClick: () => {
                 this.router.navigate(['projecten']);
             },
@@ -92,7 +103,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             show: true,
             needsAdmin: false,
         };
-        const showUsers: MenuAction = {
+        const showUsers: SideMenuNav = {
             onClick: () => {
                 this.router.navigate(['gebruikers']);
             },
@@ -101,7 +112,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             show: true,
             needsAdmin: true,
         };
-        const templates: MenuAction = {
+        const templates: SideMenuNav = {
             onClick: () => {
                 this.router.navigate(['templates']);
             },
@@ -109,8 +120,19 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             name: 'Template Beheer',
             show: true,
             needsAdmin: true,
+            moduleName: 'Templates',
         };
-        const logout: MenuAction = {
+        const corporateIdentity: SideMenuNav = {
+            onClick: () => {
+                this.router.navigate(['huisstijl']);
+            },
+            iconName: 'collections',
+            name: 'huist stijl',
+            show: true,
+            needsAdmin: true,
+            moduleName: 'Branding'
+        };
+        const logout: SideMenuNav = {
             onClick: this.logoutCurrentUser.bind(this),
             iconName: 'exit_to_app',
             name: 'Uitloggen',
@@ -118,7 +140,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
             needsAdmin: false,
         };
 
-        this.sideMenuActions.push(projects, showUsers, templates, logout);
+        this.sideMenuActions.push(projects, showUsers, templates, corporateIdentity, logout);
     }
 
     private logoutCurrentUser(): void {

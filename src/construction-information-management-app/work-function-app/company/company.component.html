@@ -1,5 +1,5 @@
 <div class="wrapper">
-    <div class="container" [@resizeWidth]="workFunction.companies.length === 0 ? 'noWidth' : rightSideActive || showWarningBox ? 'smallWidth'  : 'fullWidth'">
+    <div class="container" [@resizeWidth]="workFunction.companies.length === 0 ? 'noWidth' : rightSideActive || showWarningBox ? 'smallWidth' : 'fullWidth'">
         <div [@items] *ngFor="let company of workFunction.companies">
             <cim-company-row
                     [company]="company"
