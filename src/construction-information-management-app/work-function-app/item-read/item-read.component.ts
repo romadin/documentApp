@@ -18,6 +18,7 @@ import { Subscription } from 'rxjs';
 })
 export class ItemReadComponent implements OnInit, OnDestroy {
     @ViewChild('fullDocument') documentPlan: any;
+    @ViewChild('content') documentContent: any;
     @Input() items: (Folder | Document)[];
     @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
     project: Project;
@@ -66,31 +67,30 @@ export class ItemReadComponent implements OnInit, OnDestroy {
     }
 
     private exportDocumentToPdf(): void {
-        // html2canvas(this.documentPlan.nativeElement).then( canvas => {
-        //     const imgWidth = 225;
-        //     const pageHeight = 295;
-        //     const imgHeight = canvas.height * imgWidth / canvas.width;
-        //     const heightLeft = imgHeight;
-        //
-        //     const contentDatatUrl = canvas.toDataURL('image/png');
-        //     const pdf = new jsPDF();
-        //     pdf.addImage(contentDatatUrl, 'PNG', 0, 2, imgWidth, imgHeight);
-        //     pdf.save('BIMPlan.pdf');
-        // });
-        const doc = new jsPDF();
-        const elementHandler = {
-            '#ignorePDF': function (element, renderer) {
-                return true;
+
+        const HTML_Width = this.documentContent.nativeElement.offsetWidth;
+        const HTML_Height = this.documentContent.nativeElement.scrollHeight;
+        const top_left_margin = 15;
+        const PDF_Width = HTML_Width + (top_left_margin * 2);
+        const PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        const canvas_image_width = HTML_Width;
+        const canvas_image_height = HTML_Height;
+        const totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+
+        html2canvas(this.documentContent.nativeElement, {allowTaint: true, height: HTML_Height}).then(function(canvas) {
+            canvas.getContext('2d');
+
+            const imgData = canvas.toDataURL("image/jpeg", 1.0);
+            const pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
+            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+
+            for (let i = 1; i <= totalPDFPages; i++) {
+                pdf.addPage(PDF_Width, PDF_Height);
+                pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
             }
-        };
-        const source = this.documentPlan.nativeElement;
-        doc.fromHTML(
-            source,
-            15,
-            15,
-            {
-                'width': 180, 'elementHandlers': elementHandler
-            }, function(bla) { doc.save('BIMPlan.pdf'); });
+
+            pdf.save('BIMPlan.pdf');
+        });
     }
 
 }

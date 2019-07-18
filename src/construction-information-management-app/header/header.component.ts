@@ -165,7 +165,7 @@ export class HeaderComponent implements OnInit {
             onClick: () => { this.folderCommunicationService.triggerReadMode.next(true); },
             iconName: 'book',
             name: 'Boek modus',
-            show: false,
+            show: true,
             needsAdmin: false,
             urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
         };
@@ -267,8 +267,8 @@ export class HeaderComponent implements OnInit {
                                 if (needToChangeUrlGroup) {
                                     const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, urlGroup);
                                     action.show = tempUrlGroup === navigation.url;
-                                    if (action.needsAdmin && tempUrlGroup === navigation.url) {
-                                        action.show = user.isAdmin();
+                                    if (tempUrlGroup === navigation.url) {
+                                        action.show = action.needsAdmin ?  user.isAdmin() : true;
                                         return;
                                     }
                                 } else {

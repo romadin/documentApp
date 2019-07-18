@@ -6,7 +6,7 @@
                 <i class="material-icons"> close </i>
             </button>
         </mat-card-header>
-        <mat-card-content>
+        <mat-card-content #content>
             <ng-container *ngFor="let item of items;">
                 <div *ngIf="checkItemIsFolder(item) ; then folderBlock; else documentBlock"></div>
                 <ng-template #folderBlock>
