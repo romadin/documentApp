@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="header" [style.color]="color">
+        <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
+        <h3 [style.color]="color"> Wijzig {{ colorLabel }} </h3>
+    </div>
+    <div class="colorPickerContainer">
+        <h3 [style.color]="color"> {{ colorLabel }} </h3>
+        <div class="colorPreview"
+             [style.backgroundColor]="color"
+             [cpPositionOffset]="'50%'"
+             [cpPositionRelativeToArrow]="true"
+             [cpPresetColors]="['#fff', '#000', '#2889e9', '#e920e9', '#fff500', 'rgb(236,64,64)']"
+             [cpCancelButton]="true"
+             [cpOKButton]="true"
+             (colorPickerChange)="onColorChange($event)"
+             [(colorPicker)]="color">
+        </div>
+    </div>
+</div>
