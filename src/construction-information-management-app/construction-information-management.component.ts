@@ -1,6 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDrawerContent } from '@angular/material';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { delay, filter, takeLast } from 'rxjs/operators';
 import { Module } from '../shared/packages/module-package/module.model';
 import { Organisation } from '../shared/packages/organisation-package/organisation.model';
@@ -25,10 +25,10 @@ export interface SideMenuNav extends MenuAction {
 })
 export class ConstructionInformationManagementComponent implements OnInit, AfterViewChecked {
     @ViewChild('sideMenuContent') sideMenuElement: MatDrawerContent;
-    public sideMenuActions: MenuAction[] = [];
-    public currentUser: User;
-    public resetHeaderAction = false;
-    public showIsLoading = false;
+    sideMenuActions: MenuAction[] = [];
+    currentUser: User;
+    resetHeaderAction = false;
+    showIsLoading = false;
     organisation: Organisation;
 
     constructor(private dialog: MatDialog,
@@ -36,30 +36,30 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                 private userService: UserService,
                 private scrollingService: ScrollingService,
                 private loadingService: LoadingService,
-                private organisationService: OrganisationService) {}
+                private organisationService: OrganisationService,
+                private activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
+        this.defineSideMenuActions();
         this.organisationService.getOrganisation().subscribe(organisation => {
             this.organisation = organisation;
 
             if (organisation) {
                 document.documentElement.style.setProperty('--primary-color', organisation.primaryColor);
                 document.documentElement.style.setProperty('--secondary-color', organisation.secondaryColor);
-
-                this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
-                    this.determineActions(navigation);
-                });
+                // this.determineActions();
             }
             document.documentElement.style.setProperty(
                 '--secondary-hover-color',
                 this.getHoverColor(getComputedStyle(document.documentElement).getPropertyValue('--secondary-color'))
             );
 
-            this.defineSideMenuActions();
-
             this.loadingService.isLoading.pipe(delay(0)).subscribe((isLoading: boolean) => {
                 this.showIsLoading = isLoading;
             });
+        });
+        this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
+            this.determineActions(navigation.url);
         });
     }
 
@@ -71,8 +71,8 @@ export class ConstructionInformationManagementComponent implements OnInit, After
         }
     }
 
-    private determineActions(navigation: NavigationEnd): void {
-        if ( navigation.url !== '/login' ) {
+    private determineActions(url: string): void {
+        if ( url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
                 if ( user && user.role ) {
@@ -80,15 +80,19 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                         // step 1 check if action only needs to show at an specific url.
                         if (action.urlGroup) {
                             action.urlGroup.forEach((urlGroup) => {
-                                action.show = urlGroup === navigation.url;
+                                action.show = urlGroup === url;
                             });
                         }
                         // step 2 check if action needs admin and if users has rights.
                         action.show = action.needsAdmin ? user.role.getName() === 'admin' : true;
 
                         if (action.show && action.moduleName) {
-                            const m: Module = this.organisation.modules.find(module => module.name === action.moduleName);
-                            m ? action.show = m.on : action.show = false;
+                            if (this.organisation) {
+                                const m: Module = this.organisation.modules.find(module => module.name === action.moduleName);
+                                m ? action.show = m.on : action.show = false;
+                            } else {
+                                action.show = false;
+                            }
                         }
                     });
                 }
@@ -97,7 +101,6 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     }
 
     private defineSideMenuActions(): void {
-        this.sideMenuActions = [];
         const projects: SideMenuNav = {
             onClick: () => {
                 this.router.navigate(['projecten']);

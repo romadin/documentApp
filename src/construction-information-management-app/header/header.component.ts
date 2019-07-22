@@ -76,18 +76,17 @@ export class HeaderComponent implements OnInit {
         private organisationService: OrganisationService,
         private sanitizer: DomSanitizer,
     ) {
-        this.defineActions();
     }
 
     ngOnInit() {
-        let waitUntilRouteSubscription = false;
+        this.defineActions();
+        this.determineActions(this.router.url);
         // track if url changes
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routeHistory.push(navigation);
-            this.determineActions(navigation);
+            this.determineActions(navigation.url);
             this.actionBack.show = navigation.url === '/login' || navigation.url === '/not-found/organisation' ?
                 false : navigation.url !== '/projecten';
-            waitUntilRouteSubscription = true;
         });
 
         this.routerService.backRoute.subscribe((backRoute: string) => {
@@ -268,9 +267,9 @@ export class HeaderComponent implements OnInit {
         );
     }
 
-    private determineActions(navigation: NavigationEnd): void {
-        this.actionMenu.show = navigation.url !== '/login';
-        if ( navigation.url !== '/login' ) {
+    private determineActions(url: string): void {
+        this.actionMenu.show = url !== '/login';
+        if ( url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
                 if ( user ) {
@@ -279,20 +278,20 @@ export class HeaderComponent implements OnInit {
                             action.show = user.isAdmin();
                         } else if ( action.urlGroup ) {
                             for ( const urlGroup of action.urlGroup ) {
-                                if (urlGroup === navigation.url) {
+                                if (urlGroup === url) {
                                     action.show = action.needsAdmin ? this.currentUser.isAdmin() : true;
                                     return;
                                 }
                                 const needToChangeUrlGroup = urlGroup.match(/(:id)/g);
                                 if (needToChangeUrlGroup) {
-                                    const tempUrlGroup = this.replaceIdForUrlGroup(navigation.url, urlGroup);
-                                    action.show = tempUrlGroup === navigation.url;
-                                    if (tempUrlGroup === navigation.url) {
+                                    const tempUrlGroup = this.replaceIdForUrlGroup(url, urlGroup);
+                                    action.show = tempUrlGroup === url;
+                                    if (tempUrlGroup === url) {
                                         action.show = action.needsAdmin ?  user.isAdmin() : true;
                                         return;
                                     }
                                 } else {
-                                    action.show = urlGroup === navigation.url;
+                                    action.show = urlGroup === url;
                                 }
                             }
                         }
