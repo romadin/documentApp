@@ -14,33 +14,10 @@ import { ModuleService } from '../module-package/module.service';
 export class OrganisationService {
     private APP_TOKEN = environment.APP_TOKEN;
     private organisationByNameCache: OrganisationCacheObservable = {};
-    private organisationResolverCache: any = {};
     private path = '/organisations';
     private params: AppTokenParams = {appToken: this.APP_TOKEN};
 
     constructor(private apiService: ApiService, private moduleService: ModuleService) {  }
-
-    getCurrentOrganisation(): Observable<Organisation | null > {
-        const name: string = location.host.split('.')[0];
-
-        if (this.organisationResolverCache[name]) {
-            return this.organisationResolverCache[name];
-        }
-
-        const params: AppTokenParams = {
-            name: name,
-            appToken: this.APP_TOKEN
-        };
-
-        return this.organisationResolverCache[name] = this.apiService.noTokenGet(this.path, params).pipe(
-            map((organisation: OrganisationApi ) => {
-                if (isOrganisationApi(organisation)) {
-                    return this.makeOrganisation(organisation);
-                }
-                return null;
-            })
-        );
-    }
 
     getOrganisation(): BehaviorSubject<Organisation> {
         const organisationName: string = location.host.split('.')[0];
@@ -54,7 +31,6 @@ export class OrganisationService {
 
         this.apiService.noTokenGet(this.path, this.params).pipe(take(1)).subscribe(response => {
             const organisation = isOrganisationApi(response) ? this.makeOrganisation(response) : null;
-            console.log('from api:', organisation);
             newSubject.next(organisation);
         });
 

@@ -40,18 +40,21 @@ export class ConstructionInformationManagementComponent implements OnInit, After
 
     ngOnInit() {
         this.organisationService.getOrganisation().subscribe(organisation => {
+            this.organisation = organisation;
+
             if (organisation) {
                 document.documentElement.style.setProperty('--primary-color', organisation.primaryColor);
                 document.documentElement.style.setProperty('--secondary-color', organisation.secondaryColor);
+
+                this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
+                    this.determineActions(navigation);
+                });
             }
             document.documentElement.style.setProperty(
                 '--secondary-hover-color',
                 this.getHoverColor(getComputedStyle(document.documentElement).getPropertyValue('--secondary-color'))
             );
-            this.organisation = organisation;
-            this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
-                this.determineActions(navigation);
-            });
+
             this.defineSideMenuActions();
 
             this.loadingService.isLoading.pipe(delay(0)).subscribe((isLoading: boolean) => {
