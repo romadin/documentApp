@@ -2,6 +2,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    height: 100vh;
 }
 
 .main-container > cim-header {
@@ -33,7 +34,7 @@
 }
 
 .main-container > mat-sidenav-container {
-    height: 95vh;
+    height: 100%;
     background-color: #fdfdfd;
 }
 

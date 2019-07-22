@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FolderService } from '../../../shared/packages/folder-package/folder.service';
+import { DomSanitizer } from '@angular/platform-browser';
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
+import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({
   selector: 'cim-corporate-identity',
@@ -9,12 +10,13 @@ import { WorkFunctionService } from '../../../shared/packages/work-function-pack
 })
 export class CorporateIdentityComponent implements OnInit {
 
-  constructor(private foldersService: FolderService, private workFunctionService: WorkFunctionService) { }
+    constructor(private headerCommunication: HeaderWithFolderCommunicationService,
+                private workFunctionService: WorkFunctionService
+    ) { }
 
-  ngOnInit() {
-      this.foldersService.getFoldersByWorkFunctionId(11).subscribe(value => {
-          console.log(value);
-      });
-  }
+    ngOnInit() {
+
+        this.headerCommunication.headerTitle.next('Huisstijl');
+    }
 
 }

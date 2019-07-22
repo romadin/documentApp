@@ -4,7 +4,15 @@ mat-toolbar.headerToolbar {
     background-color: var(--primary-color);
     color: var(--secondary-color);
 }
-mat-toolbar.headerToolbar > span.actions > button {
+mat-toolbar.headerToolbar > div.actions {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+mat-toolbar.headerToolbar > div.actions > .logo {
+    height: 100%;
+}
+mat-toolbar.headerToolbar > div.actions > button {
     margin-right: 10px;
 }
 .mat-raised-button.mat-primary {

@@ -6,7 +6,7 @@ export interface OrganisationApi {
     primaryColor: string;
     secondaryColor: string;
     maxUsers: number;
-    logo: string | null;
+    hasLogo: boolean;
     modules: ModuleApiResponseInterface[];
 }
 

@@ -95,16 +95,6 @@ export class UserService {
         return subject;
     }
 
-    public getUserImage(id: number): BehaviorSubject<Blob> {
-        const subject: BehaviorSubject<Blob> = new BehaviorSubject(null);
-
-        this.apiService.getBlob('/users/' + id + '/image', {}).subscribe((value: Blob) => {
-            subject.next(value);
-        });
-
-        return subject;
-    }
-
     public postUser(body: FormData, params: UserParams): Subject<User | ErrorMessage> {
         const subject: Subject<User | ErrorMessage> = new Subject();
         this.apiService.post('/users', body, params).subscribe((value: ApiUserResponse | ErrorMessage) => {
@@ -190,5 +180,15 @@ export class UserService {
         if (value.hasImage) {
             user.image = this.getUserImage(user.id);
         }
+    }
+
+    private getUserImage(id: number): BehaviorSubject<Blob> {
+        const subject: BehaviorSubject<Blob> = new BehaviorSubject(null);
+
+        this.apiService.getBlob('/users/' + id + '/image', {}).subscribe((value: Blob) => {
+            subject.next(value);
+        });
+
+        return subject;
     }
 }

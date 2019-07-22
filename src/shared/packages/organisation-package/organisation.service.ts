@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AppTokenParams, OrganisationCache } from './interface/organisation-additional.interface';
@@ -13,6 +13,7 @@ import { ModuleService } from '../module-package/module.service';
 export class OrganisationService {
     private APP_TOKEN = environment.APP_TOKEN;
     private organisationCache: OrganisationCache = [];
+    private path = '/organisations';
 
     constructor(private apiService: ApiService, private moduleService: ModuleService) {  }
 
@@ -28,7 +29,7 @@ export class OrganisationService {
             appToken: this.APP_TOKEN
         };
 
-        return this.apiService.noTokenGet('/organisations', params).pipe(map((organisation: OrganisationApi ) => {
+        return this.apiService.noTokenGet(this.path, params).pipe(map((organisation: OrganisationApi ) => {
             if (isOrganisationApi(organisation)) {
                 return this.makeOrganisation(organisation);
             }
@@ -51,7 +52,9 @@ export class OrganisationService {
         });
         organisation.modules = modules;
 
-        // @todo need to add the logo
+        if (data.hasLogo) {
+            organisation.logo = this.getOrganisationLogo(organisation);
+        }
         this.organisationCache[organisation.id] = organisation;
 
         return organisation;
@@ -63,5 +66,15 @@ export class OrganisationService {
                 return this.organisationCache[key];
             }
         }
+    }
+
+    private getOrganisationLogo(organisation: Organisation): Subject<Blob> {
+        const subject: BehaviorSubject<Blob> = new BehaviorSubject(null);
+
+        this.apiService.getBlob(this.path + '/' + organisation.id + '/image', {}).subscribe((value: Blob) => {
+            subject.next(value);
+        });
+
+        return subject;
     }
 }

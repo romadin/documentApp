@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog, MatSidenav } from '@angular/material';
@@ -39,14 +40,17 @@ type UrlGroup = '/projecten' | '/projecten/:id' | '/projecten/:id/functies/:id' 
 })
 export class HeaderComponent implements OnInit {
     @Input() sideNavigation: MatSidenav;
-    public actions: MenuAction[] = [];
-    public actionBack: MenuAction;
-    public actionMenu: MenuAction;
-    public currentUser: User;
+    actions: MenuAction[] = [];
+    actionBack: MenuAction;
+    actionMenu: MenuAction;
+    currentUser: User;
     headerTitle = 'BIM Uitvoeringsplan';
+    logoSrc: any;
+
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];
     private currentOrganisation: Organisation;
+    private fileReader: FileReader = new FileReader();
 
     @Input()
     set OnResetActions(reset: boolean) {
@@ -70,6 +74,7 @@ export class HeaderComponent implements OnInit {
         private templateCommunicationService: TemplateCommunicationService,
         private projectCommunicationService: ProjectCommunicationService,
         private organisationService: OrganisationService,
+        private sanitizer: DomSanitizer,
     ) {
         this.defineActions();
     }
@@ -125,8 +130,23 @@ export class HeaderComponent implements OnInit {
         });
 
         this.organisationService.getCurrentOrganisation().pipe((takeLast(1))).subscribe((currentOrganisation) => {
-            this.currentOrganisation = currentOrganisation;
+            if (currentOrganisation) {
+                this.currentOrganisation = currentOrganisation;
+                if (this.currentOrganisation.logo) {
+                    this.currentOrganisation.logo.subscribe((blobValue) => {
+                        if (blobValue) {
+                            this.fileReader.readAsDataURL(blobValue);
+                        }
+                    });
+                } else {
+                    this.logoSrc = '/assets/images/logoBimUvp.png';
+                }
+            }
         });
+
+        this.fileReader.addEventListener('loadend', () => {
+            this.logoSrc = this.sanitizer.bypassSecurityTrustUrl(<string>this.fileReader.result);
+        }, false);
     }
 
     private defineActions(): void {

@@ -49,8 +49,12 @@ export class UsersOverviewComponent {
 
     onEditUser(user: User) {
         this.tempAnimationDelay = true;
-        this.userToEdit = user;
-        this.rightSideActive = true;
+        this.rightSideActive = false;
+        this.userToEdit = undefined;
+        setTimeout(() => {
+            this.userToEdit = user;
+            this.rightSideActive = true;
+        });
     }
 
     closeUserDetailView(close: boolean): void {
