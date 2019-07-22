@@ -39,7 +39,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
                 private organisationService: OrganisationService) {}
 
     ngOnInit() {
-        this.organisationService.getCurrentOrganisation().pipe(takeLast(1)).subscribe(organisation => {
+        this.organisationService.getOrganisation().subscribe(organisation => {
             if (organisation) {
                 document.documentElement.style.setProperty('--primary-color', organisation.primaryColor);
                 document.documentElement.style.setProperty('--secondary-color', organisation.secondaryColor);
@@ -94,6 +94,7 @@ export class ConstructionInformationManagementComponent implements OnInit, After
     }
 
     private defineSideMenuActions(): void {
+        this.sideMenuActions = [];
         const projects: SideMenuNav = {
             onClick: () => {
                 this.router.navigate(['projecten']);

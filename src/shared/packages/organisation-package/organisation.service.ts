@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
+import { Company } from '../company-package/company.model';
 
-import { AppTokenParams, OrganisationCache } from './interface/organisation-additional.interface';
+import { AppTokenParams, OrganisationCacheObservable } from './interface/organisation-additional.interface';
 import { isOrganisationApi, OrganisationApi } from './interface/organisation-api.interface';
 import { Organisation } from './organisation.model';
 import { ApiService } from '../../service/api.service';
@@ -12,28 +13,59 @@ import { ModuleService } from '../module-package/module.service';
 @Injectable()
 export class OrganisationService {
     private APP_TOKEN = environment.APP_TOKEN;
-    private organisationCache: OrganisationCache = [];
+    private organisationByNameCache: OrganisationCacheObservable = {};
+    private organisationResolverCache: any = {};
     private path = '/organisations';
+    private params: AppTokenParams = {appToken: this.APP_TOKEN};
 
     constructor(private apiService: ApiService, private moduleService: ModuleService) {  }
 
     getCurrentOrganisation(): Observable<Organisation | null > {
-        const currentOrganisationName: string = location.host.split('.')[0];
+        const name: string = location.host.split('.')[0];
 
-        if (this.checkCacheByName(currentOrganisationName)) {
-            return of(this.checkCacheByName(currentOrganisationName));
+        if (this.organisationResolverCache[name]) {
+            return this.organisationResolverCache[name];
         }
 
         const params: AppTokenParams = {
-            name: currentOrganisationName,
+            name: name,
             appToken: this.APP_TOKEN
         };
 
-        return this.apiService.noTokenGet(this.path, params).pipe(map((organisation: OrganisationApi ) => {
-            if (isOrganisationApi(organisation)) {
-                return this.makeOrganisation(organisation);
-            }
-            return null;
+        return this.organisationResolverCache[name] = this.apiService.noTokenGet(this.path, params).pipe(
+            map((organisation: OrganisationApi ) => {
+                if (isOrganisationApi(organisation)) {
+                    return this.makeOrganisation(organisation);
+                }
+                return null;
+            })
+        );
+    }
+
+    getOrganisation(): BehaviorSubject<Organisation> {
+        const organisationName: string = location.host.split('.')[0];
+
+        if (this.organisationByNameCache[organisationName]) {
+            return this.organisationByNameCache[organisationName];
+        }
+
+        this.params.name = organisationName;
+        const newSubject: BehaviorSubject<Organisation> = new BehaviorSubject<Organisation>(undefined);
+
+        this.apiService.noTokenGet(this.path, this.params).pipe(take(1)).subscribe(response => {
+            const organisation = isOrganisationApi(response) ? this.makeOrganisation(response) : null;
+            console.log('from api:', organisation);
+            newSubject.next(organisation);
+        });
+
+        this.organisationByNameCache[organisationName] = newSubject;
+        return this.organisationByNameCache[organisationName];
+    }
+
+    updateOrganisation(body: FormData, organisation: Organisation): Observable<Organisation> {
+        return this.apiService.post(this.path + '/' +  organisation.id, body).pipe(map(result => {
+            this.updateCache(organisation);
+            return organisation;
         }));
     }
 
@@ -55,26 +87,23 @@ export class OrganisationService {
         if (data.hasLogo) {
             organisation.logo = this.getOrganisationLogo(organisation);
         }
-        this.organisationCache[organisation.id] = organisation;
 
         return organisation;
-    }
-
-    private checkCacheByName(name: string): Organisation {
-        for ( const key in this.organisationCache) {
-            if (this.organisationCache[key].name === name) {
-                return this.organisationCache[key];
-            }
-        }
     }
 
     private getOrganisationLogo(organisation: Organisation): Subject<Blob> {
         const subject: BehaviorSubject<Blob> = new BehaviorSubject(null);
 
-        this.apiService.getBlob(this.path + '/' + organisation.id + '/image', {}).subscribe((value: Blob) => {
+        this.apiService.getBlobNoToken(this.path + '/' + organisation.id + '/image', this.params).subscribe((value: Blob) => {
             subject.next(value);
         });
 
         return subject;
+    }
+
+    private updateCache(organisation: Organisation): void {
+        if (this.organisationByNameCache[organisation.name]) {
+            this.organisationByNameCache[organisation.name].next(organisation);
+        }
     }
 }

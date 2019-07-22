@@ -35,13 +35,13 @@ div.actionListWrapper > div.contentWrapper > div.list > table.tableList {
     width: 100%;
 }
 
-div.actionListWrapper > div.contentWrapper > div.rightSide {
+div.actionListWrapper > div.contentWrapper > div.leftSide {
     display: flex;
     flex-direction: column;
     flex: 0;
     transition: all 300ms ease;
 }
-div.actionListWrapper > div.contentWrapper > div.rightSide.onActive {
+div.actionListWrapper > div.contentWrapper > div.leftSide.onActive {
     flex: 2;
     transition: all 300ms ease;
 }

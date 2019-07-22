@@ -54,6 +54,10 @@ export class ApiService {
         return this.http.get(this.API_URL + path, paramObject );
     }
 
+    public getBlobNoToken(path: string, params: any): Observable<any> {
+        return this.http.get(this.API_URL + path, { params: params, responseType: 'blob' } );
+    }
+
     public getBlob(path: string, params: any): Observable<any> {
         return this.http.get(this.API_URL + path, { params: { token: this.token.token, format: 'json'}, responseType: 'blob' } );
     }

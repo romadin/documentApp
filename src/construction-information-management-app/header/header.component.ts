@@ -129,7 +129,7 @@ export class HeaderComponent implements OnInit {
             }
         });
 
-        this.organisationService.getCurrentOrganisation().pipe((takeLast(1))).subscribe((currentOrganisation) => {
+        this.organisationService.getOrganisation().subscribe((currentOrganisation) => {
             if (currentOrganisation) {
                 this.currentOrganisation = currentOrganisation;
                 if (this.currentOrganisation.logo) {

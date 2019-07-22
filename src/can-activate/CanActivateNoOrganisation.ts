@@ -12,6 +12,7 @@ export class CanActivateNoOrganisation implements CanActivate {
 
     canActivate(): Observable<boolean | UrlTree> {
         return this.organisationService.getCurrentOrganisation().pipe(map((organisation: Organisation) => {
+            console.log('no organisation page', organisation);
             if ( organisation ) {
                 // @todo get the last route so that we can redirect to that route.
                 return this.router.parseUrl('/projecten');
