@@ -60,9 +60,7 @@ export class OrganisationService {
         });
         organisation.modules = modules;
 
-        if (data.hasLogo) {
-            organisation.logo = this.getOrganisationLogo(organisation);
-        }
+        organisation.logo = this.getOrganisationLogo(organisation);
 
         return organisation;
     }

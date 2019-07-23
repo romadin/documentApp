@@ -1,23 +1,30 @@
 <div class="wrapper">
-    <div class="leftSide" [@resizeWidth]="showRightSide ? 'smallWidth' : 'fullWidth'">
+    <div class="leftSide" [@resizeWidth]="showRightSide || showEditLogo ? 'smallWidth' : 'fullWidth'">
         <div class="cardRow rippleRow" (click)="onEditColor('primary', organisation.primaryColor)">
             <div class="title">
-                <i class="material-icons"> business </i>
+                <i class="material-icons"> color_lens </i>
                 <h3> Hoofd kleur</h3>
             </div>
-            <div class="colorPreview" [style.backgroundColor]="organisation.primaryColor"></div>
+            <div class="actions">
+                <i class="material-icons"> edit </i>
+            </div>
         </div>
         <div class="cardRow rippleRow" (click)="onEditColor('secondary', organisation.secondaryColor)" [style.color]="organisation.secondaryColor">
             <div class="title" >
-                <i class="material-icons"> business </i>
+                <i class="material-icons"> color_lens </i>
                 <h3 [style.color]="organisation.secondaryColor"> Sub Kleur</h3>
             </div>
-            <div class="colorPreview" [style.backgroundColor]="organisation.secondaryColor"></div>
+            <div class="actions">
+                <i class="material-icons"> edit </i>
+            </div>
         </div>
-        <div class="cardRow rippleRow">
+        <div class="cardRow rippleRow" (click)="onEditLogo()">
             <div class="title">
-                <i class="material-icons"> business </i>
+                <i class="material-icons"> image </i>
                 <h3> Logo</h3>
+            </div>
+            <div class="actions">
+                <i class="material-icons"> edit </i>
             </div>
         </div>
     </div>
@@ -26,5 +33,11 @@
                 [colorPackage]="colorPackage"
                 (closeView)="onClose($event)">
         </cim-color-picker-detail>
+    </div>
+    <div class="rightSide" [@toggleInView]="showEditLogo ? 'open' : 'close'">
+        <cim-organisation-logo-detail
+                [organisation]="organisation"
+                (closeView)="onClose($event)">
+        </cim-organisation-logo-detail>
     </div>
 </div>

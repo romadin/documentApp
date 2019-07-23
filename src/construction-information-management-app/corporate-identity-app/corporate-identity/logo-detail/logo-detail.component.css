@@ -1,0 +1,40 @@
+.card > .logoContainer {
+    position: relative;
+}
+.card > .logoContainer > label {
+    cursor: pointer;
+}
+.card > .logoContainer > label > img {
+    width: 100%;
+}
+
+.card > div.logoContainer:hover label > div.overlay {
+    opacity: 1;
+}
+
+.card > div.logoContainer > label > div.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    transition: .5s ease;
+    background-color: #1f1f1fc9;
+}
+
+.card > div.logoContainer > label > div.overlay > div.text {
+    color: #fff
+}
+
+.card > .actionButtons {
+    padding-top: 15px;
+}
+
+.card > .actionButtons > button:first-child {
+    margin-right: 5px;
+}

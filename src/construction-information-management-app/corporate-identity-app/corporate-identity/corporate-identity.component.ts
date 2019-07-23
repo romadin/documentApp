@@ -53,6 +53,7 @@ import { ColorPackage, ColorType } from './color-picker-detail/color-picker-deta
 export class CorporateIdentityComponent implements OnInit {
     organisation: Organisation;
     showRightSide = false;
+    showEditLogo = false;
     colorPackage: ColorPackage;
 
     constructor(private headerCommunication: HeaderWithFolderCommunicationService,
@@ -66,24 +67,35 @@ export class CorporateIdentityComponent implements OnInit {
     }
 
     onEditColor(type: ColorType, color: string): void {
-        this.colorPackage = {
-            color: color,
-            colorType: type,
-            organisation: this.organisation
-        };
-        this.showRightSide = true;
+        let timer = 0;
+        if (this.showEditLogo) {
+            this.showEditLogo = false;
+            timer = 200;
+        }
+
+        setTimeout(() => {
+            this.colorPackage = {
+                color: color,
+                colorType: type,
+                organisation: this.organisation
+            };
+            this.showRightSide = true;
+        }, timer);
     }
 
     onClose(close: boolean) {
         if (close) {
             this.colorPackage = undefined;
             this.showRightSide = false;
+            this.showEditLogo = false;
         }
     }
 
     onEditLogo() {
-        this.colorPackage = undefined;
-        this.showRightSide = false;
+        this.onClose(true);
+        setTimeout(() => {
+            this.showEditLogo = true;
+        }, 200);
     }
 
 }

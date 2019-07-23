@@ -10,9 +10,16 @@
              [cpPositionOffset]="'50%'"
              [cpPositionRelativeToArrow]="true"
              [cpPresetColors]="['#fff', '#000', '#2889e9', '#e920e9', '#fff500', 'rgb(236,64,64)']"
-             [cpCancelButton]="true"
              [cpOKButton]="true"
-             (colorPickerChange)="onColorChange($event)"
+             [cpOKButtonText]="'Opslaan'"
+             [cpOKButtonClass]="'mat-raised-button mat-primary'"
+             [cpCancelButton]="true"
+             [cpCancelButtonText]="'Annuleren'"
+             [cpCancelButtonClass]="'mat-button'"
+
+             (colorPickerCancel)="onCancel()"
+             (colorPickerClose)="onClosePicker($event)"
+
              [(colorPicker)]="color">
         </div>
     </div>

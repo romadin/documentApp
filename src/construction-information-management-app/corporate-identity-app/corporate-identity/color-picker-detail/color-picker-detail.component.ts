@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { OrganisationService } from '../../../../shared/packages/organisation-package/organisation.service';
+import { ToastService } from '../../../../shared/toast.service';
 
 export type ColorType = 'primary' | 'secondary';
 
@@ -19,11 +20,11 @@ export class ColorPickerDetailComponent implements OnInit {
     colorType: ColorType;
     color: string;
     colorLabel: string;
-    timerId: number;
+    cancel = false;
 
     private organisation: Organisation;
 
-    constructor(private organisationService: OrganisationService) { }
+    constructor(private organisationService: OrganisationService, private toast: ToastService) { }
 
     ngOnInit() {
     }
@@ -44,20 +45,25 @@ export class ColorPickerDetailComponent implements OnInit {
         this.closeView.emit(true);
     }
 
-    onColorChange(value: string): void {
-        if (this.timerId) {
-            clearTimeout(this.timerId);
-        }
+    onCancel(): void {
+        this.cancel = true;
+    }
 
-        this.timerId = setTimeout(() => {
-            console.log(value);
-            const data = new FormData();
+
+    onClosePicker(color: string): void {
+        // we set the Timeout because the onCancel function is slower then the onClosePicker function.
+        setTimeout(() => {
             const colorAttribute = this.colorType + 'Color';
+            if (!this.cancel && this.organisation[colorAttribute] !== color) {
+                const data = new FormData();
 
-            data.append(colorAttribute, value);
-            this.organisation[colorAttribute] = value;
-            console.log(this.organisation);
-            this.organisationService.updateOrganisation(data, this.organisation).subscribe();
-        }, 400);
+                data.append(colorAttribute, color);
+                this.organisation[colorAttribute] = color;
+                this.organisationService.updateOrganisation(data, this.organisation).subscribe(() => {
+                    this.toast.showSuccess('Organisatie: ' +  this.colorLabel + ' is bewerkt', 'Bewerkt');
+                });
+            }
+            this.cancel = false;
+        }, 100);
     }
 }

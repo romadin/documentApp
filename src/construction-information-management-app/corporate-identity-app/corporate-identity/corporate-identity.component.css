@@ -36,6 +36,9 @@
     display: flex;
     align-items: center;
 }
+.wrapper > .leftSide > .rippleRow > div.actions > i {
+    padding: 0 0 0 10px;
+}
 
 .wrapper > .rightSide {
     width: 0;

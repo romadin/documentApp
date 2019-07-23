@@ -7,7 +7,7 @@ import { Organisation } from './organisation.model';
 import { OrganisationService } from './organisation.service';
 
 @Injectable()
-export class OrganisationResolver implements Resolve<Observable<Organisation> | Observable<never>> {
+export class OrganisationResolver implements Resolve<Organisation | Observable<never>> {
 
     constructor(private organisationService: OrganisationService, private router: Router) { }
 

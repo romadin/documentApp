@@ -50,7 +50,6 @@ export class HeaderComponent implements OnInit {
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];
     private currentOrganisation: Organisation;
-    private fileReader: FileReader = new FileReader();
 
     @Input()
     set OnResetActions(reset: boolean) {
@@ -133,19 +132,20 @@ export class HeaderComponent implements OnInit {
                 this.currentOrganisation = currentOrganisation;
                 if (this.currentOrganisation.logo) {
                     this.currentOrganisation.logo.subscribe((blobValue) => {
-                        if (blobValue) {
-                            this.fileReader.readAsDataURL(blobValue);
+                        if (blobValue && blobValue.size > 4) {
+                            const fileReader = new FileReader();
+
+                            fileReader.addEventListener('loadend', () => {
+                                this.logoSrc = this.sanitizer.bypassSecurityTrustUrl(<string>fileReader.result);
+                            }, false);
+                            fileReader.readAsDataURL(blobValue);
+                        } else {
+                            this.logoSrc = '/assets/images/logoBimUvp.png';
                         }
                     });
-                } else {
-                    this.logoSrc = '/assets/images/logoBimUvp.png';
                 }
             }
         });
-
-        this.fileReader.addEventListener('loadend', () => {
-            this.logoSrc = this.sanitizer.bypassSecurityTrustUrl(<string>this.fileReader.result);
-        }, false);
     }
 
     private defineActions(): void {

@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ToastrModule } from 'ng6-toastr-notifications';
 import { registerLocaleData } from '@angular/common';
 import localeNl from '@angular/common/locales/nl';
+import { CanActivateAdminUser } from '../can-activate/CanActivateAdminUser';
 
 
 import { MaterialModule } from '../shared/material.module';
@@ -70,16 +71,19 @@ const appRoutes: Routes = [
     {
         path: 'gebruikers',
         loadChildren: './user-app/user.module#UserModule',
+        canActivate: [ CanActivateAdminUser ],
         resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'templates',
         loadChildren: './templates-app/templates.module#TemplatesModule',
+        canActivate: [ CanActivateAdminUser ],
         resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'huisstijl',
         loadChildren: './corporate-identity-app/corporate-identity-app.module#CorporateIdentityAppModule',
+        canActivate: [ CanActivateAdminUser ],
         resolve: { organisation: OrganisationResolver }
     },
     {
@@ -155,7 +159,7 @@ const appRoutes: Routes = [
         ModuleService,
         OrganisationService,
         OrganisationResolver,
-        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation
+        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation, CanActivateAdminUser
     ],
     entryComponents: [
         UserPopupComponent,

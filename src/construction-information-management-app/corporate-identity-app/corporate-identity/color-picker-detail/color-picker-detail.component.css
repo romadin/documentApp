@@ -1,6 +1,7 @@
 .card > .colorPickerContainer {
     position: relative;
     display: flex;
+    padding: 10px;
 }
 .card > .colorPickerContainer > h3 {
     margin-right: 10px;
