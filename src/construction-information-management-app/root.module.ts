@@ -71,7 +71,6 @@ const appRoutes: Routes = [
     {
         path: 'gebruikers',
         loadChildren: './user-app/user.module#UserModule',
-        canActivate: [ CanActivateAdminUser ],
         resolve: { organisation: OrganisationResolver }
     },
     {

@@ -45,4 +45,12 @@
                        (closeReadMode)="onCloseReadMode($event)">
         </cim-item-read>
     </div>
+    <div class="warning" *ngIf="items.length === 0">
+        <div class="content">
+            <i class="material-icons"> warning </i>
+            <span>
+                 Er zijn nog geen hoofdstukken toegevoegd aan {{ errorMessage }}.
+            </span>
+        </div>
+    </div>
 </div>

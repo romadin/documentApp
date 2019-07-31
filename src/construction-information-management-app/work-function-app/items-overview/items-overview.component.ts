@@ -26,6 +26,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     activeItem: ActiveItemPackage;
     showReadMode: boolean;
     showReadModeAnimation: boolean;
+    errorMessage = 'deze functie';
 
     private subscriptions: Subscription[] = [];
 
@@ -38,6 +39,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
 
     ngOnInit() {
         this.setInitialValues();
+        this.errorMessage = isWorkFunction(parent) ? 'deze functie' : 'dit bedrijf';
         this.parent.items.subscribe(items => this.items = items );
         this.resetView();
 
