@@ -118,12 +118,13 @@ export class UserPopupComponent {
     }
 
     onProjectSelect(project: Project): void {
-        if (this.selectedProjects.hasOwnProperty(project.id)) {
-            delete this.selectedProjects[project.id];
-            return;
+        if (project.id !== this.currentProject.id) {
+            if (this.selectedProjects.hasOwnProperty(project.id)) {
+                delete this.selectedProjects[project.id];
+                return;
+            }
+            this.selectedProjects[project.id] = project;
         }
-
-        this.selectedProjects[project.id] = project;
     }
 
     onImageUpload(event: Event): void {

@@ -78,11 +78,13 @@ export class HeaderComponent implements OnInit {
     }
 
     ngOnInit() {
+        let currentNavigation: NavigationEnd;
         this.defineActions();
         this.determineActions(this.router.url);
         // track if url changes
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.routeHistory.push(navigation);
+            currentNavigation = navigation;
             this.determineActions(navigation.url);
             this.actionBack.show = navigation.url === '/login' || navigation.url === '/not-found/organisation' ?
                 false : navigation.url !== '/projecten';
@@ -113,6 +115,7 @@ export class HeaderComponent implements OnInit {
         this.folderCommunicationService.addCompanyButton.subscribe(buttonAttributes => {
             if (buttonAttributes && buttonAttributes.show !== undefined) {
                 this.actions.find(action => action.name === 'Bedrijf toevoegen').show = buttonAttributes.show && this.currentUser.isAdmin();
+                this.determineActions(currentNavigation.url);
             }
         });
 

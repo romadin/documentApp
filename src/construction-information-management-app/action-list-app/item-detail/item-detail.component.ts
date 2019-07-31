@@ -28,7 +28,7 @@ export class ItemDetailComponent implements OnInit {
 
     userSelected: any;
     currentUser: User;
-    public actionForm: FormGroup = new FormGroup({
+    actionForm: FormGroup = new FormGroup({
         description: new FormControl(),
         actionHolder: new FormControl(),
         week: new FormControl(),
@@ -64,8 +64,9 @@ export class ItemDetailComponent implements OnInit {
         this.actionForm.controls.description.setValidators([ Validators.required ]);
         this.actionForm.controls.week.setValidators([ Validators.maxLength(2), weekNumberValidator(52) ]);
 
-        this.userService.getUsers({organisationId: organisation.id, projectId: this.projectId}).subscribe(users => {
-            this.users = users;
+        this.userService.getUsers({organisationId: organisation.id}).subscribe(users => {
+            this.users = users.map(user => user);
+            this.users = this.users.filter((user) => user.projectsId.find((id) => id === this.projectId));
         });
     }
 

@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { CompanyService } from '../company-package/company.service';
+import { Organisation } from '../organisation-package/organisation.model';
 
 import { ApiUserResponse, EditUserBody, isApiUserResponse } from './api-user.interface';
 import { ErrorMessage } from '../../type-guard/error-message';
@@ -16,10 +17,15 @@ interface ActivationParams {
     params: { activationToken: string; };
 }
 
-interface UserCache {
-    [id: number]: User;
+interface UsersCache {
+    [id: number]: BehaviorSubject<User[]>;
 }
-
+interface UserCache {
+    [id: number]: BehaviorSubject<User>;
+}
+interface DeleteUserParams {
+    projectId?: number;
+}
 export interface UserParams {
     organisationId: number;
 }
@@ -28,11 +34,12 @@ export interface GetUserParams extends UserParams {
     projectId?: number;
 }
 
+
 @Injectable()
 export class UserService {
     private currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
-    private userCache: UserCache = {};
-    private allUsers: BehaviorSubject<User[]> = new BehaviorSubject([]);
+    private usersByOrganisationCache: UsersCache = {};
+    private userByIdCache: UserCache = {};
 
     constructor(
         private apiService: ApiService,
@@ -46,39 +53,41 @@ export class UserService {
         }
     }
 
-    public getUsers(params: GetUserParams): BehaviorSubject<User[]> {
-        if (Object.values(this.userCache).length === this.allUsers.getValue().length) {
-            return this.allUsers;
+    getUsers(params: GetUserParams): BehaviorSubject<User[]> {
+        const organisationId = params.organisationId;
+        if (this.usersByOrganisationCache[organisationId]) {
+            return this.usersByOrganisationCache[organisationId];
         }
 
+        this.usersByOrganisationCache[organisationId] = new BehaviorSubject<User[]>([]);
         this.apiService.get('/users', params).subscribe((usersResponse: ApiUserResponse[]) => {
             const usersArray: User[] = [];
 
             usersResponse.forEach((user) => {
                 usersArray.push(this.makeUser(user));
             });
-            this.allUsers.next(usersArray);
+            this.usersByOrganisationCache[organisationId].next(usersArray);
         }, (error: HttpErrorResponse) => {
             if (error.status === 401 && error.error === 'Unauthorized.') {
                 this.router.navigate(['/login']);
             }
         });
 
-        return this.allUsers;
+        return this.usersByOrganisationCache[organisationId];
     }
 
-    public getUserById(id: number): Subject<User> {
-        const subject: BehaviorSubject<User> = new BehaviorSubject(null);
-
-        if ( this.userCache[id] ) {
-            subject.next(this.userCache[id]);
-            return subject;
+    getUserById(id: number): Subject<User> {
+        if ( this.userByIdCache[id] ) {
+            return this.userByIdCache[id];
         }
+
+        this.userByIdCache[id] = new BehaviorSubject(null);
         this.apiService.get('/users/' + id, {}).subscribe((value: ApiUserResponse) => {
-            subject.next(this.makeUser(value));
+            const user = this.makeUser(value);
+            this.userByIdCache[id].next(user);
         });
 
-        return subject;
+        return this.userByIdCache[id];
     }
 
     public getUserByIdActivationCode(activationToken: string): Observable<User> {
@@ -99,8 +108,11 @@ export class UserService {
         const subject: Subject<User | ErrorMessage> = new Subject();
         this.apiService.post('/users', body, params).subscribe((value: ApiUserResponse | ErrorMessage) => {
             if (isApiUserResponse(value)) {
-                subject.next(this.makeUser(value));
-                this.allUsers.next(Object.values(this.userCache));
+                const user = this.makeUser(value);
+                subject.next(user);
+                const users = this.usersByOrganisationCache[params.organisationId].getValue();
+                users.push(user);
+                this.usersByOrganisationCache[params.organisationId].next(users);
             } else {
                 subject.next(value);
             }
@@ -129,13 +141,18 @@ export class UserService {
         this.currentUser.next(user);
     }
 
-    public deleteUser(user: User, params: any): Subject<boolean> {
+    public deleteUser(user: User, params: DeleteUserParams, organisation: Organisation): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
         this.apiService.delete('/users/' + user.id, params).subscribe((response: ApiDocResponse) => {
             if (response) {
-                if (this.userCache.hasOwnProperty(user.id) ) {
-                    delete this.userCache[user.id];
+                if (this.usersByOrganisationCache[organisation.id]) {
+                    const users = this.usersByOrganisationCache[organisation.id].getValue();
+                    if (!params.projectId) {
+                        users.splice(users.findIndex((u) => u === user), 1);
+                    }
+                    this.usersByOrganisationCache[organisation.id].next(users);
                 }
+
                 deleted.next(true );
             }
         });
@@ -161,7 +178,6 @@ export class UserService {
             user.image = this.getUserImage(user.id);
         }
 
-        this.userCache[user.id] = user;
         return user;
     }
 

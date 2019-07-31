@@ -12,7 +12,7 @@ export class HeaderWithFolderCommunicationService {
     private _triggerAddItem: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _triggerReadMode: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _addCompanyButton: BehaviorSubject<ButtonWrapper> = new BehaviorSubject<ButtonWrapper>(null);
-    private _showAddUserButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private _showAddUserButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
     private _showDocumentToPdfButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showReadModeButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private _showAddItemButton: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

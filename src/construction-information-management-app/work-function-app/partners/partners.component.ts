@@ -31,8 +31,9 @@ export class PartnersComponent implements OnInit, OnDestroy {
     @Input() currentUser: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    public users: User[];
-    public userToEdit: User;
+    users: User[];
+    userToEdit: User;
+    organisation: Organisation;
 
     constructor(private userService: UserService,
                 private usersCommunicationService: UsersCommunicationService,
@@ -41,9 +42,10 @@ export class PartnersComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
-        this.userService.getUsers({organisationId: organisation.id, projectId: this.projectId}).subscribe((users) => {
-            this.users = users.filter((user) => user.projectsId.find((id) => id === this.projectId));
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.userService.getUsers({organisationId: this.organisation.id}).subscribe((users) => {
+            this.users = users.map(user => user);
+            this.users = this.users.filter((user) => user.projectsId.find((id) => id === this.projectId));
         });
         this.headerCommunicationService.showAddUserButton.next(true);
     }
@@ -56,9 +58,6 @@ export class PartnersComponent implements OnInit, OnDestroy {
         this.usersCommunicationService.triggerAddUserPopup.next(true);
     }
 
-    onDeleteUser(userToDelete: User) {
-        this.users.splice(this.users.findIndex((user) => user === userToDelete), 1);
-    }
 
     onEditUser(user: User) {
         this.userToEdit = user;

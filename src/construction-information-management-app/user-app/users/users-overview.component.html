@@ -1,9 +1,9 @@
 <div *ngIf="users" class="usersWrapper">
     <div class="userOverview">
         <cim-user-row *ngFor="let user of users"
+                      [organisation]="organisation"
                       [currentUser]="currentUser"
                       [user]="user"
-                      (userToDelete)="onDeleteUser($event)"
                       (userToEdit)="onEditUser($event)">
         </cim-user-row>
     </div>

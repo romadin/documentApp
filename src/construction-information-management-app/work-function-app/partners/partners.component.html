@@ -9,9 +9,10 @@
             <i class="material-icons"> add </i>
         </button>
         <cim-user-row *ngFor="let user of users"
+                      [organisation]="organisation"
                       [currentUser]="currentUser"
+                      [projectId]="projectId"
                       [user]="user"
-                      (userToDelete)="onDeleteUser($event)"
                       (userToEdit)="onEditUser($event)">
         </cim-user-row>
     </div>

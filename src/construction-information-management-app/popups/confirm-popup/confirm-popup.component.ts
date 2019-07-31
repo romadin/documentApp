@@ -28,7 +28,7 @@ export class ConfirmPopupComponent implements OnInit {
     onClose(e: MouseEvent): void {
         e.preventDefault();
         e.stopPropagation();
-        this.dialogRef.close('cancel');
+        this.dialogRef.close(false);
     }
 
     onNoClick(e: MouseEvent): void {

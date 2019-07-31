@@ -17,6 +17,7 @@ export class UsersOverviewComponent {
     currentUser: User;
     userToEdit: User;
     users: User[];
+    organisation: Organisation;
     tempAnimationDelay: boolean;
     rightSideActive = false;
 
@@ -28,8 +29,8 @@ export class UsersOverviewComponent {
     ) {
         this.loadingService.isLoading.next(true);
         this.headerCommunication.headerTitle.next('Gebruikers beheer');
-        const organisation: Organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
-        this.userService.getUsers({organisationId: organisation.id}).subscribe((users) => {
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.userService.getUsers({organisationId: this.organisation.id}).subscribe((users) => {
             this.loadingService.isLoading.next(false);
             this.users = users;
         });
@@ -41,10 +42,6 @@ export class UsersOverviewComponent {
         });
 
         this.currentUser = this.userService.getCurrentUser().getValue();
-    }
-
-    onDeleteUser(userToDelete: User): void {
-        this.users.splice(this.users.findIndex((user) => user === userToDelete), 1);
     }
 
     onEditUser(user: User) {
