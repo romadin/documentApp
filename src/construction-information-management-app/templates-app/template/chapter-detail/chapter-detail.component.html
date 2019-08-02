@@ -2,8 +2,8 @@
     <div class="header" *ngIf="checkParentIsWorkFunction()">
         <button mat-button (click)="onCloseView($event)" *ngIf="!chapter"> <i class="material-icons"> close </i> </button>
         <mat-button-toggle-group *ngIf="!chapter" name="itemPicker" aria-label="Font Style" class="switchItemButton">
-            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande hoofdstuk</mat-button-toggle>
-            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe hoofdstuk</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande subhoofdstuk</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe subhoofdstuk</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
     <cim-chapter-edit *ngIf="view === 'new' || chapter || !checkParentIsWorkFunction()"

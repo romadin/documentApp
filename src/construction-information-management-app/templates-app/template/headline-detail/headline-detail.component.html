@@ -2,8 +2,8 @@
     <div class="header">
         <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
         <mat-button-toggle-group *ngIf="!headline" name="itemPicker" aria-label="Font Style" class="switchItemButton">
-            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande kop</mat-button-toggle>
-            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe kop</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande hoofdstuk</mat-button-toggle>
+            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe hoofdstuk</mat-button-toggle>
         </mat-button-toggle-group>
     </div>
     <cim-headline-edit [@toggleInView] *ngIf="view === 'new' || headline"
