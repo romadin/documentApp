@@ -39,9 +39,15 @@
         </div>
     </form>
 </div>
-<cim-document-detail *ngIf="folder && showAddDocument"
-                     [workFunction]="parent"
-                     [currentUser]="currentUser"
-                     [parentFolder]="folder"
-                     (closeEditForm)="onCloseAddDocument($event)">
-</cim-document-detail>
+
+<div class="card" *ngIf="folder && showAddDocument">
+    <div class="header addChapterHeader">
+        <button mat-button (click)="onCloseAddDocument(true)" > <i class="material-icons"> close </i> </button>
+        <h3> Voeg een hoofdstuk toe </h3>
+    </div>
+    <cim-document-detail [workFunction]="parent"
+                         [currentUser]="currentUser"
+                         [parentFolder]="folder"
+                         (closeEditForm)="onCloseAddDocument($event)">
+    </cim-document-detail>
+</div>

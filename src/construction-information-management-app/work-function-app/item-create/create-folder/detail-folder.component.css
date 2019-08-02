@@ -35,3 +35,15 @@ div.documentHeader {
 div.documentHeader > h3 {
     margin: 0;
 }
+
+.card > .addChapterHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 5px;
+}
+:host >>> cim-document-detail > div > div.editDocument.card > div.formBody {
+    padding-top: 0;
+}
