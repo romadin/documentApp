@@ -1,4 +1,4 @@
-<div class="detailWrapper" *ngIf="projects && companies">
+<div class="detailWrapper">
     <div class="card editUser" *ngIf="currentUser.isAdmin()">
         <div class="header">
             <button mat-button (click)="onCloseDetailView($event)" > <i class="material-icons"> close </i> </button>
@@ -46,7 +46,7 @@
                     <mat-form-field>
                         <input type="text" matInput placeholder="Functie" formControlName="function" required>
                     </mat-form-field>
-                    <mat-form-field>
+                    <mat-form-field *ngIf="companies">
                         <input type="text" matInput placeholder="Bedrijfsnaam" formControlName="company" [matAutocomplete]="auto" required>
                         <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="$event.preventDefault()">
                             <mat-icon>arrow_drop_down</mat-icon>
@@ -58,9 +58,9 @@
 
                     <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
                 </div>
-                <div class="projectsWrapper" *ngIf="projects">
+                <div class="projectsWrapper">
                     <span class="title"> Projecten</span>
-                    <mat-selection-list #projectsList>
+                    <mat-selection-list #projectsList *ngIf="projects">
                         <mat-list-option #option *ngFor="let project of projects" [selected]="checkProjectSelected(project)" (click)="onProjectSelect(project, option)">
                             {{ project.name }}
                         </mat-list-option>

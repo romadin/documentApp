@@ -1,15 +1,15 @@
-<div *ngIf="users" class="usersWrapper">
-    <div class="userOverview">
-        <cim-user-row *ngFor="let user of users"
-                      [organisation]="organisation"
-                      [currentUser]="currentUser"
-                      [user]="user"
-                      (userToEdit)="onEditUser($event)">
-        </cim-user-row>
+<div class="usersWrapper">
+    <div class="userOverview" [@resizeWidth]="rightSideActive ? 'smallWidth' : 'fullWidth'" *ngIf="users && users.length > 0">
+        <div [@items] *ngFor="let user of users">
+            <cim-user-row [organisation]="organisation"
+                          [currentUser]="currentUser"
+                          [user]="user"
+                          (userToEdit)="onEditUser($event)">
+            </cim-user-row>
+        </div>
     </div>
-    <div class="userDetail" [ngClass]="{'showDetail': tempAnimationDelay}">
-        <cim-user-detail *ngIf="rightSideActive"
-                         [currentUser]="currentUser"
+    <div class="userDetail" *ngIf="rightSideActive" [@toggleInView]="rightSideActive ? 'open' : 'close'">
+        <cim-user-detail [currentUser]="currentUser"
                          [user]="userToEdit"
                          (closeDetailView)="closeUserDetailView($event)">
         </cim-user-detail>

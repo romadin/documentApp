@@ -114,9 +114,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
 
     public onSubmit(e: Event) {
         e.stopPropagation();
-        if ( objectIsEmpty(this.selectedProjects) ) {
-            return alert('Er is geen project gekozen!');
-        }
+
         this.projectsHasChanged();
         if (this.userForm.valid && this.formHasChanged) {
             const data = new FormData();
