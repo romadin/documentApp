@@ -1,6 +1,7 @@
 import { animate, animateChild, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { LoadingService } from '../../../shared/loading.service';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../shared/packages/company-package/interface/company.interface';
@@ -106,7 +107,10 @@ export class CompanyComponent implements OnInit, OnDestroy {
         private headerCommunicationService: HeaderWithFolderCommunicationService,
         private routerService: RouterService,
         private activatedRoute: ActivatedRoute,
-    ) { }
+        private loadingService: LoadingService,
+    ) {
+        this.loadingService.isLoading.next(true);
+    }
 
     ngOnInit() {
         this.setInitialValues();
@@ -131,6 +135,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
                 if (streamCounter === 1) {
                     this.determineView();
                 }
+                this.loadingService.isLoading.next(false);
             }
         });
         this.headerCommunicationService.addCompanyButton.subscribe(buttonOptions => {

@@ -100,7 +100,7 @@ export class HeaderComponent implements OnInit {
             }
         });
         this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
-            this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser.isAdmin();
+            this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser && this.currentUser.isAdmin();
         });
 
         this.folderCommunicationService.showDocumentToPdfButton.subscribe((show: boolean) => {

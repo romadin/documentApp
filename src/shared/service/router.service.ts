@@ -21,7 +21,9 @@ export class RouterService {
             urlSegments.forEach((segment, index) => {
                 index + 1 !== urlSegments.length ? urlToRemove += segment.path +  '/' : urlToRemove += segment.path;
             });
-            const url = location.pathname.replace(urlToRemove, '');
+            const parentPath = parent.parent.snapshot.url[0].path;
+            urlToRemove = parentPath + '/' + urlToRemove;
+            const url = location.pathname.replace(urlToRemove, parentPath + '');
             this.setBackRoute(url);
         });
     }
