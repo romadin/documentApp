@@ -183,3 +183,57 @@ div.warning > div.content > span {
 mat-form-field.mat-form-field {
     width: 100%;
 }
+
+/** START!!!! The css for the table drop down in the document-detail.component */
+.tableDropDownWrapper {
+    position: relative;
+    display: inline-block;
+    z-index: 3;
+}
+.tableDropDown {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    padding: 5px;
+    z-index: 1;
+}
+.tableDropDown > input {
+    width: 80px;
+}
+.tableDropDown.show {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.tableDropDown > .selectorRow {
+    display: flex;
+}
+.tableDropDown > .selectorRow > .selectorBlock {
+    width: 12px;
+    height: 12px;
+    border: solid 1px #000000;
+    margin: 3px;
+    transition: all 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+.tableDropDown > .selectorRow > .selectorBlock.show {
+    border-color: #fbb200;
+    box-shadow: 0 5px 5px -3px #fbb200;
+}
+.tableDropDown > .labelWrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.tableDropDown > .labelWrapper > #columnCounter {
+    margin: 0 5px 0 10px;
+}
+.tableDropDown > .labelWrapper > #rowCounter {
+    margin-left: 5px;
+}
+
+
+/** END!!!!!!!!!!!!!!!!!!!!!!*/

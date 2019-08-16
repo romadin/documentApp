@@ -58,8 +58,7 @@ export class AdminComponent implements AfterViewInit {
         if (event instanceof Event) {
             this.setFormValue();
         } else {
-            this.eventForm.reset();
-            this.setFormValueOfToday();
+            this.resetForm();
         }
     }
     get event(): Event {
@@ -86,6 +85,7 @@ export class AdminComponent implements AfterViewInit {
     }
     onCloseView(e: MouseEvent) {
         e.preventDefault();
+        this.resetForm();
         this.closeView.emit(true);
     }
     setStartTime(startTime: string): void {
@@ -180,5 +180,10 @@ export class AdminComponent implements AfterViewInit {
         date.setHours(parseInt(times[0], 10 ));
         date.setMinutes(parseInt(times[1], 10 ));
         return date;
+    }
+
+    private resetForm() {
+        this.eventForm.reset();
+        this.setFormValueOfToday();
     }
 }
