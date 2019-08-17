@@ -18,7 +18,6 @@ import { ColorPackage, ColorType } from './color-picker-detail/color-picker-deta
             state('open', style({
                 width: '48%',
                 transform: 'translateX(0)',
-                overflow: 'unset'
             })),
             transition('close => open', [
                 animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)')

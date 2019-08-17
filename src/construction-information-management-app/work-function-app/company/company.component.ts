@@ -28,11 +28,11 @@ export interface CompanyRightSidePackage {
                 transform: 'translateX(110%)'
             })),
             state('open', style({
-                width: '48%',
+                // width: '48%',
                 transform: 'translateX(0)'
             })),
             state('openFullWidth', style({
-                width: '100%',
+                // width: '100%',
                 transform: 'translateX(0)'
             })),
             transition('close => open', [

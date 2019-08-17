@@ -7,7 +7,6 @@ import { Company } from '../../../shared/packages/company-package/company.model'
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../shared/packages/company-package/interface/company.interface';
 import { CompanyByProjectId } from '../../user-app/users/user-detail/user-detail.component';
-import { ConfirmPopupComponent, ConfirmPopupData } from '../confirm-popup/confirm-popup.component';
 
 import { DefaultPopupData } from '../project-popup/project-popup.component';
 import { UserService } from '../../../shared/packages/user-package/user.service';

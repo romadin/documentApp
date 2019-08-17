@@ -11,34 +11,36 @@
         </div>
     </div>
 
-    <div class="container" *ngIf="rightSideActive" [@toggleInView]="workFunction.companies.length === 0 ? 'openFullWidth' : rightSideActive ? 'open' : 'close'">
-        <cim-company-right-side [package]="rightSidePackage" (closeSide)="resetView()">
-        </cim-company-right-side>
-    </div>
-
-    <div class="reserveCompany container card" *ngIf="showWarningBox" [@toggleInView]="showWarningBox ? 'open' : 'close'">
-        <div class="header">
-            <button mat-button (click)="resetView()" *ngIf="workFunction.companies.length > 0"> <i class="material-icons"> close </i> </button>
-            <h3 class="title">Voeg een bedrijf toe</h3>
+    <div class="rightSide">
+        <div class="container" *ngIf="rightSideActive" [@toggleInView]="workFunction.companies.length === 0 ? 'openFullWidth' : rightSideActive ? 'open' : 'close'">
+            <cim-company-right-side [package]="rightSidePackage" (closeSide)="resetView()">
+            </cim-company-right-side>
         </div>
-        <div class="warning">
-            <div class="content">
-                <i class="material-icons"> warning </i>
-                <span>
+
+        <div class="reserveCompany container card" *ngIf="showWarningBox" [@toggleInView]="showWarningBox ? 'open' : 'close'">
+            <div class="header">
+                <button mat-button (click)="resetView()" *ngIf="workFunction.companies.length > 0"> <i class="material-icons"> close </i> </button>
+                <h3 class="title">Voeg een bedrijf toe</h3>
+            </div>
+            <div class="warning">
+                <div class="content">
+                    <i class="material-icons"> warning </i>
+                    <span>
                      {{warningMessage}} Wilt u een bedrijf reserveren of wilt u een gebruiker toevoegen aan dit project?
                     Klik dan op één van de onderstaande knoppen.
                 </span>
+                </div>
             </div>
-        </div>
-        <div class="actions">
-            <button mat-raised-button color="primary" (click)="addCompany($event)">
-                <mat-icon aria-label="Icon"> business </mat-icon>
-                <span class="actionText"> Bredrijf reserveren</span>
-            </button>
-            <button mat-raised-button color="primary" (click)="addUser($event)">
-                <mat-icon aria-label="Icon"> person_add </mat-icon>
-                <span class="actionText"> Gebruiker toevoegen</span>
-            </button>
+            <div class="actions">
+                <button mat-raised-button color="primary" (click)="addCompany($event)">
+                    <mat-icon aria-label="Icon"> business </mat-icon>
+                    <span class="actionText"> Bredrijf reserveren</span>
+                </button>
+                <button mat-raised-button color="primary" (click)="addUser($event)">
+                    <mat-icon aria-label="Icon"> person_add </mat-icon>
+                    <span class="actionText"> Gebruiker toevoegen</span>
+                </button>
+            </div>
         </div>
     </div>
     <div class="warning" *ngIf="!showWarningBox && !rightSideActive && workFunction.companies.length === 0">

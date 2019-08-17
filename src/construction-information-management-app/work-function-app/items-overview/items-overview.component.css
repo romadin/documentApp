@@ -49,7 +49,7 @@ div.wrapper > div.overview.show {
 
 
 div.wrapper > div.overview {
-    height: calc(94vh - 64px);
+    height: var(--body-height);
     width: 0;
     flex: 1;
     padding: 5px 10px;
@@ -112,7 +112,7 @@ div.folderDetailContainer {
 div.folderDetailContainer.show {
     padding: 5px 10px;
     flex: 1;
-    height: calc(94vh - 64px);
+    height: var(--body-height);
     overflow: auto;
 }
 div.card.show.scrollBar {

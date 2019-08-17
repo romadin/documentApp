@@ -19,6 +19,8 @@ i.material-icons {
 .card > .container {
     overflow: hidden;
     padding: 1px;
+    height: calc(94vh - 147px);
+    overflow-y: auto;
 }
 .card > .container > div {
     width: 100%;

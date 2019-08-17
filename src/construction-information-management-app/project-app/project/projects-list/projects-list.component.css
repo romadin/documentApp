@@ -1,0 +1,5 @@
+.projects {
+    height: var(--body-height);
+    overflow-y: auto;
+    padding: 5px 0;
+}

@@ -44,10 +44,14 @@ import { UsersCommunicationService } from '../../../shared/service/communication
         ]),
         trigger('resizeWidth', [
             state('fullWidth', style({
-                width: '100%'
+                width: '100%',
+                overflowY: 'auto',
+                overflowX: 'hidden',
             })),
             state('smallWidth', style({
-                width: '50%'
+                width: '50%',
+                overflowY: 'auto',
+                overflowX: 'hidden',
             })),
             transition('smallWidth <=> fullWidth', [
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')

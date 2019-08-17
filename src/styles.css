@@ -3,6 +3,7 @@
 :root {
     --primary-color: #002060;
     --secondary-color: #ffc000;
+    --body-height: calc(94vh - 64px);
 }
 
 html {

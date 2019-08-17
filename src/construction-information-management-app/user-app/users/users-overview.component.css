@@ -4,14 +4,20 @@ div.usersWrapper {
 
 div.usersWrapper > div.userOverview {
     flex: none;
-    margin-right: 10px;
     width: 100%;
+    height: var(--body-height);
+    padding-bottom: 5px;
+    margin-right: 10px;
     float: left;
 }
 
 div.usersWrapper > div.userDetail {
-    flex:none;
+    flex: none;
     width: 100%;
+    height: var(--body-height);
+    padding-bottom: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 .list {
     display: flex;
