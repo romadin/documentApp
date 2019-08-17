@@ -1,4 +1,3 @@
-import { DocumentRef } from '@agm/core/utils/browser-globals';
 import {
     AfterViewInit,
     Component,
@@ -7,7 +6,6 @@ import {
     Output, ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDrawerContent } from '@angular/material';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 import { environment } from '../../../environments/environment';
@@ -115,7 +113,16 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
         }
         this.closeEditForm.emit(true);
     }
-    dataChanged(): void {
+    dataChanged(e): void {
+        // match if there is a new image with no style
+        const imageMatch = this.content.match(/(<img(?!.*?style=(['"]).*?\2)[^>]*)(>)/g);
+        if (imageMatch && imageMatch.length > 0) {
+            const imageString = imageMatch[0];
+            // add style
+            const imageWithStyle = imageString.replace('<img ', '<img style="width:100%; height:auto;"');
+            this.content = this.content.replace(imageString, imageWithStyle);
+        }
+
         this.formHasChanged = this.content !== this.startValue;
     }
 
@@ -153,10 +160,8 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
             textArea.compareDocumentPosition(range.endContainer) !== Node.DOCUMENT_POSITION_FOLLOWING) {
             let endOffset = 0;
 
-            console.log('anchorNode', selection.anchorNode);
             textArea.childNodes.forEach(node => {
                 endOffset += node.outerHTML ? node.outerHTML.length : node.textContent.length;
-                console.log(node);
                 if (node === selection.anchorNode || node === selection.anchorNode.parentElement) {
                     if (selection.anchorOffset === 0) {
                         this.currentMouseSelection.offset = endOffset;
@@ -337,6 +342,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
         this.table.style.width = '100%';
         this.table.style.borderCollapse = 'collapse';
         this.table.style.tableLayout = 'fixed';
+        this.table.style.wordBreak = 'break-word';
     }
 
     private getLabel(): HTMLElement {
