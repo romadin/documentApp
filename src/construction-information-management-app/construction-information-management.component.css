@@ -43,7 +43,7 @@
 }
 
 div.body {
-    padding: 50px;
+    height: 100%;
 }
 
 .main-container > div.body > cim-login-app {

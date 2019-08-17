@@ -1,13 +1,11 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
-import { ActivatedRoute } from '@angular/router';
 
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Subscription } from 'rxjs';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
-import { ScrollingService } from '../../../shared/service/scrolling.service';
 
 export interface ActiveItemPackage {
     component: string;
@@ -42,12 +40,8 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
     addFixedClass = false;
     projectId: number;
     private _activeItem: ActiveItemPackage;
-    private subscription: Subscription;
 
-    constructor(private changeDetection: ChangeDetectorRef,
-                private scrollingService: ScrollingService,
-                private activatedRoute: ActivatedRoute
-    ) { }
+    constructor(private changeDetection: ChangeDetectorRef) { }
 
     @Input()
     set activeSidePackage(activeItem: ActiveItemPackage) {
@@ -60,11 +54,9 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.projectId = parseInt(location.pathname.split('/')[2], 10);
-        this.setPositionByScroll();
     }
     ngOnDestroy() {
         this.changeDetection.detach();
-        this.subscription.unsubscribe();
     }
 
     onItemsAdded(item: WorkFunction| Document) {
@@ -77,29 +69,5 @@ export class FolderDetailComponent implements OnInit, OnDestroy {
     onCloseView(close: boolean): void {
         this._activeItem = undefined;
         this.closeView.emit(close);
-    }
-
-    /**
-     * We are getting the scroll position and by that we are setting the editDocumentContainer on an fixed position.
-     */
-    private setPositionByScroll(): void {
-        let oldFixedClass = this.addFixedClass;
-        let timeOutId: number;
-
-        this.subscription = this.scrollingService.scrollPosition.subscribe((scrollPosition: number) => {
-            if (this.container && this.container.nativeElement) {
-                this.addFixedClass = scrollPosition + 5 >= this.container.nativeElement.offsetTop;
-                if ( oldFixedClass !== this.addFixedClass ) {
-                    if (timeOutId) {
-                        clearTimeout(timeOutId);
-                    }
-
-                    timeOutId = setTimeout(() => {
-                        oldFixedClass = this.addFixedClass;
-                        this.changeDetection.detectChanges();
-                    }, 50);
-                }
-            }
-        });
     }
 }

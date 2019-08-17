@@ -1,5 +1,5 @@
 <div class="wrapper" *ngIf="currentUser">
-    <div class="overview" *ngIf="items && items.length > 0" [ngClass]="{'readModeEnabled': showReadModeAnimation}">
+    <div class="overview" *ngIf="items && items.length > 0" [ngClass]="{'readModeEnabled': showReadModeAnimation, 'show': activeItem}">
         <ng-container *ngFor="let item of items; let itemIndex = index">
             <div class="cardRow partnersWrapper" *ngIf="itemIndex === 1 && parent.isMainFunction" (click)="onItemView('cim-partners')">
                 <div class="header">
@@ -30,8 +30,8 @@
             </ng-template>
         </ng-container>
     </div>
-    <div class="card" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
-        <cim-folder-detail
+    <div class="folderDetailContainer" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
+        <cim-folder-detail class="card"
                 [workFunction]="parent"
                 [currentUser]="currentUser"
                 [activeSidePackage]="activeItem"

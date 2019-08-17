@@ -10,11 +10,13 @@ html {
 }
 
 body {
-    padding-bottom: 25px;
     margin: 0;
     font-family: Roboto,"Helvetica Neue",sans-serif;
 }
-
+mat-sidenav-content.mat-drawer-content {
+    overflow: hidden;
+    padding: 1%;
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
