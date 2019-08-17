@@ -332,7 +332,8 @@ export class HeaderComponent implements OnInit {
     }
 
     private openDialogAddUser(): void {
-        if (this.router.url === '/gebruikers') {
+        const url = this.router.url;
+        if (url === '/gebruikers' || url === this.replaceIdForUrlGroup(url, '/projecten/:id/functies/:id')) {
             this.usersCommunicationService.addUserInUserComponent.next(true);
             return;
         }
@@ -367,4 +368,5 @@ export class HeaderComponent implements OnInit {
         });
         return <UrlGroup>groupArray.join('/');
     }
+
 }

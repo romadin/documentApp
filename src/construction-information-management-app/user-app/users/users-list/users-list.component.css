@@ -1,0 +1,19 @@
+div.content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+div.content > i.material-icons {
+    margin-right: 10px;
+}
+div.actions {
+    padding-top: 10px;
+}
+
+div.card > .actions > button {
+    margin-right: 10px;
+}
+mat-list-option.mat-list-option {
+    border-bottom: solid 1px #d8d8d8;
+}

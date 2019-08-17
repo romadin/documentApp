@@ -1,0 +1,26 @@
+<div *ngIf="users.length > 0">
+    <div class="header">
+        <button mat-button (click)="onCancel($event)" > <i class="material-icons"> close </i> </button>
+        <h3> Voeg gebruikers toe aan dit project</h3>
+    </div>
+    <mat-selection-list #list *ngIf="users" [(ngModel)]="usersSelected">
+        <mat-list-option *ngFor="let user of users" [value]="user">
+            <div class="content">
+                <i class="material-icons"> person </i>
+                {{user.getFullName()}}
+            </div>
+        </mat-list-option>
+    </mat-selection-list>
+    <div class="actions">
+        <button mat-raised-button (click)="saveUsers($event)">Toevoegen</button>
+        <button mat-button (click)="onCancel($event)">Annuleren </button>
+    </div>
+</div>
+<div class="warning" *ngIf="users.length === 0">
+    <div class="content">
+        <i class="material-icons"> warning </i>
+        <span>
+             Alle gebruikers zijn toegevoegd bij dit project
+        </span>
+    </div>
+</div>

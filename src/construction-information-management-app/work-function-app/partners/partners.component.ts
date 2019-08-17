@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
@@ -8,6 +9,7 @@ import { Organisation } from '../../../shared/packages/organisation-package/orga
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
+type RightSideView = 'new' | 'list';
 @Component({
     selector: 'cim-partners',
     templateUrl: './partners.component.html',
@@ -32,8 +34,10 @@ export class PartnersComponent implements OnInit, OnDestroy {
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     users: User[];
+    allUsers: User[];
     userToEdit: User;
     organisation: Organisation;
+    rightSide: RightSideView = 'new';
 
     constructor(private userService: UserService,
                 private usersCommunicationService: UsersCommunicationService,
@@ -44,10 +48,14 @@ export class PartnersComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.userService.getUsers({organisationId: this.organisation.id}).subscribe((users) => {
+            this.allUsers = users;
             this.users = users.map(user => user);
             this.users = this.users.filter((user) => user.projectsId.find((id) => id === this.projectId));
         });
         this.headerCommunicationService.showAddUserButton.next(true);
+        this.usersCommunicationService.addUserInUserComponent.subscribe(addUser => {
+            this.userToEdit = null;
+        });
     }
     ngOnDestroy() {
         this.headerCommunicationService.showAddUserButton.next(false);
@@ -55,11 +63,16 @@ export class PartnersComponent implements OnInit, OnDestroy {
 
     addUser(e: Event): void {
         e.preventDefault();
-        this.usersCommunicationService.triggerAddUserPopup.next(true);
+        this.rightSide = 'new';
+        this.userToEdit = null;
     }
 
+    determineRightSide(e: MatButtonToggleChange): void {
+        this.rightSide = e.value;
+    }
 
     onEditUser(user: User) {
+        this.rightSide = 'new';
         this.userToEdit = user;
     }
 
@@ -71,6 +84,7 @@ export class PartnersComponent implements OnInit, OnDestroy {
     closeUserDetailView(closeView: boolean) {
         if (closeView) {
             this.userToEdit = undefined;
+            this.rightSide = 'new';
         }
     }
 }

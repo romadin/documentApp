@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { UsersListComponent } from '../construction-information-management-app/user-app/users/users-list/users-list.component';
 import { MaterialModule } from './material.module';
 
 import { FolderRowComponent } from '../construction-information-management-app/work-function-app/folder-row/folder-row.component';
@@ -19,6 +20,7 @@ import {
         UserRowComponent,
         UserDetailComponent,
         UserDetailPublicComponent,
+        UsersListComponent,
     ],
     exports: [
         ReactiveFormsModule,
@@ -30,6 +32,7 @@ import {
         UserRowComponent,
         UserDetailComponent,
         UserDetailPublicComponent,
+        UsersListComponent,
         CommonModule,
     ],
     imports: [

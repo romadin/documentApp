@@ -1,5 +1,5 @@
 <div class="wrapper">
-    <div class="usersOverview" *ngIf="!userToEdit" [@slideIn]>
+    <div class="usersOverview" *ngIf="userToEdit === undefined" [@slideIn]>
         <div class="header">
             <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
             <h3 class="title"> Partners </h3>
@@ -16,10 +16,19 @@
                       (userToEdit)="onEditUser($event)">
         </cim-user-row>
     </div>
-    <div class="userDetail" *ngIf="userToEdit" [@slideIn]>
-        <cim-user-detail [currentUser]="currentUser"
-                         [user]="userToEdit"
-                         (closeDetailView)="closeUserDetailView($event)">
+    <div class="userDetail" *ngIf="userToEdit !== undefined" [@slideIn]>
+        <mat-button-toggle-group *ngIf="userToEdit === null" name="itemPicker" aria-label="Font Style" class="switchItemButton">
+            <mat-button-toggle (change)="determineRightSide($event)" value="new" [checked]="true">Nieuwe gebruiker</mat-button-toggle>
+            <mat-button-toggle (change)="determineRightSide($event)" value="list">Bestaande gebruikers</mat-button-toggle>
+        </mat-button-toggle-group>
+        <cim-user-detail *ngIf="rightSide === 'new'"
+                [currentUser]="currentUser"
+                [user]="userToEdit"
+                (closeDetailView)="closeUserDetailView($event)">
         </cim-user-detail>
+        <cim-users-list *ngIf="rightSide === 'list'"
+                [users]="allUsers"
+                (closeList)="closeUserDetailView($event)">
+        </cim-users-list>
     </div>
 </div>

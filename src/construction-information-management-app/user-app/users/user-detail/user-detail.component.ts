@@ -7,7 +7,6 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
-import { objectIsEmpty } from '../../../../shared/helpers/practice-functions';
 import { Company } from '../../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../../shared/packages/company-package/interface/company.interface';
