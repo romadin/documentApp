@@ -3,7 +3,7 @@ import {
     AfterViewInit,
     Component,
     EventEmitter,
-    Input,
+    Input, OnDestroy,
     Output, ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -28,7 +28,7 @@ interface MouseSelection {
     templateUrl: './document-detail.component.html',
     styleUrls: ['./document-detail.component.css']
 })
-export class DocumentDetailComponent implements AfterViewInit {
+export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     @Input() workFunction: WorkFunction;
     @Input() parentFolder: Folder;
     @Input() currentUser: User;
@@ -49,7 +49,6 @@ export class DocumentDetailComponent implements AfterViewInit {
 
     private table: HTMLElement;
     private tableDropDownWrapper: HTMLElement;
-    private resetTable = true;
     private currentMouseSelection: MouseSelection;
     private formHasChanged = false;
     private startValue = '';
@@ -72,6 +71,11 @@ export class DocumentDetailComponent implements AfterViewInit {
     ngAfterViewInit() {
         this.onFormChanges();
         this.addToolbarButton();
+        document.addEventListener('click', this.checkForOutsideClick);
+    }
+
+    ngOnDestroy() {
+        document.removeEventListener('click', this.checkForOutsideClick);
     }
 
     onSubmit() {
@@ -120,11 +124,14 @@ export class DocumentDetailComponent implements AfterViewInit {
         this.tableDropDownWrapper = document.createElement('div');
         const dropDown = this.makeTableDropDown();
         const button = document.createElement('button');
+        const icon = document.createElement('i');
+        icon.classList.add('material-icons');
+        icon.append(document.createTextNode('table_chart'));
 
         button.classList.add('tableShowDropDown');
         button.onclick = this.showTableMenu.bind(this);
 
-        button.append(document.createTextNode('Tabel'));
+        button.append(icon);
         this.tableDropDownWrapper.classList.add('tableDropDownWrapper');
         this.tableDropDownWrapper.setAttribute('id', 'tableDropDownWrapper');
         this.tableDropDownWrapper.append(button);
@@ -146,19 +153,27 @@ export class DocumentDetailComponent implements AfterViewInit {
             textArea.compareDocumentPosition(range.endContainer) !== Node.DOCUMENT_POSITION_FOLLOWING) {
             let endOffset = 0;
 
+            console.log('anchorNode', selection.anchorNode);
             textArea.childNodes.forEach(node => {
                 endOffset += node.outerHTML ? node.outerHTML.length : node.textContent.length;
+                console.log(node);
                 if (node === selection.anchorNode || node === selection.anchorNode.parentElement) {
+                    if (selection.anchorOffset === 0) {
+                        this.currentMouseSelection.offset = endOffset;
+                        return;
+                    }
                     const rightSide = node.outerHTML.split(selection.anchorNode.textContent)[1];
                     const rightSideOffset = (<any>selection.anchorNode).length - selection.anchorOffset;
                     this.currentMouseSelection.offset = endOffset - rightSide.length - rightSideOffset;
                 }
             });
+        } else {
+            this.currentMouseSelection.offset = 0;
+        }
 
-            const dropDown = this.tableDropDownWrapper.children[1];
-            if (!dropDown.classList.contains('show')) {
-                dropDown.classList.add('show');
-            }
+        const dropDown = this.tableDropDownWrapper.children[1];
+        if (!dropDown.classList.contains('show')) {
+            dropDown.classList.add('show');
         }
     }
 
@@ -205,7 +220,9 @@ export class DocumentDetailComponent implements AfterViewInit {
         }
     }
 
-    private saveTable(): void {
+    private saveTable(e: Event): void {
+        e.stopPropagation();
+        e.preventDefault();
         const dropDown = this.tableDropDownWrapper.children[1];
         if (dropDown.classList.contains('show')) {
             dropDown.classList.remove('show');
@@ -368,5 +385,12 @@ export class DocumentDetailComponent implements AfterViewInit {
                 }
             }
         });
+    }
+
+    private checkForOutsideClick() {
+        const table = document.getElementById('tableDropDown');
+        if (table && table.classList.contains('show')) {
+            table.classList.remove('show');
+        }
     }
 }

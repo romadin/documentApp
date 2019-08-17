@@ -190,6 +190,20 @@ mat-form-field.mat-form-field {
     display: inline-block;
     z-index: 3;
 }
+.tableDropDownWrapper > button.tableShowDropDown {
+    border-radius: 5px;
+    box-shadow: none;
+    background: #fff;
+    border: 1px solid #ddd;
+    transition: background 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.tableDropDownWrapper > button.tableShowDropDown:hover {
+    background: #f1f1f1;
+}
+.tableDropDownWrapper > button.tableShowDropDown:focus {
+    outline: none;
+}
 .tableDropDown {
     display: none;
     position: absolute;
@@ -197,9 +211,6 @@ mat-form-field.mat-form-field {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     padding: 5px;
     z-index: 1;
-}
-.tableDropDown > input {
-    width: 80px;
 }
 .tableDropDown.show {
     display: flex;
