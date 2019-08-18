@@ -39,18 +39,6 @@ export class AdminComponent implements AfterViewInit {
         private toast: ToastService,
     ) {
         this.projectId = parseInt(this.router.url.split('/')[2], 10);
-        this.eventForm.controls.endDate.setValidators(
-            startDateBiggerThenEndDate(this.eventForm.controls.startDate, this.eventForm.controls.endDate)
-        );
-        this.eventForm.controls.startDate.setValidators(
-            startDateBiggerThenEndDate(this.eventForm.controls.startDate, this.eventForm.controls.endDate)
-        );
-        this.eventForm.controls.endTime.setValidators(
-            startTimeBiggerThenEndTime(this.eventForm.controls.startTime, this.eventForm.controls.endTime)
-        );
-        this.eventForm.controls.startTime.setValidators(
-            startTimeBiggerThenEndTime(this.eventForm.controls.startTime, this.eventForm.controls.endTime)
-        );
     }
     @Input()
     set event(event: Event | undefined) {
@@ -91,11 +79,28 @@ export class AdminComponent implements AfterViewInit {
     setStartTime(startTime: string): void {
         const startDate = this.getFullDateTime(new Date(startTime), this.eventForm.controls.startDate);
         this.eventForm.controls.startTime.setValue(this.datePipe.transform(startDate, 'HH:mm'));
+        this.eventForm.controls.endTime.setValue(this.datePipe.transform(startDate.setMinutes(startDate.getMinutes() + 5), 'HH:mm'));
     }
 
     setEndTime(endTime: string): void {
         const endDate = this.getFullDateTime(new Date(endTime), this.eventForm.controls.endDate);
+        const startDateString = this.createDateFromStringTime(this.eventForm.controls.startTime.value);
+        const startDate = this.getFullDateTime(new Date(startDateString), this.eventForm.controls.startDate);
         this.eventForm.controls.endTime.setValue(this.datePipe.transform(endDate, 'HH:mm'));
+
+        if (Date.parse(startDate) >= Date.parse(endDate)) {
+            this.toast.showError('Eind tijd mag niet eerder dan de start tijd');
+            this.eventForm.controls.endTime.setValue(this.datePipe.transform(startDate.setMinutes(startDate.getMinutes() + 5), 'HH:mm'));
+        }
+    }
+    startDateChange(): void {
+        this.eventForm.controls.endDate.setValue(this.eventForm.controls.startDate.value);
+    }
+    endDateChange(): void {
+        if (Date.parse(this.eventForm.controls.startDate.value) > Date.parse(this.eventForm.controls.endDate.value)) {
+            this.toast.showError('Eind datum mag niet eerder dan de start datum');
+            this.eventForm.controls.endDate.setValue(this.eventForm.controls.startDate.value);
+        }
     }
 
     private setFormValue(): void {

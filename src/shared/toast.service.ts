@@ -6,7 +6,7 @@ export class ToastService {
 
     private defaultOptions = {
         position: 'top-center',
-        toastTimeout: 2500,
+        toastTimeout: 2000,
         newestOnTop: true,
         maxShown: 2,
         animate: 'slideFromTop',
@@ -21,8 +21,9 @@ export class ToastService {
         this.toast.successToastr(message, title, this.defaultOptions);
     }
 
-    showError() {
-        this.toast.errorToastr('This is error toast.', 'Oops!');
+    showError(message: string, title?: string, options?: any) {
+        options = this.defaultOptions;
+        this.toast.errorToastr(message, title, options);
     }
 
     showWarning() {
