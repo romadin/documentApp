@@ -10,6 +10,7 @@ import { ApiService } from '../../service/api.service';
 import { ToastService } from '../../toast.service';
 import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
+import { Organisation } from '../organisation-package/organisation.model';
 import { Project } from '../project-package/project.model';
 import {
     CompanyApiPostData,

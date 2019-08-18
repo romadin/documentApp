@@ -7,6 +7,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
+import { objectIsEmpty } from '../../../../shared/helpers/practice-functions';
 import { Company } from '../../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../../shared/packages/company-package/interface/company.interface';
@@ -53,6 +54,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     private organisation: Organisation;
     private companiesByProjectId: CompanyByProjectId = {};
     private _user: User;
+
     constructor(
         private projectService: ProjectService,
         private userService: UserService,
@@ -169,10 +171,6 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         } else {
             this.selectedProjects[project.id] = project;
         }
-        this.companies = [];
-        Object.keys(this.selectedProjects).forEach(projectId => {
-            this.companies = this.companies.concat(this.companiesByProjectId[projectId]);
-        });
     }
 
     onImageUpload(event: Event): void {
@@ -300,10 +298,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
                     })
                 ).subscribe(companies => {
                     if (companies.find(c => c === null || c === undefined) === undefined) {
-                        this.companies = [];
-                        Object.keys(this.selectedProjects).forEach(projectId => {
-                            this.companies = this.companies.concat(this.companiesByProjectId[projectId]);
-                        });
+                        this.companies = Array.from(new Set(companies.map(c => c.id))).map(id => companies.find(c => c.id === id));
                     }
                 });
             }
