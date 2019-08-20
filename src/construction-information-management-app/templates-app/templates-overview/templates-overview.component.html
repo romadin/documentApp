@@ -10,7 +10,7 @@
         </button>
     </div>
     <div class="container">
-        <div *ngIf="!templateToShow" [@slideLeftAndRight]="templateToEdit ? 'halfOpen' : 'fullOpen' " [ngClass]="{'halfOpen' : templateToEdit}">
+        <div *ngIf="!templateToShow" class="templateList" [@slideLeftAndRight]="templateToEdit ? 'halfOpen' : 'fullOpen' " [ngClass]="{'halfOpen' : templateToEdit}">
             <cim-templates-list
                     [templates]="templates"
                     (showTemplate)="onTemplateClick($event)"

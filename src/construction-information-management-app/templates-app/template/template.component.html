@@ -55,7 +55,8 @@
         <cim-work-function-edit
                 [workFunction]="workFunctionToEdit"
                 [parent]="template"
-                (closeView)="onCloseItemView()">
+                (closeView)="onCloseItemView()"
+                (onAddedWorkFunction)="onAddedWorkFunction($event)">
         </cim-work-function-edit>
     </div>
     <div class="container" *ngIf="showHeadlineDetail" [@toggleInView]="showHeadlineDetail ? 'open' : 'close'">

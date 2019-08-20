@@ -130,7 +130,9 @@ export class TemplateComponent implements OnInit {
             this.workFunctionToEdit = workFunction;
         }, 290);
     }
-
+    onAddedWorkFunction(newWorkFunction: WorkFunction): void {
+        this.setItemsInContainer(newWorkFunction);
+    }
     onEditHeadlineClick(headlinePackage: HeadlinePackage) {
         this.resetVariables();
         setTimeout(() => {

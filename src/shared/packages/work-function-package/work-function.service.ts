@@ -11,7 +11,7 @@ import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
 import { map, mergeMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
@@ -42,11 +42,15 @@ export class WorkFunctionService {
     ) {  }
 
     getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
+        // const workFunctions: BehaviorSubject<WorkFunction[]> = new BehaviorSubject<WorkFunction[]>(null);
+
         return this.apiService.get(this.path, params).pipe(
             map((result: WorkFunctionApiResponseInterface[]) => result.map(response => {
                 return this.cache[response.id] ? this.cache[response.id] : this.makeWorkFunction(response, parent);
             }))
         );
+
+        // return workFunctions
     }
 
     getWorkFunction(id: number, parent: Template|Project): Observable<WorkFunction> {

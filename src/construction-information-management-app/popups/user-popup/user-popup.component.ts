@@ -44,10 +44,10 @@ export class UserPopupComponent {
     selectedProjects: SelectedProject = {};
     imageSrc: any;
     imageToUpload: File;
+    currentProject: Project;
     companies: Company[];
 
     private existingItems: string[] = [];
-    private currentProject: Project;
     private companiesByProjectId: CompanyByProjectId = {};
 
     constructor(

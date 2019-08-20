@@ -3,7 +3,8 @@
 }
 .content-row > .container {
     flex: none;
-    height: calc(94vh - 147px);
+    max-height: calc(94vh - 147px);
+    padding-bottom: 5px;
     overflow-y: auto;
 }
 .content-row > .container:first-child {

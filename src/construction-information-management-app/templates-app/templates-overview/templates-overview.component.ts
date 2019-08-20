@@ -32,7 +32,7 @@ import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-templ
             ]),
             transition('* => void', [
                 animate('700ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
-                    style({ width: '0%'})
+                    style({ width: '0%', overflow: 'hidden'})
                 ])),
             ])
         ]),

@@ -14,6 +14,7 @@ import { ToastService } from '../../../../shared/toast.service';
 export class WorkFunctionEditComponent implements OnInit {
     @Input() parent: Template|Project;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() onAddedWorkFunction: EventEmitter<WorkFunction> = new EventEmitter<WorkFunction>();
     workFunctionForm: FormGroup = new FormGroup({
         name: new FormControl('')
     });
@@ -55,6 +56,7 @@ export class WorkFunctionEditComponent implements OnInit {
                 this.workFunctionService.createWorkFunction(this.parent, body).subscribe(workFunction => {
                     this.parent.workFunctions.push(workFunction);
                     this.workFunction = workFunction;
+                    this.onAddedWorkFunction.emit(workFunction);
                     this.toast.showSuccess('Functie: ' +  workFunction.name + ' is toegevoegd', 'Toegevoegd');
                 });
             }

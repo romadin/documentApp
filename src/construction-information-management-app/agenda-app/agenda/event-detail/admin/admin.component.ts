@@ -102,7 +102,16 @@ export class AdminComponent implements AfterViewInit {
             this.eventForm.controls.endDate.setValue(this.eventForm.controls.startDate.value);
         }
     }
-
+    /**
+     * Create date object from string time format is 00:00.
+     */
+    createDateFromStringTime(time: string): Date {
+        const date = new Date();
+        const times = time.split(':');
+        date.setHours(parseInt(times[0], 10 ));
+        date.setMinutes(parseInt(times[1], 10 ));
+        return date;
+    }
     private setFormValue(): void {
         this.eventForm.controls.name.setValue(this.event.name);
         this.eventForm.controls.description.setValue(this.event.description);
@@ -174,17 +183,6 @@ export class AdminComponent implements AfterViewInit {
             time.setDate(pickedDate.getDate());
         }
         return time;
-    }
-
-    /**
-     * Create date object from string time format is 00:00.
-     */
-    private createDateFromStringTime(time: string): Date {
-        const date = new Date();
-        const times = time.split(':');
-        date.setHours(parseInt(times[0], 10 ));
-        date.setMinutes(parseInt(times[1], 10 ));
-        return date;
     }
 
     private resetForm() {
