@@ -271,8 +271,7 @@ export class HeaderComponent implements OnInit {
     }
 
     private determineActions(url: string): void {
-        this.actionMenu.show = url !== '/login';
-        if ( url !== '/login' ) {
+        if (this.actionMenu.show = url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
                 this.currentUser = user;
                 if ( user ) {
