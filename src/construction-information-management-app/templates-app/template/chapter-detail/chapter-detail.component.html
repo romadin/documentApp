@@ -1,17 +1,17 @@
 <div class="card editDocument">
     <div class="header" *ngIf="checkParentIsWorkFunction()">
         <button mat-button (click)="onCloseView($event)" *ngIf="!chapter"> <i class="material-icons"> close </i> </button>
-        <mat-button-toggle-group *ngIf="!chapter" name="itemPicker" aria-label="Font Style" class="switchItemButton">
-            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande subhoofdstuk</mat-button-toggle>
-            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe subhoofdstuk</mat-button-toggle>
-        </mat-button-toggle-group>
+        <!--<mat-button-toggle-group *ngIf="!chapter" name="itemPicker" aria-label="Font Style" class="switchItemButton">-->
+            <!--<mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande subhoofdstuk</mat-button-toggle>-->
+            <!--<mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe subhoofdstuk</mat-button-toggle>-->
+        <!--</mat-button-toggle-group>-->
     </div>
-    <cim-chapter-edit *ngIf="view === 'new' || chapter || !checkParentIsWorkFunction()"
+    <cim-chapter-edit *ngIf="chapter || !checkParentIsWorkFunction() || (checkParentIsWorkFunction() && checkParentIsWorkFunction().isMainFunction)"
                       [chapter]="chapter"
                       [parent]="parent"
                       (closeView)="onCloseView($event)">
     </cim-chapter-edit>
-    <cim-chapter-list *ngIf="view === 'exist' && !chapter && checkParentIsWorkFunction()"
+    <cim-chapter-list *ngIf="!chapter && checkParentIsWorkFunction() && !checkParentIsWorkFunction().isMainFunction"
                       [parent]="parent"
                       (closeView)="onCloseView($event)">
     </cim-chapter-list>

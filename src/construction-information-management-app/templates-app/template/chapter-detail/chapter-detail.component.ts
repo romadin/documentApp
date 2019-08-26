@@ -35,7 +35,7 @@ export class ChapterDetailComponent {
         this.view = type;
     }
 
-    checkParentIsWorkFunction(): boolean {
-        return isWorkFunction(this.parent);
+    checkParentIsWorkFunction(): WorkFunction | null {
+        return isWorkFunction(this.parent) ? this.parent : null;
     }
 }

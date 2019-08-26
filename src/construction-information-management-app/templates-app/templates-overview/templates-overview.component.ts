@@ -136,6 +136,7 @@ export class TemplatesOverviewComponent implements OnInit {
             data: data,
         });
         dialogRef.afterClosed().subscribe((newTemplate?: Template) => {
+            this.templateCommunication.triggerAddTemplate.next(false);
             if (newTemplate) {
                 this.templates.push(newTemplate);
             }

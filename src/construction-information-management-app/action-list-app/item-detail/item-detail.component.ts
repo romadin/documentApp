@@ -106,9 +106,14 @@ export class ItemDetailComponent implements OnInit {
     }
 
     private setFormValue(): void {
-        this.userSelected = this.action ? this.action.actionHolder.id : '';
+        if (this.action && this.action.actionHolder) {
+            this.userSelected = this.action.actionHolder.id;
+            this.actionForm.controls.actionHolder.setValue(this.action.actionHolder.getFullName());
+        } else {
+            this.userSelected = '';
+            this.actionForm.controls.actionHolder.setValue('');
+        }
         this.actionForm.controls.description.setValue(this.action ? this.action.description : '');
-        this.actionForm.controls.actionHolder.setValue(this.action ? this.action.actionHolder.getFullName() : '');
         this.actionForm.controls.week.setValue(this.action ? this.action.week : '');
         this.actionForm.controls.comments.setValue(this.action ? this.action.comments : '');
     }

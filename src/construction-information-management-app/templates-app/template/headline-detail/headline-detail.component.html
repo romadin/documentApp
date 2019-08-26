@@ -1,17 +1,17 @@
 <div class="card">
     <div class="header">
         <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
-        <mat-button-toggle-group *ngIf="!headline" name="itemPicker" aria-label="Font Style" class="switchItemButton">
-            <mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande hoofdstuk</mat-button-toggle>
-            <mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe hoofdstuk</mat-button-toggle>
-        </mat-button-toggle-group>
+        <!--<mat-button-toggle-group *ngIf="!headline" name="itemPicker" aria-label="Font Style" class="switchItemButton">-->
+            <!--<mat-button-toggle (change)="changeEditItemForm($event, 'exist')" value="folder" [checked]="true">Bestaande hoofdstuk</mat-button-toggle>-->
+            <!--<mat-button-toggle (change)="changeEditItemForm($event, 'new')" value="document" >Nieuwe hoofdstuk</mat-button-toggle>-->
+        <!--</mat-button-toggle-group>-->
     </div>
-    <cim-headline-edit [@toggleInView] *ngIf="view === 'new' || headline"
+    <cim-headline-edit [@toggleInView] *ngIf="workFunction.isMainFunction || headline"
             [headline]="headline"
             [workFunction]="workFunction"
             (closeView)="onCloseView()">
     </cim-headline-edit>
-    <cim-headline-list [@toggleInView] *ngIf="view === 'exist' && !headline"
+    <cim-headline-list [@toggleInView] *ngIf="!workFunction.isMainFunction && !headline"
                        [workFunction]="workFunction"
                        (closeView)="onCloseView()">
     </cim-headline-list>

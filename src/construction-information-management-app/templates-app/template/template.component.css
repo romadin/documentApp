@@ -6,6 +6,7 @@
     max-height: calc(94vh - 147px);
     padding-bottom: 5px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 .content-row > .container:first-child {
     float: left;

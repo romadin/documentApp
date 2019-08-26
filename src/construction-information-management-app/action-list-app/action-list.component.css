@@ -7,8 +7,8 @@ div.actionListWrapper {
 div.actionListWrapper > div.contentWrapper {
     width: 100%;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    /*justify-content: center;*/
+    /*align-items: flex-start;*/
 }
 div.actionListWrapper > div.contentWrapper > .leftSide {
     width: 100%;
@@ -20,6 +20,7 @@ div.actionListWrapper > div.contentWrapper > .leftSide {
 }
 div.actionListWrapper > div.contentWrapper > .leftSide.rightSideActive {
     margin-right: 10px;
+    width: 50%;
 }
 div.actionListWrapper > div.contentWrapper > .leftSide > div.list {
     display: flex;
@@ -46,7 +47,12 @@ div.actionListWrapper > div.contentWrapper > div.rightSide {
     height: var(--body-height);
     overflow-y: auto;
     overflow-x: hidden;
+    transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
+div.actionListWrapper > div.contentWrapper > div.rightSide.rightSideActive {
+    width: 50%;
+}
+
 div.actionListWrapper > div.contentWrapper > div.rightSide > div {
     padding: 0 0 5px;
 }

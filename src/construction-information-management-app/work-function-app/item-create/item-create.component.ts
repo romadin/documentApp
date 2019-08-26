@@ -3,7 +3,7 @@ import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
-type ItemType = 'folder' | 'document';
+type ItemType = 'title' | 'content';
 
 @Component({
   selector: 'cim-item-create',
@@ -16,7 +16,7 @@ export class ItemCreateComponent implements OnInit {
     @Output() folderChange: EventEmitter<Folder> = new EventEmitter<Folder>();
     @Output() public closeView: EventEmitter<boolean> = new EventEmitter();
 
-    public itemToEdit: ItemType = 'document';
+    public itemToEdit: ItemType = 'title';
 
     constructor() { }
 
