@@ -21,7 +21,7 @@ export class ItemListComponent implements OnInit {
     @Output() saveItemsDone: EventEmitter<WorkFunction|Company> = new EventEmitter();
     @Input() mainWorkFunction: WorkFunction;
     public items = [];
-    public itemsSelected: (Document|Folder)[];
+    public itemsSelected: Document[];
 
     private _parent: WorkFunction | Company;
 
@@ -60,7 +60,10 @@ export class ItemListComponent implements OnInit {
                     this.saveItemsDone.emit(parent);
                 });
             } else {
-                this.companyService.updateCompany(this.parent, <CompanyApiUpdateData>this.getPostData(), [this.mainWorkFunction.parent.id])
+                const postData: CompanyApiUpdateData = <CompanyApiUpdateData>this.getPostData();
+                postData.workFunctionId = this.parent.parent.id;
+
+                this.companyService.updateCompany(<Company>this.parent, postData , [this.mainWorkFunction.parent.id])
                     .subscribe(parent => {
                         this.parent.addItems(this.itemsSelected);
                         this.saveItemsDone.emit(parent);
@@ -71,8 +74,8 @@ export class ItemListComponent implements OnInit {
 
     private getAvailableItems(): void {
         combineLatest(
-            this.parent.items,
-            this.mainWorkFunction.items
+            this.parent.documents,
+            this.mainWorkFunction.documents
         ).subscribe(([items, mainWorkFunctionItems]) => {
             this.items = mainWorkFunctionItems.filter(mainWorkFunctionItem => {
                 return !items.find(item => item.id === mainWorkFunctionItem.id);

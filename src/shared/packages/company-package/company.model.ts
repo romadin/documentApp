@@ -2,13 +2,14 @@ import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { Document } from '../document-package/document.model';
 import { Folder } from '../folder-package/folder.model';
+import { WorkFunction } from '../work-function-package/work-function.model';
 
 export class Company {
     private _id: number;
     private _name: string;
-    private _folders: BehaviorSubject<Folder[]>;
-    private _documents: BehaviorSubject<Document[]>;
-    private _items: BehaviorSubject<(Document | Folder)[]>;
+    private _documents: {[workFunctionId: number]: BehaviorSubject<Document[]>} = {};
+    private _items: BehaviorSubject<Document[]>;
+    private _parent: WorkFunction|null;
 
     constructor() {}
 
@@ -28,45 +29,38 @@ export class Company {
         this._name = value;
     }
 
-    get folders(): BehaviorSubject<Folder[]> {
-        return this._folders;
-    }
-
-    set folders(value: BehaviorSubject<Folder[]>) {
-        this._folders = value;
-    }
-
     get documents(): BehaviorSubject<Document[]> {
-        return this._documents;
+        return this._documents[this.parent.id];
     }
 
     set documents(value: BehaviorSubject<Document[]>) {
-        this._documents = value;
+        this._documents[this.parent.id] = value;
     }
 
-    get items(): BehaviorSubject<(Document | Folder)[]> {
+    get items(): BehaviorSubject<Document[]> {
         return this._items;
     }
 
-    set items(value: BehaviorSubject<(Document | Folder)[]>) {
+    set items(value: BehaviorSubject<Document[]>) {
         this._items = value;
     }
 
-    getItems(): BehaviorSubject<(Document | Folder)[]> {
-        const workFunctionItems = this.items ? this.items : new BehaviorSubject<(Document|Folder)[]>([]);
-        this.folders.pipe(mergeMap(folders => {
-            const items: (Document | Folder)[] = folders;
-            return this.documents.pipe(map(documents => items.concat(documents)));
-        })).pipe(map(items => {
-            items = items.sort((a, b) => a.order - b.order);
-            workFunctionItems.next(items);
-        })).subscribe();
-
-        return workFunctionItems;
+    get parent(): WorkFunction | null {
+        return this._parent;
     }
 
-    addItems(items: (Document | Folder)[]): void {
-        const currentItems = this.items.getValue();
-        this.items.next(currentItems.concat(items));
+    set parent(value: WorkFunction | null) {
+        this._parent = value;
+    }
+
+    // getItems(workFunction: WorkFunction): BehaviorSubject<(Document | Folder)[]> {
+    //
+    //     return workFunctionItems;
+    // }
+
+    addItems(items: Document[]): void {
+        console.log('in the add items');
+        const currentItems = this.documents.getValue();
+        this.documents.next(currentItems.concat(items));
     }
 }

@@ -119,7 +119,7 @@ export class WorkFunctionService {
 
         const companies = [];
         data.companies.forEach(company => {
-            companies.push(this.companyService.makeCompany(company));
+            companies.push(this.companyService.makeCompany(company, workFunction));
         });
         workFunction.companies = companies;
 

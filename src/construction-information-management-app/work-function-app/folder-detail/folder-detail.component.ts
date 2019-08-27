@@ -4,7 +4,6 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { Folder } from '../../../shared/packages/folder-package/folder.model';
-import { Subscription } from 'rxjs';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 export interface ActiveItemPackage {

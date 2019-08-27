@@ -15,6 +15,7 @@ export interface CompanyApiUpdateData {
     name?: string;
     documentsId?: number[];
     foldersId?: number[];
+    workFunctionId?: number;
 }
 export interface CompanyDeleteParam {
     workFunctionId: number;

@@ -62,17 +62,17 @@ export class FolderRowComponent implements OnInit {
     deleteFolder(e: Event): void {
         e.preventDefault();
         e.stopPropagation();
-        const params = {};
-        isWorkFunction(this.parent) ? params['workFunctionId'] = this.parent.id : params['companyId'] = this.parent.id;
-        this.folderService.deleteFolder(this.folder, params).subscribe((deleted) => {
-            if (deleted) {
-                const folders = this.parent.folders.getValue();
-                folders.splice(folders.findIndex((subFolder => subFolder === this.folder)), 1);
-                this.parent.folders.next(folders);
-                this.toast.showSuccess('Hoofdstuk: ' + this.folder.name + ' is verwijderd', 'Verwijderd');
-                this.closeRightView.emit(true);
-            }
-        });
+        // const params = {};
+        // isWorkFunction(this.parent) ? params['workFunctionId'] = this.parent.id : params['companyId'] = this.parent.id;
+        // this.folderService.deleteFolder(this.folder, params).subscribe((deleted) => {
+        //     if (deleted) {
+        //         const folders = this.parent.folders.getValue();
+        //         folders.splice(folders.findIndex((subFolder => subFolder === this.folder)), 1);
+        //         this.parent.folders.next(folders);
+        //         this.toast.showSuccess('Hoofdstuk: ' + this.folder.name + ' is verwijderd', 'Verwijderd');
+        //         this.closeRightView.emit(true);
+        //     }
+        // });
     }
 
     showDeleteButton(): boolean {

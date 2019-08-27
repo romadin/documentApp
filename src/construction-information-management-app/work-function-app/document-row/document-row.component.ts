@@ -23,7 +23,6 @@ export class DocumentRowComponent implements OnInit {
     @Output() activatedDocument: EventEmitter<Document> = new EventEmitter<Document>();
     public iconName: string;
 
-    public highestLevelParentFolders: Folder[];
     constructor(
         private documentIconService: DocumentIconService,
         private documentService: DocumentService,
@@ -43,8 +42,8 @@ export class DocumentRowComponent implements OnInit {
     deleteDocument(e: Event): void {
         e.stopPropagation();
         e.preventDefault();
-        const param: ParamDelete = {};
-        isWorkFunction(this.parent) ? param.workFunctionId = this.parent.id : isCompany(this.parent) ? param.companyId = this.parent.id : param.folderId = this.parent.id;
+
+        const param: ParamDelete = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : isCompany(this.parent) ? {companyId: this.parent.id, workFunctionId: this.parent.parent.id} : {folderId: this.parent.id};
         this.documentService.deleteDocument(this.document, param).subscribe((deleted: boolean) => {
             if ( deleted ) {
                 this.removeFromParentFolder();

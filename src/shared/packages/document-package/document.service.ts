@@ -20,15 +20,17 @@ interface DocumentsCache {
 }
 
 interface DocumentsCacheObservable {
-    [id: number]: BehaviorSubject<Document[]>;
+    [companyId: number]: BehaviorSubject<Document[]>;
 }
-
+interface DocumentsCacheByWorkFunction {
+    [workFunctionId: number]: DocumentsCacheObservable;
+}
 export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
 
 @Injectable()
 export class DocumentService {
     private documentsCache: DocumentsCache = {};
-    private documentsByCompanyCache: DocumentsCacheObservable = {};
+    private documentsByCompanyCache: DocumentsCacheByWorkFunction = {};
     private path = '/documents';
 
     constructor(private apiService: ApiService, private dialog: MatDialog, private toast: ToastService) { }
@@ -66,17 +68,22 @@ export class DocumentService {
     }
 
     getDocumentsByCompany(company: Company): BehaviorSubject<Document[]> {
-        if (this.documentsByCompanyCache[company.id]) {
-            return this.documentsByCompanyCache[company.id];
+        if (!company.parent) {
+            throw Error('company does not have a parent');
         }
-        const param = {companyId: company.id};
+
+        if (this.documentsByCompanyCache[company.parent.id] && this.documentsByCompanyCache[company.parent.id][company.id]) {
+            return this.documentsByCompanyCache[company.parent.id][company.id];
+        }
+        const param = {companyId: company.id, workFunctionId: company.parent.id};
         const documentsContainer: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
+
         this.apiService.get(this.path, param).subscribe((result: ApiDocResponse[]) => {
             documentsContainer.next(result.map(response => this.makeDocument(response)));
         });
 
-        this.documentsByCompanyCache[company.id] = documentsContainer;
-        return this.documentsByCompanyCache[company.id];
+        this.documentsByCompanyCache[company.parent.id] = {[company.id] : documentsContainer};
+        return this.documentsByCompanyCache[company.parent.id][company.id];
     }
 
     public postDocument(postData: DocPostData, workFunction: WorkFunction, folder?: Folder): BehaviorSubject<Document> {

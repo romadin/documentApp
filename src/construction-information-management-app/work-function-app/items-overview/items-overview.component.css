@@ -53,7 +53,7 @@ div.wrapper > div.overview {
     width: 0;
     flex: 1;
     padding: 5px 10px;
-    overflow: auto;
+    overflow-y: auto;
     transition: all 1s ease;
 }
 
@@ -113,9 +113,9 @@ div.folderDetailContainer.show {
     padding: 5px 10px;
     flex: 1;
     height: var(--body-height);
-    overflow: auto;
+    overflow-y: auto;
 }
 div.card.show.scrollBar {
     height: 63vh;
-    overflow: auto;
+    overflow-y: auto;
 }

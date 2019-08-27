@@ -117,7 +117,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
         this.setInitialValues();
         let streamCounter = 0;
 
-        this.companyService.getCompaniesByProject(<Project>this.workFunction.parent).subscribe(companies => {
+        this.companyService.getCompaniesByProject(<Project>this.workFunction.parent, this.workFunction).subscribe(companies => {
             if (companies) {
                 this.allCompanies = companies;
                 this.filterCompanies();

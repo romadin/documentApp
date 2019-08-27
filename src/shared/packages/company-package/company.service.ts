@@ -10,8 +10,8 @@ import { ApiService } from '../../service/api.service';
 import { ToastService } from '../../toast.service';
 import { DocumentService } from '../document-package/document.service';
 import { FolderService } from '../folder-package/folder.service';
-import { Organisation } from '../organisation-package/organisation.model';
 import { Project } from '../project-package/project.model';
+import { WorkFunction } from '../work-function-package/work-function.model';
 import {
     CompanyApiPostData,
     CompanyApiResponseInterface,
@@ -39,25 +39,36 @@ export class CompanyService {
         private dialog: MatDialog,
     ) {}
 
-    makeCompany(data: CompanyApiResponseInterface): Company {
+    makeCompany(data: CompanyApiResponseInterface, parent?: WorkFunction): Company {
         const company = new Company();
         company.id = data.id;
         company.name = data.name;
-        company.folders = this.foldersService.getFoldersByCompany(company);
-        company.documents = this.documentService.getDocumentsByCompany(company);
-        company.items = company.getItems();
+        company.parent = parent;
+        if (parent) {
+            company.documents = this.documentService.getDocumentsByCompany(company);
+        }
         return company;
     }
 
-    getCompaniesByProject(project: Project): BehaviorSubject<Company[]> {
+    getCompaniesByProject(project: Project, workFunction?: WorkFunction): BehaviorSubject<Company[]> {
         if (this.companiesByProjectCache[project.id]) {
+            if (workFunction) {
+                this.companiesByProjectCache[project.id].getValue().map(c => {
+                    /* if the parent has changed that means that there are other documents linked to the companies*/
+                    if (c.parent !== workFunction) {
+                        c.parent = workFunction;
+                        c.documents = this.documentService.getDocumentsByCompany(c);
+                    }
+                    return c;
+                });
+            }
             return this.companiesByProjectCache[project.id];
         }
 
         const params = { 'projectsId[]': project.id};
         const newSubject: BehaviorSubject<Company[]> = new BehaviorSubject<Company[]>(null);
         this.apiService.get(this.path, params).subscribe(
-            results => newSubject.next(results.map(result => this.makeCompany(result)))
+            results => newSubject.next(results.map(result => this.makeCompany(result, workFunction)))
         );
         this.companiesByProjectCache[project.id] = newSubject;
         return this.companiesByProjectCache[project.id];
@@ -73,9 +84,9 @@ export class CompanyService {
         return this.companiesByIdCache[id];
     }
 
-    createCompany(body: CompanyApiPostData, projectsId: number[]): Observable<Company> {
+    createCompany(body: CompanyApiPostData, projectsId: number[], workFunction?: WorkFunction): Observable<Company> {
         return this.apiService.post(this.path, body).pipe(map(result => {
-            const company = this.makeCompany(result);
+            const company = this.makeCompany(result, workFunction);
             this.updateCache(company, projectsId);
             return company;
         }));
@@ -118,5 +129,4 @@ export class CompanyService {
             }
         });
     }
-
 }

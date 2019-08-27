@@ -51,7 +51,7 @@ export class CompanyDetailComponent implements OnInit {
                 this.company.name = this.companyForm.controls.name.value;
                 this.companyService.updateCompany(this.company, body, projectsId).subscribe();
             } else {
-                this.companyService.createCompany(body, projectsId).subscribe(company => {
+                this.companyService.createCompany(body, projectsId, this.workFunction).subscribe(company => {
                     if (company) {
                         this.workFunction.companies.push(company);
                         this.workFunctionService.updateWorkFunction(this.workFunction, { companies: [ company.id ] }).subscribe();

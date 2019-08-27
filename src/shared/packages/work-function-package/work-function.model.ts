@@ -149,7 +149,7 @@ export class WorkFunction {
         return workFunctionItems;
     }
 
-    addItems(items: (Document | Folder)[]): void {
+    addItems(items: Document[]): void {
         const currentItems = this.items.getValue();
         this.items.next(currentItems.concat(items));
     }
