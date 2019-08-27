@@ -1,7 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
 import { Document } from '../document-package/document.model';
-import { Folder } from '../folder-package/folder.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
 
 export class Company {
@@ -30,7 +28,7 @@ export class Company {
     }
 
     get documents(): BehaviorSubject<Document[]> {
-        return this._documents[this.parent.id];
+        return this.parent ? this._documents[this.parent.id] : new BehaviorSubject([]) ;
     }
 
     set documents(value: BehaviorSubject<Document[]>) {

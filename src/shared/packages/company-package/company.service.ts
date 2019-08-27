@@ -39,7 +39,7 @@ export class CompanyService {
         private dialog: MatDialog,
     ) {}
 
-    makeCompany(data: CompanyApiResponseInterface, parent?: WorkFunction): Company {
+    makeCompany(data: CompanyApiResponseInterface, parent: WorkFunction = null): Company {
         const company = new Company();
         company.id = data.id;
         company.name = data.name;

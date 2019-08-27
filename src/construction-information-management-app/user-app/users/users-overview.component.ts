@@ -101,6 +101,7 @@ export class UsersOverviewComponent {
             this.users = users;
         });
 
+        this.headerCommunication.showAddUserButton.next(true);
         this.usersCommunication.addUserInUserComponent.subscribe(addUser => {
             const timer = this.rightSideActive ? UsersOverviewComponent.animationDelay : 0;
             this.userToEdit = undefined;

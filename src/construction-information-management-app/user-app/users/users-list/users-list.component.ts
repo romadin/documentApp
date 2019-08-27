@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Organisation } from '../../../../shared/packages/organisation-package/organisation.model';
 import { User } from '../../../../shared/packages/user-package/user.model';
 import { UserService } from '../../../../shared/packages/user-package/user.service';
+import { MailService } from '../../../../shared/service/mail.service';
 
 @Component({
   selector: 'cim-users-list',
@@ -18,7 +19,7 @@ export class UsersListComponent implements OnInit {
     readonly organisation: Organisation;
     readonly projectId: number;
 
-    constructor(private userService: UserService, private activatedRoute: ActivatedRoute) {
+    constructor(private userService: UserService, private activatedRoute: ActivatedRoute, private mailService: MailService) {
         this.projectId = parseInt(location.pathname.split('/')[2], 10);
         this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
     }
@@ -46,6 +47,7 @@ export class UsersListComponent implements OnInit {
         this.usersSelected.forEach(user => {
             this.userService.editUser(user, data).subscribe(() => {
                 this.users.splice(this.users.findIndex(c => c.id === user.id), 1);
+                this.mailService.sendProjectAdded(user, this.projectId);
                 if (this.users.length === 0) {
                     this.closeList.emit(true);
                 }
