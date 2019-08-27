@@ -9,7 +9,7 @@
     overflow-x: hidden;
 }
 
-.wrapper > .rightSide {
+.wrapper > .rightSide.show {
     width: 100%;
 }
 
@@ -32,4 +32,5 @@
 }
 .wrapper > .warning {
     margin: auto;
+    align-items: flex-start;
 }

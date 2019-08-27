@@ -45,7 +45,7 @@
                        (closeReadMode)="onCloseReadMode($event)">
         </cim-item-read>
     </div>
-    <div class="warning" *ngIf="items.length === 0">
+    <div class="warning" *ngIf="items.length === 0 && !activeItem">
         <div class="content">
             <i class="material-icons"> warning </i>
             <span>

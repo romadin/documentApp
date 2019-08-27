@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="rightSide">
+    <div class="rightSide" [ngClass]="{'show' : showWarningBox || rightSideActive || workFunction.companies.length > 0 }">
         <div class="container" *ngIf="rightSideActive" [@toggleInView]="workFunction.companies.length === 0 ? 'openFullWidth' : rightSideActive ? 'open' : 'close'">
             <cim-company-right-side [package]="rightSidePackage" (closeSide)="resetView()">
             </cim-company-right-side>

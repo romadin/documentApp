@@ -70,7 +70,8 @@ export interface CompanyRightSidePackage {
                 width: '50%'
             })),
             state('noWidth', style({
-                width: '0'
+                width: '0',
+                margin: '0',
             })),
             transition('* <=> *', [
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
