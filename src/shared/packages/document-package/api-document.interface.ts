@@ -6,6 +6,7 @@ export interface ApiDocResponse {
     foldersId: number[];
     order: number;
     fromTemplate: boolean;
+    documents: number[];
 }
 
 export interface DocPostData {

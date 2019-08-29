@@ -10,7 +10,7 @@ import { DocumentService } from '../document-package/document.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
 import { map, mergeMap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
@@ -111,7 +111,11 @@ export class WorkFunctionService {
         workFunction.parent = parent;
         workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
-        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
+        workFunction.documents = new BehaviorSubject([]);
+
+        combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId))).subscribe((documents) => {
+            workFunction.documents.next(documents);
+        });
 
         const companies = [];
         data.companies.forEach(company => {

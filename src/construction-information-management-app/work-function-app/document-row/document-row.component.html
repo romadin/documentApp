@@ -1,4 +1,31 @@
-<div class="DocumentWrapper" (click)="editDocument($event)">
+<mat-expansion-panel class="card expansion-panel" *ngIf="!parentIsDocument()">
+    <mat-expansion-panel-header>
+        <mat-panel-title class="toggleTitle">
+            <div class="rowTitle">
+                <i class="material-icons"> folder_open </i>
+                <span> {{ document.getName()}} </span>
+            </div>
+            <div class="actions">
+                <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
+                <i class="material-icons" (click)="editDocument($event)"> edit </i>
+                <i class="material-icons"  *ngIf="showDeleteButton()" (click)="deleteDocument($event)"> delete_forever </i>
+            </div>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div cdkDropList class="dragList" *ngIf="subDocuments">
+        <div class="dragItem" *ngFor="let subDocument of subDocuments">
+            <cim-document-row
+                    [document]="subDocument"
+                    [currentUser]="currentUser"
+                    [parent]="document"
+                    (activatedDocument)="editSubDocument(subDocument)">
+            </cim-document-row>
+        </div>
+    </div>
+</mat-expansion-panel>
+
+<div *ngIf="parentIsDocument()" class="DocumentWrapper" (click)="editDocument($event)">
     <div class="header">
         <i class="material-icons"> {{ iconName }} </i>
         <h3> {{ document.getName() }}</h3>

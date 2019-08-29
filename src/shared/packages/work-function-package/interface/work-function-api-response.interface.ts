@@ -8,6 +8,7 @@ export interface WorkFunctionApiResponseInterface {
     templateId: number;
     on: boolean;
     fromTemplate: boolean;
+    documents: number[];
     companies?: CompanyApiResponseInterface[];
 }
 

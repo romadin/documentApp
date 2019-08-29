@@ -20,7 +20,8 @@ export class DocumentRowComponent implements OnInit {
     @Input() currentUser: User;
     @Input() parent: Company | WorkFunction | Document;
     @Output() activatedDocument: EventEmitter<Document> = new EventEmitter<Document>();
-    public iconName: string;
+    iconName: string;
+    subDocuments: Document[];
 
     constructor(
         private documentIconService: DocumentIconService,
@@ -30,6 +31,7 @@ export class DocumentRowComponent implements OnInit {
 
     ngOnInit() {
         this.iconName = this.documentIconService.getIconByName(this.document.originalName);
+        this.document.documents.subscribe((subDocuments) => this.subDocuments = subDocuments);
     }
 
     editDocument(event: Event): void {
@@ -50,6 +52,10 @@ export class DocumentRowComponent implements OnInit {
         });
     }
 
+    editSubDocument(subDocument) {
+        this.activatedDocument.emit(subDocument);
+    }
+
     showDeleteButton(): boolean {
         if (this.currentUser.isAdmin()) {
             if (!this.document.fromTemplate) {
@@ -58,6 +64,10 @@ export class DocumentRowComponent implements OnInit {
             return (isWorkFunction(this.parent) && !this.parent.isMainFunction) || !isWorkFunction(this.parent);
         }
         return false;
+    }
+
+    parentIsDocument(): boolean {
+        return this.parent instanceof Document;
     }
 
     private removeFromParentFolder(): void {

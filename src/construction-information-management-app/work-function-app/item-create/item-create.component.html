@@ -12,8 +12,4 @@
                          [currentUser]="currentUser"
                          [workFunction]="workFunction">
     </cim-create-document>
-    <cim-detail-folder *ngIf="itemToEdit === 'title'"
-                       [parent]="workFunction"
-                       (editedFolder)="onFolderEdit($event)">
-    </cim-detail-folder>
 </div>

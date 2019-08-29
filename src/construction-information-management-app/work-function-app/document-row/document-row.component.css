@@ -14,7 +14,7 @@ div.DocumentWrapper {
 }
 
 div.DocumentWrapper:hover {
-    background: var(--secondary-hover-color);;
+    background: var(--secondary-hover-color);
 }
 
 div.DocumentWrapper > .header {
@@ -31,4 +31,35 @@ div.DocumentWrapper > .header > .material-icons {
 div.DocumentWrapper > .actions {
     display: flex;
     align-items: center;
+}
+
+mat-expansion-panel-header {
+    height: 58px !important;
+    transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+mat-expansion-panel-header:hover {
+    background: var(--secondary-hover-color) !important;
+}
+.toggleTitle {
+    align-items: center;
+    justify-content: space-between;
+}
+.toggleTitle > div.actions > i.material-icons {
+    font-size: 18px;
+    margin-right: 0;
+    padding: 7px 8px 0 2px;
+    cursor: pointer;
+}
+.toggleTitle > div.actions > i.material-icons:last-child {
+    padding-right: 0;
+}
+.toggleTitle > .rowTitle {
+    display: flex;
+    align-items: center;
+}
+.toggleTitle > .rowTitle > i.material-icons {
+    margin-right: 15px;
+}
+.expansion-panel {
+    padding: 0;
 }

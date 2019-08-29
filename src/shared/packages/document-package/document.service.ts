@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import {
     ConfirmPopupComponent,
@@ -18,6 +18,9 @@ interface DocumentsCache {
     [id: number]: Document;
 }
 
+interface DocumentCacheObservable {
+    [id: number]: Subject<Document>;
+}
 interface DocumentsCacheObservable {
     [companyId: number]: BehaviorSubject<Document[]>;
 }
@@ -28,6 +31,7 @@ export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
 
 @Injectable()
 export class DocumentService {
+    private documentsByIdCache: DocumentCacheObservable = {};
     private documentsCache: DocumentsCache = {};
     private documentsByCompanyCache: DocumentsCacheByWorkFunction = {};
     private path = '/documents';
@@ -83,6 +87,21 @@ export class DocumentService {
 
         this.documentsByCompanyCache[company.parent.id] = {[company.id] : documentsContainer};
         return this.documentsByCompanyCache[company.parent.id][company.id];
+    }
+
+    getDocument(id: number): Subject<Document> {
+        if (this.documentsByIdCache[id]) {
+            return this.documentsByIdCache[id];
+        }
+
+        const document: Subject<Document> = new Subject<Document>();
+
+        this.apiService.get(`${this.path}/${id}`, {}).subscribe((result: ApiDocResponse) => {
+            document.next(this.makeDocument(result));
+        });
+
+        this.documentsByIdCache[id] = document;
+        return this.documentsByIdCache[id];
     }
 
     postDocument(postData: DocPostData, workFunction: WorkFunction, document?: Document): BehaviorSubject<Document> {
@@ -181,6 +200,11 @@ export class DocumentService {
         doc.parentFolders = data.foldersId;
         doc.order = data.order;
         doc.fromTemplate = data.fromTemplate;
+        doc.documents = new BehaviorSubject([]);
+
+        combineLatest(data.documents.map(documentId => this.getDocument(documentId))).subscribe((documents) => {
+            doc.documents.next(documents);
+        });
 
         this.documentsCache[doc.id] = doc;
         return doc;
