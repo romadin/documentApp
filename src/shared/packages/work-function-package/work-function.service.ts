@@ -113,7 +113,8 @@ export class WorkFunctionService {
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
         workFunction.documents = new BehaviorSubject([]);
 
-        combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId))).subscribe((documents) => {
+        combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId, {workFunctionId: workFunction.id}))).subscribe((documents) => {
+            documents = documents.sort((a, b) => a.order - b.order);
             workFunction.documents.next(documents);
         });
 

@@ -11,7 +11,7 @@ import { Company } from '../company-package/company.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
 
 import { Document } from './document.model';
-import { ApiDocResponse, DocPostData, ParamDelete } from './api-document.interface';
+import { ApiDocResponse, DocGetParam, DocPostData, ParamDelete } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
 
 interface DocumentsCache {
@@ -89,14 +89,14 @@ export class DocumentService {
         return this.documentsByCompanyCache[company.parent.id][company.id];
     }
 
-    getDocument(id: number): Subject<Document> {
+    getDocument(id: number, param: DocGetParam): Subject<Document> {
         if (this.documentsByIdCache[id]) {
             return this.documentsByIdCache[id];
         }
 
         const document: Subject<Document> = new Subject<Document>();
 
-        this.apiService.get(`${this.path}/${id}`, {}).subscribe((result: ApiDocResponse) => {
+        this.apiService.get(`${this.path}/${id}`, param).subscribe((result: ApiDocResponse) => {
             document.next(this.makeDocument(result));
         });
 
@@ -202,7 +202,8 @@ export class DocumentService {
         doc.fromTemplate = data.fromTemplate;
         doc.documents = new BehaviorSubject([]);
 
-        combineLatest(data.documents.map(documentId => this.getDocument(documentId))).subscribe((documents) => {
+        combineLatest(data.documents.map(documentId => this.getDocument(documentId, {documentId: doc.id}))).subscribe((documents) => {
+            documents = documents.sort((a, b) => a.order - b.order);
             doc.documents.next(documents);
         });
 

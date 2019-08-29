@@ -8,6 +8,11 @@ export interface ApiDocResponse {
     fromTemplate: boolean;
     documents: number[];
 }
+export interface DocGetParam {
+    workFunctionId?: number;
+    companyId?: number;
+    documentId?: number;
+}
 
 export interface DocPostData {
     name: string;

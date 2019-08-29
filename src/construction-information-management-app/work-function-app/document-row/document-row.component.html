@@ -1,9 +1,9 @@
-<mat-expansion-panel class="card expansion-panel" *ngIf="!parentIsDocument()">
-    <mat-expansion-panel-header>
+<mat-expansion-panel class="card expansion-panel" *ngIf="!parentIsDocument()" [disabled]="!subDocuments || subDocuments.length === 0">
+    <mat-expansion-panel-header [collapsedHeight]="'58px'">
         <mat-panel-title class="toggleTitle">
             <div class="rowTitle">
                 <i class="material-icons"> folder_open </i>
-                <span> {{ document.getName()}} </span>
+                <h3> {{ document.getName()}} </h3>
             </div>
             <div class="actions">
                 <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
