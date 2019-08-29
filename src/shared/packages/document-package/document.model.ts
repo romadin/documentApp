@@ -1,3 +1,5 @@
+import { BehaviorSubject } from 'rxjs';
+
 export class Document {
     private _id: number;
     private _originalName: string;
@@ -6,6 +8,7 @@ export class Document {
     private _parentFolders: number[];
     private _order: number;
     private _fromTemplate: boolean;
+    private _documents: BehaviorSubject<Document[]>;
 
     constructor() {}
 
@@ -49,6 +52,14 @@ export class Document {
         this._parentFolders = value;
     }
 
+    get documents(): BehaviorSubject<Document[]> {
+        return this._documents;
+    }
+
+    set documents(value: BehaviorSubject<Document[]>) {
+        this._documents = value;
+    }
+
     get order(): number {
         return this._order;
     }
@@ -65,7 +76,13 @@ export class Document {
         this._fromTemplate = value;
     }
 
-    public getName(): string {
+    addDocument(document: Document) {
+        const subDocuments = this.documents.getValue();
+        subDocuments.push(document);
+        this.documents.next(subDocuments);
+    }
+
+    getName(): string {
         return this.name === null ? this.originalName : this.name;
     }
 }

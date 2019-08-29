@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Company } from '../../../shared/packages/company-package/company.model';
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
@@ -22,7 +21,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     currentUser: User;
     parent: WorkFunction | Company;
     mainFunction: WorkFunction;
-    items: ( Document | Folder)[];
+    items: Document[];
     activeItem: ActiveItemPackage;
     showReadMode: boolean;
     showReadModeAnimation: boolean;
@@ -69,7 +68,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         this.subscriptions.map(s => s.unsubscribe());
     }
 
-    onItemView(component: string, item?: Document | Folder) {
+    onItemView(component: string, item?: Document) {
         this.resetView();
         this.activeItem = {
             component: component,
@@ -86,10 +85,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
 
     onCloseRightSide(close: boolean): void {
         this.resetView();
-    }
-
-    checkItemIsFolder(item): boolean {
-        return item instanceof Folder;
     }
 
     onItemsAdded(item: WorkFunction | Document): void {

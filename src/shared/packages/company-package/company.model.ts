@@ -56,7 +56,7 @@ export class Company {
     //     return workFunctionItems;
     // }
 
-    addItems(items: Document[]): void {
+    addDocuments(items: Document[]): void {
         console.log('in the add items');
         const currentItems = this.documents.getValue();
         this.documents.next(currentItems.concat(items));

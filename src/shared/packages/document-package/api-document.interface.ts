@@ -16,6 +16,6 @@ export interface DocPostData {
 
 export interface ParamDelete {
     workFunctionId?: number;
-    folderId?: number;
+    documentId?: number;
     companyId?: number;
 }

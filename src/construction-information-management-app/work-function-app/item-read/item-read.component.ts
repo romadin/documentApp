@@ -5,7 +5,6 @@ import html2canvas from 'html2canvas';
 
 import { Project } from '../../../shared/packages/project-package/project.model';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
@@ -19,7 +18,7 @@ import { Subscription } from 'rxjs';
 export class ItemReadComponent implements OnInit, OnDestroy {
     @ViewChild('fullDocument') documentPlan: any;
     @ViewChild('content') documentContent: any;
-    @Input() items: (Folder | Document)[];
+    @Input() items: Document[];
     @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
     project: Project;
     private organisation: Organisation;
@@ -56,10 +55,6 @@ export class ItemReadComponent implements OnInit, OnDestroy {
         e.stopPropagation();
         e.preventDefault();
         this.closeReadMode.emit(true);
-    }
-
-    checkItemIsFolder(item): boolean {
-        return item instanceof Folder;
     }
 
     setContent(item: Document, element): void {

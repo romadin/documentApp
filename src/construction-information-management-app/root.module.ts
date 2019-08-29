@@ -22,7 +22,6 @@ import { ApiService } from '../shared/service/api.service';
 import { ProjectService } from '../shared/packages/project-package/project.service';
 import { UserService } from '../shared/packages/user-package/user.service';
 import { RoleService } from '../shared/packages/role-package/role.service';
-import { FolderService } from '../shared/packages/folder-package/folder.service';
 import { DocumentService } from '../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../shared/packages/document-package/document-icon.service';
 import { ActionService } from '../shared/packages/action-package/action.service';
@@ -147,7 +146,6 @@ const appRoutes: Routes = [
         TemplateCommunicationService,
         ProjectCommunicationService,
 
-        FolderService,
         DocumentService,
         DocumentIconService,
         ActionService,

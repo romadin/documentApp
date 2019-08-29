@@ -2,7 +2,6 @@ import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { Company } from '../company-package/company.model';
 import { Document } from '../document-package/document.model';
-import { Folder } from '../folder-package/folder.model';
 
 import { Project } from '../project-package/project.model';
 import { Template } from '../template-package/template.model';
@@ -17,9 +16,7 @@ export class WorkFunction {
     private _parent: Template|Project;
     private _headlines: BehaviorSubject<Headline[]>;
     private _chapters: BehaviorSubject<Chapter[]>;
-    private _folders: BehaviorSubject<Folder[]>;
     private _documents: BehaviorSubject<Document[]>;
-    private _items: BehaviorSubject<(Document | Folder)[]>;
     private _on: boolean;
     private _fromTemplate: boolean;
     private _companies: Company[];
@@ -82,14 +79,6 @@ export class WorkFunction {
         this._chapters = value;
     }
 
-    get folders(): BehaviorSubject<Folder[]> {
-        return this._folders;
-    }
-
-    set folders(value: BehaviorSubject<Folder[]>) {
-        this._folders = value;
-    }
-
     get documents(): BehaviorSubject<Document[]> {
         return this._documents;
     }
@@ -104,14 +93,6 @@ export class WorkFunction {
 
     set on(value: boolean) {
         this._on = value;
-    }
-
-    get items(): BehaviorSubject<(Document | Folder)[]> {
-        return this._items;
-    }
-
-    set items(value: BehaviorSubject<(Document | Folder)[]>) {
-        this._items = value;
     }
 
     get fromTemplate(): boolean {
@@ -130,27 +111,9 @@ export class WorkFunction {
         this._companies = value;
     }
 
-    addDocument(document: Document) {
-        const documents = this.documents.getValue();
-        documents.push(document);
+    addDocuments(document: Document[]) {
+        let documents = this.documents.getValue();
+        documents = documents.concat(documents);
         this.documents.next(documents);
-    }
-
-    getItems(): BehaviorSubject<(Document | Folder)[]> {
-        const workFunctionItems = this.items ? this.items : new BehaviorSubject<(Document|Folder)[]>([]);
-        this.folders.pipe(mergeMap(folders => {
-            const items: (Document | Folder)[] = folders;
-            return this.documents.pipe(map(documents => items.concat(documents)));
-        })).pipe(map(items => {
-            items = items.sort((a, b) => a.order - b.order);
-            workFunctionItems.next(items);
-        })).subscribe();
-
-        return workFunctionItems;
-    }
-
-    addItems(items: Document[]): void {
-        const currentItems = this.items.getValue();
-        this.items.next(currentItems.concat(items));
     }
 }

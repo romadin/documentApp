@@ -13,7 +13,6 @@ import { WorkFunction } from '../work-function-package/work-function.model';
 import { Document } from './document.model';
 import { ApiDocResponse, DocPostData, ParamDelete } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
-import { Folder } from '../folder-package/folder.model';
 
 interface DocumentsCache {
     [id: number]: Document;
@@ -86,11 +85,11 @@ export class DocumentService {
         return this.documentsByCompanyCache[company.parent.id][company.id];
     }
 
-    public postDocument(postData: DocPostData, workFunction: WorkFunction, folder?: Folder): BehaviorSubject<Document> {
+    postDocument(postData: DocPostData, workFunction: WorkFunction, document?: Document): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
         const param = {workFunctionId: workFunction.id};
-        if (folder) {
-            param['folderId'] = folder.id;
+        if (document) {
+            param['documentId'] = document.id;
         }
 
         this.apiService.post(this.path, postData, param).subscribe((response: ApiDocResponse) => {
@@ -102,7 +101,7 @@ export class DocumentService {
         return newDocument;
     }
 
-    public updateDocument(document: Document, postData: DocPostData, workFunction: WorkFunction): BehaviorSubject<Document> {
+    updateDocument(document: Document, postData: DocPostData, workFunction: WorkFunction): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
         const param = {workFunctionId: workFunction.id};
 
@@ -116,7 +115,7 @@ export class DocumentService {
         return newDocument;
     }
 
-    public deleteDocument(document: Document, paramDelete?: ParamDelete): Subject<boolean> {
+    deleteDocument(document: Document, paramDelete?: ParamDelete): Subject<boolean> {
         const deleted: Subject<boolean> = new Subject<boolean>();
         const popupData: ConfirmPopupData = {
             title: 'Document verwijderen',
@@ -142,7 +141,7 @@ export class DocumentService {
     /**
      * Only delete the link between the document and workFunction.
      */
-    deleteDocumentLink(url: DocumentParentUrl, document: Document, parent: Folder | Company | WorkFunction ) {
+    deleteDocumentLink(url: DocumentParentUrl, document: Document, parent: Document | Company | WorkFunction ) {
         const popupData: ConfirmPopupData = {
             title: 'Document link verwijderen',
             name: document.getName(),
@@ -167,12 +166,12 @@ export class DocumentService {
     /**
      * Update the current model with the new api data.
      */
-    public updateDocumentModel(document: Document, data: ApiDocResponse): void {
+    updateDocumentModel(document: Document, data: ApiDocResponse): void {
         document.content = data.content;
         document.name = data.name;
     }
 
-    private makeDocument(data: ApiDocResponse): Document {
+    makeDocument(data: ApiDocResponse): Document {
         const doc = new Document();
 
         doc.id = data.id;

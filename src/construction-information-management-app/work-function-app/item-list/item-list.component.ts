@@ -4,7 +4,6 @@ import { CompanyApiUpdateData } from '../../../shared/packages/company-package/i
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { WorkFunctionUpdateBody } from '../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
@@ -40,10 +39,6 @@ export class ItemListComponent implements OnInit {
         this.getAvailableItems();
     }
 
-    isFolder(item: any) {
-        return item instanceof Folder;
-    }
-
     cancelList(e: MouseEvent) {
         e.stopPropagation();
         e.preventDefault();
@@ -56,7 +51,7 @@ export class ItemListComponent implements OnInit {
         if (this.itemsSelected && this.itemsSelected.length > 0) {
             if (isWorkFunction(this.parent)) {
                 this.workFunctionService.updateWorkFunction(<WorkFunction>this.parent, this.getPostData()).subscribe(parent => {
-                    this.parent.addItems(this.itemsSelected);
+                    this.parent.addDocuments(this.itemsSelected);
                     this.saveItemsDone.emit(parent);
                 });
             } else {
@@ -65,7 +60,7 @@ export class ItemListComponent implements OnInit {
 
                 this.companyService.updateCompany(<Company>this.parent, postData , [this.mainWorkFunction.parent.id])
                     .subscribe(parent => {
-                        this.parent.addItems(this.itemsSelected);
+                        this.parent.addDocuments(this.itemsSelected);
                         this.saveItemsDone.emit(parent);
                     });
             }
@@ -86,12 +81,8 @@ export class ItemListComponent implements OnInit {
     private getPostData(): WorkFunctionUpdateBody {
         const postData: WorkFunctionUpdateBody = {};
 
-        this.itemsSelected.forEach((item: Folder | Document) => {
-            if (this.isFolder(item)) {
-                postData.folders ? postData.folders.push((<Folder>item).id) : postData.folders = [(<Folder>item).id];
-            } else {
-                postData.documents ? postData.documents.push((<Document>item).id) : postData.documents = [(<Document>item).id];
-            }
+        this.itemsSelected.forEach((item: Document) => {
+            postData.documents ? postData.documents.push((<Document>item).id) : postData.documents = [(<Document>item).id];
         });
         return postData;
     }

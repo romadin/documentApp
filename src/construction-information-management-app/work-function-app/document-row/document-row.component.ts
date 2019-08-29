@@ -7,7 +7,6 @@ import { User } from '../../../shared/packages/user-package/user.model';
 import { Document} from '../../../shared/packages/document-package/document.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../../../shared/packages/document-package/document-icon.service';
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
@@ -19,7 +18,7 @@ import { WorkFunction } from '../../../shared/packages/work-function-package/wor
 export class DocumentRowComponent implements OnInit {
     @Input() document: Document;
     @Input() currentUser: User;
-    @Input() parent: Folder | Company | WorkFunction;
+    @Input() parent: Company | WorkFunction | Document;
     @Output() activatedDocument: EventEmitter<Document> = new EventEmitter<Document>();
     public iconName: string;
 
@@ -43,7 +42,7 @@ export class DocumentRowComponent implements OnInit {
         e.stopPropagation();
         e.preventDefault();
 
-        const param: ParamDelete = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : isCompany(this.parent) ? {companyId: this.parent.id, workFunctionId: this.parent.parent.id} : {folderId: this.parent.id};
+        const param: ParamDelete = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : isCompany(this.parent) ? {companyId: this.parent.id, workFunctionId: this.parent.parent.id} : {documentId: this.parent.id};
         this.documentService.deleteDocument(this.document, param).subscribe((deleted: boolean) => {
             if ( deleted ) {
                 this.removeFromParentFolder();

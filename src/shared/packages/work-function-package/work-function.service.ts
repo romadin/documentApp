@@ -7,7 +7,6 @@ import {
 import { ToastService } from '../../toast.service';
 import { CompanyService } from '../company-package/company.service';
 import { DocumentService } from '../document-package/document.service';
-import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
 import { map, mergeMap } from 'rxjs/operators';
@@ -35,7 +34,6 @@ export class WorkFunctionService {
                 private headlineService: HeadlineService,
                 private chapterService: ChapterService,
                 private documentService: DocumentService,
-                private foldersService: FolderService,
                 private companyService: CompanyService,
                 private dialog: MatDialog,
                 private toast: ToastService
@@ -113,9 +111,7 @@ export class WorkFunctionService {
         workFunction.parent = parent;
         workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
-        workFunction.folders = this.foldersService.getFoldersByWorkFunction(workFunction);
         workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
-        workFunction.items = workFunction.getItems();
 
         const companies = [];
         data.companies.forEach(company => {
@@ -136,7 +132,6 @@ export class WorkFunctionService {
         work.on = data.on;
         work.fromTemplate = data.fromTemplate;
         work.parent = parent;
-        work.folders = this.foldersService.getFoldersByWorkFunction(work);
         work.documents = this.documentService.getDocumentsByWorkFunction(work);
 
         this.cache[work.id] = work;

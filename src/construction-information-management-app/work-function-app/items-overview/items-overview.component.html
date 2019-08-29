@@ -10,34 +10,23 @@
                     <i class="material-icons"> arrow_right </i>
                 </div>
             </div>
-            <div *ngIf="checkItemIsFolder(item) ; then folderBlock; else documentBlock"></div>
-            <ng-template #folderBlock>
-                <cim-folder-row [folder]="item"
-                                [currentUser]="currentUser"
-                                [parent]="parent"
-                                (sendDocumentToFolder)="onItemView('cim-document-detail', $event)"
-                                (sendFolderToFolderComponent)="onItemView('cim-detail-folder', $event)"
-                                (closeRightView)="onCloseRightSide($event)">
-                </cim-folder-row>
-            </ng-template>
-
-            <ng-template #documentBlock>
+            <div>
                 <cim-document-row [document]="item"
                                   [currentUser]="currentUser"
                                   [parent]="parent"
                                   (activatedDocument)="onItemView('cim-document-detail', $event)">
                 </cim-document-row>
-            </ng-template>
+            </div>
         </ng-container>
     </div>
     <div class="folderDetailContainer" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
-        <cim-folder-detail class="card"
-                [workFunction]="parent"
-                [currentUser]="currentUser"
-                [activeSidePackage]="activeItem"
-                (itemsAdded)="onItemsAdded($event)"
-                (closeView)="onCloseRightSide($event)">
-        </cim-folder-detail>
+        <!--<cim-folder-detail class="card"-->
+                <!--[workFunction]="parent"-->
+                <!--[currentUser]="currentUser"-->
+                <!--[activeSidePackage]="activeItem"-->
+                <!--(itemsAdded)="onItemsAdded($event)"-->
+                <!--(closeView)="onCloseRightSide($event)">-->
+        <!--</cim-folder-detail>-->
     </div>
     <div class="readeModeContainer" [ngClass]="{'animateDiv': showReadModeAnimation}">
         <cim-item-read *ngIf="showReadMode"

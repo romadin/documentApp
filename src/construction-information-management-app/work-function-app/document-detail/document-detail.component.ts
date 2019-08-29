@@ -11,7 +11,6 @@ import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { environment } from '../../../environments/environment';
 import { ToastService } from '../../../shared/toast.service';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
-import { Folder } from '../../../shared/packages/folder-package/folder.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
@@ -28,7 +27,7 @@ interface MouseSelection {
 })
 export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     @Input() workFunction: WorkFunction;
-    @Input() parentFolder: Folder;
+    @Input() parentFolder: DocumentFile;
     @Input() currentUser: User;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
     @ViewChild('editor') editor: any;
@@ -95,7 +94,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
                         if (this.parentFolder) {
                             this.parentFolder.addDocument(document);
                         } else {
-                            this.workFunction.addDocument(document);
+                            this.workFunction.addDocuments([document]);
                         }
                         this.document = document;
                         this.closeEditForm.emit(true);

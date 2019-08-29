@@ -9,7 +9,6 @@ import {
 import { ApiService } from '../../service/api.service';
 import { ToastService } from '../../toast.service';
 import { DocumentService } from '../document-package/document.service';
-import { FolderService } from '../folder-package/folder.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from '../work-function-package/work-function.model';
 import {
@@ -33,7 +32,6 @@ export class CompanyService {
     private companiesByIdCache: CompanyCacheObservable = {};
     constructor(
         private apiService: ApiService,
-        private foldersService: FolderService,
         private documentService: DocumentService,
         private toast: ToastService,
         private dialog: MatDialog,
