@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnDestro
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
 import { User } from '../../../shared/packages/user-package/user.model';
+import { Company } from '../../../shared/packages/company-package/company.model';
 import { Document } from '../../../shared/packages/document-package/document.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
@@ -9,7 +10,7 @@ export interface ActiveItemPackage {
     component: string;
     item: Document | null;
     mainFunction?: WorkFunction;
-    parent?: WorkFunction | Document;
+    parent?: WorkFunction | Document | Company;
 }
 
 @Component({

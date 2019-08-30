@@ -1,6 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Document } from '../../../../shared/packages/document-package/document.model';
-import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
     selector: 'cim-document-detail-public',

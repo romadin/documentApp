@@ -73,7 +73,7 @@
             </div>
         </form>
     </div>
-    <cim-user-detail-public *ngIf="!currentUser.isAdmin() && user"
+    <cim-user-detail-public *ngIf="!currentUser.isAdmin() && user && projects"
                             [user]="user"
                             [projects]="projects"
                             [imageSrc]="imageSrc"

@@ -67,8 +67,10 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit() {
         this.onFormChanges();
-        this.addToolbarButton();
-        document.addEventListener('click', this.checkForOutsideClick);
+        if (this.currentUser.isAdmin()) {
+            this.addToolbarButton();
+            document.addEventListener('click', this.checkForOutsideClick);
+        }
     }
 
     ngOnDestroy() {

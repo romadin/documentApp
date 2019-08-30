@@ -69,8 +69,8 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         this.resetView();
         this.activeItem = {
             component: component,
-            item: itemsOverviewPackage.document,
-            parent: itemsOverviewPackage.document
+            item: itemsOverviewPackage ? itemsOverviewPackage.document : null,
+            parent: itemsOverviewPackage? itemsOverviewPackage.parent : null
         };
     }
 
