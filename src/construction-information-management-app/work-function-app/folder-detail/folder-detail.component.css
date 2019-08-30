@@ -3,11 +3,6 @@
     box-shadow: none;
     padding: 0;
 }
-:host > div.normal > div >>> cim-detail-folder > .card {
-    border: none;
-    box-shadow: none;
-    padding: 0;
-}
 :host > div.normal > div >>> cim-item-list > div.card {
     border: none;
     box-shadow: none;
@@ -19,13 +14,13 @@
     box-shadow: none;
     padding: 0;
 }
-:host > div.normal > div >>> cim-item-create > div.card {
+:host > div.normal > div >>> cim-document-detail > div > div.card {
     border: none;
     box-shadow: none;
     padding: 0;
 }
 
-:host > div.normal > div >>> cim-item-create > div.card >>> cim-create-document >>> cim-document-detail > div > .card {
+:host > div.normal > div >>> cim-create-document >>> cim-document-detail > div > .card {
     border: none;
     box-shadow: none;
     padding: 0;

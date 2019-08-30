@@ -23,10 +23,9 @@
         </cim-item-list>
     </div>
     <div *ngIf="activeItem && activeItem.component === 'cim-item-create'" [@fadeIn]>
-        <cim-item-create [parent]="activeItem.parent ? activeItem.parent : workFunction"
-                         [currentUser]="currentUser"
-                         (folderChange)="onItemsAdded($event)"
-                         (closeView)="onCloseView($event)">
-        </cim-item-create>
+        <cim-document-detail [parent]="activeItem.parent ? activeItem.parent : workFunction"
+                             [currentUser]="currentUser"
+                             (closeEditForm)="onCloseView($event)">
+        </cim-document-detail>
     </div>
 </div>

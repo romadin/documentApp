@@ -9,6 +9,7 @@ import { WorkFunction } from '../../../shared/packages/work-function-package/wor
 import { FolderCommunicationService } from '../../../shared/service/communication/Folder.communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { RouterService } from '../../../shared/service/router.service';
+import { ToItemsOverview } from '../document-row/document-row.component';
 import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
 import { ChildItemPackage } from '../work-function-package-resolver.service';
 
@@ -54,11 +55,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
                 this.addItem();
             }
         }));
-        this.subscriptions.push(this.folderCommunicationService.onItemCloseListener.subscribe((onClose: boolean) => {
-            if (onClose) {
-                this.resetView();
-            }
-        }));
+
         this.headerCommunicationService.showAddUserButton.next(false);
     }
 
@@ -68,11 +65,12 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         this.subscriptions.map(s => s.unsubscribe());
     }
 
-    onItemView(component: string, item?: Document) {
+    onItemView(component: string, itemsOverviewPackage?: ToItemsOverview) {
         this.resetView();
         this.activeItem = {
             component: component,
-            item: item
+            item: itemsOverviewPackage.document,
+            parent: itemsOverviewPackage.document
         };
     }
 

@@ -9,7 +9,10 @@ import { DocumentService } from '../../../shared/packages/document-package/docum
 import { DocumentIconService } from '../../../shared/packages/document-package/document-icon.service';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
-
+export interface ToItemsOverview {
+    document: Document;
+    parent: Document | WorkFunction | Company;
+}
 @Component({
   selector: 'cim-document-row',
   templateUrl: './document-row.component.html',
@@ -19,7 +22,7 @@ export class DocumentRowComponent implements OnInit {
     @Input() document: Document;
     @Input() currentUser: User;
     @Input() parent: Company | WorkFunction | Document;
-    @Output() activatedDocument: EventEmitter<Document> = new EventEmitter<Document>();
+    @Output() activatedDocument: EventEmitter<ToItemsOverview> = new EventEmitter<ToItemsOverview>();
     @Output() addChapter: EventEmitter<Document> = new EventEmitter<Document>();
     iconName: string;
     subDocuments: Document[];
@@ -38,10 +41,15 @@ export class DocumentRowComponent implements OnInit {
     editDocument(event: Event, clickedRow = false): void {
         event.stopPropagation();
         event.preventDefault();
+        const toItemsOverView: ToItemsOverview = {
+            document: this.document,
+            parent: this.parent,
+        };
         if (clickedRow && (!this.subDocuments || this.subDocuments.length === 0)) {
-            this.activatedDocument.emit(this.document);
+            // this document is a sub document or a document without sub documents
+            this.activatedDocument.emit(toItemsOverView);
         } else if (!clickedRow) {
-            this.activatedDocument.emit(this.document);
+            this.activatedDocument.emit(toItemsOverView);
         }
     }
 
@@ -67,8 +75,8 @@ export class DocumentRowComponent implements OnInit {
         }
     }
 
-    editSubDocument(subDocument) {
-        this.activatedDocument.emit(subDocument);
+    editSubDocument(document: Document, parent: Document) {
+        this.activatedDocument.emit({ document, parent });
     }
 
     showDeleteButton(): boolean {

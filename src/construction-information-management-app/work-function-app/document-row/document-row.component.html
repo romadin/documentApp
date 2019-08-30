@@ -20,7 +20,7 @@
                     [document]="subDocument"
                     [currentUser]="currentUser"
                     [parent]="document"
-                    (activatedDocument)="editSubDocument(subDocument)"
+                    (activatedDocument)="editSubDocument(subDocument, document)"
                     (addChapter)="onAddChapter($event)">
             </cim-document-row>
         </div>
