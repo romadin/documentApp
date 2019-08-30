@@ -111,9 +111,9 @@ export class WorkFunction {
         this._companies = value;
     }
 
-    addDocuments(document: Document[]) {
+    addDocuments(newDocuments: Document[]) {
         let documents = this.documents.getValue();
-        documents = documents.concat(documents);
+        documents = documents.concat(newDocuments);
         this.documents.next(documents);
     }
 }

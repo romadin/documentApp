@@ -10,26 +10,21 @@ type ItemType = 'title' | 'content';
   styleUrls: ['./item-create.component.css']
 })
 export class ItemCreateComponent implements OnInit {
-    @Input() workFunction: WorkFunction;
+    @Input() parent: WorkFunction | Document;
     @Input() currentUser: User;
-    // @Output() folderChange: EventEmitter<Folder> = new EventEmitter<Folder>();
     @Output() public closeView: EventEmitter<boolean> = new EventEmitter();
 
     public itemToEdit: ItemType = 'title';
 
     constructor() { }
 
-    ngOnInit() {}
+    ngOnInit() { }
 
     changeEditItemForm(event, itemType: ItemType) {
         this.itemToEdit = itemType;
     }
 
-    // onFolderEdit(folder: Folder) {
-    //     this.folderChange.emit(folder);
-    // }
-
-    public onCloseView(): void {
+    onCloseView(): void {
         this.closeView.emit(true);
     }
 }

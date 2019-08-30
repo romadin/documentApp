@@ -9,11 +9,12 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 import { environment } from '../../../environments/environment';
+import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { ToastService } from '../../../shared/toast.service';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
-import { DocPostData } from '../../../shared/packages/document-package/api-document.interface';
+import { DocGetParam, DocPostData } from '../../../shared/packages/document-package/api-document.interface';
 import { Document as DocumentFile} from '../../../shared/packages/document-package/document.model';
 
 interface MouseSelection {
@@ -26,8 +27,7 @@ interface MouseSelection {
     styleUrls: ['./document-detail.component.css']
 })
 export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
-    @Input() workFunction: WorkFunction;
-    @Input() parentFolder: DocumentFile;
+    @Input() parent: DocumentFile | WorkFunction;
     @Input() currentUser: User;
     @Output() public closeEditForm: EventEmitter<boolean> = new EventEmitter();
     @ViewChild('editor') editor: any;
@@ -81,21 +81,18 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
                 name: this.documentForm.controls.name.value,
                 content: this.content,
             };
+            const param: DocGetParam = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : {documentId: this.parent.id};
             if ( this.document ) {
-                this.documentService.updateDocument(this.document, postData, this.workFunction).subscribe((document) => {
+                this.documentService.updateDocument(this.document, postData, param).subscribe((document) => {
                     if ( document ) {
                         this.document = document;
                         this.toast.showSuccess('Hoofdstuk: ' + this.document.getName() + ' is bewerkt', 'Bewerkt');
                     }
                 });
             } else {
-                this.documentService.postDocument(postData, this.workFunction, this.parentFolder).subscribe((document) => {
+                this.documentService.postDocument(postData, param).subscribe((document) => {
                     if ( document ) {
-                        if (this.parentFolder) {
-                            this.parentFolder.addDocument(document);
-                        } else {
-                            this.workFunction.addDocuments([document]);
-                        }
+                        this.parent.addDocuments([document]);
                         this.document = document;
                         this.closeEditForm.emit(true);
                         this.toast.showSuccess('Hoofdstuk: ' + document.getName() + ' is toegevoegd', 'Toegevoegd');

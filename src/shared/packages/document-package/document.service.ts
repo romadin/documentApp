@@ -104,12 +104,8 @@ export class DocumentService {
         return this.documentsByIdCache[id];
     }
 
-    postDocument(postData: DocPostData, workFunction: WorkFunction, document?: Document): BehaviorSubject<Document> {
+    postDocument(postData: DocPostData, param: DocGetParam): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
-        const param = {workFunctionId: workFunction.id};
-        if (document) {
-            param['documentId'] = document.id;
-        }
 
         this.apiService.post(this.path, postData, param).subscribe((response: ApiDocResponse) => {
             newDocument.next(this.makeDocument(response));
@@ -120,9 +116,8 @@ export class DocumentService {
         return newDocument;
     }
 
-    updateDocument(document: Document, postData: DocPostData, workFunction: WorkFunction): BehaviorSubject<Document> {
+    updateDocument(document: Document, postData: DocPostData, param: DocGetParam): BehaviorSubject<Document> {
         const newDocument: BehaviorSubject<Document> = new BehaviorSubject(null);
-        const param = {workFunctionId: workFunction.id};
 
         this.apiService.post(this.path + '/' + document.id, postData, param).subscribe((response: ApiDocResponse) => {
             this.updateDocumentModel(document, response);

@@ -1,15 +1,10 @@
 <div class="card">
     <div class="componentHeader">
         <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
-        <h3> Voeg {{ itemToEdit === 'content' ? 'inhoud' : 'een titel'  }} toe </h3>
-        <mat-button-toggle-group name="itemPicker" aria-label="Font Style" class="switchItemButton">
-            <mat-button-toggle (change)="changeEditItemForm($event, 'title')" value="title" [checked]="true">Titel</mat-button-toggle>
-            <mat-button-toggle (change)="changeEditItemForm($event, 'content')" value="content" >Inhoud</mat-button-toggle>
-        </mat-button-toggle-group>
+        <h3> Voeg hoofdstuk toe </h3>
     </div>
 
-    <cim-create-document *ngIf="itemToEdit === 'content'"
-                         [currentUser]="currentUser"
-                         [workFunction]="workFunction">
+    <cim-create-document [currentUser]="currentUser"
+                         [parent]="parent">
     </cim-create-document>
 </div>

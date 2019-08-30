@@ -14,7 +14,8 @@
                 <cim-document-row [document]="item"
                                   [currentUser]="currentUser"
                                   [parent]="parent"
-                                  (activatedDocument)="onItemView('cim-document-detail', $event)">
+                                  (activatedDocument)="onItemView('cim-document-detail', $event)"
+                                  (addChapter)="addItem($event)">
                 </cim-document-row>
             </div>
         </ng-container>

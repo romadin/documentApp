@@ -9,6 +9,7 @@ export interface ActiveItemPackage {
     component: string;
     item: Document | null;
     mainFunction?: WorkFunction;
+    parent?: WorkFunction | Document;
 }
 
 @Component({

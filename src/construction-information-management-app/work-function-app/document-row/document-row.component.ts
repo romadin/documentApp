@@ -20,6 +20,7 @@ export class DocumentRowComponent implements OnInit {
     @Input() currentUser: User;
     @Input() parent: Company | WorkFunction | Document;
     @Output() activatedDocument: EventEmitter<Document> = new EventEmitter<Document>();
+    @Output() addChapter: EventEmitter<Document> = new EventEmitter<Document>();
     iconName: string;
     subDocuments: Document[];
 
@@ -34,10 +35,14 @@ export class DocumentRowComponent implements OnInit {
         this.document.documents.subscribe((subDocuments) => this.subDocuments = subDocuments);
     }
 
-    editDocument(event: Event): void {
+    editDocument(event: Event, clickedRow = false): void {
         event.stopPropagation();
         event.preventDefault();
-        this.activatedDocument.emit(this.document);
+        if (clickedRow && (!this.subDocuments || this.subDocuments.length === 0)) {
+            this.activatedDocument.emit(this.document);
+        } else if (!clickedRow) {
+            this.activatedDocument.emit(this.document);
+        }
     }
 
     deleteDocument(e: Event): void {
@@ -50,6 +55,16 @@ export class DocumentRowComponent implements OnInit {
                 this.removeFromParentFolder();
             }
         });
+    }
+
+    onAddChapter(e: Event| Document): void {
+        if (e instanceof Event) {
+            e.stopPropagation();
+            e.preventDefault();
+            this.addChapter.emit(this.document);
+        } else {
+            this.addChapter.emit(e);
+        }
     }
 
     editSubDocument(subDocument) {

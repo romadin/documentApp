@@ -1,16 +1,17 @@
-<mat-expansion-panel class="card expansion-panel" *ngIf="!parentIsDocument()" [disabled]="!subDocuments || subDocuments.length === 0">
+<mat-expansion-panel class="card expansion-panel" *ngIf="!parentIsDocument()" [disabled]="!subDocuments || subDocuments.length === 0" (click)="editDocument($event, true)">
     <mat-expansion-panel-header [collapsedHeight]="'58px'">
-        <mat-panel-title class="toggleTitle">
+        <mat-panel-title class="toggleTitle" [ngClass]="{'disabled': !subDocuments || subDocuments.length === 0}">
             <div class="rowTitle">
-                <i class="material-icons"> folder_open </i>
+                <i class="material-icons"> {{ !subDocuments || subDocuments.length === 0 ? 'description' : 'folder_open' }}</i>
                 <h3> {{ document.getName()}} </h3>
             </div>
             <div class="actions">
                 <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
                 <i class="material-icons" (click)="editDocument($event)"> edit </i>
-                <i class="material-icons"  *ngIf="showDeleteButton()" (click)="deleteDocument($event)"> delete_forever </i>
+                <i class="material-icons" *ngIf="showDeleteButton()" (click)="deleteDocument($event)"> delete_forever </i>
             </div>
         </mat-panel-title>
+        <i class="material-icons arrowRight" *ngIf="!subDocuments || subDocuments.length === 0"> arrow_right </i>
     </mat-expansion-panel-header>
 
     <div cdkDropList class="dragList" *ngIf="subDocuments">
@@ -19,7 +20,8 @@
                     [document]="subDocument"
                     [currentUser]="currentUser"
                     [parent]="document"
-                    (activatedDocument)="editSubDocument(subDocument)">
+                    (activatedDocument)="editSubDocument(subDocument)"
+                    (addChapter)="onAddChapter($event)">
             </cim-document-row>
         </div>
     </div>

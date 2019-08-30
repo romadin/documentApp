@@ -76,10 +76,10 @@ export class Document {
         this._fromTemplate = value;
     }
 
-    addDocument(document: Document) {
-        const subDocuments = this.documents.getValue();
-        subDocuments.push(document);
-        this.documents.next(subDocuments);
+    addDocuments(newDocuments: Document[]) {
+        let documents = this.documents.getValue();
+        documents = documents.concat(newDocuments);
+        this.documents.next(documents);
     }
 
     getName(): string {

@@ -91,18 +91,20 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         this.headerCommunicationService.triggerAddItem.next(false);
     }
 
-    private addItem() {
+    addItem(parent: WorkFunction | Document | null = null) {
         this.resetView();
         if (isWorkFunction(this.parent) && this.parent.isMainFunction) {
             this.activeItem = {
                 component: 'cim-item-create',
-                item: null
+                item: null,
+                parent: parent
             };
         } else {
             this.activeItem = {
                 component: 'cim-item-list',
                 item: null,
-                mainFunction: this.mainFunction
+                mainFunction: this.mainFunction,
+                parent: parent
             };
         }
     }

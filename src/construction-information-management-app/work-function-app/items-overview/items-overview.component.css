@@ -64,17 +64,18 @@ div.wrapper > div.addItemList {
     flex: 1;
 }
 
+div.wrapper > div.overview > div.partnersWrapper {
+    padding-left: 24px;
+}
 div.wrapper > div.overview > div.partnersWrapper > .header {
     display: flex;
 }
-
 div.wrapper > div.overview > div.partnersWrapper > .header > h3 {
     margin: 0;
 }
 div.wrapper > div.overview > div.partnersWrapper > .header > .material-icons {
     margin-right: 18px;
 }
-
 div.wrapper > div.overview > div.partnersWrapper > .actions {
     display: flex;
     align-items: center;

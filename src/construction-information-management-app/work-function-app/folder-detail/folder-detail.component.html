@@ -1,7 +1,7 @@
 <div #container [ngClass]="addFixedClass ? 'positionFixed' : 'normal'">
     <div class="documentView" *ngIf="activeItem && activeItem.component === 'cim-document-detail'" [@fadeIn]>
         <cim-document-detail
-                [workFunction]="workFunction"
+                [parent]="workFunction"
                 [currentUser]="currentUser"
                 [document]="activeItem.item"
                 (closeEditForm)="onCloseView($event)">
@@ -23,7 +23,7 @@
         </cim-item-list>
     </div>
     <div *ngIf="activeItem && activeItem.component === 'cim-item-create'" [@fadeIn]>
-        <cim-item-create [workFunction]="workFunction"
+        <cim-item-create [parent]="activeItem.parent ? activeItem.parent : workFunction"
                          [currentUser]="currentUser"
                          (folderChange)="onItemsAdded($event)"
                          (closeView)="onCloseView($event)">

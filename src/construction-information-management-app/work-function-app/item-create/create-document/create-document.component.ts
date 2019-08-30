@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Document } from '../../../../shared/packages/document-package/document.model';
 
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { FolderCommunicationService } from '../../../../shared/service/communication/Folder.communication.service';
@@ -10,14 +11,12 @@ import { User } from '../../../../shared/packages/user-package/user.model';
   styleUrls: ['./create-document.component.css']
 })
 export class CreateDocumentComponent implements OnInit {
-    @Input() workFunction: WorkFunction;
+    @Input() parent: WorkFunction | Document;
     @Input() currentUser: User;
 
     constructor(private folderCommunication: FolderCommunicationService) { }
 
-    ngOnInit() {
-
-    }
+    ngOnInit() { }
 
     onCloseCreateDocument(closeForm: boolean): void {
         if (closeForm) {
