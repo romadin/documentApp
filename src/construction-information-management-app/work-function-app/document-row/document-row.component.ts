@@ -22,6 +22,7 @@ export class DocumentRowComponent implements OnInit {
     @Input() document: Document;
     @Input() currentUser: User;
     @Input() parent: Company | WorkFunction | Document;
+    @Input() upperParent: WorkFunction;
     @Output() activatedDocument: EventEmitter<ToItemsOverview> = new EventEmitter<ToItemsOverview>();
     @Output() addChapter: EventEmitter<Document> = new EventEmitter<Document>();
     iconName: string;
@@ -81,10 +82,12 @@ export class DocumentRowComponent implements OnInit {
 
     showDeleteButton(): boolean {
         if (this.currentUser.isAdmin()) {
-            if (!this.document.fromTemplate) {
+            if (this.upperParent && this.upperParent.isMainFunction) {
                 return true;
+            } else if (this.upperParent && !this.upperParent.isMainFunction) {
+                return false;
             }
-            return (isWorkFunction(this.parent) && !this.parent.isMainFunction) || !isWorkFunction(this.parent);
+            return true;
         }
         return false;
     }

@@ -4,18 +4,10 @@
     </div>
     <mat-selection-list #list *ngIf="items" [(ngModel)]="itemsSelected">
         <mat-list-option *ngFor="let item of items" [value]="item">
-            <ng-container *ngIf="isFolder(item)">
-                <div class="content">
-                    <i class="material-icons"> folder </i>
-                    {{item.name}}
-                </div>
-            </ng-container>
-            <ng-container *ngIf="!isFolder(item)">
-                <div class="content">
-                    <i class="material-icons"> insert_drive_file </i>
-                    {{item.getName()}}
-                </div>
-            </ng-container>
+            <div class="content">
+                <i class="material-icons"> insert_drive_file </i>
+                {{item.getName()}}
+            </div>
         </mat-list-option>
     </mat-selection-list>
     <div class="warning" *ngIf="items.length < 1">

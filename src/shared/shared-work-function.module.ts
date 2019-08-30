@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { SharedProjectModule } from '../construction-information-management-app/project-app/shared-project.module';
 import { FolderDetailComponent } from '../construction-information-management-app/work-function-app/folder-detail/folder-detail.component';
-import { CreateDocumentComponent } from '../construction-information-management-app/work-function-app/create-document/create-document.component';
 import { ItemListComponent } from '../construction-information-management-app/work-function-app/item-list/item-list.component';
 import { ItemReadComponent } from '../construction-information-management-app/work-function-app/item-read/item-read.component';
 import {
@@ -14,7 +13,6 @@ import { SharedModule } from './shared.module';
 @NgModule({
     declarations: [
         ItemsOverviewComponent,
-        CreateDocumentComponent,
         ItemListComponent,
         ItemReadComponent,
         PartnersComponent,
@@ -22,7 +20,6 @@ import { SharedModule } from './shared.module';
     ],
     exports: [
         ItemsOverviewComponent,
-        CreateDocumentComponent,
         ItemListComponent,
         ItemReadComponent,
         PartnersComponent,

@@ -6,7 +6,7 @@
                 <h3> {{ document.getName()}} </h3>
             </div>
             <div class="actions">
-                <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
+                <i class="material-icons" *ngIf="parent.isMainFunction" (click)="onAddChapter($event)"> note_add </i>
                 <i class="material-icons" (click)="editDocument($event)"> edit </i>
                 <i class="material-icons" *ngIf="showDeleteButton()" (click)="deleteDocument($event)"> delete_forever </i>
             </div>
@@ -20,6 +20,7 @@
                     [document]="subDocument"
                     [currentUser]="currentUser"
                     [parent]="document"
+                    [upperParent]="parent"
                     (activatedDocument)="editSubDocument(subDocument, document)"
                     (addChapter)="onAddChapter($event)">
             </cim-document-row>

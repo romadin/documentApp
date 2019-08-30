@@ -19,9 +19,3 @@
     box-shadow: none;
     padding: 0;
 }
-
-:host > div.normal > div >>> cim-create-document >>> cim-document-detail > div > .card {
-    border: none;
-    box-shadow: none;
-    padding: 0;
-}
