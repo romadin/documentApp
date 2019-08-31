@@ -17,10 +17,6 @@ import { DocumentService } from '../../../shared/packages/document-package/docum
 import { DocGetParam, DocPostData } from '../../../shared/packages/document-package/api-document.interface';
 import { Document as DocumentFile} from '../../../shared/packages/document-package/document.model';
 
-interface MouseSelection {
-    selection: Selection;
-    offset: number;
-}
 @Component({
     selector: 'cim-document-detail',
     templateUrl: './document-detail.component.html',
@@ -46,7 +42,8 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
 
     private table: HTMLElement;
     private tableDropDownWrapper: HTMLElement;
-    private currentMouseSelection: MouseSelection;
+    private selectedElement: HTMLElement;
+    private currentStartOffset: string;
     private formHasChanged = false;
     private startValue = '';
     private _document: DocumentFile;
@@ -70,6 +67,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
         if (this.currentUser.isAdmin()) {
             this.addToolbarButton();
             document.addEventListener('click', this.checkForOutsideClick);
+            this.editor.textArea.nativeElement.focus();
         }
     }
 
@@ -101,6 +99,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
                     }
                 });
             }
+            this.formHasChanged = false;
         }
     }
 
@@ -147,56 +146,46 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     private showTableMenu(e: MouseEvent) {
         e.preventDefault();
         e.stopPropagation();
-        this.currentMouseSelection = { selection: getSelection(), offset: 0 };
         this.prepTable();
-
-        const selection = this.currentMouseSelection.selection;
-        const range = selection.getRangeAt(0);
-        const textArea = this.editor.textArea.nativeElement;
-
-        if (textArea.compareDocumentPosition(range.startContainer) !== Node.DOCUMENT_POSITION_PRECEDING &&
-            textArea.compareDocumentPosition(range.endContainer) !== Node.DOCUMENT_POSITION_FOLLOWING) {
-            let endOffset = 0;
-
-            textArea.childNodes.forEach(node => {
-                endOffset += node.outerHTML ? node.outerHTML.length : node.textContent.length;
-                if (node === selection.anchorNode || node === selection.anchorNode.parentElement) {
-                    if (selection.anchorOffset === 0) {
-                        this.currentMouseSelection.offset = endOffset;
-                        return;
-                    }
-                    const rightSide = node.outerHTML.split(selection.anchorNode.textContent)[1];
-                    const rightSideOffset = (<any>selection.anchorNode).length - selection.anchorOffset;
-                    this.currentMouseSelection.offset = endOffset - rightSide.length - rightSideOffset;
-                }
-            });
-        } else {
-            this.currentMouseSelection.offset = 0;
-        }
 
         const dropDown = this.tableDropDownWrapper.children[1];
         if (!dropDown.classList.contains('show')) {
             dropDown.classList.add('show');
         }
+
+        this.setCurrentMousePosition();
     }
 
-    private addTable(columnsLength: number, rowsLength: number) {
+    private addTableInEditor(columnsLength: number, rowsLength: number) {
         const rows = Array(rowsLength).fill('');
         const columns = Array(columnsLength).fill('');
         const tableBody = document.getElementById('tempTable') ? document.getElementById('tempTable').children[0] : null;
-        const tableRows = Array.from( tableBody ? tableBody.children : this.table.children);
+        const tableRows = Array.from( tableBody ? tableBody.children : this.table.children[0].children);
 
         if (tableRows.length === 0) {
+            // this is the start so we add the table to the view.
             rows.forEach(() => {
                 const row = document.createElement('tr');
                 columns.forEach(() => {
                     row.append(this.makeColumn());
                 });
 
-                this.table.append(row);
+                this.table.children[0].append(row);
             });
-            this.spliceString(this.currentMouseSelection.offset, 0, this.table.outerHTML);
-        } else if (tableRows.length < rowsLength) {
+
+            const offset = parseInt(this.currentStartOffset, 10);
+            let currentNode = this.selectedElement;
+            currentNode = currentNode.parentElement ? currentNode : document.getElementById('clickedElement');
+
+            if (offset === 0) {
+                currentNode.insertAdjacentHTML('afterbegin', this.table.outerHTML);
+            } else {
+                let inner = currentNode.childElementCount > 0 ? currentNode.innerHTML : currentNode.innerText;
+                inner = inner.slice(0, offset) + this.table.outerHTML + inner.slice(offset);
+                currentNode.innerHTML = inner;
+            }
+            this.content = this.editor.textArea.nativeElement.innerHTML;
+        } else if (tableBody && tableRows.length < rowsLength) {
             // update oldRows.
             tableRows.forEach((row) => {
                 this.addOrRemoveColumn(row, columnsLength);
@@ -209,11 +198,13 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
                 this.addOrRemoveColumn(row, columnsLength);
                 tableBody.append(row);
             }
-        } else if (tableRows.length > rowsLength) {
+        } else if (tableBody && tableRows.length > rowsLength) {
             // remove rows.
             const rowsToRemoveNumber = tableRows.length - rowsLength;
             for (let i = 0; i < rowsToRemoveNumber; i++) {
-                tableBody.children[tableBody.children.length - 1 - i].remove();
+                if (tableBody.children[tableBody.children.length - 1 - i]) {
+                    tableBody.children[tableBody.children.length - 1 - i].remove();
+                }
             }
         } else if (tableRows.length === rowsLength) {
             // only need to remove or add a column
@@ -235,6 +226,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
         this.resetColorBlocksAndTable(<HTMLElement>dropDown, false);
 
         this.content = this.editor.textArea.nativeElement.innerHTML;
+        this.formHasChanged = true;
     }
 
     private makeTableDropDown(): Node {
@@ -266,6 +258,29 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
         return dropDown;
     }
 
+    private setCurrentMousePosition(): void {
+        let selection: any = getSelection();
+        const range = selection.getRangeAt(0).cloneRange();
+        const textArea = this.editor.textArea.nativeElement;
+
+        if (textArea.compareDocumentPosition(range.startContainer) === Node.DOCUMENT_POSITION_PRECEDING ||
+            textArea.compareDocumentPosition(range.endContainer) === Node.DOCUMENT_POSITION_FOLLOWING) {
+            // if the mouse cursor is outside the text area force focus.
+            textArea.focus();
+            selection = getSelection();
+        }
+
+        selection = selection.anchorNode === this.editor.textArea.nativeElement ? selection.anchorNode : selection.anchorNode.parentElement;
+        const currentNode = selection;
+        currentNode.setAttribute('id', 'clickedElement');
+        this.selectedElement = currentNode;
+
+        // set current offset of the selected element.innerText
+        let offset: any = getSelection().getRangeAt(0).startOffset;
+        offset = offset.toString();
+        this.currentStartOffset = offset;
+    }
+
     /**
      * Color the blocks form the drop down menu when clicked on table.
      */
@@ -286,8 +301,10 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
             // remove from left to right
             blocks.filter((value, index) => (index + 1 ) > columnNumber).map(block => block.classList.remove('show'));
         });
-        this.updateLabel(columnNumber, rowNumber);
-        this.addTable(columnNumber, rowNumber);
+        setTimeout(() => {
+            this.updateLabel(columnNumber, rowNumber);
+            this.addTableInEditor(columnNumber, rowNumber);
+        }, 300);
     }
 
     private makeColumn(): HTMLElement {
@@ -324,7 +341,14 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
             const regexString = this.table.outerHTML.replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\//g, '\\/');
             const regex = new RegExp(regexString, 'g');
             this.content = this.content.replace(regex, '');
+        } else {
+            const clicked = document.getElementById('clickedElement');
+            if (clicked) {
+                clicked.setAttribute('id', '');
+                this.selectedElement = clicked;
+            }
         }
+
         this.prepTable();
         this.updateLabel(0, 0);
     }
@@ -337,6 +361,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     private prepTable(): void {
         this.table = document.createElement('table');
         this.table.setAttribute('id', 'tempTable');
+        this.table.append(document.createElement('tbody'));
         this.table.style.width = '100%';
         this.table.style.borderCollapse = 'collapse';
         this.table.style.tableLayout = 'fixed';
@@ -369,10 +394,6 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     private updateForm(): void {
         this.documentForm.controls.name.setValue(this.document.getName());
         this.startValue = this.content = this.document.content !== null ? this.document.content : '';
-    }
-
-    private spliceString (start, delCount, newSubStr) {
-        this.content = this.content.slice(0, start) + newSubStr + this.content.slice(start + Math.abs(delCount));
     }
 
     private onFormChanges() {
