@@ -1,29 +1,41 @@
 <div class="detail" *ngIf="event && !user.isAdmin()" [@fadeIn]>
-  <div class="header">
-    <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
-    <h3> {{ 'Activiteit ' + event.name }} </h3>
-  </div>
-  <div class="content">
-    <div class="text">
-      <label>Omschrijving: </label>
-      <span>{{ event.description }}</span>
+    <div class="header">
+        <button mat-button (click)="onCloseView()" > <i class="material-icons"> close </i> </button>
+        <h3> {{ 'Activiteit ' + event.name }} </h3>
     </div>
-    <div class="text">
-      <label>Begin datum: </label>
-      <span>{{ event.startDate | date }}</span>
+    <div class="content">
+        <div class="text">
+            <h4>{{ event.name }}</h4>
+        </div>
+        <div class="text">
+            <label>Omschrijving: </label>
+            <span>{{ event.description }}</span>
+        </div>
+        <div class="text">
+            <label>Begin datum: </label>
+            <span>{{ event.startDate | date: 'd MMM, y, h:mm': 'GMT+2' }}</span>
+        </div>
+        <div class="text">
+            <label>Eind datum: </label>
+            <span>{{ event.endDate | date: 'd MMM, y, h:mm': 'GMT+2' }}</span>
+        </div>
+        <div *ngIf="testBool"> <h1>testing</h1></div>
+        <div class="location">
+            <h4>Locatie</h4>
+            <div class="text">
+                <label>Straat naam: </label>
+                <span>{{ event.location.streetName }}</span>
+
+            </div>
+            <div class="text">
+                <label>Plaats: </label>
+                <span>{{ event.location.residence }}</span>
+            </div>
+            <div class="map" *ngIf="location">
+                <agm-map [latitude]="location.latitude" [longitude]="location.longitude">
+                    <agm-marker [latitude]="location.latitude" [longitude]="location.longitude"></agm-marker>
+                </agm-map>
+            </div>
+        </div>
     </div>
-    <div class="text">
-      <label>Eind datum: </label>
-      <span>{{ event.endDate | date }}</span>
-    </div>
-    <div *ngIf="testBool"> <h1>testing</h1></div>
-    <div class="location">
-      <label>Locatie</label>
-      <div class="map" *ngIf="location">
-        <agm-map [latitude]="location.latitude" [longitude]="location.longitude">
-          <agm-marker [latitude]="location.latitude" [longitude]="location.longitude"></agm-marker>
-        </agm-map>
-      </div>
-    </div>
-  </div>
 </div>

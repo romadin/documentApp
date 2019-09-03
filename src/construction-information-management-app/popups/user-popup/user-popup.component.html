@@ -1,66 +1,76 @@
-<h1 mat-dialog-title>{{ data.title }}</h1>
-<div class="profilePicture">
-    <label for="file">
-        <img class="avatar mat-card-avatar" id="blah" [src]="imageSrc" alt="your image" />
-        <div class="overlay">
-            <div class="text"> Wijzigen </div>
+<mat-button-toggle-group name="itemPicker" aria-label="Font Style" class="switchItemButton">
+    <mat-button-toggle (change)="determineRightSide($event)" value="new" [checked]="true">Nieuwe gebruiker</mat-button-toggle>
+    <mat-button-toggle (change)="determineRightSide($event)" value="list">Bestaande gebruikers</mat-button-toggle>
+</mat-button-toggle-group>
+<div *ngIf="viewType === 'new'">
+    <h1 mat-dialog-title>{{ data.title }}</h1>
+    <div class="profilePicture">
+        <label for="file">
+            <img class="avatar mat-card-avatar" id="blah" [src]="imageSrc" alt="your image" />
+            <div class="overlay">
+                <div class="text"> Wijzigen </div>
+            </div>
+        </label>
+    </div>
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="formWrapper">
+            <div mat-dialog-content>
+                <mat-form-field>
+                    <input matInput placeholder="Voornaam" formControlName="firstName" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Tussenvoegsel" formControlName="insertion">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Achternaam" formControlName="lastName" required>
+                </mat-form-field>
+                <div *ngIf="userForm.get('email').invalid && (userForm.get('email').dirty || userForm.get('email').touched)" class="alert alert-danger">
+                    <div *ngIf="userForm.get('email').errors.email">
+                        De e-mailadres heeft een ongeldig formaat
+                    </div>
+                    <div *ngIf="userForm.get('email').errors.duplicate">
+                        De email bestaat al
+                    </div>
+                </div>
+                <mat-form-field>
+                    <input type="email" matInput placeholder="Email" formControlName="email" required>
+                </mat-form-field>
+                <div *ngIf="userForm.get('phoneNumber').invalid && (userForm.get('phoneNumber').dirty || userForm.get('phoneNumber').touched)" class="alert alert-danger">
+                    <div *ngIf="userForm.get('phoneNumber').errors.duplicate">
+                        De telefoon nummer bestaat al
+                    </div>
+                </div>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Telefoon nummer" formControlName="phoneNumber" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Functie" formControlName="function" required>
+                </mat-form-field>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Bedrijfsnaam" formControlName="company" [matAutocomplete]="auto" required>
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="$event.preventDefault()">
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayView">
+                        <mat-option *ngFor="let company of companies" [value]="company">{{company.name}}</mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+                <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
+            </div>
+            <mat-selection-list #projects>
+                <h4> Kies project </h4>
+                <mat-list-option mat-line *ngFor="let project of allProjects" (click)="onProjectSelect(project)" [disabled]="project === currentProject" [selected]="project === currentProject">
+                    {{ project.name }}
+                </mat-list-option>
+            </mat-selection-list>
         </div>
-    </label>
+        <div mat-dialog-actions>
+            <button mat-raised-button type="submit" [disabled]="!currentProject">{{ data.submitButton }}</button>
+            <button mat-button (click)="onNoClick($event)">Annuleren</button>
+        </div>
+    </form>
 </div>
-<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-    <div class="formWrapper">
-        <div mat-dialog-content>
-            <mat-form-field>
-                <input matInput placeholder="Voornaam" formControlName="firstName" required>
-            </mat-form-field>
-            <mat-form-field>
-                <input matInput placeholder="Tussenvoegsel" formControlName="insertion">
-            </mat-form-field>
-            <mat-form-field>
-                <input matInput placeholder="Achternaam" formControlName="lastName" required>
-            </mat-form-field>
-            <div *ngIf="userForm.get('email').invalid && (userForm.get('email').dirty || userForm.get('email').touched)" class="alert alert-danger">
-                <div *ngIf="userForm.get('email').errors.email">
-                    De e-mailadres heeft een ongeldig formaat
-                </div>
-                <div *ngIf="userForm.get('email').errors.duplicate">
-                    De email bestaat al
-                </div>
-            </div>
-            <mat-form-field>
-                <input type="email" matInput placeholder="Email" formControlName="email" required>
-            </mat-form-field>
-            <div *ngIf="userForm.get('phoneNumber').invalid && (userForm.get('phoneNumber').dirty || userForm.get('phoneNumber').touched)" class="alert alert-danger">
-                <div *ngIf="userForm.get('phoneNumber').errors.duplicate">
-                    De telefoon nummer bestaat al
-                </div>
-            </div>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Telefoon nummer" formControlName="phoneNumber" required>
-            </mat-form-field>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Functie" formControlName="function" required>
-            </mat-form-field>
-            <mat-form-field>
-                <input type="text" matInput placeholder="Bedrijfsnaam" formControlName="company" [matAutocomplete]="auto" required>
-                <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="$event.preventDefault()">
-                    <mat-icon>arrow_drop_down</mat-icon>
-                </button>
-                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayView">
-                    <mat-option *ngFor="let company of companies" [value]="company">{{company.name}}</mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-            <input [hidden]="true" id="file" multiple type="file" (change)="onImageUpload($event)">
-        </div>
-        <mat-selection-list #projects>
-            <h4> Kies project </h4>
-            <mat-list-option mat-line *ngFor="let project of allProjects" (click)="onProjectSelect(project)" [disabled]="project === currentProject" [selected]="project === currentProject">
-                {{ project.name }}
-            </mat-list-option>
-        </mat-selection-list>
-    </div>
-    <div mat-dialog-actions>
-        <button mat-raised-button type="submit" [disabled]="!currentProject">{{ data.submitButton }}</button>
-        <button mat-button (click)="onNoClick($event)">Annuleren</button>
-    </div>
-</form>
+<cim-users-list *ngIf="viewType === 'list'"
+                [users]="allUsers"
+                (closeList)="onNoClick($event)">
+</cim-users-list>

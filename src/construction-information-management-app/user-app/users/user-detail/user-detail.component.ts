@@ -7,7 +7,6 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { duplicateValidator } from '../../../../shared/form-validator/custom-validators';
-import { objectIsEmpty } from '../../../../shared/helpers/practice-functions';
 import { Company } from '../../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../../shared/packages/company-package/interface/company.interface';
@@ -53,6 +52,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     private formHasChanged = false;
     private organisation: Organisation;
     private companiesByProjectId: CompanyByProjectId = {};
+    private projectsUserHasChanged: boolean;
     private _user: User;
 
     constructor(
@@ -145,6 +145,9 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
                         if (value instanceof User) {
                             this.toast.showSuccess('Gebruiker: ' +  value.getFullName() + ' is bewerkt', 'Bewerkt');
                             this.onCloseDetailView();
+                            if (this.projectsUserHasChanged) {
+                                this.companyService.updateCacheObject = true;
+                            }
                         } else {
                             this.showErrorMessage(value);
                         }
@@ -156,6 +159,9 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
                             this.mailService.sendUserActivation(user);
                             this.toast.showSuccess('Gebruiker: ' + this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
                             this.user = user;
+                            if (this.projectsUserHasChanged) {
+                                this.companyService.updateCacheObject = true;
+                            }
                         } else {
                             this.showErrorMessage(<ErrorMessage>user);
                         }
@@ -309,6 +315,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         if (this.user) {
             if (this.user.projectsId.length !== Object.keys(this.selectedProjects).length) {
                 this.formHasChanged = true;
+                this.projectsUserHasChanged = true;
                 return;
             }
             for (const selectedProjectId in this.selectedProjects) {

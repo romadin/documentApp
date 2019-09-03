@@ -9,7 +9,7 @@ import { Organisation } from '../../../shared/packages/organisation-package/orga
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 
-type RightSideView = 'new' | 'list';
+export type RightSideView = 'new' | 'list';
 @Component({
     selector: 'cim-partners',
     templateUrl: './partners.component.html',

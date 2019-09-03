@@ -1,12 +1,13 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatButtonToggleChange, MatDialog, MatDialogRef } from '@angular/material';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 import { isCompany } from '../../../shared/packages/company-package/interface/company.interface';
 import { CompanyByProjectId } from '../../user-app/users/user-detail/user-detail.component';
+import { RightSideView } from '../../work-function-app/partners/partners.component';
 
 import { DefaultPopupData } from '../project-popup/project-popup.component';
 import { UserService } from '../../../shared/packages/user-package/user.service';
@@ -30,7 +31,7 @@ export interface SelectedProject {
   styleUrls: ['./user-popup.component.css']
 })
 export class UserPopupComponent {
-    public userForm: FormGroup = new FormGroup({
+    userForm: FormGroup = new FormGroup({
         firstName: new FormControl(''),
         insertion: new FormControl(''),
         lastName: new FormControl(''),
@@ -46,6 +47,8 @@ export class UserPopupComponent {
     imageToUpload: File;
     currentProject: Project;
     companies: Company[];
+    viewType: RightSideView = 'new';
+    allUsers: User[];
 
     private existingItems: string[] = [];
     private companiesByProjectId: CompanyByProjectId = {};
@@ -70,50 +73,57 @@ export class UserPopupComponent {
             this.currentProject = this.allProjects.find(project => project.id === projectId);
             this.selectedProjects[this.currentProject.id] = this.currentProject;
         });
+        this.userService.getUsers({organisationId: this.data.organisation.id}).subscribe((users) => {
+            this.allUsers = users;
+        });
 
         this.userForm.controls.email.setValidators([Validators.email]);
     }
 
-    onNoClick(event: MouseEvent): void {
-        event.preventDefault();
-        event.stopPropagation();
+    onNoClick(event: MouseEvent | boolean): void {
+        if (event instanceof MouseEvent) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         this.dialogRef.close();
     }
 
     onSubmit() {
-        if ( objectIsEmpty(this.selectedProjects) ) {
-            return alert('Er is geen projectId gekozen!');
-        }
-        this.loadingService.isLoading.next(true);
-
-        const data = new FormData();
-
-        data.append('firstName', this.userForm.controls.firstName.value);
-        data.append('insertion', this.userForm.controls.insertion.value ? this.userForm.controls.insertion.value : '');
-        data.append('lastName', this.userForm.controls.lastName.value);
-        data.append('email', this.userForm.controls.email.value);
-        data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
-        data.append('function', this.userForm.controls.function.value);
-        data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));
-
-        if (this.imageToUpload) {
-            data.append('image', this.imageToUpload, this.imageToUpload.name);
-        }
-        this.promiseCompany().then((company: Company| false) => {
-            if (company) {
-                data.append('companyId', company.id.toString(10));
+        if (this.userForm.valid) {
+            if ( objectIsEmpty(this.selectedProjects) ) {
+                return alert('Er is geen projectId gekozen!');
             }
-            this.userService.postUser(data, {organisationId: this.data.organisation.id }).subscribe((user: User | ErrorMessage) => {
-                this.loadingService.isLoading.next(false);
-                if (user instanceof User) {
-                    this.dialogRef.close(user);
-                    this.mailService.sendUserActivation(user);
-                    this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
-                } else {
-                    this.showErrorMessage(<ErrorMessage>user);
+            this.loadingService.isLoading.next(true);
+
+            const data = new FormData();
+
+            data.append('firstName', this.userForm.controls.firstName.value);
+            data.append('insertion', this.userForm.controls.insertion.value ? this.userForm.controls.insertion.value : '');
+            data.append('lastName', this.userForm.controls.lastName.value);
+            data.append('email', this.userForm.controls.email.value);
+            data.append('phoneNumber', this.userForm.controls.phoneNumber.value);
+            data.append('function', this.userForm.controls.function.value);
+            data.append('projectsId', JSON.stringify(Object.keys(this.selectedProjects)));
+
+            if (this.imageToUpload) {
+                data.append('image', this.imageToUpload, this.imageToUpload.name);
+            }
+            this.promiseCompany().then((company: Company| false) => {
+                if (company) {
+                    data.append('companyId', company.id.toString(10));
                 }
+                this.userService.postUser(data, {organisationId: this.data.organisation.id }).subscribe((user: User | ErrorMessage) => {
+                    this.loadingService.isLoading.next(false);
+                    if (user instanceof User) {
+                        this.dialogRef.close(user);
+                        this.mailService.sendUserActivation(user);
+                        this.toast.showSuccess('Gebruiker: ' +  this.userForm.controls.firstName.value + ' is toegevoegd', 'Toegevoegd');
+                    } else {
+                        this.showErrorMessage(<ErrorMessage>user);
+                    }
+                });
             });
-        });
+        }
     }
 
     onProjectSelect(project: Project): void {
@@ -135,6 +145,9 @@ export class UserPopupComponent {
 
             reader.readAsDataURL(this.imageToUpload);
         }
+    }
+    determineRightSide(e: MatButtonToggleChange): void {
+        this.viewType = e.value;
     }
 
     displayView(object?: any): string | undefined {

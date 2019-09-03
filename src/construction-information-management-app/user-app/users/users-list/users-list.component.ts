@@ -42,9 +42,10 @@ export class UsersListComponent implements OnInit {
         e.stopPropagation();
         e.preventDefault();
         const data = new FormData();
-        data.append('projectsId', JSON.stringify([this.projectId]));
 
         this.usersSelected.forEach(user => {
+            user.projectsId.push(this.projectId);
+            data.append('projectsId', JSON.stringify(user.projectsId));
             this.userService.editUser(user, data).subscribe(() => {
                 this.users.splice(this.users.findIndex(c => c.id === user.id), 1);
                 this.mailService.sendProjectAdded(user, this.projectId);

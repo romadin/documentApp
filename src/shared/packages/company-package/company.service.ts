@@ -27,6 +27,7 @@ interface CompanyCacheObservable {
 }
 @Injectable()
 export class CompanyService {
+    updateCacheObject = false;
     private path = '/companies';
     private companiesByProjectCache: CompaniesCacheObservable = {};
     private companiesByIdCache: CompanyCacheObservable = {};
@@ -49,7 +50,7 @@ export class CompanyService {
     }
 
     getCompaniesByProject(project: Project, workFunction?: WorkFunction): BehaviorSubject<Company[]> {
-        if (this.companiesByProjectCache[project.id]) {
+        if (this.companiesByProjectCache[project.id] && !this.updateCacheObject) {
             if (workFunction) {
                 this.companiesByProjectCache[project.id].getValue().map(c => {
                     /* if the parent has changed that means that there are other documents linked to the companies*/
@@ -66,7 +67,10 @@ export class CompanyService {
         const params = { 'projectsId[]': project.id};
         const newSubject: BehaviorSubject<Company[]> = new BehaviorSubject<Company[]>(null);
         this.apiService.get(this.path, params).subscribe(
-            results => newSubject.next(results.map(result => this.makeCompany(result, workFunction)))
+            results => {
+                newSubject.next(results.map(result => this.makeCompany(result, workFunction)));
+                this.updateCacheObject = false;
+            }
         );
         this.companiesByProjectCache[project.id] = newSubject;
         return this.companiesByProjectCache[project.id];
