@@ -6,7 +6,7 @@
                 <span> {{ chapter.name }} </span>
             </div>
             <div class="actions">
-                <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
+                <i class="material-icons" *ngIf="parentItem.isMainFunction" (click)="onAddChapter($event)"> note_add </i>
                 <i class="material-icons" (click)="onChapterClick($event)"> edit </i>
                 <i class="material-icons" (click)="deleteChapter($event)"> delete_forever </i>
             </div>
