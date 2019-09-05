@@ -111,6 +111,6 @@ export class ChapterService {
             };
         }
 
-        return chapter ? this.cacheService.cacheContainer[cacheName] : this.cacheService.cacheContainer[cacheName][parent.id];
+        return this.cacheService.cacheContainer[cacheName][parent.id] ? this.cacheService.cacheContainer[cacheName][parent.id] : this.cacheService.cacheContainer[cacheName];
     }
 }

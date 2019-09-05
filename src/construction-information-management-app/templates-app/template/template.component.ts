@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { combineLatest } from 'rxjs';
 import { MatDialog } from '@angular/material';
 
 import { ChapterPackage } from './chapter-detail/chapter-detail.component';
-import { HeadlinePackage } from './headline/headline.component';
 import { Template } from '../../../shared/packages/template-package/template.model';
 import { HeadlineService } from '../../../shared/packages/headline-package/headline.service';
 import { isHeadline } from '../../../shared/packages/headline-package/interface/headline-api-response.interface';

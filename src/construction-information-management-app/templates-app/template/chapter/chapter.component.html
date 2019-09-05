@@ -14,7 +14,7 @@
         <i class="material-icons arrowRight" *ngIf="!subChapters || subChapters.length === 0"> arrow_right </i>
     </mat-expansion-panel-header>
 
-    <div cdkDropList class="dragList" (cdkDropListDropped)="drop($event)">
+    <div cdkDropList class="dragList" (cdkDropListDropped)="drop($event)" [cdkDropListData]="chapter">
         <div class="dragItem" *ngFor="let subChapter of subChapters" cdkDrag [cdkDragData]="subChapter">
             <cim-chapter
                     [chapter]="subChapter"

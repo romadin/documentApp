@@ -1,6 +1,9 @@
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { Document } from '../../../../shared/packages/document-package/document.model';
+import { isChapter } from '../../../../shared/packages/chapter-package/interface/chapter.interface';
+import { Headline } from '../../../../shared/packages/headline-package/headline.model';
+import { isHeadline } from '../../../../shared/packages/headline-package/interface/headline-api-response.interface';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
@@ -72,4 +75,14 @@ export class ChapterComponent implements OnInit {
         });
     }
 
+    drop(event: CdkDragDrop<any>) {
+        const parentChapter: Chapter = event.container.data;
+        const chapter: Chapter = event.item.data;
+        const body: any  = {order: event.currentIndex + 1};
+
+        moveItemInArray(this.subChapters, event.previousIndex, event.currentIndex);
+        this.chapterService.updateChapter(chapter, body, {}, parentChapter).subscribe((value) => {
+            event.item.data = value;
+        });
+    }
 }
