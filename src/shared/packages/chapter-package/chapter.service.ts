@@ -101,16 +101,18 @@ export class ChapterService {
 
     private getCacheItem(parent: Chapter| WorkFunction, chapter?: Chapter): CacheItem | CacheGetParam {
         const cacheName: string = isWorkFunction(parent) ? this.cacheItemNameWorkFunction
-            : chapter ? `${this.cacheItemNameChapter}${chapter.id}` : this.cacheItemNameChapter;
+            : `${this.cacheItemNameChapter}${chapter ? chapter.id : ''}`;
 
-        if (!this.cacheService.cacheContainer[cacheName][parent.id] && !this.cacheService.cacheContainer[cacheName]) {
+        if (this.cacheService.cacheContainer[cacheName] && this.cacheService.cacheContainer[cacheName][parent.id]) {
+            return this.cacheService.cacheContainer[cacheName][parent.id];
+        } else if (this.cacheService.cacheContainer[cacheName]) {
+            return <CacheItem>this.cacheService.cacheContainer[cacheName];
+        } else {
             return {
                 name: cacheName,
                 url: this.path,
                 parent: parent,
             };
         }
-
-        return this.cacheService.cacheContainer[cacheName][parent.id] ? this.cacheService.cacheContainer[cacheName][parent.id] : this.cacheService.cacheContainer[cacheName];
     }
 }

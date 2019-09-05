@@ -21,6 +21,6 @@ export interface ChapterUpdateBody {
 export interface ChapterPostBody {
     name: string;
     content?: string;
-    headlineId?: number;
+    parentChapterId?: number;
     order?: number;
 }

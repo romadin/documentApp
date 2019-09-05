@@ -64,7 +64,7 @@ mat-expansion-panel-header {
 mat-expansion-panel-header:hover {
     background: var(--secondary-hover-color) !important;
 }
-.toggleTitle.disabled {
+.toggleTitle.noSubs {
     margin-right: 7px;
 }
 .toggleTitle {

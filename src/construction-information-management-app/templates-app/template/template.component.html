@@ -21,7 +21,7 @@
                         <div class="dragItem" *ngFor="let item of itemsContainer[workFunction.id]" cdkDrag [cdkDragData]="item">
                             <cim-chapter [chapter]="item"
                                          [parentItem]="workFunction"
-                                         (editChapter)="onChapterClick($event)">
+                                         (editChapter)="onChapterClick($event)" (addChapter)="addChapter($event)">
                             </cim-chapter>
                         </div>
                     </div>

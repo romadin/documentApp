@@ -1,6 +1,6 @@
 <mat-expansion-panel class="card expansion-panel" *ngIf="!chapter.parentChapterId" [disabled]="!subChapters || subChapters.length === 0" (click)="onChapterClick($event, true)">
     <mat-expansion-panel-header>
-        <mat-panel-title class="toggleTitle">
+        <mat-panel-title class="toggleTitle" [ngClass]="{'noSubs' : !subChapters || subChapters.length === 0}">
             <div class="rowTitle">
                 <i class="material-icons">  {{ !subChapters || subChapters.length === 0 ? 'description' : 'folder_open' }} </i>
                 <span> {{ chapter.name }} </span>

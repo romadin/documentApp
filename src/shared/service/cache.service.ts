@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { map, mergeMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
+import { Chapter } from '../packages/chapter-package/chapter.model';
+import { WorkFunction } from '../packages/work-function-package/work-function.model';
 
 import { ApiService } from './api.service';
 
@@ -24,7 +26,7 @@ export interface CacheGetParam {
     url?: string;
     options?: any;
     hash?: string;
-    parent?: any;
+    parent?: Chapter | WorkFunction;
 }
 
 @Injectable()
@@ -88,7 +90,7 @@ export class CacheService {
                     if (!this.cacheContainer[cacheItem.name]) {
                         this.cacheContainer[cacheItem.name] = {};
                     }
-                    this.cacheContainer[cacheItem.name][cacheItem.parent] = cachedItem;
+                    this.cacheContainer[cacheItem.name][cacheItem.parent.id] = cachedItem;
 
                 } else {
                     this.cacheContainer[cacheItem.name] = cachedItem;

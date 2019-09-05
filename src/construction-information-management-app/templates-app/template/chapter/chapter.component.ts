@@ -1,16 +1,13 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { isChapter } from '../../../../shared/packages/chapter-package/interface/chapter.interface';
-import { Headline } from '../../../../shared/packages/headline-package/headline.model';
-import { isHeadline } from '../../../../shared/packages/headline-package/interface/headline-api-response.interface';
+import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
+import { ToastService } from '../../../../shared/toast.service';
+import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
-import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
-import { ToastService } from '../../../../shared/toast.service';
-import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'cim-chapter',
@@ -21,6 +18,7 @@ export class ChapterComponent implements OnInit {
     @Input() chapter: Chapter;
     @Input() parentItem: Chapter | WorkFunction;
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
+    @Output() addChapter: EventEmitter<Chapter> = new EventEmitter<Chapter>();
     subChapters: Chapter[];
 
     constructor(private dialog: MatDialog, private chapterService: ChapterService, private toast: ToastService) { }
@@ -31,9 +29,7 @@ export class ChapterComponent implements OnInit {
 
     onAddChapter(e: Event) {
         e.stopPropagation();
-
-        console.log('show add chapter view');
-        // this.addChapter.emit(this.headline);
+        this.addChapter.emit(this.chapter);
     }
 
     onChapterClick(value, clickedRow = false): void {
