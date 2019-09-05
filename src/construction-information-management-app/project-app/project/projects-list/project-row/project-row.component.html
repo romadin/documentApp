@@ -5,8 +5,14 @@
 
     <mat-card-actions class="actions">
         <div class="actionsEditDelete" *ngIf="currentUser.isAdmin()">
-            <i class="material-icons" (click)="editProject($event, project.id)"> edit </i>
-            <i class="material-icons" (click)="deleteProject($event, project.id)"> delete_forever </i>
+            <i class="material-icons" (click)="editProject($event, project.id)"
+               matTooltip="Bewerken"
+               [matTooltipPosition]="'above'"
+               matTooltipClass="tooltip"> edit </i>
+            <i class="material-icons" (click)="deleteProject($event, project.id)"
+               matTooltip="Verwijderen"
+               [matTooltipPosition]="'above'"
+               matTooltipClass="tooltip"> delete_forever </i>
         </div>
         <i class="material-icons arrow"> arrow_right </i>
     </mat-card-actions>

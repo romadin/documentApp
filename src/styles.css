@@ -248,6 +248,21 @@ mat-form-field.mat-form-field {
 .tableDropDown > .labelWrapper > #rowCounter {
     margin-left: 5px;
 }
-
-
 /** END!!!!!!!!!!!!!!!!!!!!!!*/
+.mat-tooltip.tooltip {
+    background: #353535;
+    font-size: 12px;
+    overflow: visible;
+}
+.tooltip::after {
+    position: absolute;
+    content: " ";
+    top: 100%;
+    left: 50%;
+    margin-left: -8px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 10px 6px 0 6px;
+    border-color: rgba(37, 36, 36, 0.9) transparent transparent transparent;
+}

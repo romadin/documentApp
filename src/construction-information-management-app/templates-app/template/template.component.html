@@ -9,9 +9,18 @@
                             <span> {{ workFunction.name }} </span>
                         </div>
                         <div class="actions">
-                            <i class="material-icons" (click)="addChapter(workFunction, $event)"> note_add </i>
-                            <i class="material-icons" (click)="editWorkFunction($event, workFunction)"> edit </i>
-                            <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"> delete_forever </i>
+                            <i class="material-icons" (click)="addChapter(workFunction, $event)"
+                               matTooltip="Hoofdstuk toevoegen"
+                               [matTooltipPosition]="'above'"
+                               matTooltipClass="tooltip"> note_add </i>
+                            <i class="material-icons" (click)="editWorkFunction($event, workFunction)"
+                               matTooltip="Bewerken"
+                               [matTooltipPosition]="'above'"
+                               matTooltipClass="tooltip"> edit </i>
+                            <i class="material-icons" (click)="deleteWorkFunction($event, workFunction)"
+                               matTooltip="Verwijderen"
+                               [matTooltipPosition]="'above'"
+                               matTooltipClass="tooltip"> delete_forever </i>
                         </div>
                     </mat-panel-title>
                 </mat-expansion-panel-header>

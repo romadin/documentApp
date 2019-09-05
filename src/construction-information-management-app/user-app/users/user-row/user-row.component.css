@@ -4,7 +4,7 @@ mat-card.userRow {
     border: solid 1px #cecece;
     border-bottom: none;
     cursor: pointer;
-    padding: 10px;
+    padding: 10px 18px;
     color: var(--primary-color);
 }
 mat-card.userRow.mat-card:hover {
@@ -22,6 +22,7 @@ mat-card-subtitle.mat-card-subtitle {
 
 mat-card-actions.actionButton {
     display: flex;
+    padding-right: 8px;
 }
 mat-card-actions.actionButton > .actionsEditDelete {
     display: inline;

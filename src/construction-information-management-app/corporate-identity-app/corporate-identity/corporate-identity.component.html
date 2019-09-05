@@ -6,7 +6,10 @@
                 <h3> Hoofd kleur</h3>
             </div>
             <div class="actions">
-                <i class="material-icons"> edit </i>
+                <i class="material-icons"
+                   matTooltip="Bewerken"
+                   [matTooltipPosition]="'above'"
+                   matTooltipClass="tooltip"> edit </i>
             </div>
         </div>
         <div class="cardRow rippleRow" (click)="onEditColor('secondary', organisation.secondaryColor)" [style.color]="organisation.secondaryColor">
@@ -15,7 +18,10 @@
                 <h3 [style.color]="organisation.secondaryColor"> Sub Kleur</h3>
             </div>
             <div class="actions">
-                <i class="material-icons"> edit </i>
+                <i class="material-icons"
+                   matTooltip="Bewerken"
+                   [matTooltipPosition]="'above'"
+                   matTooltipClass="tooltip"> edit </i>
             </div>
         </div>
         <div class="cardRow rippleRow" (click)="onEditLogo()">
@@ -24,7 +30,10 @@
                 <h3> Logo</h3>
             </div>
             <div class="actions">
-                <i class="material-icons"> edit </i>
+                <i class="material-icons"
+                   matTooltip="Bewerken"
+                   [matTooltipPosition]="'above'"
+                   matTooltipClass="tooltip"> edit </i>
             </div>
         </div>
     </div>

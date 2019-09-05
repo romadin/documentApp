@@ -11,8 +11,14 @@
                     <span class="off">UIT</span>
                 </span>
         </label>
-        <i class="material-icons" *ngIf="currentUser.isAdmin() && !workFunction.fromTemplate" (click)="onEditWorkFunction($event)"> edit </i>
-        <i class="material-icons" *ngIf="currentUser.isAdmin() && !workFunction.fromTemplate" (click)="deleteWorkFunction($event)"> delete_forever </i>
+        <i class="material-icons" *ngIf="currentUser.isAdmin() && !workFunction.fromTemplate" (click)="onEditWorkFunction($event)"
+           matTooltip="Bewerken"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> edit </i>
+        <i class="material-icons" *ngIf="currentUser.isAdmin() && !workFunction.fromTemplate" (click)="deleteWorkFunction($event)"
+           matTooltip="Verwijderen"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> delete_forever </i>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>

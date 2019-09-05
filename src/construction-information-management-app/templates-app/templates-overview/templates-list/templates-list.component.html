@@ -4,8 +4,13 @@
         {{ template.name }}
     </div>
     <div class="actions">
-        <i class="material-icons" (click)="editTemplate($event, template)"> edit </i>
-        <i class="material-icons delete" *ngIf="!template.isDefault" (click)="deleteTemplate($event, template)"> delete_forever </i>
+        <i class="material-icons" (click)="editTemplate($event, template)"
+           matTooltip="Bewerken"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> edit </i>
+        <i class="material-icons delete" *ngIf="!template.isDefault" (click)="deleteTemplate($event, template)"
+           matTooltip="Verwijderen"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> delete_forever </i>
     </div>
-
 </div>

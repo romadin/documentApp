@@ -51,13 +51,7 @@ export class Company {
         this._parent = value;
     }
 
-    // getItems(workFunction: WorkFunction): BehaviorSubject<(Document | Folder)[]> {
-    //
-    //     return workFunctionItems;
-    // }
-
     addDocuments(items: Document[]): void {
-        console.log('in the add items');
         const currentItems = this.documents.getValue();
         this.documents.next(currentItems.concat(items));
     }

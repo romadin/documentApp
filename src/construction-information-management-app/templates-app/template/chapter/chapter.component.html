@@ -6,9 +6,18 @@
                 <span> {{ chapter.name }} </span>
             </div>
             <div class="actions">
-                <i class="material-icons" *ngIf="parentItem.isMainFunction" (click)="onAddChapter($event)"> note_add </i>
-                <i class="material-icons" (click)="onChapterClick($event)"> edit </i>
-                <i class="material-icons" (click)="deleteChapter($event)"> delete_forever </i>
+                <i class="material-icons" *ngIf="parentItem.isMainFunction" (click)="onAddChapter($event)"
+                   matTooltip="Subhoofdstuk toevoegen"
+                   [matTooltipPosition]="'above'"
+                   matTooltipClass="tooltip"> note_add </i>
+                <i class="material-icons" (click)="onChapterClick($event)"
+                   matTooltip="Bewerken"
+                   [matTooltipPosition]="'above'"
+                   matTooltipClass="tooltip"> edit </i>
+                <i class="material-icons" (click)="deleteChapter($event)"
+                   matTooltip="Verwijderen"
+                   [matTooltipPosition]="'above'"
+                   matTooltipClass="tooltip"> delete_forever </i>
             </div>
         </mat-panel-title>
         <i class="material-icons arrowRight" *ngIf="!subChapters || subChapters.length === 0"> arrow_right </i>
@@ -32,7 +41,10 @@
         <h3> {{ chapter.name }}</h3>
     </div>
     <div class="actions">
-        <i class="material-icons" (click)="deleteChapter($event)"> delete_forever </i>
+        <i class="material-icons" (click)="deleteChapter($event)"
+           matTooltip="Verwijderen"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> delete_forever </i>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>

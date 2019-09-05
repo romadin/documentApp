@@ -4,8 +4,14 @@
         <h3> {{ company.name }}</h3>
     </div>
     <div class="actions">
-        <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="onEditCompany($event)"> edit </i>
-        <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="onDeleteCompany($event)"> delete_forever </i>
+        <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="onEditCompany($event)"
+           matTooltip="Bewerken"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> edit </i>
+        <i class="material-icons" *ngIf="currentUser.isAdmin()" (click)="onDeleteCompany($event)"
+           matTooltip="Verwijderen"
+           [matTooltipPosition]="'above'"
+           matTooltipClass="tooltip"> delete_forever </i>
         <i class="material-icons"> arrow_right </i>
     </div>
 </div>
