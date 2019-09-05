@@ -71,13 +71,11 @@ export class TemplateComponent implements OnInit {
     @Input() template: Template;
     @Output() cancelAddFunction: EventEmitter<boolean> = new EventEmitter<boolean>();
     chapterToEdit: Chapter;
-    chapterParent: WorkFunction | Headline;
+    chapterParent: WorkFunction | Chapter;
     showChapterDetail: boolean;
     workFunctionToEdit: WorkFunction;
     showWorkFunctionDetail: boolean;
     showHeadlineDetail: boolean;
-    headlineParent: WorkFunction;
-    headlineToEdit: Headline;
     itemsContainer: ItemsContainer = {};
 
     constructor(private dialog: MatDialog,
@@ -133,16 +131,8 @@ export class TemplateComponent implements OnInit {
     onAddedWorkFunction(newWorkFunction: WorkFunction): void {
         this.setItemsInContainer(newWorkFunction);
     }
-    onEditHeadlineClick(headlinePackage: HeadlinePackage) {
-        this.resetVariables();
-        setTimeout(() => {
-            this.showHeadlineDetail = true;
-            this.headlineToEdit = headlinePackage.headline;
-            this.headlineParent = headlinePackage.parent;
-        }, 290);
-    }
 
-    addChapter(parent: WorkFunction | Headline, e?: Event) {
+    addChapter(parent: WorkFunction | Chapter, e?: Event) {
         if (e) {
             e.stopPropagation();
         }
@@ -150,15 +140,6 @@ export class TemplateComponent implements OnInit {
         setTimeout(() => {
             this.chapterParent = parent;
             this.showChapterDetail = true;
-        }, 290);
-    }
-
-    addHeadline(e: Event, workFunction: WorkFunction) {
-        e.stopPropagation();
-        this.resetVariables();
-        setTimeout(() => {
-            this.showHeadlineDetail = true;
-            this.headlineParent = workFunction;
         }, 290);
     }
 
@@ -191,10 +172,9 @@ export class TemplateComponent implements OnInit {
     }
 
     private setItemsInContainer(workFunction: WorkFunction) {
-        combineLatest(workFunction.headlines, workFunction.chapters).subscribe(([headlines, chapters]) => {
+        workFunction.chapters.subscribe(chapters => {
             this.itemsContainer[workFunction.id] = chapters;
-            this.itemsContainer[workFunction.id] = this.itemsContainer[workFunction.id].concat(headlines);
-            this.itemsContainer[workFunction.id].sort((a: Chapter | Headline, b: Chapter | Headline ) => a.order - b.order);
+            this.itemsContainer[workFunction.id].sort((a: Chapter, b: Chapter ) => a.order - b.order);
             this.template.workFunctions[this.template.workFunctions.findIndex(w => w.id === workFunction.id)] = workFunction;
         });
     }
@@ -205,7 +185,5 @@ export class TemplateComponent implements OnInit {
         this.showChapterDetail = false;
         this.workFunctionToEdit = undefined;
         this.showHeadlineDetail = false;
-        this.headlineParent = undefined;
-        this.headlineToEdit = undefined;
     }
 }

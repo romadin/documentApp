@@ -1,8 +1,11 @@
+import { BehaviorSubject } from 'rxjs';
+
 export class Chapter {
     private _id: number;
     private _name: string;
     private _content: string;
-    private _headlineId: number;
+    private _parentChapterId: number;
+    private _chapters: BehaviorSubject<Chapter[]>;
     private _order: number;
 
     constructor() {}
@@ -31,14 +34,21 @@ export class Chapter {
         this._content = value;
     }
 
-    get headlineId(): number {
-        return this._headlineId;
+    get parentChapterId(): number {
+        return this._parentChapterId;
     }
 
-    set headlineId(value: number) {
-        this._headlineId = value;
+    set parentChapterId(value: number) {
+        this._parentChapterId = value;
     }
 
+    get chapters(): BehaviorSubject<Chapter[]> {
+        return this._chapters;
+    }
+
+    set chapters(value: BehaviorSubject<Chapter[]>) {
+        this._chapters = value;
+    }
     get order(): number {
         return this._order;
     }

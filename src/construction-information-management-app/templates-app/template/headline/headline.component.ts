@@ -84,8 +84,8 @@ export class HeadlineComponent implements OnInit {
     drop(event: CdkDragDrop<string[]>) {
         moveItemInArray(this.headline.chapters.getValue(), event.previousIndex, event.currentIndex);
         const chapter = event.item.data;
-        this.chapterService.updateChapter(chapter, {order: event.currentIndex + 1}, {}, this.headline).subscribe((value) => {
-            event.item.data = value;
-        });
+        // this.chapterService.updateChapter(chapter, {order: event.currentIndex + 1}, {}, this.headline).subscribe((value) => {
+        //     event.item.data = value;
+        // });
     }
 }

@@ -50,6 +50,7 @@ export class DocumentRowComponent implements OnInit {
             // this document is a sub document or a document without sub documents
             this.activatedDocument.emit(toItemsOverView);
         } else if (!clickedRow) {
+            // clicked on the pencil so always show edit view.
             this.activatedDocument.emit(toItemsOverView);
         }
     }

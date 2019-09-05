@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { MatDialog, MatSidenav } from '@angular/material';
-import { filter, takeLast } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';

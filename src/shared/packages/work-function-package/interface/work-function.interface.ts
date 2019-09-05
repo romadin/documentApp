@@ -7,6 +7,5 @@ export function isWorkFunction(arg: any): arg is WorkFunction {
         arg.order !== undefined &&
         arg.fromTemplate !== undefined &&
         arg.chapters !== undefined &&
-        arg.headlines !== undefined &&
         arg.isMainFunction !== undefined;
 }

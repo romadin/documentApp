@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
+import { Document } from '../../../../shared/packages/document-package/document.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
 import { ChapterPackage } from '../chapter-detail/chapter-detail.component';
-import { Headline } from '../../../../shared/packages/headline-package/headline.model';
 import { ToastService } from '../../../../shared/toast.service';
 import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm-popup/confirm-popup.component';
 
@@ -16,16 +16,37 @@ import { ConfirmPopupComponent, ConfirmPopupData } from '../../../popups/confirm
 })
 export class ChapterComponent implements OnInit {
     @Input() chapter: Chapter;
-    @Input() parentItem: Headline | WorkFunction;
+    @Input() parentItem: Chapter | WorkFunction;
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
+    subChapters: Chapter[];
 
     constructor(private dialog: MatDialog, private chapterService: ChapterService, private toast: ToastService) { }
 
     ngOnInit() {
+        this.chapter.chapters.subscribe((c) => this.subChapters = c);
     }
 
-    onChapterClick(): void {
-        this.editChapter.emit({ chapter: this.chapter, parent: this.parentItem});
+    onAddChapter(e: Event) {
+        e.stopPropagation();
+
+        console.log('show add chapter view');
+        // this.addChapter.emit(this.headline);
+    }
+
+    onChapterClick(value, clickedRow = false): void {
+        const toTemplateOverview = { chapter: this.chapter, parent: this.parentItem};
+
+        if (clickedRow && (!this.subChapters || this.subChapters.length === 0)) {
+            // this chapter is a sub chapter or a chapter without sub documents
+            this.editChapter.emit(toTemplateOverview);
+        } else if (!clickedRow) {
+            // clicked on the pencil so always show edit view.
+            this.editChapter.emit(toTemplateOverview);
+        }
+    }
+
+    editSubChapter(chapter: Chapter, parent: Chapter) {
+        this.editChapter.emit({ chapter, parent });
     }
 
     deleteChapter(e: Event): void {

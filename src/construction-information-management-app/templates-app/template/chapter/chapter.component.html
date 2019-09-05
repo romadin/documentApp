@@ -1,9 +1,38 @@
-<div class="card rippleRow" (click)="onChapterClick()">
-    <div class="title">
+<mat-expansion-panel class="card expansion-panel" *ngIf="!chapter.parentChapterId" [disabled]="!subChapters || subChapters.length === 0" (click)="onChapterClick($event, true)">
+    <mat-expansion-panel-header>
+        <mat-panel-title class="toggleTitle">
+            <div class="rowTitle">
+                <i class="material-icons">  {{ !subChapters || subChapters.length === 0 ? 'description' : 'folder_open' }} </i>
+                <span> {{ chapter.name }} </span>
+            </div>
+            <div class="actions">
+                <i class="material-icons" (click)="onAddChapter($event)"> note_add </i>
+                <i class="material-icons" (click)="onChapterClick($event)"> edit </i>
+                <i class="material-icons" (click)="deleteChapter($event)"> delete_forever </i>
+            </div>
+        </mat-panel-title>
+        <i class="material-icons arrowRight" *ngIf="!subChapters || subChapters.length === 0"> arrow_right </i>
+    </mat-expansion-panel-header>
+
+    <div cdkDropList class="dragList" (cdkDropListDropped)="drop($event)">
+        <div class="dragItem" *ngFor="let subChapter of subChapters" cdkDrag [cdkDragData]="subChapter">
+            <cim-chapter
+                    [chapter]="subChapter"
+                    [parentItem]="chapter"
+                    (editChapter)="editSubChapter(subChapter, chapter)">
+            </cim-chapter>
+        </div>
+    </div>
+
+</mat-expansion-panel>
+
+<div *ngIf="chapter.parentChapterId" class="chapterWrapper card" (click)="onChapterClick($event)">
+    <div class="header">
         <i class="material-icons"> description </i>
-        {{ chapter.name }}
+        <h3> {{ chapter.name }}</h3>
     </div>
     <div class="actions">
         <i class="material-icons" (click)="deleteChapter($event)"> delete_forever </i>
+        <i class="material-icons"> arrow_right </i>
     </div>
 </div>

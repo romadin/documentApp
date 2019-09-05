@@ -20,24 +20,10 @@
                 <mat-accordion [displayMode]="flat">
                     <div cdkDropList class="dragList" (cdkDropListDropped)="dropItem($event)" [cdkDropListData]="workFunction" *ngIf="itemsContainer">
                         <div class="dragItem" *ngFor="let item of itemsContainer[workFunction.id]" cdkDrag [cdkDragData]="item">
-
-                            <div *ngIf="checkIfChapter(item); then chapterBlock; else headlineBlock"></div>
-
-                            <ng-template #headlineBlock>
-                                <cim-headline [headline]="item"
-                                              [workFunction]="workFunction"
-                                              (editHeadline)="onEditHeadlineClick($event)"
-                                              (editChapter)="onChapterClick($event)"
-                                              (addChapter)="addChapter($event)">
-                                </cim-headline>
-                            </ng-template>
-
-                            <ng-template #chapterBlock>
-                                <cim-chapter [chapter]="item"
-                                             [parentItem]="workFunction"
-                                             (editChapter)="onChapterClick($event)">
-                                </cim-chapter>
-                            </ng-template>
+                            <cim-chapter [chapter]="item"
+                                         [parentItem]="workFunction"
+                                         (editChapter)="onChapterClick($event)">
+                            </cim-chapter>
                         </div>
                     </div>
                 </mat-accordion>

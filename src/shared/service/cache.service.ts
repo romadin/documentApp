@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 
 import { ApiService } from './api.service';
 
-export type CacheItemName = 'cacheChaptersWorkFunction' | 'cacheChaptersHeadline';
+export type CacheItemBaseName = 'cacheChaptersWorkFunction' | 'cacheChapter';
 
 export interface CacheItem {
     id: number;
@@ -34,7 +34,7 @@ export class CacheService {
 
     constructor(private apiService: ApiService) {  }
 
-    get(cacheItemName: CacheItemName, path: string, param: any, parent?: number): Observable<any> {
+    get(cacheItemName: string, path: string, param: any, parent?: number): Observable<any> {
         let cacheItem;
         if (parent && this.cacheContainer[cacheItemName]) {
             cacheItem = this.cacheContainer[cacheItemName][parent];

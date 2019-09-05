@@ -3,11 +3,13 @@ export interface ChapterApiResponseInterface {
     name: string;
     content: string;
     order: number;
-    headlineId?: number;
+    chapters: number[];
+    parentChapterId?: number;
 }
 
 export interface ChapterParam {
     workFunctionId?: number;
+    chapterId?: number;
 }
 
 export interface ChapterUpdateBody {

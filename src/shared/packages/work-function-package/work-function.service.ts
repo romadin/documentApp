@@ -109,7 +109,6 @@ export class WorkFunctionService {
         workFunction.on = data.on;
         workFunction.fromTemplate = data.fromTemplate;
         workFunction.parent = parent;
-        workFunction.headlines = this.headlineService.getHeadlinesByWorkFunction(workFunction);
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
         workFunction.documents = new BehaviorSubject([]);
 

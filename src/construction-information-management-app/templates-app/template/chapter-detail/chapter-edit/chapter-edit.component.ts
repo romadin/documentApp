@@ -19,7 +19,7 @@ import { ToastService } from '../../../../../shared/toast.service';
   styleUrls: ['./chapter-edit.component.css']
 })
 export class ChapterEditComponent implements AfterViewInit {
-    @Input() parent: WorkFunction | Headline;
+    @Input() parent: WorkFunction | Chapter;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     chapterForm: FormGroup = new FormGroup({
         name: new FormControl('')

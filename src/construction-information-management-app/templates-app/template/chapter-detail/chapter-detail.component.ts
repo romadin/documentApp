@@ -8,7 +8,7 @@ import { isWorkFunction } from '../../../../shared/packages/work-function-packag
 
 export interface ChapterPackage {
     chapter: Chapter;
-    parent: WorkFunction | Headline;
+    parent: WorkFunction | Chapter;
 }
 export type AddType = 'new' | 'exist';
 

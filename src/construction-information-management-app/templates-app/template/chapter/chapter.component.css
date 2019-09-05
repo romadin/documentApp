@@ -32,3 +32,67 @@
 .rippleRow > div.actions > i.material-icons:last-child {
     padding-right: 0;
 }
+div.chapterWrapper {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+div.chapterWrapper:hover {
+    background: var(--secondary-hover-color) !important;
+}
+div.chapterWrapper > .header {
+    display: flex;
+    align-items: center;
+}
+
+div.chapterWrapper > .header > h3 {
+    margin: 0;
+}
+div.chapterWrapper > .header > .material-icons {
+    margin-right: 18px;
+}
+
+div.chapterWrapper > .actions {
+    display: flex;
+    align-items: center;
+}
+
+mat-expansion-panel-header {
+    color: var(--primary-color) !important;
+}
+mat-expansion-panel-header:hover {
+    background: var(--secondary-hover-color) !important;
+}
+.toggleTitle.disabled {
+    margin-right: 7px;
+}
+.toggleTitle {
+    align-items: center;
+    justify-content: space-between;
+}
+.toggleTitle > div.actions > i.material-icons {
+    font-size: 18px;
+    margin-right: 0;
+    padding: 7px 8px 0 2px;
+    cursor: pointer;
+}
+.toggleTitle > div.actions > i.material-icons:last-child {
+    padding-right: 0;
+}
+.toggleTitle > .rowTitle {
+    display: flex;
+    align-items: center;
+}
+.toggleTitle > .rowTitle > i.material-icons {
+    margin-right: 15px;
+}
+.expansion-panel {
+    padding: 0;
+    cursor: pointer;
+}
+.arrowRight {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+}
