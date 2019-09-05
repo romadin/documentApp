@@ -5,9 +5,6 @@ import { MatDialog } from '@angular/material';
 
 import { ChapterPackage } from './chapter-detail/chapter-detail.component';
 import { Template } from '../../../shared/packages/template-package/template.model';
-import { HeadlineService } from '../../../shared/packages/headline-package/headline.service';
-import { isHeadline } from '../../../shared/packages/headline-package/interface/headline-api-response.interface';
-import { Headline } from '../../../shared/packages/headline-package/headline.model';
 import { ChapterService } from '../../../shared/packages/chapter-package/chapter.service';
 import { isChapter } from '../../../shared/packages/chapter-package/interface/chapter.interface';
 import { Chapter } from '../../../shared/packages/chapter-package/chapter.model';
@@ -16,7 +13,7 @@ import { isWorkFunction } from '../../../shared/packages/work-function-package/i
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 
 interface ItemsContainer {
-    [workFunctionId: number]: (Chapter | Headline)[];
+    [workFunctionId: number]: Chapter[];
 }
 
 @Component({
@@ -73,13 +70,11 @@ export class TemplateComponent implements OnInit {
     showChapterDetail: boolean;
     workFunctionToEdit: WorkFunction;
     showWorkFunctionDetail: boolean;
-    showHeadlineDetail: boolean;
     itemsContainer: ItemsContainer = {};
 
     constructor(private dialog: MatDialog,
                 private workFunctionService: WorkFunctionService,
                 private chaptersService: ChapterService,
-                private headlinesService: HeadlineService,
     ) { }
 
     ngOnInit() {
@@ -143,7 +138,7 @@ export class TemplateComponent implements OnInit {
 
     dropItem(event: CdkDragDrop<any>) {
         const workFunction: WorkFunction = event.container.data;
-        const item: Chapter | Headline | WorkFunction = event.item.data;
+        const item: Chapter | WorkFunction = event.item.data;
         const params = workFunction ? {workFunctionId: workFunction.id} : {};
         const body: any  = {order: event.currentIndex + 1};
 
@@ -157,16 +152,7 @@ export class TemplateComponent implements OnInit {
             this.chaptersService.updateChapter(item, body, params, workFunction).subscribe((value) => {
                 event.item.data = value;
             });
-        } else if (isHeadline(item)) {
-            moveItemInArray(this.itemsContainer[workFunction.id], event.previousIndex, event.currentIndex);
-            this.headlinesService.updateHeadline(body, item, workFunction).subscribe((value) => {
-                event.item.data = value;
-            });
         }
-    }
-
-    checkIfChapter(item: Chapter | Headline): boolean {
-        return isChapter(item);
     }
 
     private setItemsInContainer(workFunction: WorkFunction) {
@@ -182,6 +168,5 @@ export class TemplateComponent implements OnInit {
         this.showWorkFunctionDetail = false;
         this.showChapterDetail = false;
         this.workFunctionToEdit = undefined;
-        this.showHeadlineDetail = false;
     }
 }

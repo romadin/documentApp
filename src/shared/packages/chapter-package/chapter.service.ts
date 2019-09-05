@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { ApiDocResponse } from '../document-package/api-document.interface';
-import { Document } from '../document-package/document.model';
 
 import { WorkFunction } from '../work-function-package/work-function.model';
 import { isWorkFunction } from '../work-function-package/interface/work-function.interface';
 import { ChapterApiResponseInterface, ChapterParam, ChapterPostBody, ChapterUpdateBody } from './interface/chapter-api-response.interface';
 import { Chapter } from './chapter.model';
-import { Headline } from '../headline-package/headline.model';
 import { CacheGetParam, CacheItem, CacheItemBaseName, CacheService } from '../../service/cache.service';
 interface ChapterCacheObservable {
     [id: number]: Subject<Chapter>;
@@ -44,20 +41,6 @@ export class ChapterService {
             (result: ChapterApiResponseInterface[]) => {
                 const chapters = result.map(response => this.makeChapter(response));
                 this.cacheService.cacheContainer[this.cacheItemNameWorkFunction][workFunction.id].items = chapters;
-                chaptersContainer.next(chapters);
-            }
-        );
-        return chaptersContainer;
-    }
-    getChaptersByHeadline(headline: Headline, workFunction: WorkFunction): BehaviorSubject<Chapter[]> {
-        const param = {headlineId: headline.id, workFunctionId: workFunction.id};
-        const chaptersContainer: BehaviorSubject<Chapter[]> = new BehaviorSubject<Chapter[]>([]);
-
-        this.cacheService.get(this.cacheItemNameChapter, this.path, param, headline.id).subscribe(
-            (result: ChapterApiResponseInterface[]) => {
-                let chapters = result.map(response => this.makeChapter(response));
-                chapters = chapters.sort((a, b) => a.order - b.order);
-                this.cacheService.cacheContainer[this.cacheItemNameChapter][headline.id].items = chapters;
                 chaptersContainer.next(chapters);
             }
         );

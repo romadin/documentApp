@@ -15,7 +15,6 @@ export interface WorkFunctionApiResponseInterface {
 export interface WorkFunctionUpdateBody {
     name?: string;
     chapters?: number[];
-    headlines?: number[];
     documents?: number[];
     folders?: number[];
     order?: number;

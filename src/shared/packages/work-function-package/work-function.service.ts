@@ -19,7 +19,6 @@ import {
     WorkFunctionGetParam,
     WorkFunctionUpdateBody
 } from './interface/work-function-api-response.interface';
-import { HeadlineService } from '../headline-package/headline.service';
 import { ChapterService } from '../chapter-package/chapter.service';
 
 interface WorkFunctionCache {
@@ -31,7 +30,6 @@ export class WorkFunctionService {
     private cache: WorkFunctionCache = {};
 
     constructor(private apiService: ApiService,
-                private headlineService: HeadlineService,
                 private chapterService: ChapterService,
                 private documentService: DocumentService,
                 private companyService: CompanyService,

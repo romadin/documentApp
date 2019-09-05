@@ -1,5 +1,5 @@
 <div class="content-row">
-    <div  class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail || showHeadlineDetail ? 'smallWidth' : 'fullWidth'">
+    <div  class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail ? 'smallWidth' : 'fullWidth'">
         <mat-accordion cdkDropList (cdkDropListDropped)="dropItem($event)">
             <mat-expansion-panel *ngFor="let workFunction of template.workFunctions" class="card expansion-panel dragItem"  cdkDrag [cdkDragData]="workFunction">
                 <mat-expansion-panel-header>
@@ -43,12 +43,5 @@
                 (closeView)="onCloseItemView()"
                 (onAddedWorkFunction)="onAddedWorkFunction($event)">
         </cim-work-function-edit>
-    </div>
-    <div class="container" *ngIf="showHeadlineDetail" [@toggleInView]="showHeadlineDetail ? 'open' : 'close'">
-        <cim-headline-detail
-                [headline]="headlineToEdit"
-                [workFunction]="headlineParent"
-                (closeView)="onCloseItemView()">
-        </cim-headline-detail>
     </div>
 </div>

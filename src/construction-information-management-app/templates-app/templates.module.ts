@@ -10,12 +10,8 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { AddTemplatePopupComponent } from './popup/add-template-popup/add-template-popup.component';
 import { TemplateEditComponent } from './templates-overview/template-edit/template-edit.component';
 import { ChapterComponent } from './template/chapter/chapter.component';
-import { HeadlineDetailComponent } from './template/headline-detail/headline-detail.component';
-import { HeadlineComponent } from './template/headline/headline.component';
 import { ChapterEditComponent } from './template/chapter-detail/chapter-edit/chapter-edit.component';
 import { ChapterListComponent } from './template/chapter-detail/chapter-list/chapter-list.component';
-import { HeadlineEditComponent } from './template/headline-detail/headline-edit/headline-edit.component';
-import { HeadlineListComponent } from './template/headline-detail/headline-list/headline-list.component';
 
 const routes: Routes = [
     {
@@ -33,12 +29,8 @@ const routes: Routes = [
         AddTemplatePopupComponent,
         TemplateEditComponent,
         ChapterComponent,
-        HeadlineDetailComponent,
-        HeadlineComponent,
         ChapterEditComponent,
         ChapterListComponent,
-        HeadlineEditComponent,
-        HeadlineListComponent
     ],
     imports: [
         SharedModule,

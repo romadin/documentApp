@@ -5,7 +5,6 @@ import { Document } from '../document-package/document.model';
 
 import { Project } from '../project-package/project.model';
 import { Template } from '../template-package/template.model';
-import { Headline } from '../headline-package/headline.model';
 import { Chapter } from '../chapter-package/chapter.model';
 
 export class WorkFunction {
@@ -14,7 +13,6 @@ export class WorkFunction {
     private _isMainFunction: boolean;
     private _order: number;
     private _parent: Template|Project;
-    private _headlines: BehaviorSubject<Headline[]>;
     private _chapters: BehaviorSubject<Chapter[]>;
     private _documents: BehaviorSubject<Document[]>;
     private _on: boolean;
@@ -61,14 +59,6 @@ export class WorkFunction {
 
     set parent(value: Template|Project) {
         this._parent = value;
-    }
-
-    get headlines(): BehaviorSubject<Headline[]> {
-        return this._headlines;
-    }
-
-    set headlines(value: BehaviorSubject<Headline[]>) {
-        this._headlines = value;
     }
 
     get chapters(): BehaviorSubject<Chapter[]> {

@@ -3,7 +3,6 @@ import { MatButtonToggleChange } from '@angular/material';
 
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
-import { Headline } from '../../../../shared/packages/headline-package/headline.model';
 import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 
 export interface ChapterPackage {
@@ -18,7 +17,7 @@ export type AddType = 'new' | 'exist';
   styleUrls: ['./chapter-detail.component.css']
 })
 export class ChapterDetailComponent {
-    @Input() parent: WorkFunction | Headline;
+    @Input() parent: WorkFunction | Chapter;
     @Input() chapter: Chapter;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     view: AddType = 'exist';
@@ -29,10 +28,6 @@ export class ChapterDetailComponent {
         if (close) {
             this.closeView.emit(close);
         }
-    }
-
-    changeEditItemForm(e: MatButtonToggleChange, type: AddType) {
-        this.view = type;
     }
 
     checkParentIsWorkFunction(): WorkFunction | null {
