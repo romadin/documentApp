@@ -16,7 +16,6 @@ body {
 }
 mat-sidenav-content.mat-drawer-content {
     overflow: hidden;
-    padding: 1%;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

@@ -15,6 +15,7 @@ import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
 import { CompanyService } from '../shared/packages/company-package/company.service';
 import { ModuleService } from '../shared/packages/module-package/module.service';
+import { ProjectResolver } from '../shared/packages/project-package/project.resolver';
 
 
 // services
@@ -56,6 +57,7 @@ import { TemplateCommunicationService } from '../shared/service/communication/te
 import { WorkFunctionService } from '../shared/packages/work-function-package/work-function.service';
 import { ChapterService } from '../shared/packages/chapter-package/chapter.service';
 import { CacheService } from '../shared/service/cache.service';
+import { BreadCrumbComponent } from './bread-crumb/bread-crumb.component';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -64,29 +66,34 @@ const appRoutes: Routes = [
         path: 'login',
         loadChildren: './login-app/login-app.module#LoginAppModule',
         canActivate: [ CanActivateAlreadyLoggedIn ],
+        data: { breadcrumb: 'Login'},
         resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'gebruikers',
         loadChildren: './user-app/user.module#UserModule',
+        data: { breadcrumb: 'Gebruikers'},
         resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'templates',
         loadChildren: './templates-app/templates.module#TemplatesModule',
         canActivate: [ CanActivateAdminUser ],
+        data: { breadcrumb: 'Templates'},
         resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'huisstijl',
         loadChildren: './corporate-identity-app/corporate-identity-app.module#CorporateIdentityAppModule',
         canActivate: [ CanActivateAdminUser ],
+        data: { breadcrumb: 'Huisstijl'},
         resolve: { organisation: OrganisationResolver }
     },
     {
         path: 'projecten',
         loadChildren: './project-app/project.module#ProjectModule',
         canActivate: [ CanActivateLoggedIn ],
+        data: { breadcrumb: 'Projecten'},
         resolve: { organisation: OrganisationResolver }
     },
     {
@@ -110,6 +117,7 @@ const appRoutes: Routes = [
         ProjectPopupComponent,
         ConfirmPopupComponent,
         OrganisationNotFoundComponent,
+        BreadCrumbComponent,
     ],
     imports: [
         BrowserModule,
@@ -154,6 +162,7 @@ const appRoutes: Routes = [
         ModuleService,
         OrganisationService,
         OrganisationResolver,
+        ProjectResolver,
         CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation, CanActivateAdminUser
     ],
     entryComponents: [
