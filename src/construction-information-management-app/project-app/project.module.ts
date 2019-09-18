@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
+import { ProjectResolver } from '../../shared/packages/project-package/project.resolver';
+import { ProjectRouterComponent } from './project-router/project-router.component';
 import { ProjectComponent } from './project/project.component';
 import { ProjectsListComponent } from './project/projects-list/projects-list.component';
 import { SharedModule } from '../../shared/shared.module';
@@ -11,36 +13,45 @@ import { OrganisationResolver } from '../../shared/packages/organisation-package
 const routes: Routes = [
     {
         path: '',
-        component: ProjectsListComponent
-    },
-    {
-        path: ':id',
-        component: ProjectComponent,
+        component: ProjectRouterComponent,
         children: [
             {
-                path: 'functies/:id',
-                loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
+                path: ':id',
+                resolve: { 'project': ProjectResolver },
+                component: ProjectComponent,
+                children: [
+                    {
+                        path: 'functies/:id',
+                        loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
+                        canActivate: [ CanActivateLoggedIn ],
+                        resolve: { organisation: OrganisationResolver }
+                    },
+                    {
+                        path: 'acties',
+                        loadChildren: '../action-list-app/action-list.module#ActionListModule',
+                        canActivate: [ CanActivateLoggedIn ],
+                        resolve: { organisation: OrganisationResolver }
+                    },
+                    {
+                        path: 'agenda',
+                        loadChildren: '../agenda-app/agenda.module#AgendaModule',
+                        canActivate: [ CanActivateLoggedIn ]
+                    },
+                    {
+                        path: '',
+                        loadChildren: './project/project-detail/project-detail.module#ProjectDetailModule',
+                        canActivate: [ CanActivateLoggedIn ]
+                    }
+                ],
                 canActivate: [ CanActivateLoggedIn ],
-                resolve: { organisation: OrganisationResolver }
-            },
-            {
-                path: 'acties',
-                loadChildren: '../action-list-app/action-list.module#ActionListModule',
-                canActivate: [ CanActivateLoggedIn ],
-                resolve: { organisation: OrganisationResolver }
-            },
-            {
-                path: 'agenda',
-                loadChildren: '../agenda-app/agenda.module#AgendaModule',
-                canActivate: [ CanActivateLoggedIn ]
+                data: { breadcrumb: 'Projecten component'},
             },
             {
                 path: '',
-                loadChildren: './project/project-detail/project-detail.module#ProjectDetailModule',
+                component: ProjectsListComponent,
                 canActivate: [ CanActivateLoggedIn ]
             }
-        ],
-        canActivate: [ CanActivateLoggedIn ],
+        ]
     },
 ];
 
@@ -54,6 +65,7 @@ const routes: Routes = [
         ProjectsListComponent,
         ProjectComponent,
         ProjectRowComponent,
+        ProjectRouterComponent
     ],
     exports: [RouterModule]
 })

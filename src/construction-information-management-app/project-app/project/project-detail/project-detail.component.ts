@@ -79,15 +79,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.routerService.setBackRoute('/projecten');
-        const projectId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+        this.project = this.activatedRoute.parent.parent.snapshot.data.project;
         this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
         });
 
-        this.projectService.getProject(projectId, <Organisation>this.activatedRoute.snapshot.data.organisation).subscribe(project => {
-            this.project = project;
-            this.headerCommunicationService.headerTitle.next(project.name);
-        });
+        this.headerCommunicationService.headerTitle.next(this.project.name);
 
         this.communicationService.triggerAddWorkFunction.subscribe(show => {
             this.showFunctionDetail = show;

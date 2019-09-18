@@ -12,7 +12,7 @@ import { HeaderWithFolderCommunicationService } from '../../../../shared/service
   styleUrls: ['./projects-list.component.css']
 })
 export class ProjectsListComponent implements OnInit {
-    public projects: Project[];
+    projects: Project[];
 
     constructor(
         private projectService: ProjectService,
