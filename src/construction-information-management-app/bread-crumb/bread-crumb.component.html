@@ -1,8 +1,10 @@
-<ol class="breadcrumb">
-  <li *ngFor="let breadcrumb of breadcrumbs | async"
-      class="breadcrumb-item">
-    <a [routerLink]="[breadcrumb.url]">
-      {{ breadcrumb.name }}
+<div class="container">
+  <div class="breadcrumb">
+    <a [routerLink]="[breadcrumb.url]" *ngFor="let breadcrumb of breadcrumbs">
+      <span class="breadcrumb__inner">
+        <span class="breadcrumb__title">{{ breadcrumb.name }}</span>
+      </span>
+
     </a>
-  </li>
-</ol>
+  </div>
+</div>

@@ -1,14 +1,15 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDrawerContent } from '@angular/material';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { delay, filter, takeLast } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { delay, distinctUntilChanged, filter, map, takeLast } from 'rxjs/operators';
+import { Breadcrumb, BreadcrumbService } from '../shared/packages/breadcrumb-package/breadcrumb.service';
 import { Module } from '../shared/packages/module-package/module.model';
 import { Organisation } from '../shared/packages/organisation-package/organisation.model';
 import { OrganisationService } from '../shared/packages/organisation-package/organisation.service';
 
 import { User } from '../shared/packages/user-package/user.model';
 import { UserService } from '../shared/packages/user-package/user.service';
-import { ScrollingService } from '../shared/service/scrolling.service';
 import { MenuAction } from './header/header.component';
 
 import { LoadingService } from '../shared/loading.service';
@@ -23,18 +24,17 @@ export interface SideMenuNav extends MenuAction {
     templateUrl: './construction-information-management.component.html',
     styleUrls: [ './construction-information-management.component.css']
 })
-export class ConstructionInformationManagementComponent implements OnInit, AfterViewChecked {
-    @ViewChild('sideMenuContent') sideMenuElement: MatDrawerContent;
+export class ConstructionInformationManagementComponent implements OnInit {
     sideMenuActions: MenuAction[] = [];
     currentUser: User;
     resetHeaderAction = false;
     showIsLoading = false;
     organisation: Organisation;
+    breadcrumbs: Breadcrumb[];
 
     constructor(private dialog: MatDialog,
                 private router: Router,
                 private userService: UserService,
-                private scrollingService: ScrollingService,
                 private loadingService: LoadingService,
                 private organisationService: OrganisationService,
                 private activatedRoute: ActivatedRoute) {}
@@ -61,16 +61,37 @@ export class ConstructionInformationManagementComponent implements OnInit, After
         this.router.events.pipe( filter(event => event instanceof NavigationEnd ) ).subscribe((navigation: NavigationEnd) => {
             this.determineActions(navigation.url);
         });
+        this.router.events.pipe(filter(event => event instanceof NavigationEnd))
+            .pipe(distinctUntilChanged())
+            .pipe(map(event => this.buildBreadCrumb(this.activatedRoute.root))).subscribe(breadcrumbs => this.breadcrumbs = breadcrumbs);
     }
 
-    ngAfterViewChecked() {
-        if (this.sideMenuElement) {
-            this.sideMenuElement.elementScrolled().subscribe((event) => {
-                this.scrollingService.setScrollPosition(this.sideMenuElement.measureScrollOffset('top'));
-            });
+    private buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: Array<Breadcrumb> = []): Array<Breadcrumb> {
+        // If no routeConfig is avalailable we are on the root path
+        let name = route.routeConfig && route.routeConfig.data ? route.routeConfig.data[ 'breadcrumb' ] : '';
+        let path = route.routeConfig ? route.routeConfig.path : '';
+
+        if (typeof name === 'function') {
+            name = name(route);
         }
+        if (path === ':id') {
+            path = route.snapshot.params.id;
+        }
+        // In the routeConfig the complete path is not available,
+        // so we rebuild it each time
+        const nextUrl = `${url}${path}/`;
+        const breadcrumb: Breadcrumb = {
+            name: name,
+            url: nextUrl
+        };
+        const newBreadcrumbs = name !== '' ? [ ...breadcrumbs, breadcrumb ] : breadcrumbs;
+        if (route.firstChild) {
+            // If we are not on our current path yet,
+            // there will be more children to look after, to build our breadcumb
+            return this.buildBreadCrumb(route.firstChild, nextUrl, newBreadcrumbs);
+        }
+        return newBreadcrumbs;
     }
-
     private determineActions(url: string): void {
         if ( url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {
