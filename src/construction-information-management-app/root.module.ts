@@ -66,7 +66,6 @@ const appRoutes: Routes = [
         path: 'login',
         loadChildren: './login-app/login-app.module#LoginAppModule',
         canActivate: [ CanActivateAlreadyLoggedIn ],
-        data: { breadcrumb: 'Login'},
         resolve: { organisation: OrganisationResolver }
     },
     {
@@ -93,7 +92,6 @@ const appRoutes: Routes = [
         path: 'projecten',
         loadChildren: './project-app/project.module#ProjectModule',
         canActivate: [ CanActivateLoggedIn ],
-        data: { breadcrumb: 'Projecten'},
         resolve: { organisation: OrganisationResolver }
     },
     {

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
 import { ProjectResolver } from '../../shared/packages/project-package/project.resolver';
@@ -14,17 +14,25 @@ const routes: Routes = [
     {
         path: '',
         component: ProjectRouterComponent,
+        data: { breadcrumb: 'Projecten' },
         children: [
             {
                 path: ':id',
-                resolve: { 'project': ProjectResolver },
+                resolve: { project: ProjectResolver},
                 component: ProjectComponent,
+                canActivate: [ CanActivateLoggedIn ],
+                data: { breadcrumb: (route: ActivatedRoute) => route.snapshot.data.project.name },
                 children: [
                     {
-                        path: 'functies/:id',
-                        loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
-                        canActivate: [ CanActivateLoggedIn ],
-                        resolve: { organisation: OrganisationResolver }
+                        path: 'functies',
+                        children: [
+                            {
+                                path: ':id',
+                                loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
+                                canActivate: [ CanActivateLoggedIn ],
+                                resolve: { organisation: OrganisationResolver }
+                            }
+                        ],
                     },
                     {
                         path: 'acties',
@@ -43,13 +51,11 @@ const routes: Routes = [
                         canActivate: [ CanActivateLoggedIn ]
                     }
                 ],
-                canActivate: [ CanActivateLoggedIn ],
-                data: { breadcrumb: 'Projecten component'},
             },
             {
                 path: '',
                 component: ProjectsListComponent,
-                canActivate: [ CanActivateLoggedIn ]
+                canActivate: [ CanActivateLoggedIn ],
             }
         ]
     },

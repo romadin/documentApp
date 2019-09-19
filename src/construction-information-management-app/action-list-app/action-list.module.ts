@@ -9,7 +9,8 @@ import { ActionDetailPublicComponent } from './item-detail/action-detail-public/
 const routes: Routes = [
     {
         path: '',
-        component: ActionListComponent
+        component: ActionListComponent,
+        data: { breadcrumb: 'Acties' }
     }
 ];
 

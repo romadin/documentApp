@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
 import { SharedWorkFunctionModule } from '../../shared/shared-work-function.module';
 import { CompanyPackageResolverService } from './company/company-package-resolver.service';
@@ -22,6 +22,7 @@ const routes: Routes = [
             {
                 path: 'bedrijven',
                 canActivate: [ CanActivateLoggedIn ],
+                data: { breadcrumb: 'Bedrijven' },
                 resolve: {
                     functionPackage: WorkFunctionPackageResolverService
                 },
@@ -30,6 +31,7 @@ const routes: Routes = [
                         path: ':id',
                         component: ItemsOverviewComponent,
                         canActivate: [ CanActivateLoggedIn ],
+                        data: { breadcrumb: (route: ActivatedRoute) => route.snapshot.data.functionPackage.parent.name },
                         resolve: {
                             functionPackage: CompanyPackageResolverService
                         }
@@ -45,7 +47,7 @@ const routes: Routes = [
                 path: '',
                 component: ItemsOverviewComponent,
                 canActivate: [ CanActivateLoggedIn ],
-                data: {parentUrl: 'projecten/:id'},
+                data: {parentUrl: 'projecten/:id', breadcrumb: (route: ActivatedRoute) => route.snapshot.data.functionPackage.parent.name },
                 resolve: {
                     functionPackage: WorkFunctionPackageResolverService,
                 }

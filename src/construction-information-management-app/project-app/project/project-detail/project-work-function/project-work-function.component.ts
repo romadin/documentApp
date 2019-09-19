@@ -25,7 +25,7 @@ export class ProjectWorkFunctionComponent implements OnInit {
     constructor(private workFunctionService: WorkFunctionService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
-        this.organisation = this.activatedRoute.snapshot.data.organisation;
+        this.organisation = this.activatedRoute.snapshot.parent.parent.parent.data.organisation
     }
 
     workFunctionEditable(): boolean {

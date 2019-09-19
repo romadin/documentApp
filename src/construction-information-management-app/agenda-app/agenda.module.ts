@@ -18,7 +18,8 @@ const routes: Routes = [
     {
         path: '',
         component: AgendaComponent,
-        resolve: { events: EventsResolver}
+        resolve: { events: EventsResolver},
+        data: { breadcrumb: 'Agenda'},
     }
 ];
 

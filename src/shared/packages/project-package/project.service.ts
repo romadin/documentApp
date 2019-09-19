@@ -115,6 +115,10 @@ export class ProjectService {
         });
     }
 
+    breadcrumbLabel(id: number, organisation: Organisation): Observable<string> {
+        return this.getProject(id, organisation).pipe(map(p => p.name));
+    }
+
     private makeProject(apiResponse: ApiProjectResponse, organisation: Organisation): Project {
         const project: Project = new Project();
 

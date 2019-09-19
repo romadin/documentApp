@@ -17,7 +17,7 @@ export class EventsResolver implements Resolve<Observable<Event[]> | Observable<
 
     resolve(route: ActivatedRouteSnapshot): Observable<Event[] | never> {
         this.loading.isLoading.next(true);
-        const project: Project = route.parent.data.project;
+        const project: Project = route.parent.parent.data.project;
         return this.eventService.getEvents(project.id).pipe(
             mergeMap( events => {
                 this.loading.isLoading.next(false);
