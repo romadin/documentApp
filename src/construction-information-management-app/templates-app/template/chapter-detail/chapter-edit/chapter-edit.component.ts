@@ -38,8 +38,6 @@ export class ChapterEditComponent implements AfterViewInit {
     constructor(private chapterService: ChapterService, private toast: ToastService) { }
 
     ngAfterViewInit() {
-        console.log(this.parent);
-        console.log(parent.hasOwnProperty('isMainFunction'));
         this.onFormChanges();
     }
 

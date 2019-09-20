@@ -1,6 +1,6 @@
 <div class="header">
     <button mat-button (click)="onCloseView($event)" *ngIf="chapter"> <i class="material-icons"> close </i> </button>
-    <h3 class="title">{{ chapter ? chapter.name : parent.originalName ? 'Voeg een sub hoofdstuk toe' : 'Voeg een hoofdstuk toe' }}</h3>
+    <h3 class="title">{{ chapter ? chapter.name : parent.name ? 'Voeg een sub hoofdstuk toe' : 'Voeg een hoofdstuk toe' }}</h3>
 </div>
 <div class="formBody">
     <form [formGroup]="chapterForm" (ngSubmit)="onSubmit($event)">

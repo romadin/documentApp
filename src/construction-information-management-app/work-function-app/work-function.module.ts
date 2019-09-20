@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
+import { getBreadcrumbNameParent } from '../../shared/helpers/practice-functions';
 import { SharedWorkFunctionModule } from '../../shared/shared-work-function.module';
 import { CompanyPackageResolverService } from './company/company-package-resolver.service';
 import { CompanyComponent } from './company/company.component';
@@ -31,7 +32,7 @@ const routes: Routes = [
                         path: ':id',
                         component: ItemsOverviewComponent,
                         canActivate: [ CanActivateLoggedIn ],
-                        data: { breadcrumb: (route: ActivatedRoute) => route.snapshot.data.functionPackage.parent.name },
+                        data: { breadcrumb: getBreadcrumbNameParent },
                         resolve: {
                             functionPackage: CompanyPackageResolverService
                         }
@@ -47,7 +48,7 @@ const routes: Routes = [
                 path: '',
                 component: ItemsOverviewComponent,
                 canActivate: [ CanActivateLoggedIn ],
-                data: {parentUrl: 'projecten/:id', breadcrumb: (route: ActivatedRoute) => route.snapshot.data.functionPackage.parent.name },
+                data: {parentUrl: 'projecten/:id', breadcrumb: getBreadcrumbNameParent },
                 resolve: {
                     functionPackage: WorkFunctionPackageResolverService,
                 }

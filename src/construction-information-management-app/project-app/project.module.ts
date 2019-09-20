@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
+import { getBreadcrumbNameProject } from '../../shared/helpers/practice-functions';
 import { ProjectResolver } from '../../shared/packages/project-package/project.resolver';
 import { ProjectRouterComponent } from './project-router/project-router.component';
 import { ProjectComponent } from './project/project.component';
@@ -18,10 +19,10 @@ const routes: Routes = [
         children: [
             {
                 path: ':id',
-                resolve: { project: ProjectResolver},
+                resolve: { project: ProjectResolver },
                 component: ProjectComponent,
                 canActivate: [ CanActivateLoggedIn ],
-                data: { breadcrumb: (route: ActivatedRoute) => route.snapshot.data.project.name },
+                data: { breadcrumb: getBreadcrumbNameProject  },
                 children: [
                     {
                         path: 'functies',
@@ -32,7 +33,7 @@ const routes: Routes = [
                                 canActivate: [ CanActivateLoggedIn ],
                                 resolve: { organisation: OrganisationResolver }
                             }
-                        ],
+                        ]
                     },
                     {
                         path: 'acties',
