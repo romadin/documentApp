@@ -14,7 +14,7 @@
     display: flex;
     align-items: center;
     padding: 0 18px 0 30px;
-    color: #666;
+    color: var(--secondary-color);
     font-size: 13px;
     text-decoration: none;
     transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -26,6 +26,7 @@
 
 .breadcrumb a:last-child {
     font-weight: bold;
+    cursor: default;
 }
 
 .breadcrumb a:after {
@@ -46,9 +47,15 @@
 }
 
 .breadcrumb a:hover{
+    color: var(--primary-color);
     background: var(--secondary-color);
 }
 
-.breadcrumb a.active:after, .breadcrumb a:hover:after {
+.breadcrumb a:hover:after {
     background: var(--secondary-color);
+}
+
+.breadcrumb a:last-child:hover, .breadcrumb a:last-child:hover:after {
+    color: var(--secondary-color);
+    background: var(--primary-color);
 }
