@@ -7,8 +7,10 @@ import {
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { take } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
+import { ContextMenuService } from '../../../shared/packages/context-menu/context-menu.service';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { ToastService } from '../../../shared/toast.service';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
@@ -60,7 +62,8 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     }
 
     constructor(private documentService: DocumentService,
-                private toast: ToastService) { }
+                private toast: ToastService,
+                private contextMenuService: ContextMenuService) { }
 
     ngAfterViewInit() {
         this.onFormChanges();
@@ -121,6 +124,28 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
         }
 
         this.formHasChanged = this.content !== this.startValue;
+    }
+    onRightClick(e: MouseEvent) {
+        const selection = getSelection();
+        const node = selection.baseNode;
+        if (node.nodeName === 'TABLE' || node.nodeName === 'TBODY' || node.nodeName === 'TR' || node.nodeName === 'TD') {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            this.contextMenuService.position = { top: e.pageY, left: e.pageX };
+            this.contextMenuService.toggleMenu.next(true);
+            this.contextMenuService.delete.pipe(take(1)).subscribe(deleteTable => {
+                if (deleteTable) {
+                    let currentNode;
+                    do {
+                        currentNode = node.parentElement;
+                        console.log(currentNode);
+                    } while (currentNode.nodeName === 'TABLE');
+                    currentNode.parentElement.remove();
+                    this.content = this.editor.textArea.nativeElement.innerHTML;
+                    this.formHasChanged = true;
+                }
+            });
+        }
     }
 
     private addToolbarButton() {
@@ -361,6 +386,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     private prepTable(): void {
         this.table = document.createElement('table');
         this.table.setAttribute('id', 'tempTable');
+        this.table.classList.add('documentsTable');
         this.table.append(document.createElement('tbody'));
         this.table.style.width = '100%';
         this.table.style.borderCollapse = 'collapse';

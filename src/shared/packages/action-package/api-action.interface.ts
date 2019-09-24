@@ -1,4 +1,5 @@
 import { ApiUserResponse } from '../user-package/api-user.interface';
+import { User } from '../user-package/user.model';
 
 export interface ApiActionResponse {
     id: number;
@@ -22,9 +23,14 @@ export interface ApiActionNewPostData {
 
 export interface ApiActionEditPostData {
     description?: string;
-    holder?: string;
+    actionHolder?: string;
     week?: number;
     comments?: string;
     projectId?: number;
     isDone?: boolean;
+}
+export interface ActionUpdate {
+    id: number;
+    description: string;
+    actionHolder: User;
 }

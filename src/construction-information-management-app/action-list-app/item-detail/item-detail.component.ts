@@ -82,7 +82,6 @@ export class ItemDetailComponent implements OnInit {
             };
 
             if ( this.action ) {
-                this.action.update(data);
                 this.actionService.editAction(this.action, data);
                 this.hideLoadShowToast('Actie: ' + data.description + ' is bewerkt', 'Bewerkt');
                 return;

@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Action } from './action.model';
-import { ApiActionEditPostData, ApiActionNewPostData, ApiActionResponse } from './api-action.interface';
+import { ActionUpdate, ApiActionEditPostData, ApiActionNewPostData, ApiActionResponse } from './api-action.interface';
 import { UserService } from '../user-package/user.service';
 
 interface ActionCache {
@@ -70,6 +70,17 @@ export class ActionService {
 
     public editAction(action: Action, data: ApiActionEditPostData): Action {
         this.apiService.post('/actions/' + action.id, data).subscribe((actionResponse: ApiActionResponse) => {
+
+            if (this.actionsByProject[action.projectId]) {
+                const updateAction: ActionUpdate = Object.assign(
+                    actionResponse,
+                    {actionHolder: actionResponse.actionHolder ? this.userService.makeUser(actionResponse.actionHolder) : null}
+                );
+                action.update(updateAction);
+                const actions = this.actionsByProjectCache[action.projectId];
+                actions.splice(actions.findIndex(a => a.id === action.id), 1, action);
+                this.actionsByProject[action.projectId].next(actions);
+            }
         }, (error) => {
             throw error.error;
         });

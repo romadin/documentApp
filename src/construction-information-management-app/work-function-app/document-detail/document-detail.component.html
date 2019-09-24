@@ -11,7 +11,11 @@
                         <mat-form-field>
                             <input matInput placeholder="Hoofdstuk naam" formControlName="name" required="required">
                         </mat-form-field>
-                        <angular-editor #editor [(ngModel)]="content" (ngModelChange)="dataChanged($event)" [config]="editorConfig" [ngModelOptions]="{standalone: true}"></angular-editor>
+                        <angular-editor #editor [(ngModel)]="content" (ngModelChange)="dataChanged($event)"
+                                        [config]="editorConfig"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (contextmenu)="onRightClick($event)">
+                        </angular-editor>
                     </div>
                 </div>
                 <div class="actionButtons">
@@ -21,8 +25,8 @@
             </form>
         </div>
     </div>
-
 </div>
+
 <cim-document-detail-public *ngIf="!currentUser.isAdmin()"
                             [document]="document"
                             (closeView)="onCloseView()">

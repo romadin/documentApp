@@ -5,7 +5,7 @@
 <form [formGroup]="eventForm" (ngSubmit)="onSubmit($event)">
     <div mat-dialog-content class="formFields">
         <mat-form-field>
-            <input matInput placeholder="Naam" formControlName="name" required>
+            <input matInput placeholder="Onderwerp" formControlName="subject" required>
         </mat-form-field>
         <mat-form-field>
             <textarea matInput placeholder="Omschrijving" formControlName="description"></textarea>

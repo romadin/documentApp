@@ -1,4 +1,4 @@
-import { ApiActionEditPostData } from './api-action.interface';
+import { ActionUpdate, ApiActionEditPostData } from './api-action.interface';
 import { User } from '../user-package/user.model';
 
 export class Action {
@@ -81,7 +81,7 @@ export class Action {
         return this.isDone ? 'Klaar' : 'In behandeling';
     }
 
-    public update(data: ApiActionEditPostData): void {
+    public update(data: ActionUpdate): void {
         for ( const key in data ) {
             if (data.hasOwnProperty(key)) {
                 this[key] = data[key];

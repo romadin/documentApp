@@ -1,0 +1,23 @@
+.menu {
+    width: 120px;
+    position: absolute;
+    z-index: 99;
+    background: white;
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.menu > .menu-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.menu-options > .menu-option {
+    font-weight: 500;
+    font-size: 12px;
+    padding: 10px;
+    cursor: pointer;
+}
+.menu-options > .menu-option:hover {
+    background: rgba(218, 217, 213, 0.53);
+}

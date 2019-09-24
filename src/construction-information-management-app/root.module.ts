@@ -15,6 +15,7 @@ import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
 import { BreadcrumbService } from '../shared/packages/breadcrumb-package/breadcrumb.service';
 import { CompanyService } from '../shared/packages/company-package/company.service';
+import { ContextMenuService } from '../shared/packages/context-menu/context-menu.service';
 import { ModuleService } from '../shared/packages/module-package/module.service';
 import { ProjectResolver } from '../shared/packages/project-package/project.resolver';
 
@@ -59,6 +60,7 @@ import { WorkFunctionService } from '../shared/packages/work-function-package/wo
 import { ChapterService } from '../shared/packages/chapter-package/chapter.service';
 import { CacheService } from '../shared/service/cache.service';
 import { BreadCrumbComponent } from './bread-crumb/bread-crumb.component';
+import { ContextMenuComponent } from './context-menu/context-menu.component';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -117,6 +119,7 @@ const appRoutes: Routes = [
         ConfirmPopupComponent,
         OrganisationNotFoundComponent,
         BreadCrumbComponent,
+        ContextMenuComponent,
     ],
     imports: [
         BrowserModule,
@@ -132,6 +135,7 @@ const appRoutes: Routes = [
         ApiService,
         CacheService,
         BreadcrumbService,
+        ContextMenuService,
 
         ProjectService,
         UserService,

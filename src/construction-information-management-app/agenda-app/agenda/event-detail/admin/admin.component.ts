@@ -1,13 +1,12 @@
 import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Event } from '../../../../../shared/packages/agenda-package/event.model';
-import { User } from '../../../../../shared/packages/user-package/user.model';
-import { EventService } from '../../../../../shared/packages/agenda-package/event.service';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { startDateBiggerThenEndDate, startTimeBiggerThenEndTime } from '../../../../../shared/form-validator/custom-validators';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { EventCommunicationService } from '../../../../../shared/service/communication/event.communication.service';
+import { User } from '../../../../../shared/packages/user-package/user.model';
 import { ToastService } from '../../../../../shared/toast.service';
+import { Event } from '../../../../../shared/packages/agenda-package/event.model';
+import { EventService } from '../../../../../shared/packages/agenda-package/event.service';
 
 @Component({
   selector: 'cim-event-detail-admin',
@@ -18,7 +17,7 @@ export class AdminComponent implements AfterViewInit {
     @Input() user: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     eventForm: FormGroup = new FormGroup({
-        name: new FormControl(''),
+        subject: new FormControl(''),
         description: new FormControl(''),
         startDate: new FormControl(''),
         startTime: new FormControl(''),
@@ -113,7 +112,7 @@ export class AdminComponent implements AfterViewInit {
         return date;
     }
     private setFormValue(): void {
-        this.eventForm.controls.name.setValue(this.event.name);
+        this.eventForm.controls.subject.setValue(this.event.name);
         this.eventForm.controls.description.setValue(this.event.description);
         this.eventForm.controls.startDate.setValue(this.event.startDate);
         this.eventForm.controls.startTime.setValue(this.datePipe.transform(this.event.startDate, 'HH:mm'));
@@ -130,7 +129,7 @@ export class AdminComponent implements AfterViewInit {
         this.eventForm.controls.startDate.setValue(now);
         this.eventForm.controls.startTime.setValue(this.datePipe.transform(now, 'HH:mm'));
         this.eventForm.controls.endDate.setValue(now);
-        this.eventForm.controls.endTime.setValue(this.datePipe.transform(now.setMinutes(now.getMinutes() + 5), 'HH:mm'));
+        this.eventForm.controls.endTime.setValue(this.datePipe.transform(now.setMinutes(now.getMinutes() + 60), 'HH:mm'));
     }
 
     private updateOrMakeEvent(): void {
@@ -142,7 +141,7 @@ export class AdminComponent implements AfterViewInit {
             event.location = { streetName: '', residence: '' };
         }
 
-        event.name = this.eventForm.controls.name.value;
+        event.name = this.eventForm.controls.subject.value;
         event.description = this.eventForm.controls.description.value;
         event.location.streetName = this.eventForm.controls.streetName.value;
         event.location.residence = this.eventForm.controls.residence.value;
