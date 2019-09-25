@@ -11,9 +11,9 @@
                    [matTooltipPosition]="'above'"
                    matTooltipClass="tooltip"> note_add </i>
                 <i class="material-icons" (click)="editDocument($event)"
-                   matTooltip="Bewerken"
+                   matTooltip="{{currentUser.isAdmin() ? 'Bewerken' : 'Bekijken' }}"
                    [matTooltipPosition]="'above'"
-                   matTooltipClass="tooltip"> edit </i>
+                   matTooltipClass="tooltip"> {{currentUser.isAdmin() ? 'edit' : 'visibility' }} </i>
                 <i class="material-icons" *ngIf="showDeleteButton()" (click)="deleteDocument($event)"
                    matTooltip="Verwijderen"
                    [matTooltipPosition]="'above'"

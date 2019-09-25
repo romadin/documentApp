@@ -47,7 +47,7 @@ mat-expansion-panel-header:hover {
     justify-content: space-between;
 }
 .toggleTitle > div.actions > i.material-icons {
-    font-size: 18px;
+    font-size: 19px;
     margin-right: 0;
     padding: 7px 8px 0 2px;
     cursor: pointer;
