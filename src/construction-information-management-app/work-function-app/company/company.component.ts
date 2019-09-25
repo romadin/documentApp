@@ -119,6 +119,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
         this.companyService.getCompaniesByProject(<Project>this.workFunction.parent, this.workFunction).subscribe(companies => {
             if (companies) {
+                console.log('getting companies by project:', companies);
                 this.allCompanies = companies;
                 this.filterCompanies();
                 this.headerCommunicationService.addCompanyButton.next({show: true});
@@ -175,6 +176,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
     onDeleteCompany(company: Company): void {
         this.allCompanies = this.allCompanies.filter(c => c.id !== company.id);
+        console.log('delete all companies: ', this.allCompanies);
         this.filterCompanies();
         this.determineView();
     }
