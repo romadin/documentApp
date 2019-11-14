@@ -18,12 +18,14 @@ export class ToastService {
     constructor(private toast: ToastrManager) {}
 
     showSuccess(message: string, title?: string) {
+        console.log(this.defaultOptions);
         this.toast.successToastr(message, title, this.defaultOptions);
     }
 
     showError(message: string, title?: string, options?: any) {
-        options = this.defaultOptions;
-        this.toast.errorToastr(message, title, options);
+        const op = Object.assign( {}, this.defaultOptions );
+        Object.assign( op, options );
+        this.toast.errorToastr(message, title, op);
     }
 
     showWarning() {

@@ -6,6 +6,7 @@ import { AuthService } from '../../../shared/service/auth.service';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { LoadingService } from '../../../shared/loading.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
+import { ToastService } from '../../../shared/toast.service';
 
 @Component({
     selector: 'cim-login-app',
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
         private activatedRoute: ActivatedRoute,
         private loadingService: LoadingService,
         private headerCommunication: HeaderWithFolderCommunicationService,
+        private toast: ToastService,
     ) {
         this.headerCommunication.headerTitle.next('BIM Uitvoeringsplan');
     }
@@ -45,7 +47,7 @@ export class LoginComponent implements OnInit {
                 // redirect to projects page
                 this.router.navigate(['/projecten']);
             } else {
-                alert('wrong credentials');
+                this.toast.showError('Ongeldige email of wachtwoord', 'Mislukt', {toastTimeout: 3500, maxShown: 1});
             }
         });
     }
