@@ -5,6 +5,7 @@ import { UserService } from '../packages/user-package/user.service';
 import { User } from '../packages/user-package/user.model';
 import { Subject, Subscriber } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -57,6 +58,11 @@ export class AuthService {
         });
 
         return authSubscription;
+    }
+    
+    resetPassword(body) {
+        const params = { params: {appToken: environment.APP_TOKEN}};
+        return this.apiService.noTokenPost( '/reset-password', body, params).pipe(map(hasBeenReset => hasBeenReset));
     }
 
 }

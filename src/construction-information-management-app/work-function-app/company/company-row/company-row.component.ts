@@ -32,7 +32,6 @@ export class CompanyRowComponent implements OnInit {
         e.stopPropagation();
         this.companyService.deleteCompany(this.company, this.workFunction).subscribe(() => {
             this.workFunction.companies.splice(this.workFunction.companies.findIndex(c => c.id === this.company.id), 1);
-            console.log(this.workFunction.companies);
             this.deleteCompany.emit(this.company);
         });
     }

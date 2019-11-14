@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { Company } from '../company-package/company.model';
 
 import { AppTokenParams, OrganisationCacheObservable } from './interface/organisation-additional.interface';
 import { isOrganisationApi, OrganisationApi } from './interface/organisation-api.interface';

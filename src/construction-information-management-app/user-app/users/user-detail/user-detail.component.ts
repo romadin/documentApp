@@ -96,7 +96,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
         this.getProjectsAndCompanies();
 
         this.fileReader.addEventListener('loadend', () => {
-            const imageString =  JSON.stringify(this.fileReader.result).replace(/\\n/g, '');
+            const imageString = JSON.stringify(this.fileReader.result).replace(/\\n/g, '');
             this.imageSrc = this.sanitizer.bypassSecurityTrustStyle('url(' + imageString + ')');
         }, false);
     }

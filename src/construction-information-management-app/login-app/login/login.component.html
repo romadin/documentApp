@@ -1,4 +1,4 @@
-<mat-card class="example-card">
+<mat-card class="example-card login-card">
     <mat-card-header>
         <mat-card-title>Inloggen</mat-card-title>
     </mat-card-header>
@@ -12,6 +12,9 @@
                     <input matInput placeholder="Wachtwoord" type="password" formControlName="password">
                 </mat-form-field>
                 <button mat-raised-button type="submit"> Login </button>
+                <a [routerLink]="'reset-password'" class="link">
+                    wachtwoord vergeten?
+                </a>
             </form>
         </div>
     </mat-card-content>

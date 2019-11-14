@@ -28,8 +28,6 @@ export class LoginComponent implements OnInit {
         private headerCommunication: HeaderWithFolderCommunicationService,
     ) {
         this.headerCommunication.headerTitle.next('BIM Uitvoeringsplan');
-        this.authService = authService;
-        this.router = router;
     }
 
     ngOnInit() {

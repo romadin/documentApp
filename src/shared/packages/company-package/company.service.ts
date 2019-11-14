@@ -114,7 +114,6 @@ export class CompanyService {
         return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action: boolean) => {
             if (action) {
                 return this.apiService.delete(this.path + '/' + company.id, params).pipe(map(result => {
-                    console.log(result);
                     this.toast.showSuccess('Bedrijf: ' + company.name + ' is verwijderd', 'Verwijderd');
                     if (result === 'Company deleted' && this.companiesByProjectCache[workFunction.parent.id]) {
                         const companies = this.companiesByProjectCache[workFunction.parent.id].getValue();

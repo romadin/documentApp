@@ -1,7 +1,26 @@
+:host {
+    display: flex;
+    justify-content: center;
+}
+.login-card {
+    max-width: var(--max-width);
+    width: 100%;
+}
 mat-card-header {
     color: var(--primary-color);
 }
 div.loginForm > form {
     display: flex;
     flex-direction: column;
+}
+div.loginForm > form a.link {
+    align-self: flex-start;
+    padding: 10px 0;
+    color: #1e4b75;
+    text-decoration: none;
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);;
+}
+div.loginForm > form a.link:hover {
+    color: #143375;
+    text-decoration: underline;
 }

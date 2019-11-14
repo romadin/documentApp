@@ -1,6 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDrawerContent } from '@angular/material';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Observable } from 'rxjs';
 import { delay, distinctUntilChanged, filter, map, takeLast } from 'rxjs/operators';
 import { Breadcrumb, BreadcrumbService } from '../shared/packages/breadcrumb-package/breadcrumb.service';
@@ -13,6 +13,7 @@ import { UserService } from '../shared/packages/user-package/user.service';
 import { MenuAction } from './header/header.component';
 
 import { LoadingService } from '../shared/loading.service';
+import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
 
 export type ModuleName = 'Templates' | 'Assign chapter company' | 'Branding' | 'Basic ILS';
 
@@ -22,7 +23,34 @@ export interface SideMenuNav extends MenuAction {
 @Component({
     selector: 'cim-root',
     templateUrl: './construction-information-management.component.html',
-    styleUrls: [ './construction-information-management.component.css']
+    styleUrls: [ './construction-information-management.component.css'],
+    animations: [
+        trigger('routeAnimations', [
+            transition('loginCard <=> passwordResetCard', [
+                style({ position: 'relative' }),
+                query(':enter, :leave', [
+                    style({
+                        position: 'absolute',
+                        left: 0,
+                        width: '100%'
+                    })
+                ]),
+                query(':enter', [
+                    style({ left: '-100%'})
+                ]),
+                query(':leave', animateChild()),
+                group([
+                    query(':leave', [
+                        animate('300ms ease-out', style({ left: '100%'}))
+                    ]),
+                    query(':enter', [
+                        animate('300ms ease-out', style({ left: '0%'}))
+                    ])
+                ]),
+                query(':enter', animateChild()),
+            ])
+        ])
+    ]
 })
 export class ConstructionInformationManagementComponent implements OnInit {
     sideMenuActions: MenuAction[] = [];
@@ -65,11 +93,20 @@ export class ConstructionInformationManagementComponent implements OnInit {
             .pipe(distinctUntilChanged())
             .pipe(map(event => this.buildBreadCrumb(this.activatedRoute.root))).subscribe(breadcrumbs => this.breadcrumbs = breadcrumbs);
     }
+    
+    prepareRoute(outlet: RouterOutlet) {
+        return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
+    }
 
     private buildBreadCrumb(route: ActivatedRoute, url: string = '', breadcrumbs: Array<Breadcrumb> = []): Array<Breadcrumb> {
-        // If no routeConfig is avalailable we are on the root path
+        // If no routeConfig is available we are on the root path
         let name = route.routeConfig && route.routeConfig.data ? route.routeConfig.data[ 'breadcrumb' ] : '';
         let path = route.routeConfig ? route.routeConfig.path : '';
+    
+        // If no name is available we don't want to make an breadcrumb of this.
+        if (name === '' || name === undefined) {
+            return;
+        }
 
         if (typeof name === 'function') {
             name = name(route);

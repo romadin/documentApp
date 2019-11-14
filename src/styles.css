@@ -4,6 +4,7 @@
     --primary-color: #002060;
     --secondary-color: #ffc000;
     --body-height: calc(94vh - 64px);
+    --max-width: 650px;
 }
 
 html {
@@ -16,6 +17,9 @@ body {
 }
 mat-sidenav-content.mat-drawer-content {
     overflow: hidden;
+}
+mat-card-header {
+    color: var(--primary-color);
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

@@ -138,7 +138,6 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
                     let currentNode;
                     do {
                         currentNode = node.parentElement;
-                        console.log(currentNode);
                     } while (currentNode.nodeName === 'TABLE');
                     currentNode.parentElement.remove();
                     this.content = this.editor.textArea.nativeElement.innerHTML;
