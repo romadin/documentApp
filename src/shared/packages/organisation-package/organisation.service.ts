@@ -75,8 +75,9 @@ export class OrganisationService {
     }
 
     private updateCache(organisation: Organisation): void {
-        if (this.organisationByNameCache[organisation.name]) {
-            this.organisationByNameCache[organisation.name].next(organisation);
+        const name = organisation.name.toLowerCase();
+        if (this.organisationByNameCache[name]) {
+            this.organisationByNameCache[name].next(organisation);
         }
     }
 }

@@ -70,11 +70,10 @@ export class ConstructionInformationManagementComponent implements OnInit {
         this.defineSideMenuActions();
         this.organisationService.getOrganisation().subscribe(organisation => {
             this.organisation = organisation;
-
+    
             if (organisation) {
                 document.documentElement.style.setProperty('--primary-color', organisation.primaryColor);
                 document.documentElement.style.setProperty('--secondary-color', organisation.secondaryColor);
-                // this.determineActions();
             }
             document.documentElement.style.setProperty(
                 '--secondary-hover-color',
