@@ -1,9 +1,7 @@
-import { AfterViewChecked, AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDrawerContent } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
-import { delay, distinctUntilChanged, filter, map, takeLast } from 'rxjs/operators';
-import { Breadcrumb, BreadcrumbService } from '../shared/packages/breadcrumb-package/breadcrumb.service';
+import { delay, distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { Module } from '../shared/packages/module-package/module.model';
 import { Organisation } from '../shared/packages/organisation-package/organisation.model';
 import { OrganisationService } from '../shared/packages/organisation-package/organisation.service';
@@ -14,6 +12,7 @@ import { MenuAction } from './header/header.component';
 
 import { LoadingService } from '../shared/loading.service';
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
+import { Breadcrumb } from './bread-crumb/bread-crumb.component';
 
 export type ModuleName = 'Templates' | 'Assign chapter company' | 'Branding' | 'Basic ILS';
 
@@ -104,7 +103,7 @@ export class ConstructionInformationManagementComponent implements OnInit {
         let path = route.routeConfig ? route.routeConfig.path : '';
     
         // If no name is available we don't want to make an breadcrumb of this.
-        if (name === '' || name === undefined) {
+        if (name === undefined) {
             return;
         }
 

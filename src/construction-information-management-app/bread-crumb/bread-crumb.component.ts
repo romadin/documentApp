@@ -1,6 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Breadcrumb } from '../../shared/packages/breadcrumb-package/breadcrumb.service';
 
+export interface Breadcrumb {
+    name: string;
+    url: string;
+}
 @Component({
   selector: 'cim-bread-crumb',
   templateUrl: './bread-crumb.component.html',

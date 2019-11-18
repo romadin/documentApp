@@ -13,7 +13,6 @@ import { MaterialModule } from '../shared/material.module';
 // can Activate checks
 import { CanActivateLoggedIn } from '../can-activate/CanActivateLoggedIn';
 import { CanActivateAlreadyLoggedIn } from '../can-activate/CanActivateAlreadyLoggedIn';
-import { BreadcrumbService } from '../shared/packages/breadcrumb-package/breadcrumb.service';
 import { CompanyService } from '../shared/packages/company-package/company.service';
 import { ContextMenuService } from '../shared/packages/context-menu/context-menu.service';
 import { ModuleService } from '../shared/packages/module-package/module.service';
@@ -134,7 +133,6 @@ const appRoutes: Routes = [
         { provide: LOCALE_ID, useValue: 'nl'},
         ApiService,
         CacheService,
-        BreadcrumbService,
         ContextMenuService,
 
         ProjectService,

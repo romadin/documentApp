@@ -18,7 +18,6 @@ export class ToastService {
     constructor(private toast: ToastrManager) {}
 
     showSuccess(message: string, title?: string) {
-        console.log(this.defaultOptions);
         this.toast.successToastr(message, title, this.defaultOptions);
     }
 

@@ -6,17 +6,17 @@
                 <i class="material-icons"> close </i>
             </button>
         </mat-card-header>
-        <mat-card-content #content>
-            <div *ngFor="let item of items;">
-                <h3> {{ item.getName() }} </h3>
-                <div #dataContentDocument>{{ setContent(item, dataContentDocument) }}</div>
-                <div *ngFor="let subDocument of item.documents.getValue()">
-                    <h4> {{ subDocument.getName() }} </h4>
-                    <div #dataContentSubDocument >{{ setContent(subDocument, dataContentSubDocument) }}</div>
+        <mat-card-content #content class="documentContainer">
+            <div class="documentA4">
+                <div *ngFor="let item of items;">
+                    <h3> {{ item.getName() }} </h3>
+                    <div #dataContentDocument>{{ setContent(item, dataContentDocument) }}</div>
+                    <div *ngFor="let subDocument of item.documents.getValue()">
+                        <h4> {{ subDocument.getName() }} </h4>
+                        <div #dataContentSubDocument >{{ setContent(subDocument, dataContentSubDocument) }}</div>
+                    </div>
                 </div>
             </div>
         </mat-card-content>
-        <mat-card-actions>
-        </mat-card-actions>
     </mat-card>
 </div>

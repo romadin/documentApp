@@ -10,9 +10,17 @@ mat-card.documentsReader > mat-card-header {
     border-bottom: solid 1px #cecece;
 }
 
-mat-card.documentsReader > mat-card-content {
+mat-card.documentsReader > mat-card-content.documentContainer {
+    display: flex;
+    justify-content: center;
     max-height: 80vh;
-    overflow: hidden;
+    background-color: #757575;
+    overflow-x: hidden;
     overflow-y: auto;
+}
+mat-card.documentsReader > mat-card-content.documentContainer > div.documentA4 {
+    width: 210mm;
+    height: 100%;
+    background-color: #fff;
     padding: 10px 15px;
 }
