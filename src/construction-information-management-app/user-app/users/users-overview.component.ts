@@ -1,5 +1,16 @@
-import { animate, animateChild, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component } from '@angular/core';
+import {
+    animate,
+    animateChild,
+    keyframes,
+    query,
+    stagger,
+    state,
+    style,
+    transition,
+    trigger,
+    useAnimation
+} from '@angular/animations';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserService } from '../../../shared/packages/user-package/user.service';
@@ -8,6 +19,7 @@ import { Organisation } from '../../../shared/packages/organisation-package/orga
 import { LoadingService } from '../../../shared/loading.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
+import { initialAnimation, scaleDownAnimation } from '../../../shared/animations';
 
 @Component({
     selector: 'cim-users-overview',
@@ -62,19 +74,10 @@ import { UsersCommunicationService } from '../../../shared/service/communication
         ]),
         trigger('items', [
             transition('void => *', [
-                style({ transform: 'scale(0.5)', opacity: 0 }),  // initial
-                animate('1s cubic-bezier(.8, -0.6, 0.2, 1.5)',
-                    style({ transform: 'scale(1)', opacity: 1 })
-                )  // final
+                useAnimation(initialAnimation)
             ]),
             transition('* => void', [
-                style({ transform: 'scale(1)', opacity: 1, height: '*' }),
-                animate('1s cubic-bezier(.8, -0.6, 0.2, 1.5)',
-                    style({
-                        transform: 'scale(0.5)', opacity: 0,
-                        height: '0px', margin: '0px'
-                    })
-                )
+                useAnimation(scaleDownAnimation)
             ])
         ])
     ]

@@ -12,8 +12,5 @@ export function getBreadcrumbNameProject(route: ActivatedRoute): string {
     return route.snapshot.data.project.name;
 }
 export function getBreadcrumbNameParent(route: ActivatedRoute): string {
-    return route.snapshot.data.functionPackage.parent.name
+    return route.snapshot.data.functionPackage.parent.name;
 }
-// export function getBreadcrumbNameProject(route: ActivatedRoute): string {
-//     return route.snapshot.data.project.name;
-// }

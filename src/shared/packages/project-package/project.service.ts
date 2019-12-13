@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, Subject } from 'rxjs';
+import { merge, Observable, of, Subject, timer } from 'rxjs';
 import { WorkFunctionService } from '../work-function-package/work-function.service';
 
 import { Project } from './project.model';
-import { ApiProjectResponse, ProjectPostDataInterface, ProjectUpdateData } from './api-project.interface';
+import { ApiProjectResponse, ProjectUpdateData } from './api-project.interface';
 import { ApiService } from '../../service/api.service';
 import { Organisation } from '../organisation-package/organisation.model';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
 
 interface ProjectCache {
     [id: number]: Project;
@@ -24,9 +24,46 @@ export class ProjectService {
     private projectsCache: ProjectCache = {};
     private projectsObservableCache: ProjectCacheObservable = {};
     private projectsByOrganisationCache: ProjectsCache = {};
-    private allProjectSubject: Subject<Project[]> = new Subject();
-
+    
+    projectsCache$: Observable<Project[]>;
+    updateCache$: Subject<void> = new Subject<void>();
+    
+    private subjectCache$: Subject<Project[]>;
+    
     constructor(private apiService: ApiService, private workFunctionService: WorkFunctionService) {
+    }
+    
+    getProjectsCache(organisation: Organisation): Observable<Project[]> {
+        if (!this.projectsCache$) {
+            // const timer$ = timer(0, 10000);
+            //
+            // this.projectsCache$ = timer$.pipe(
+            //     switchMap(_ => this.requestProjects(organisation)),
+            //     shareReplay(1)
+            // );
+            
+            
+            const initialProjects$ = this.getDataOnce(organisation);
+            const updates$ = this.updateCache$.pipe(
+                mergeMap(() => this.getDataOnce(organisation))
+            );
+            this.projectsCache$ = merge(initialProjects$, updates$);
+        }
+        
+        return this.projectsCache$;
+    }
+    
+    
+    getDataOnce(organisation: Organisation) {
+        return this.requestProjects(organisation).pipe(shareReplay(1), take(1));
+    }
+    
+    requestProjects(organisation: Organisation): Observable<Project[]> {
+        const params = {format: 'json', organisationId: organisation.id};
+        
+        return this.apiService.get('/projects', params).pipe(
+            map((apiResponse: ApiProjectResponse[]) => apiResponse.map((item) => this.makeProject(item, organisation)))
+        );
     }
 
     getProjects(organisation: Organisation): Observable<Project[]> {
@@ -65,34 +102,24 @@ export class ProjectService {
         );
     }
 
-    postProject(data: ProjectPostDataInterface, organisation: Organisation ): Promise<Project> {
-        return new Promise<Project>((resolve) => {
-            this.apiService.post('/projects', data, {}).subscribe((apiResponse: ApiProjectResponse) => {
-                    const newProject = this.makeProject(apiResponse, organisation);
-                    this.allProjectSubject.next(Object.values(this.projectsCache));
-                    resolve(newProject);
-                }, (error) => {
-                    resolve(error.error);
-                });
-        });
-    }
-
     /**
      * Doing a post projectId but this call does also do workFunctions and documents. That is the default projectId.
      */
-    postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Promise<Project> {
+    postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Observable<Project[]> {
         const params = { organisationId: organisation.id };
-
-        return new Promise<Project>((resolve) => {
-            this.apiService.post('/projects', data, params)
-                .subscribe((apiResponse: ApiProjectResponse) => {
-                    const newProject = this.makeProject(apiResponse, organisation);
-                    this.projectsByOrganisationCache[organisation.id].push(newProject);
-                    resolve(newProject);
-                }, (error) => {
-                    resolve(error.error);
-                });
-        });
+    
+        return this.requestPostProject(data, organisation, params).pipe(
+            map((project: Project) => {
+                this.updateCache$.next();
+                return [project];
+            })
+        );
+    }
+    
+    requestPostProject(data: { name: string, templateId: number }, organisation: Organisation, params): Observable<Project> {
+        return this.apiService.post('/projects', data, params).pipe(
+            map((apiResponse: ApiProjectResponse) => this.makeProject(apiResponse, organisation))
+        );
     }
 
     updateProject(data: ProjectUpdateData, id: number): Observable<Project> {

@@ -8,6 +8,7 @@ import { ToastService } from '../../../shared/toast.service';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
 import { ProjectPostDataInterface } from '../../../shared/packages/project-package/api-project.interface';
+import { merge } from 'rxjs';
 
 export interface DefaultPopupData {
     title: string;
@@ -67,8 +68,9 @@ export class ProjectPopupComponent {
                     organisationId: this.data.organisation.id
                 };
 
+                
                 this.projectService.postProjectWithDefaultTemplate(data, this.data.organisation)
-                    .then((value) => {
+                    .subscribe((value) => {
                         this.toastService.showSuccess('Project: ' + projectName + ' is toegevoegd', 'Toegevoegd');
                         this.dialogRef.close(value);
                     });
