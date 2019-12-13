@@ -61,19 +61,28 @@ export class ProjectsListComponent implements OnInit {
                 projects.map((project) => project['isNew'] = true);
                 this.changeList(projects);
             }
-            
         });
         this.headerCommunicationService.headerTitle.next('Projecten');
     }
 
     private changeList(newProjects): void {
-        newProjects.forEach((newProject: Project) => {
-            for (let index = 0; index < this.projects.length; index++) {
+        if (newProjects.length > this.projects.length) {
+            // project has been added
+            this.editArray(newProjects, this.projects, 'add');
+        } else if (newProjects.length < this.projects.length) {
+            // project has been removed
+            this.editArray(this.projects, newProjects, 'delete');
+        }
+    }
+
+    private editArray(mainArray: Project[], subArray: Project[], method: 'delete' | 'add' ) {
+        mainArray.forEach((newProject: Project, i: number) => {
+            for (let index = 0; index < subArray.length; index++) {
                 const oldProject = this.projects[index];
                 if (newProject.id === oldProject.id) {
                     break;
-                } else if (index + 1 === this.projects.length) {
-                    this.projects.push(newProject);
+                } else if (index + 1 === subArray.length) {
+                    method === 'add' ? this.projects.push(newProject) : this.projects.splice(i, 1);
                 }
             }
         });

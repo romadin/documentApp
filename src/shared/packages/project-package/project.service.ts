@@ -134,8 +134,7 @@ export class ProjectService {
             if (this.projectsCache.hasOwnProperty(id) ) {
                 delete this.projectsCache[id];
             }
-            const index = this.projectsByOrganisationCache[organisation.id].findIndex(project => project.id === id);
-            this.projectsByOrganisationCache[organisation.id].splice(index, 1);
+            this.updateCache$.next();
         }, (error) => {
             // @todo show error the right way.
             console.log(error);
