@@ -22,18 +22,16 @@ interface ProjectCacheObservable {
 @Injectable()
 export class ProjectService {
     private projectsCache: ProjectCache = {};
-    private projectsObservableCache: ProjectCacheObservable = {};
-    private projectsByOrganisationCache: ProjectsCache = {};
-    
-    projectsCache$: Observable<Project[]>;
-    updateCache$: Subject<void> = new Subject<void>();
-    
-    private subjectCache$: Subject<Project[]>;
-    
+
+    private projectsCache$: Observable<Project[]>;
+    private updateProjectsCache$: Subject<void> = new Subject<void>();
+
+    private projectCache$: Observable<Project>;
+
     constructor(private apiService: ApiService, private workFunctionService: WorkFunctionService) {
     }
-    
-    getProjectsCache(organisation: Organisation): Observable<Project[]> {
+
+    getProjects(organisation: Organisation): Observable<Project[]> {
         if (!this.projectsCache$) {
             // const timer$ = timer(0, 10000);
             //
@@ -41,65 +39,38 @@ export class ProjectService {
             //     switchMap(_ => this.requestProjects(organisation)),
             //     shareReplay(1)
             // );
-            
-            
+
             const initialProjects$ = this.getDataOnce(organisation);
-            const updates$ = this.updateCache$.pipe(
+            const updates$ = this.updateProjectsCache$.pipe(
                 mergeMap(() => this.getDataOnce(organisation))
             );
             this.projectsCache$ = merge(initialProjects$, updates$);
         }
-        
+
         return this.projectsCache$;
     }
-    
-    
+
     getDataOnce(organisation: Organisation) {
         return this.requestProjects(organisation).pipe(shareReplay(1), take(1));
     }
-    
+
     requestProjects(organisation: Organisation): Observable<Project[]> {
         const params = {format: 'json', organisationId: organisation.id};
-        
+
         return this.apiService.get('/projects', params).pipe(
             map((apiResponse: ApiProjectResponse[]) => apiResponse.map((item) => this.makeProject(item, organisation)))
         );
     }
 
-    getProjects(organisation: Organisation): Observable<Project[]> {
-        if ( this.projectsByOrganisationCache[organisation.id] ) {
-            return of(this.projectsByOrganisationCache[organisation.id]);
-        }
-
-        const params = {format: 'json', organisationId: organisation.id};
-        return this.apiService.get('/projects', params).pipe(map((apiResponse: ApiProjectResponse[]) => {
-            const projects = [];
-            apiResponse.forEach((item) => {
-                const project = this.makeProject(item, organisation);
-                projects.push(project);
-            });
-
-            this.projectsByOrganisationCache[organisation.id] = projects;
-            return this.projectsByOrganisationCache[organisation.id];
-        }));
-    }
-
     getProject(id: number, organisation: Organisation): Observable<Project> {
         const params = {format: 'json', organisationId: organisation.id};
-        if (this.projectsObservableCache[id]) {
-            return this.projectsObservableCache[id];
+        if (this.projectsCache[id]) {
+            return of(this.projectsCache[id]);
+        } else {
+            return this.apiService.get('/projects/' + id, params).pipe(
+                map((projectResponse) => this.makeProject(projectResponse, organisation))
+            );
         }
-
-        return this.projectsObservableCache[id] = this.apiService.get('/projects/' + id, params).pipe(
-            mergeMap(projectResponse => {
-                const project = this.makeProject(projectResponse, organisation);
-                return this.workFunctionService.getWorkFunctionsByParent({projectId: project.id}, project).pipe(map(workFunctions => {
-                    workFunctions = workFunctions.sort((a, b) => a.order - b.order);
-                    project.workFunctions = workFunctions;
-                    return project;
-                }));
-            })
-        );
     }
 
     /**
@@ -107,15 +78,15 @@ export class ProjectService {
      */
     postProjectWithDefaultTemplate(data: { name: string, templateId: number }, organisation: Organisation  ): Observable<Project[]> {
         const params = { organisationId: organisation.id };
-    
+
         return this.requestPostProject(data, organisation, params).pipe(
             map((project: Project) => {
-                this.updateCache$.next();
+                this.updateProjectsCache$.next();
                 return [project];
             })
         );
     }
-    
+
     requestPostProject(data: { name: string, templateId: number }, organisation: Organisation, params): Observable<Project> {
         return this.apiService.post('/projects', data, params).pipe(
             map((apiResponse: ApiProjectResponse) => this.makeProject(apiResponse, organisation))
@@ -134,7 +105,7 @@ export class ProjectService {
             if (this.projectsCache.hasOwnProperty(id) ) {
                 delete this.projectsCache[id];
             }
-            this.updateCache$.next();
+            this.updateProjectsCache$.next();
         }, (error) => {
             // @todo show error the right way.
             console.log(error);
@@ -151,6 +122,9 @@ export class ProjectService {
         project.id = apiResponse.id;
         project.name = apiResponse.name;
         project.organisation = organisation;
+        project.workFunctions = this.workFunctionService.getWorkFunctionsByProject({projectId: project.id}, project).pipe(
+            map(workFunctions => workFunctions.sort((a, b) => a.order - b.order))
+        );
 
         this.projectsCache[ project.id ] = project;
         return project;

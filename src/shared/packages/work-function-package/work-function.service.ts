@@ -9,8 +9,8 @@ import { CompanyService } from '../company-package/company.service';
 import { DocumentService } from '../document-package/document.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
-import { map, mergeMap } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap, shareReplay, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, forkJoin, merge, Observable, of, Subject } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
@@ -20,6 +20,8 @@ import {
     WorkFunctionUpdateBody
 } from './interface/work-function-api-response.interface';
 import { ChapterService } from '../chapter-package/chapter.service';
+import { Organisation } from '../organisation-package/organisation.model';
+import { ApiProjectResponse } from '../project-package/api-project.interface';
 
 interface WorkFunctionCache {
     [id: number]: WorkFunction;
@@ -28,7 +30,12 @@ interface WorkFunctionCache {
 export class WorkFunctionService {
     private path = '/workFunctions';
     private cache: WorkFunctionCache = {};
-
+    
+    private workFunctionsProjectCache$: Observable<WorkFunction[]>[] = [];
+    private workFunctionsCache$: Observable<WorkFunction[]>;
+    private updateWorkFunctionsCache$: Subject<void> = new Subject<void>();
+    
+    
     constructor(private apiService: ApiService,
                 private chapterService: ChapterService,
                 private documentService: DocumentService,
@@ -38,15 +45,33 @@ export class WorkFunctionService {
     ) {  }
 
     getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
-        // const workFunctions: BehaviorSubject<WorkFunction[]> = new BehaviorSubject<WorkFunction[]>(null);
-
+        if (!this.workFunctionsCache$) {
+            const initialWorkFunctions$ = this.getDataOnce(params, parent);
+            const updates$ = this.updateWorkFunctionsCache$.pipe(mergeMap(() => this.getDataOnce(params, parent)));
+            
+            this.workFunctionsCache$ = merge(initialWorkFunctions$, updates$);
+        }
+        return this.workFunctionsCache$;
+    }
+    getWorkFunctionsByProject(params: WorkFunctionGetParam, parent: Project): Observable<WorkFunction[]> {
+        if (!this.workFunctionsProjectCache$[parent.id]) {
+            const initialWorkFunctions$ = this.getDataOnce(params, parent);
+            const updates$ = this.updateWorkFunctionsCache$.pipe(mergeMap(() => this.getDataOnce(params, parent)));
+            
+            this.workFunctionsProjectCache$[parent.id] = merge(initialWorkFunctions$, updates$);
+        }
+        return this.workFunctionsProjectCache$[parent.id];
+    }
+    
+    getDataOnce(params: WorkFunctionGetParam, parent: Template|Project) {
+        return this.requestWorkFunctions(params, parent).pipe(shareReplay(1), take(1));
+    }
+    
+    requestWorkFunctions(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
+    
         return this.apiService.get(this.path, params).pipe(
-            map((result: WorkFunctionApiResponseInterface[]) => result.map(response => {
-                return this.cache[response.id] ? this.cache[response.id] : this.makeWorkFunction(response, parent);
-            }))
+            map((result: WorkFunctionApiResponseInterface[]) => result.map(response => this.makeWorkFunction(response, parent)))
         );
-
-        // return workFunctions
     }
 
     getWorkFunction(id: number, parent: Template|Project): Observable<WorkFunction> {
@@ -57,7 +82,10 @@ export class WorkFunctionService {
 
     createWorkFunction(parent: Template|Project, body): Observable<WorkFunction> {
         return this.apiService.post(this.path, body).pipe(
-            map((result: WorkFunctionApiResponseInterface) => this.makeWorkFunction(result, parent))
+            map((result: WorkFunctionApiResponseInterface) => {
+                this.updateWorkFunctionsCache$.next();
+                return this.makeWorkFunction(result, parent);
+            })
         );
     }
 
@@ -85,11 +113,8 @@ export class WorkFunctionService {
             if (action) {
                 return this.apiService.delete(this.path + '/' + workFunction.id, {}).pipe(
                     map(() => {
-                        parent.workFunctions.splice(
-                            parent.workFunctions.findIndex(w => w.id === workFunction.id),
-                            1
-                        );
                         this.toast.showSuccess('Functie: ' + workFunction.name + ' is verwijderd', 'Verwijderd');
+                        this.updateWorkFunctionsCache$.next();
                         return true;
                     })
                 );
@@ -110,9 +135,10 @@ export class WorkFunctionService {
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
         workFunction.documents = new BehaviorSubject([]);
 
-        combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId, {workFunctionId: workFunction.id}))).subscribe((documents) => {
-            documents = documents.sort((a, b) => a.order - b.order);
-            workFunction.documents.next(documents);
+        combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId, {workFunctionId: workFunction.id})))
+            .subscribe((documents) => {
+                documents = documents.sort((a, b) => a.order - b.order);
+                workFunction.documents.next(documents);
         });
 
         const companies = [];
@@ -127,7 +153,6 @@ export class WorkFunctionService {
     }
 
     private updateWorkFunctionModel(work: WorkFunction, data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
-        work.id = data.id;
         work.name = data.name;
         work.isMainFunction = data.isMainFunction;
         work.order = data.order;

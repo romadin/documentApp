@@ -1,4 +1,14 @@
-import { animate, keyframes, state, style, transition, trigger } from '@angular/animations';
+import {
+    animate, animateChild,
+    keyframes,
+    query,
+    stagger,
+    state,
+    style,
+    transition,
+    trigger,
+    useAnimation
+} from '@angular/animations';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Project } from '../../../../shared/packages/project-package/project.model';
@@ -12,6 +22,7 @@ import { ProjectService } from '../../../../shared/packages/project-package/proj
 import { HeaderWithFolderCommunicationService } from '../../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { ProjectCommunicationService } from '../../../../shared/service/communication/project.communication.service';
 import { RouterService } from '../../../../shared/service/router.service';
+import { initialAnimation, scaleDownAnimation } from '../../../../shared/animations';
 
 @Component({
     selector: 'cim-project-detail',
@@ -56,6 +67,17 @@ import { RouterService } from '../../../../shared/service/router.service';
             transition('fullWidth <=> smallWidth', [
                 animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
+            transition('void => *', [
+                query('@items', stagger(250, animateChild()), { optional: true })
+            ]),
+        ]),
+        trigger('items', [
+            transition('void => *', [
+                useAnimation(initialAnimation)
+            ]),
+            transition('* => void', [
+                useAnimation(scaleDownAnimation)
+            ])
         ])
     ]
 })
@@ -66,6 +88,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     project: Project;
     showFunctionDetail = false;
     workFunctionToEdit: WorkFunction;
+    workFunctions: WorkFunction[];
 
     constructor(private activatedRoute: ActivatedRoute,
                 private workFunctionService: WorkFunctionService,
@@ -89,6 +112,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.communicationService.triggerAddWorkFunction.subscribe(show => {
             this.showFunctionDetail = show;
         });
+    
+        this.project.workFunctions.subscribe((workFunctions: WorkFunction[]) => {
+            if (!this.workFunctions) {
+                this.workFunctions = workFunctions;
+            } else {
+                this.changeList(workFunctions);
+            }
+        });
     }
 
     ngOnDestroy() {
@@ -104,5 +135,28 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
             this.showFunctionDetail = true;
             this.workFunctionToEdit = workFunction;
         }, 290);
+    }
+    
+    private changeList(newWorkFunctions): void {
+        if (newWorkFunctions.length > this.workFunctions.length) {
+            // project has been added
+            this.editArray(newWorkFunctions, this.workFunctions, 'add');
+        } else if (newWorkFunctions.length < this.workFunctions.length) {
+            // project has been removed
+            this.editArray(this.workFunctions, newWorkFunctions, 'delete');
+        }
+    }
+    
+    private editArray(mainArray: WorkFunction[], subArray: WorkFunction[], method: 'delete' | 'add' ) {
+        mainArray.forEach((newWorkFunction: WorkFunction, i: number) => {
+            for (let index = 0; index < subArray.length; index++) {
+                const oldProject = this.workFunctions[index];
+                if (newWorkFunction.id === oldProject.id) {
+                    break;
+                } else if (index + 1 === subArray.length) {
+                    method === 'add' ? this.workFunctions.push(newWorkFunction) : this.workFunctions.splice(i, 1);
+                }
+            }
+        });
     }
 }

@@ -1,6 +1,6 @@
 <ng-container *ngIf='projects'>
     <div class="projects" [@pageAnimations]="projects.length">
-        <div *ngFor="let project of projects">
+        <div [@items] *ngFor="let project of projects">
             <cim-project-row [project]="project">
             </cim-project-row>
         </div>

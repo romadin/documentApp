@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProjectService } from '../../../../shared/packages/project-package/project.service';
 import { Project } from '../../../../shared/packages/project-package/project.model';
 import { ActivatedRoute } from '@angular/router';
@@ -6,16 +6,13 @@ import { Organisation } from '../../../../shared/packages/organisation-package/o
 import { LoadingService } from '../../../../shared/loading.service';
 import { HeaderWithFolderCommunicationService } from '../../../../shared/service/communication/HeaderWithFolder.communication.service';
 import {
-    animate,
     animateChild,
     query,
-    stagger, state, style,
+    stagger, style,
     transition,
     trigger, useAnimation
 } from '@angular/animations';
 import { initialAnimation, scaleDownAnimation } from '../../../../shared/animations';
-import { Observable, Subject } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'cim-projecten',
@@ -23,18 +20,14 @@ import { take } from 'rxjs/operators';
     styleUrls: ['./projects-list.component.css'],
     animations: [
         trigger('pageAnimations', [
-            transition('* <=> *', [
-                query(
-                    ':enter',
-                    [
-                        style({ opacity: 0 }),
-                        stagger(250, useAnimation(initialAnimation)),
-                    ],
-                    { optional: true }
-                ),
+            transition('void => *', [
+                query('@items', stagger(250, animateChild()), { optional: true })
             ]),
         ]),
         trigger('items', [
+            transition('void => *', [
+                useAnimation(initialAnimation)
+            ]),
             transition('* => void', [
                 useAnimation(scaleDownAnimation)
             ])
@@ -54,13 +47,8 @@ export class ProjectsListComponent implements OnInit {
 
     ngOnInit() {
         const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
-        this.projectService.getProjectsCache(organisation).subscribe((projects: Project[]) => {
-            if (!this.projects) {
-                this.projects = projects;
-            } else {
-                projects.map((project) => project['isNew'] = true);
-                this.changeList(projects);
-            }
+        this.projectService.getProjects(organisation).subscribe((projects: Project[]) => {
+            !this.projects ? this.projects = projects : this.changeList(projects);
         });
         this.headerCommunicationService.headerTitle.next('Projecten');
     }

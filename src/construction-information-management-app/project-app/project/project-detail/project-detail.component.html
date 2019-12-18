@@ -1,11 +1,13 @@
 <div *ngIf="project && currentUser" class="wrapper">
-    <div class="container" [@resizeWidth]="showFunctionDetail ? 'smallWidth' : 'fullWidth'">
-        <cim-project-work-function *ngFor="let workFunction of project.workFunctions"
-                                   [workFunction]="workFunction"
-                                   [parent]="project"
-                                   [currentUser]="currentUser"
-                                   (editWorkFunction)="onEditWorkFunction($event)">
-        </cim-project-work-function>
+    <div class="container" [@resizeWidth]="showFunctionDetail ? 'smallWidth' : 'fullWidth'" *ngIf="workFunctions && workFunctions.length > 0">
+        <div [@items] *ngFor="let workFunction of workFunctions">
+            <cim-project-work-function
+                [workFunction]="workFunction"
+                [parent]="project"
+                [currentUser]="currentUser"
+                (editWorkFunction)="onEditWorkFunction($event)">
+            </cim-project-work-function>
+        </div>
         <div class="cardRow" routerLink="acties">
             <div class="header">
                 <i class="material-icons"> assignment </i>
