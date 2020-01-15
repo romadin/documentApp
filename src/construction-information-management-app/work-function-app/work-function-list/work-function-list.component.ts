@@ -56,17 +56,17 @@ import { initialAnimation, scaleDownAnimation } from '../../../shared/animations
             ])
         ]),
         trigger('resizeWidth', [
-            // state('fullWidth', style({
-            //     width: '100%'
-            // })),
-            // state('smallWidth', style({
-            //     width: '50%'
-            // })),
-            // transition('fullWidth <=> smallWidth', [
-            //     animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
-            // ]),
+            state('fullWidth', style({
+                width: '100%'
+            })),
+            state('smallWidth', style({
+                width: '50%'
+            })),
+            transition('fullWidth <=> smallWidth', [
+                animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
+            ]),
             transition('void => *', [
-                query('@items', stagger(250, animateChild()), { optional: true })
+                query('@items', stagger(100, animateChild()), { optional: true })
             ]),
         ]),
         trigger('items', [
