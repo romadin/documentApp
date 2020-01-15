@@ -20,8 +20,6 @@ import {
     WorkFunctionUpdateBody
 } from './interface/work-function-api-response.interface';
 import { ChapterService } from '../chapter-package/chapter.service';
-import { Organisation } from '../organisation-package/organisation.model';
-import { ApiProjectResponse } from '../project-package/api-project.interface';
 
 interface WorkFunctionCache {
     [id: number]: WorkFunction;
@@ -32,7 +30,7 @@ export class WorkFunctionService {
     private cache: WorkFunctionCache = {};
     
     private workFunctionsProjectCache$: Observable<WorkFunction[]>[] = [];
-    private workFunctionsCache$: Observable<WorkFunction[]>;
+    private workFunctionsTemplateCache$: Observable<WorkFunction[]>[] = [];
     private updateWorkFunctionsCache$: Subject<void> = new Subject<void>();
     
     
@@ -44,15 +42,17 @@ export class WorkFunctionService {
                 private toast: ToastService
     ) {  }
 
-    getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
-        if (!this.workFunctionsCache$) {
+    getWorkFunctionsByParent(params: WorkFunctionGetParam, parent: Template): Observable<WorkFunction[]> {
+        if (!this.workFunctionsTemplateCache$[parent.id]) {
             const initialWorkFunctions$ = this.getDataOnce(params, parent);
             const updates$ = this.updateWorkFunctionsCache$.pipe(mergeMap(() => this.getDataOnce(params, parent)));
             
-            this.workFunctionsCache$ = merge(initialWorkFunctions$, updates$);
+            this.workFunctionsTemplateCache$[parent.id] = merge(initialWorkFunctions$, updates$);
         }
-        return this.workFunctionsCache$;
+        return this.workFunctionsTemplateCache$[parent.id];
     }
+    
+    
     getWorkFunctionsByProject(params: WorkFunctionGetParam, parent: Project): Observable<WorkFunction[]> {
         if (!this.workFunctionsProjectCache$[parent.id]) {
             const initialWorkFunctions$ = this.getDataOnce(params, parent);
@@ -93,8 +93,8 @@ export class WorkFunctionService {
         return this.apiService.post(this.path + '/' + workFunction.id, body).pipe(
             map((result: WorkFunctionApiResponseInterface) => {
                 const updatedWorkFunction = this.updateWorkFunctionModel(workFunction, result, workFunction.parent);
-                const index = workFunction.parent.workFunctions.findIndex(w => w.id === workFunction.id);
-                workFunction.parent.workFunctions[index] = updatedWorkFunction;
+                // const index = workFunction.parent.workFunctions.findIndex(w => w.id === workFunction.id);
+                // workFunction.parent.workFunctions[index] = updatedWorkFunction;
                 return updatedWorkFunction;
             })
         );
@@ -133,13 +133,13 @@ export class WorkFunctionService {
         workFunction.fromTemplate = data.fromTemplate;
         workFunction.parent = parent;
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
-        workFunction.documents = new BehaviorSubject([]);
+        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
 
-        combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId, {workFunctionId: workFunction.id})))
-            .subscribe((documents) => {
-                documents = documents.sort((a, b) => a.order - b.order);
-                workFunction.documents.next(documents);
-        });
+        // combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId, {workFunctionId: workFunction.id})))
+        //     .subscribe((documents) => {
+        //         documents = documents.sort((a, b) => a.order - b.order);
+        //         workFunction.documents.next(documents);
+        // });
 
         const companies = [];
         data.companies.forEach(company => {

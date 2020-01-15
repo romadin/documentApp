@@ -62,9 +62,9 @@ export class ChapterComponent implements OnInit {
             if (action) {
                 const params = isWorkFunction(this.parentItem) ? {workFunctionId: this.parentItem.id} : {};
                 this.chapterService.deleteChapter(this.chapter, params).subscribe(message => {
-                    const chapters: Chapter[] = this.parentItem.chapters.getValue();
-                    chapters.splice(chapters.findIndex(c => c.id === this.chapter.id), 1);
-                    this.parentItem.chapters.next(chapters);
+                    // const chapters: Chapter[] = this.parentItem.chapters.getValue();
+                    // chapters.splice(chapters.findIndex(c => c.id === this.chapter.id), 1);
+                    // this.parentItem.chapters.next(chapters);
                     this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is verwijderd', 'Verwijderd');
                 });
             }

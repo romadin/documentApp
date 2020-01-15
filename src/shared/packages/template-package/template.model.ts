@@ -1,11 +1,12 @@
 import { WorkFunction } from '../work-function-package/work-function.model';
+import { Observable } from 'rxjs';
 
 export class Template {
     private _id: number;
     private _name: string;
     private _organisationId: number;
     private _isDefault: boolean;
-    private _workFunctions: WorkFunction[];
+    private _workFunctions: Observable<WorkFunction[]>;
 
     constructor() { }
 
@@ -40,12 +41,12 @@ export class Template {
     set isDefault(value: boolean) {
         this._isDefault = value;
     }
-
-    get workFunctions(): WorkFunction[] {
+    
+    get workFunctions(): Observable<WorkFunction[]> {
         return this._workFunctions;
     }
-
-    set workFunctions(value: WorkFunction[]) {
+    
+    set workFunctions(value: Observable<WorkFunction[]>) {
         this._workFunctions = value;
     }
 }

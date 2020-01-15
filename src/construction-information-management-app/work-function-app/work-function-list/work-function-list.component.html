@@ -1,5 +1,5 @@
 <div *ngIf="project && currentUser" class="wrapper">
-    <div class="container" [@resizeWidth]="showFunctionDetail ? 'smallWidth' : 'fullWidth'">
+    <div class="container" [@resizeWidth]="workFunctions.length">
         <div [@items] *ngFor="let workFunction of workFunctions">
             <cim-project-work-function
                 [workFunction]="workFunction"

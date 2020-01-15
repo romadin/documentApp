@@ -54,7 +54,7 @@ export class WorkFunctionEditComponent implements OnInit {
             } else {
                 this.parent instanceof Template ? body['templateId'] = this.parent.id : body['projectId'] = this.parent.id;
                 this.workFunctionService.createWorkFunction(this.parent, body).subscribe(workFunction => {
-                    this.parent.workFunctions.push(workFunction);
+                    // this.parent.workFunctions.push(workFunction);
                     this.workFunction = workFunction;
                     this.onAddedWorkFunction.emit(workFunction);
                     this.toast.showSuccess('Functie: ' +  workFunction.name + ' is toegevoegd', 'Toegevoegd');

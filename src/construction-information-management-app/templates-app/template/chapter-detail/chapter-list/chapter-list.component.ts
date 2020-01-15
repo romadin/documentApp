@@ -10,6 +10,7 @@ import {
     WorkFunctionUpdateBody
 } from '../../../../../shared/packages/work-function-package/interface/work-function-api-response.interface';
 import { ToastService } from '../../../../../shared/toast.service';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
     selector: 'cim-chapter-list',
@@ -38,14 +39,17 @@ export class ChapterListComponent implements OnInit {
     constructor(private chapterService: ChapterService, private workFunctionService: WorkFunctionService, private toast: ToastService) { }
 
     ngOnInit() {
-        const workFunctions = this.parent.parent.workFunctions.filter(w => w.id !== this.parent.id);
-        const observables = [];
-        workFunctions.forEach((workFunction) => observables.push(workFunction.chapters));
-        combineLatest(observables).subscribe((chaptersContainer: Chapter[][]) => {
-            this.chapters = [];
-            chaptersContainer.forEach(chapters => this.chapters = this.chapters.concat(chapters));
-            this.filterExistingChapters();
-        });
+        
+        // this.parent.parent.workFunctions.pipe(map(workFunctions => workFunctions).filter(w => w.id !== this.parent.id))
+        
+        // const workFunctions = this.parent.parent.workFunctions.filter(w => w.id !== this.parent.id);
+        // const observables = [];
+        // workFunctions.forEach((workFunction) => observables.push(workFunction.chapters));
+        // combineLatest(observables).subscribe((chaptersContainer: Chapter[][]) => {
+        //     this.chapters = [];
+        //     chaptersContainer.forEach(chapters => this.chapters = this.chapters.concat(chapters));
+        //     this.filterExistingChapters();
+        // });
     }
 
     submit(e: Event): void {
@@ -58,9 +62,9 @@ export class ChapterListComponent implements OnInit {
             const message = this.chaptersSelected.length === 1 ?
                 'Hoofdstuk: ' + this.chapters[0].name + ' is toegevoegd' : 'De hoofdstukken zijn toegevoegd';
             this.workFunctionService.updateWorkFunction(this.parent, body).subscribe(() => {
-                let chapters = this.parent.chapters.getValue();
-                chapters = chapters.concat(this.chaptersSelected);
-                this.parent.chapters.next(chapters);
+                // let chapters = this.parent.chapters.getValue();
+                // chapters = chapters.concat(this.chaptersSelected);
+                // this.parent.chapters.next(chapters);
                 this.toast.showSuccess(message, 'Toegevoegd');
                 this.onCloseView(e);
             });
@@ -80,13 +84,13 @@ export class ChapterListComponent implements OnInit {
             return index === pos;
         });
 
-        const chaptersFromParent = this.parent.chapters.getValue();
-        // remove already linked chapters
-        chaptersFromParent.map((currentChapter) => {
-            const index = this.chapters.findIndex(newChapter => newChapter.id === currentChapter.id);
-            if (index !== -1) {
-                this.chapters.splice(index, 1);
-            }
-        });
+        // const chaptersFromParent = this.parent.chapters.getValue();
+        // // remove already linked chapters
+        // chaptersFromParent.map((currentChapter) => {
+        //     const index = this.chapters.findIndex(newChapter => newChapter.id === currentChapter.id);
+        //     if (index !== -1) {
+        //         this.chapters.splice(index, 1);
+        //     }
+        // });
     }
 }

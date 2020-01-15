@@ -1,5 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Company } from '../company-package/company.model';
 import { Document } from '../document-package/document.model';
 
@@ -13,8 +12,8 @@ export class WorkFunction {
     private _isMainFunction: boolean;
     private _order: number;
     private _parent: Template|Project;
-    private _chapters: BehaviorSubject<Chapter[]>;
-    private _documents: BehaviorSubject<Document[]>;
+    private _chapters: Observable<Chapter[]>;
+    private _documents: Observable<Document[]>;
     private _on: boolean;
     private _fromTemplate: boolean;
     private _companies: Company[];
@@ -61,19 +60,19 @@ export class WorkFunction {
         this._parent = value;
     }
 
-    get chapters(): BehaviorSubject<Chapter[]> {
+    get chapters(): Observable<Chapter[]> {
         return this._chapters;
     }
 
-    set chapters(value: BehaviorSubject<Chapter[]>) {
+    set chapters(value: Observable<Chapter[]>) {
         this._chapters = value;
     }
 
-    get documents(): BehaviorSubject<Document[]> {
+    get documents(): Observable<Document[]> {
         return this._documents;
     }
 
-    set documents(value: BehaviorSubject<Document[]>) {
+    set documents(value: Observable<Document[]>) {
         this._documents = value;
     }
 
@@ -102,8 +101,9 @@ export class WorkFunction {
     }
 
     addDocuments(newDocuments: Document[]) {
-        let documents = this.documents.getValue();
-        documents = documents.concat(newDocuments);
-        this.documents.next(documents);
+        console.log('fix add documents');
+        // let documents = this.documents.getValue();
+        // documents = documents.concat(newDocuments);
+        // this.documents.next(documents);
     }
 }

@@ -54,29 +54,29 @@ export class ChapterEditComponent implements AfterViewInit {
 
     onSubmit(e: Event): void {
         if (this.chapterForm.valid && this.formHasChanged) {
-            const chapters: Chapter[] = this.parent.chapters.getValue();
-            const params: ChapterParam = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : {};
-            const body: ChapterPostBody = {
-                name: this.chapterForm.controls.name.value,
-                content: this.content
-            };
-            if (this.chapter) {
-                this.chapterService.updateChapter(this.chapter, body, params, this.parent).subscribe(chapter => {
-                    this.chapter = chapter;
-                    const index = chapters.findIndex(c => c.id === chapter.id);
-                    chapters[index] = chapter;
-                    this.parent.chapters.next(chapters);
-                    this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is bewerkt', 'Bewerkt');
-                });
-            } else {
-                body.parentChapterId = isWorkFunction(this.parent) ? null : this.parent.id;
-                this.chapterService.createChapter(body, params, this.parent).subscribe(chapter => {
-                    chapters.push(chapter);
-                    this.parent.chapters.next(chapters);
-                    this.onCloseView(e);
-                    this.toast.showSuccess('Hoofdstuk: ' + chapter.name + 'is toegevoegd', 'Toegevoegd');
-                });
-            }
+            // const chapters: Chapter[] = this.parent.chapters.getValue();
+            // const params: ChapterParam = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : {};
+            // const body: ChapterPostBody = {
+            //     name: this.chapterForm.controls.name.value,
+            //     content: this.content
+            // };
+            // if (this.chapter) {
+            //     this.chapterService.updateChapter(this.chapter, body, params, this.parent).subscribe(chapter => {
+            //         this.chapter = chapter;
+            //         const index = chapters.findIndex(c => c.id === chapter.id);
+            //         chapters[index] = chapter;
+            //         // this.parent.chapters.next(chapters);
+            //         this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is bewerkt', 'Bewerkt');
+            //     });
+            // } else {
+            //     body.parentChapterId = isWorkFunction(this.parent) ? null : this.parent.id;
+            //     this.chapterService.createChapter(body, params, this.parent).subscribe(chapter => {
+            //         chapters.push(chapter);
+            //         this.parent.chapters.next(chapters);
+            //         this.onCloseView(e);
+            //         this.toast.showSuccess('Hoofdstuk: ' + chapter.name + 'is toegevoegd', 'Toegevoegd');
+            //     });
+            // }
         }
     }
 

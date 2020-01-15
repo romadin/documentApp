@@ -26,14 +26,9 @@ const routes: Routes = [
                 children: [
                     {
                         path: 'functies',
-                        children: [
-                            {
-                                path: ':id',
-                                loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
-                                canActivate: [ CanActivateLoggedIn ],
-                                resolve: { organisation: OrganisationResolver }
-                            }
-                        ]
+                        loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
+                        canActivate: [ CanActivateLoggedIn ],
+                        resolve: { organisation: OrganisationResolver }
                     },
                     {
                         path: 'acties',

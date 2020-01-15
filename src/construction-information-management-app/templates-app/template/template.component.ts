@@ -78,7 +78,7 @@ export class TemplateComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.template.workFunctions.forEach((workFunction) => this.setItemsInContainer(workFunction));
+        // this.template.workFunctions.forEach((workFunction) => this.setItemsInContainer(workFunction));
     }
 
     @Input()
@@ -143,7 +143,7 @@ export class TemplateComponent implements OnInit {
         const body: any  = {order: event.currentIndex + 1};
 
         if (isWorkFunction(item)) {
-            moveItemInArray(this.template.workFunctions, event.previousIndex, event.currentIndex);
+            // moveItemInArray(this.template.workFunctions, event.previousIndex, event.currentIndex);
             this.workFunctionService.updateWorkFunction(item, body).subscribe((value) => {
                 event.item.data = value;
             });
@@ -159,7 +159,7 @@ export class TemplateComponent implements OnInit {
         workFunction.chapters.subscribe(chapters => {
             this.itemsContainer[workFunction.id] = chapters;
             this.itemsContainer[workFunction.id].sort((a: Chapter, b: Chapter ) => a.order - b.order);
-            this.template.workFunctions[this.template.workFunctions.findIndex(w => w.id === workFunction.id)] = workFunction;
+            // this.template.workFunctions[this.template.workFunctions.findIndex(w => w.id === workFunction.id)] = workFunction;
         });
     }
 
