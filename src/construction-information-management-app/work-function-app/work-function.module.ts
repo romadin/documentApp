@@ -14,6 +14,9 @@ import { CompanyRowComponent } from './company/company-row/company-row.component
 import { AddCompaniesListComponent } from './company/company-right-side/add-companies-list/add-companies-list.component';
 import { CompanyRightSideComponent } from './company/company-right-side/company-right-side.component';
 import { CompanyDetailComponent } from './company/company-right-side/company-detail/company-detail.component';
+import { WorkFunctionListComponent } from './work-function-list/work-function-list.component';
+import { ProjectWorkFunctionComponent } from '../project-app/project/project-detail/project-work-function/project-work-function.component';
+import { SharedProjectModule } from '../project-app/shared-project.module';
 
 const routes: Routes = [
     {
@@ -21,39 +24,46 @@ const routes: Routes = [
         component: WorkFunctionComponent,
         children: [
             {
-                path: 'bedrijven',
+                path: ':id',
+                component: ItemsOverviewComponent,
                 canActivate: [ CanActivateLoggedIn ],
-                data: { breadcrumb: 'Bedrijven' },
+                data: { parentUrl: 'projecten/:id', breadcrumb: getBreadcrumbNameParent },
                 resolve: {
-                    functionPackage: WorkFunctionPackageResolverService
+                    functionPackage: WorkFunctionPackageResolverService,
                 },
                 children: [
                     {
-                        path: ':id',
-                        component: ItemsOverviewComponent,
+                        path: 'bedrijven',
                         canActivate: [ CanActivateLoggedIn ],
-                        data: { breadcrumb: getBreadcrumbNameParent },
+                        data: { breadcrumb: 'Bedrijven' },
                         resolve: {
-                            functionPackage: CompanyPackageResolverService
-                        }
+                            functionPackage: WorkFunctionPackageResolverService
+                        },
+                        children: [
+                            {
+                                path: ':id',
+                                component: ItemsOverviewComponent,
+                                canActivate: [ CanActivateLoggedIn ],
+                                data: { breadcrumb: getBreadcrumbNameParent },
+                                resolve: {
+                                    functionPackage: CompanyPackageResolverService
+                                }
+                            },
+                            {
+                                path: '',
+                                component: CompanyComponent,
+                                canActivate: [ CanActivateLoggedIn ],
+                            }
+                        ]
                     },
-                    {
-                        path: '',
-                        component: CompanyComponent,
-                        canActivate: [ CanActivateLoggedIn ],
-                    }
                 ]
             },
             {
                 path: '',
-                component: ItemsOverviewComponent,
-                canActivate: [ CanActivateLoggedIn ],
-                data: {parentUrl: 'projecten/:id', breadcrumb: getBreadcrumbNameParent },
-                resolve: {
-                    functionPackage: WorkFunctionPackageResolverService,
-                }
+                component: WorkFunctionListComponent
             }
-        ]
+        ],
+        
     }
 ];
 
@@ -61,7 +71,8 @@ const routes: Routes = [
     imports: [
         SharedModule,
         RouterModule.forChild( routes ),
-        SharedWorkFunctionModule
+        SharedWorkFunctionModule,
+        SharedProjectModule
     ],
     declarations: [
         CompanyComponent,
@@ -70,6 +81,8 @@ const routes: Routes = [
         AddCompaniesListComponent,
         CompanyRightSideComponent,
         CompanyDetailComponent,
+        WorkFunctionListComponent,
+        ProjectWorkFunctionComponent,
     ],
     providers: [
         WorkFunctionPackageResolverService,

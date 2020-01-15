@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { EMPTY, Observable, of } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { combineLatest, EMPTY, forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { Company } from '../../shared/packages/company-package/company.model';
 
 import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
@@ -10,6 +10,7 @@ import { WorkFunction } from '../../shared/packages/work-function-package/work-f
 import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
 import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
+import { Project } from '../../shared/packages/project-package/project.model';
 
 export interface ChildItemPackage {
     currentUser: User;
@@ -40,18 +41,19 @@ export class WorkFunctionPackageResolverService implements Resolve<Observable<Ch
         const functionPackage: ChildItemPackage = { currentUser: null, mainFunction: null, parent: null};
 
         return this.projectService.getProject(projectId, organisation).pipe(
-            mergeMap( project => {
-                if (project) {
-                    (<WorkFunction>functionPackage.parent) = project.workFunctions.find(w => w.id === workFunctionId);
-                    functionPackage.mainFunction = project.workFunctions.find(w => w.isMainFunction);
-
-                    functionPackage.currentUser = this.userService.getCurrentUser().getValue();
-                    this.headerCommunicationService.headerTitle.next(functionPackage.parent.name);
-                    return of(functionPackage);
-                } else { // no organisation
+            mergeMap( (project: Project) => {
+                if (!project) {
                     this.router.navigate(['not-found/organisation']);
                     return EMPTY;
                 }
+
+                return project.workFunctions.pipe(mergeMap((workFunctions) => {
+                    (<WorkFunction>functionPackage.parent) = workFunctions.find(w => w.id === workFunctionId);
+                    functionPackage.mainFunction = workFunctions.find(w => w.isMainFunction);
+                    functionPackage.currentUser = this.userService.getCurrentUser().getValue();
+                    this.headerCommunicationService.headerTitle.next(functionPackage.parent.name);
+                    return of(functionPackage);
+                }), take(1));
             })
         );
     }
