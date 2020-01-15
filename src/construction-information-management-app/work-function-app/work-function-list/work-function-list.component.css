@@ -4,8 +4,14 @@ div.wrapper {
 div.wrapper > .container {
     height: var(--body-height);
     overflow-y: auto;
+    overflow-x: hidden;
+}
+div.wrapper > .container:first-child {
     padding: 5px 35px;
     width: 100%;
+}
+div.wrapper > .container:last-child {
+    width: 0;
 }
 div.cardRow {
     padding: 12px 18px;

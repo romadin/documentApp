@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Project } from '../../../../shared/packages/project-package/project.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { WorkFunctionService } from '../../../../shared/packages/work-function-package/work-function.service';
 import { Template } from '../../../../shared/packages/template-package/template.model';
 import { ToastService } from '../../../../shared/toast.service';
@@ -16,7 +16,7 @@ export class WorkFunctionEditComponent implements OnInit {
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() onAddedWorkFunction: EventEmitter<WorkFunction> = new EventEmitter<WorkFunction>();
     workFunctionForm: FormGroup = new FormGroup({
-        name: new FormControl('')
+        name: new FormControl('', Validators.required)
     });
     private _workFunction: WorkFunction;
 
@@ -43,7 +43,7 @@ export class WorkFunctionEditComponent implements OnInit {
         this.closeView.emit(true);
     }
 
-    onSubmit(): void {
+    onSubmit(formDirective: FormGroupDirective): void {
         if (!this.workFunctionForm.invalid) {
             const body = { name: this.workFunctionForm.controls.name.value };
             if (this.workFunction) {
@@ -54,10 +54,10 @@ export class WorkFunctionEditComponent implements OnInit {
             } else {
                 this.parent instanceof Template ? body['templateId'] = this.parent.id : body['projectId'] = this.parent.id;
                 this.workFunctionService.createWorkFunction(this.parent, body).subscribe(workFunction => {
-                    // this.parent.workFunctions.push(workFunction);
-                    this.workFunction = workFunction;
                     this.onAddedWorkFunction.emit(workFunction);
                     this.toast.showSuccess('Functie: ' +  workFunction.name + ' is toegevoegd', 'Toegevoegd');
+                    formDirective.resetForm();
+                    this.workFunctionForm.reset();
                 });
             }
         }

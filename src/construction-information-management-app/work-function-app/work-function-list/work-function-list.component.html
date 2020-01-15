@@ -9,7 +9,7 @@
             </cim-project-work-function>
         </div>
     </div>
-    <div class="container" *ngIf="showFunctionDetail" [@toggleInView]="showFunctionDetail ? 'open' : 'close'">
+    <div class="container" [@toggleInView]="showFunctionDetail ? 'open' : 'close'">
         <cim-work-function-edit
                 [workFunction]="workFunctionToEdit"
                 [parent]="project"

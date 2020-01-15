@@ -28,7 +28,8 @@ const routes: Routes = [
                         path: 'functies',
                         loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
                         canActivate: [ CanActivateLoggedIn ],
-                        resolve: { organisation: OrganisationResolver }
+                        resolve: { organisation: OrganisationResolver },
+                        data: { breadcrumb: 'Functies' },
                     },
                     {
                         path: 'acties',

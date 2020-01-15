@@ -11,7 +11,6 @@ import { ProjectCommunicationService } from '../../../shared/service/communicati
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import {
     animate, animateChild,
-    keyframes,
     query,
     stagger,
     state,
@@ -21,6 +20,7 @@ import {
     useAnimation
 } from '@angular/animations';
 import { initialAnimation, scaleDownAnimation } from '../../../shared/animations';
+import { editArray } from '../../../shared/helpers/global-functions';
 
 @Component({
     selector: 'app-work-function-list',
@@ -29,31 +29,16 @@ import { initialAnimation, scaleDownAnimation } from '../../../shared/animations
     animations: [
         trigger('toggleInView', [
             state('close', style({
-                transform: 'translateX(110%)'
+                width: '0',
+                opacity: '0'
             })),
             state('open', style({
-                width: '48%',
-                transform: 'translateX(0)'
+                width: '50%',
+                opacity: '1'
             })),
-            transition('close => open', [
+            transition('close <=> open', [
                 animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
-            transition('open => close', [
-                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
-                    style({ transform: 'translateX(5%)', offset: 0.1}),
-                    style({ transform: 'translateX(10%)', offset: 0.8}),
-                    style({ transform: 'translateX(110%)', offset: 1}),
-                ]))
-            ]),
-            transition('void => *', [
-                style({ opacity: '0'}),
-                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', style({ opacity: '1'})),
-            ]),
-            transition('* => void', [
-                animate('100ms cubic-bezier(0.0, 0.0, 0.2, 1)', keyframes([
-                    style({ opacity: '0'})
-                ])),
-            ])
         ]),
         trigger('resizeWidth', [
             state('fullWidth', style({
@@ -63,7 +48,7 @@ import { initialAnimation, scaleDownAnimation } from '../../../shared/animations
                 width: '50%'
             })),
             transition('fullWidth <=> smallWidth', [
-                animate('350ms cubic-bezier(0.0, 0.0, 0.2, 1)')
+                animate('300ms cubic-bezier(0.0, 0.0, 0.2, 1)')
             ]),
             transition('void => *', [
                 query('@items', stagger(100, animateChild()), { optional: true })
@@ -79,14 +64,13 @@ import { initialAnimation, scaleDownAnimation } from '../../../shared/animations
         ])
     ]
 })
-export class WorkFunctionListComponent  implements OnInit, OnDestroy{
+export class WorkFunctionListComponent  implements OnInit, OnDestroy {
     currentUser: User;
     folderUrlToRedirect: string;
     project: Project;
     showFunctionDetail = false;
     workFunctionToEdit: WorkFunction;
     workFunctions: WorkFunction[];
-    
 
     constructor(private activatedRoute: ActivatedRoute,
                 private workFunctionService: WorkFunctionService,
@@ -97,20 +81,20 @@ export class WorkFunctionListComponent  implements OnInit, OnDestroy{
                 private headerCommunicationService: HeaderWithFolderCommunicationService) {
         this.folderUrlToRedirect = 'workFunction/';
     }
-    
+
     ngOnInit() {
         this.routerService.setBackRoute('/projecten');
         this.project = this.activatedRoute.parent.parent.parent.snapshot.data.project;
         this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
         });
-        
+
         this.headerCommunicationService.headerTitle.next(this.project.name);
-        
+
         this.communicationService.triggerAddWorkFunction.subscribe(show => {
             this.showFunctionDetail = show;
         });
-        
+
         this.project.workFunctions.subscribe((workFunctions: WorkFunction[]) => {
             if (!this.workFunctions) {
                 this.workFunctions = workFunctions;
@@ -119,7 +103,7 @@ export class WorkFunctionListComponent  implements OnInit, OnDestroy{
             }
         });
     }
-    
+
     ngOnDestroy() {
         this.communicationService.triggerAddWorkFunction.next(false);
     }
@@ -134,27 +118,14 @@ export class WorkFunctionListComponent  implements OnInit, OnDestroy{
             this.workFunctionToEdit = workFunction;
         }, 290);
     }
-    
+
     private changeList(newWorkFunctions): void {
         if (newWorkFunctions.length > this.workFunctions.length) {
             // project has been added
-            this.editArray(newWorkFunctions, this.workFunctions, 'add');
+            this.workFunctions.push(editArray(newWorkFunctions, this.workFunctions, 'add'));
         } else if (newWorkFunctions.length < this.workFunctions.length) {
             // project has been removed
-            this.editArray(this.workFunctions, newWorkFunctions, 'delete');
+            this.workFunctions.splice(editArray(this.workFunctions, newWorkFunctions, 'delete'), 1);
         }
-    }
-    
-    private editArray(mainArray: WorkFunction[], subArray: WorkFunction[], method: 'delete' | 'add' ) {
-        mainArray.forEach((newWorkFunction: WorkFunction, i: number) => {
-            for (let index = 0; index < subArray.length; index++) {
-                const oldProject = this.workFunctions[index];
-                if (newWorkFunction.id === oldProject.id) {
-                    break;
-                } else if (index + 1 === subArray.length) {
-                    method === 'add' ? this.workFunctions.push(newWorkFunction) : this.workFunctions.splice(i, 1);
-                }
-            }
-        });
     }
 }

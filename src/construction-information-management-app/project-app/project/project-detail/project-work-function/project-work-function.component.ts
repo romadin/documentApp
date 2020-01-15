@@ -25,7 +25,7 @@ export class ProjectWorkFunctionComponent implements OnInit {
     constructor(private workFunctionService: WorkFunctionService, private router: Router, private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
-        this.organisation = this.activatedRoute.snapshot.parent.parent.parent.data.organisation
+        this.organisation = this.activatedRoute.snapshot.data.organisation;
     }
 
     workFunctionEditable(): boolean {
@@ -53,9 +53,9 @@ export class ProjectWorkFunctionComponent implements OnInit {
         e.stopPropagation();
 
         if (this.organisation.modules.find(module => module.id === 2) && !this.workFunction.isMainFunction) {
-            this.router.navigate(['functies', this.workFunction.id, 'bedrijven'], {relativeTo: this.activatedRoute});
+            this.router.navigate([this.workFunction.id, 'bedrijven'], {relativeTo: this.activatedRoute});
         } else {
-            this.router.navigate(['functies', this.workFunction.id], {relativeTo: this.activatedRoute});
+            this.router.navigate( [this.workFunction.id],  {relativeTo: this.activatedRoute});
         }
     }
 

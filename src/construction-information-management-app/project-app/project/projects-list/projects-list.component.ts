@@ -13,6 +13,7 @@ import {
     trigger, useAnimation
 } from '@angular/animations';
 import { initialAnimation, scaleDownAnimation } from '../../../../shared/animations';
+import { editArray } from '../../../../shared/helpers/global-functions';
 
 @Component({
     selector: 'cim-projecten',
@@ -56,27 +57,18 @@ export class ProjectsListComponent implements OnInit {
     private changeList(newProjects): void {
         if (newProjects.length > this.projects.length) {
             // project has been added
-            this.editArray(newProjects, this.projects, 'add');
+            if (this.projects.length === 0 ) {
+                this.projects.push(newProjects[0]);
+            }
+
+            this.projects.push(editArray(newProjects, this.projects, 'add'));
         } else if (newProjects.length < this.projects.length) {
             // project has been removed
-            this.editArray(this.projects, newProjects, 'delete');
-        }
-    }
-
-    private editArray(mainArray: Project[], subArray: Project[], method: 'delete' | 'add' ) {
-        mainArray.forEach((mainProject: Project, i: number) => {
-            if (subArray.length === 0 ) {
-                method === 'add' ? this.projects.push(mainProject) : this.projects.splice(i, 1);
-            } else {
-                for (let index = 0; index < subArray.length; index++) {
-                    const subProject = subArray[index];
-                    if (mainProject.id === subProject.id) {
-                        break;
-                    } else if (index + 1 === subArray.length) {
-                        method === 'add' ? this.projects.push(mainProject) : this.projects.splice(i, 1);
-                    }
-                }
+            if (newProjects.length === 0 ) {
+               this.projects.splice(0, 1);
             }
-        });
+
+            this.projects.splice(editArray(this.projects, newProjects, 'delete'), 1);
+        }
     }
 }
