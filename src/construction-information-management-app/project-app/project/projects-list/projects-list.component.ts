@@ -64,13 +64,17 @@ export class ProjectsListComponent implements OnInit {
     }
 
     private editArray(mainArray: Project[], subArray: Project[], method: 'delete' | 'add' ) {
-        mainArray.forEach((newProject: Project, i: number) => {
-            for (let index = 0; index < subArray.length; index++) {
-                const oldProject = this.projects[index];
-                if (newProject.id === oldProject.id) {
-                    break;
-                } else if (index + 1 === subArray.length) {
-                    method === 'add' ? this.projects.push(newProject) : this.projects.splice(i, 1);
+        mainArray.forEach((mainProject: Project, i: number) => {
+            if (subArray.length === 0 ) {
+                method === 'add' ? this.projects.push(mainProject) : this.projects.splice(i, 1);
+            } else {
+                for (let index = 0; index < subArray.length; index++) {
+                    const subProject = subArray[index];
+                    if (mainProject.id === subProject.id) {
+                        break;
+                    } else if (index + 1 === subArray.length) {
+                        method === 'add' ? this.projects.push(mainProject) : this.projects.splice(i, 1);
+                    }
                 }
             }
         });
