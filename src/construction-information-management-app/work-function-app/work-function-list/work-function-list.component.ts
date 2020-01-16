@@ -83,7 +83,6 @@ export class WorkFunctionListComponent  implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.routerService.setBackRoute('/projecten');
         this.project = this.activatedRoute.parent.parent.parent.snapshot.data.project;
         this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;

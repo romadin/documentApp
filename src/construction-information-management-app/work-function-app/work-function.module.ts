@@ -27,7 +27,7 @@ const routes: Routes = [
                 path: ':id',
                 component: ItemsOverviewComponent,
                 canActivate: [ CanActivateLoggedIn ],
-                data: { parentUrl: 'projecten/:id', breadcrumb: getBreadcrumbNameParent },
+                data: { parentUrl: 'projecten/:id/functies', breadcrumb: getBreadcrumbNameParent },
                 resolve: {
                     functionPackage: WorkFunctionPackageResolverService,
                 },

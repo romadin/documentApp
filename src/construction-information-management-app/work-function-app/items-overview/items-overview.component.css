@@ -102,7 +102,7 @@ div.wrapper > div.readeModeContainer.animateDiv {
     flex: 1;
 }
 
-div.folderDetailContainer {
+div.itemDetailContainer {
     flex: 0;
     width: 0;
     padding: 0;
@@ -110,7 +110,7 @@ div.folderDetailContainer {
     transition: all 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-div.folderDetailContainer.show {
+div.itemDetailContainer.show {
     padding: 5px 10px;
     flex: 1;
     height: var(--body-height);

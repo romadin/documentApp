@@ -10,7 +10,7 @@ import { DocumentService } from '../document-package/document.service';
 import { Project } from '../project-package/project.model';
 import { WorkFunction } from './work-function.model';
 import { map, mergeMap, shareReplay, take } from 'rxjs/operators';
-import { BehaviorSubject, combineLatest, forkJoin, merge, Observable, of, Subject } from 'rxjs';
+import { merge, Observable, of, Subject } from 'rxjs';
 
 import { ApiService } from '../../service/api.service';
 import { Template } from '../template-package/template.model';
@@ -68,7 +68,6 @@ export class WorkFunctionService {
     }
     
     requestWorkFunctions(params: WorkFunctionGetParam, parent: Template|Project): Observable<WorkFunction[]> {
-    
         return this.apiService.get(this.path, params).pipe(
             map((result: WorkFunctionApiResponseInterface[]) => result.map(response => this.makeWorkFunction(response, parent)))
         );
@@ -92,10 +91,7 @@ export class WorkFunctionService {
     updateWorkFunction(workFunction: WorkFunction, body: WorkFunctionUpdateBody): Observable<WorkFunction> {
         return this.apiService.post(this.path + '/' + workFunction.id, body).pipe(
             map((result: WorkFunctionApiResponseInterface) => {
-                const updatedWorkFunction = this.updateWorkFunctionModel(workFunction, result, workFunction.parent);
-                // const index = workFunction.parent.workFunctions.findIndex(w => w.id === workFunction.id);
-                // workFunction.parent.workFunctions[index] = updatedWorkFunction;
-                return updatedWorkFunction;
+                return this.updateWorkFunctionModel(workFunction, result, workFunction.parent);
             })
         );
     }

@@ -39,8 +39,9 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
 
     ngOnInit() {
         this.setInitialValues();
-        this.errorMessage = isWorkFunction(parent) ? 'deze functie' : 'dit bedrijf';
-        this.parent.documents.subscribe(items => this.items = items );
+        this.errorMessage = isWorkFunction(this.parent) ? 'deze functie' : 'dit bedrijf';
+        // setting the documents.
+        this.parent.documents.subscribe((items: Document[]) => this.items = items);
 
         this.resetView();
 
@@ -70,7 +71,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         this.activeItem = {
             component: component,
             item: itemsOverviewPackage ? itemsOverviewPackage.document : null,
-            parent: itemsOverviewPackage? itemsOverviewPackage.parent : null
+            parent: itemsOverviewPackage ? itemsOverviewPackage.parent : null
         };
     }
 

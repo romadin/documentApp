@@ -60,11 +60,7 @@ export class DocumentRowComponent implements OnInit {
         e.preventDefault();
 
         const param: ParamDelete = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : isCompany(this.parent) ? {companyId: this.parent.id, workFunctionId: this.parent.parent.id} : {documentId: this.parent.id};
-        this.documentService.deleteDocument(this.document, param).subscribe((deleted: boolean) => {
-            if ( deleted ) {
-                this.removeFromParentFolder();
-            }
-        });
+        this.documentService.deleteDocument(this.document, param).subscribe();
     }
 
     onAddChapter(e: Event| Document): void {
@@ -95,12 +91,6 @@ export class DocumentRowComponent implements OnInit {
 
     parentIsDocument(): boolean {
         return this.parent instanceof Document;
-    }
-
-    private removeFromParentFolder(): void {
-        // const documentsArray: Document[] = this.parent.documents.getValue();
-        // documentsArray.splice(documentsArray.findIndex((document => document === this.document)), 1);
-        // this.parent.documents.next(documentsArray);
     }
 
 }

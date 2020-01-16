@@ -9,6 +9,7 @@ import { WorkFunctionUpdateBody } from '../../../shared/packages/work-function-p
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
+import { DocumentService } from '../../../shared/packages/document-package/document.service';
 
 @Component({
   selector: 'cim-item-list',
@@ -33,7 +34,7 @@ export class ItemListComponent implements OnInit {
         return this._parent;
     }
 
-    constructor(private workFunctionService: WorkFunctionService, private companyService: CompanyService) { }
+    constructor(private workFunctionService: WorkFunctionService, private companyService: CompanyService, private documentService: DocumentService) { }
 
     ngOnInit() {
         this.getAvailableItems();
@@ -50,17 +51,13 @@ export class ItemListComponent implements OnInit {
         e.preventDefault();
         if (this.itemsSelected && this.itemsSelected.length > 0) {
             if (isWorkFunction(this.parent)) {
-                this.workFunctionService.updateWorkFunction(<WorkFunction>this.parent, this.getPostData()).subscribe(parent => {
-                    this.parent.addDocuments(this.itemsSelected);
-                    this.saveItemsDone.emit(parent);
-                });
+                this.documentService.postDocuments(<any>this.getPostData(), { workFunctionId: this.parent.id }).subscribe();
             } else {
                 const postData: CompanyApiUpdateData = <CompanyApiUpdateData>this.getPostData();
                 postData.workFunctionId = this.parent.parent.id;
 
                 this.companyService.updateCompany(<Company>this.parent, postData , [this.mainWorkFunction.parent.id])
                     .subscribe(parent => {
-                        this.parent.addDocuments(this.itemsSelected);
                         this.saveItemsDone.emit(parent);
                     });
             }

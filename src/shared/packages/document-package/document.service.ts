@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { BehaviorSubject, combineLatest, of, Subject } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, merge, Observable, of, Subject } from 'rxjs';
+import { map, mergeMap, shareReplay, take } from 'rxjs/operators';
 import {
     ConfirmPopupComponent,
     ConfirmPopupData
@@ -31,43 +31,36 @@ export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
 
 @Injectable()
 export class DocumentService {
-    private documentsByIdCache: DocumentCacheObservable = {};
-    private documentsCache: DocumentsCache = {};
-    private documentsByCompanyCache: DocumentsCacheByWorkFunction = {};
     private path = '/documents';
+    
+    private documentsByIdCache: DocumentCacheObservable = {};
+    private documentsByCompanyCache: DocumentsCacheByWorkFunction = {};
+    
+    private documentsWorkFunctionCache$: Observable<Document[]>[] = [];
+    private updateDocumentsCache$: Subject<void> = new Subject<void>();
 
     constructor(private apiService: ApiService, private dialog: MatDialog, private toast: ToastService) { }
 
-    getDocumentsByFolder(folderId: number): BehaviorSubject<Document[]> {
-        const documents: BehaviorSubject<Document[]> = new BehaviorSubject([]);
-        const params = { folderId: folderId, template: 'default' };
+    getDocumentsByWorkFunction(workFunction: WorkFunction): Observable<Document[]> {
+        if ( ! this.documentsWorkFunctionCache$[workFunction.id]) {
+            const initialDocuments$ = this.getDataOnce(workFunction);
+            const updates$ = this.updateDocumentsCache$.pipe(mergeMap(() => this.getDataOnce(workFunction)));
 
-        this.apiService.get(this.path, params).subscribe((documentsResponse: ApiDocResponse[]) => {
-                const documentsContainer: Document[] = [];
+            this.documentsWorkFunctionCache$[workFunction.id] = merge(initialDocuments$, updates$);
+        }
 
-                documentsResponse.forEach((documentResponse: ApiDocResponse) => {
-                    if (this.documentsCache[documentResponse.id]) {
-                        documentsContainer.push(this.documentsCache[documentResponse.id]);
-                        return;
-                    }
-                    const document = this.makeDocument(documentResponse);
-                    documentsContainer.push(document);
-                });
-
-                documents.next(documentsContainer);
-            });
-
-        return documents;
+        return this.documentsWorkFunctionCache$[workFunction.id];
     }
-
-    getDocumentsByWorkFunction(workFunction: WorkFunction): BehaviorSubject<Document[]> {
+    
+    getDataOnce(workFunction: WorkFunction): Observable<Document[]> {
         const param = {workFunctionId: workFunction.id};
-        const documentsContainer: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
-        this.apiService.get(this.path, param).subscribe((result: ApiDocResponse[]) => {
-                const documents = result.map(response => this.makeDocument(response));
-                documentsContainer.next(documents);
-            });
-        return documentsContainer;
+        return this.requestDocuments(param).pipe(shareReplay(1), take(1));
+    }
+    
+    requestDocuments(param: {workFunctionId: number}): Observable<Document[]> {
+        return this.apiService.get(this.path, param).pipe(
+            map((response: ApiDocResponse[]) => response.map((result: ApiDocResponse) => this.makeDocument(result)))
+        );
     }
 
     getDocumentsByCompany(company: Company): BehaviorSubject<Document[]> {
@@ -109,11 +102,22 @@ export class DocumentService {
 
         this.apiService.post(this.path, postData, param).subscribe((response: ApiDocResponse) => {
             newDocument.next(this.makeDocument(response));
+            this.updateDocumentsCache$.next();
         }, (error) => {
             newDocument.error(error.error);
         });
 
         return newDocument;
+    }
+
+    /**
+     * Link existing documents in batch to a work function.
+     */
+    postDocuments(postData: {documents: number[]}, param: {workFunctionId: number}): Observable<string> {
+        return this.apiService.post(this.path, postData, param).pipe(map((response: string) => {
+            this.updateDocumentsCache$.next();
+            return response;
+        }));
     }
 
     updateDocument(document: Document, postData: DocPostData, param: DocGetParam): BehaviorSubject<Document> {
@@ -129,8 +133,7 @@ export class DocumentService {
         return newDocument;
     }
 
-    deleteDocument(document: Document, paramDelete?: ParamDelete): Subject<boolean> {
-        const deleted: Subject<boolean> = new Subject<boolean>();
+    deleteDocument(document: Document, paramDelete?: ParamDelete): Observable<boolean> {
         const popupData: ConfirmPopupData = {
             title: 'Document verwijderen',
             name: document.getName(),
@@ -138,18 +141,15 @@ export class DocumentService {
             firstButton: 'ja',
             secondButton: 'nee'
         };
-        this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
+        return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action) => {
             if (action) {
-                this.apiService.delete(this.path + '/' + document.id, paramDelete).subscribe(() => {
-                    if (this.documentsCache.hasOwnProperty(document.id) ) {
-                        delete this.documentsCache[document.id];
-                    }
+                return this.apiService.delete(this.path + '/' + document.id, paramDelete).pipe(map(() => {
                     this.toast.showSuccess('Document: ' + document.getName() + ' is verwijderd', 'Verwijderd');
-                    deleted.next(true);
-                });
+                    this.updateDocumentsCache$.next();
+                    return true;
+                }));
             }
-        });
-        return deleted;
+        }));
     }
 
     /**
@@ -169,6 +169,7 @@ export class DocumentService {
                 return this.apiService.delete(url + parent.id, {}).pipe(
                     map(() => {
                         this.toast.showSuccess('Document: ' + Document.name + 'link is verwijderd', 'Verwijderd');
+                        this.updateDocumentsCache$.next();
                         return true;
                     })
                 );
@@ -202,7 +203,6 @@ export class DocumentService {
             doc.documents.next(documents);
         });
 
-        this.documentsCache[doc.id] = doc;
         return doc;
     }
 }

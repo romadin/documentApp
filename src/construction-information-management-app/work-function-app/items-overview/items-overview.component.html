@@ -20,7 +20,7 @@
             </div>
         </ng-container>
     </div>
-    <div class="folderDetailContainer" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
+    <div class="itemDetailContainer" [ngClass]="{'show': activeItem, 'scrollBar': !items || items.length === 0}">
         <cim-folder-detail class="card"
                 [workFunction]="parent"
                 [currentUser]="currentUser"
@@ -35,7 +35,7 @@
                        (closeReadMode)="onCloseReadMode($event)">
         </cim-item-read>
     </div>
-    <div class="warning" *ngIf="items.length === 0 && !activeItem">
+    <div class="warning" *ngIf="items && items.length === 0 && !activeItem">
         <div class="content">
             <i class="material-icons"> warning </i>
             <span>
