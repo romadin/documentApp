@@ -36,7 +36,7 @@ export class DocumentRowComponent implements OnInit {
 
     ngOnInit() {
         this.iconName = this.documentIconService.getIconByName(this.document.originalName);
-        this.document.documents.subscribe((subDocuments) => this.subDocuments = subDocuments);
+        this.document.documents.subscribe(subDocuments => this.subDocuments = subDocuments);
     }
 
     editDocument(event: Event, clickedRow = false): void {
@@ -59,8 +59,19 @@ export class DocumentRowComponent implements OnInit {
         e.stopPropagation();
         e.preventDefault();
 
-        const param: ParamDelete = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : isCompany(this.parent) ? {companyId: this.parent.id, workFunctionId: this.parent.parent.id} : {documentId: this.parent.id};
+        let param: ParamDelete;
+        if (isWorkFunction(this.parent) && this.parent.isMainFunction) {
+            param = { };
+        } else if (isWorkFunction(this.parent)) {
+            param = { workFunctionId: this.parent.id };
+        } else if (isCompany(this.parent)) {
+            param = { companyId: this.parent.id, workFunctionId: this.parent.parent.id };
+        } else {
+            param = { documentId: this.parent.id };
+        }
+
         this.documentService.deleteDocument(this.document, param).subscribe();
+        
     }
 
     onAddChapter(e: Event| Document): void {

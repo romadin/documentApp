@@ -12,21 +12,12 @@ interface ProjectCache {
     [id: number]: Project;
 }
 
-interface ProjectsCache {
-    [id: number]: Project[];
-}
-interface ProjectCacheObservable {
-    [id: number]: Observable<Project>;
-}
-
 @Injectable()
 export class ProjectService {
     private projectsCache: ProjectCache = {};
 
     private projectsCache$: Observable<Project[]>;
     private updateProjectsCache$: Subject<void> = new Subject<void>();
-
-    private projectCache$: Observable<Project>;
 
     constructor(private apiService: ApiService, private workFunctionService: WorkFunctionService) {
     }

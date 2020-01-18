@@ -46,7 +46,7 @@ export class PartnersComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.organisation = <Organisation>this.activatedRoute.parent.snapshot.data.organisation;
         this.userService.getUsers({organisationId: this.organisation.id}).subscribe((users) => {
             this.allUsers = users;
             this.users = users.map(user => user);

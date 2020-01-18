@@ -14,3 +14,7 @@ export function getBreadcrumbNameProject(route: ActivatedRoute): string {
 export function getBreadcrumbNameParent(route: ActivatedRoute): string {
     return route.snapshot.data.functionPackage.parent.name;
 }
+export function getBreadcrumbNameWorkFunctions(route: ActivatedRoute): string {
+    const currentWorkFunctionId = parseInt(route.snapshot.params.id, 10);
+    return route.snapshot.data.workFunctions.find(w => w.id === currentWorkFunctionId).name;
+}

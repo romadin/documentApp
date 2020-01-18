@@ -31,7 +31,7 @@ export class WorkFunctionService {
     
     private workFunctionsProjectCache$: Observable<WorkFunction[]>[] = [];
     private workFunctionsTemplateCache$: Observable<WorkFunction[]>[] = [];
-    private updateWorkFunctionsCache$: Subject<void> = new Subject<void>();
+    public updateWorkFunctionsCache$: Subject<void> = new Subject<void>();
     
     
     constructor(private apiService: ApiService,
@@ -120,6 +120,9 @@ export class WorkFunctionService {
     }
 
     private makeWorkFunction(data: WorkFunctionApiResponseInterface, parent: Template|Project): WorkFunction {
+        if (this.cache[data.id]) {
+            return this.cache[data.id];
+        }
         const workFunction: WorkFunction = new WorkFunction();
         workFunction.id = data.id;
         workFunction.name = data.name;
@@ -129,7 +132,9 @@ export class WorkFunctionService {
         workFunction.fromTemplate = data.fromTemplate;
         workFunction.parent = parent;
         workFunction.chapters = this.chapterService.getChaptersByWorkFunction(workFunction);
-        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction);
+        workFunction.documents = this.documentService.getDocumentsByWorkFunction(workFunction).pipe(
+            map(documents => documents.sort((a, b) => a.order - b.order))
+        );
 
         // combineLatest(data.documents.map(documentId => this.documentService.getDocument(documentId, {workFunctionId: workFunction.id})))
         //     .subscribe((documents) => {
@@ -155,7 +160,7 @@ export class WorkFunctionService {
         work.on = data.on;
         work.fromTemplate = data.fromTemplate;
         work.parent = parent;
-        work.documents = this.documentService.getDocumentsByWorkFunction(work);
+        // work.documents = this.documentService.getDocumentsByWorkFunction(work);
 
         this.cache[work.id] = work;
 

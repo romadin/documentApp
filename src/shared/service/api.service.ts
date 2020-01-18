@@ -48,7 +48,15 @@ export class ApiService {
 
         return this.http.get(this.API_URL + path, paramObject );
     }
-
+    
+    public getInterface<T>(path: string, params: any): Observable<any> {
+        const paramObject = { params: { token: this.token.token }};
+        Object.assign( paramObject.params, params );
+        
+        return this.http.get<T>(this.API_URL + path, paramObject );
+    }
+    
+    
     public noTokenGet(path: string, params: any): Observable<any> {
         const paramObject = {params: params};
         return this.http.get(this.API_URL + path, paramObject );

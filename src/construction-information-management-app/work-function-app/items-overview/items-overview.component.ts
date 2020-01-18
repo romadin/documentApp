@@ -12,6 +12,7 @@ import { RouterService } from '../../../shared/service/router.service';
 import { ToItemsOverview } from '../document-row/document-row.component';
 import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
 import { ChildItemPackage } from '../work-function-package-resolver.service';
+import { UserService } from '../../../shared/packages/user-package/user.service';
 
 @Component({
   selector: 'cim-items-overview',
@@ -28,22 +29,29 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     showReadModeAnimation: boolean;
     errorMessage = 'deze functie';
 
+    private workFunctions: WorkFunction[];
     private subscriptions: Subscription[] = [];
 
     constructor(
         private headerCommunicationService: HeaderWithFolderCommunicationService,
         private folderCommunicationService: FolderCommunicationService,
+        private userService: UserService,
         private routerService: RouterService,
         private activatedRoute: ActivatedRoute,
     ) { }
 
     ngOnInit() {
-        this.setInitialValues();
-        this.errorMessage = isWorkFunction(this.parent) ? 'deze functie' : 'dit bedrijf';
-        // setting the documents.
-        this.parent.documents.subscribe((items: Document[]) => this.items = items);
+        this.workFunctions = this.activatedRoute.snapshot.data.workFunctions;
+        this.userService.getCurrentUser().subscribe(user => this.currentUser = user);
 
-        this.resetView();
+        const currentWorkFunctionId = parseInt(this.activatedRoute.snapshot.params.id, 10);
+        this.parent = this.workFunctions.find(w => w.id === currentWorkFunctionId);
+        this.mainFunction = this.workFunctions.find(w => w.isMainFunction);
+
+        // setting the documents.
+        this.subscriptions.push(this.parent.documents.subscribe((items: Document[]) => {
+            this.items = items;
+        }));
 
         this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
             if (read && !this.showReadMode) {
@@ -57,7 +65,10 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
             }
         }));
 
+        this.resetView();
+        this.setInitialValues();
         this.headerCommunicationService.showAddUserButton.next(false);
+        this.errorMessage = isWorkFunction(this.parent) ? 'deze functie' : 'dit bedrijf';
     }
 
     ngOnDestroy() {
@@ -109,11 +120,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     }
 
     private setInitialValues(): void {
-        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
-        this.parent = functionPackage.parent;
-        this.currentUser = functionPackage.currentUser;
-        this.mainFunction = functionPackage.mainFunction;
-
         if (this.activatedRoute.snapshot.data.parentUrl) {
             const url = <string>(this.activatedRoute.snapshot.data.parentUrl).replace(':id', this.mainFunction.parent.id);
             this.routerService.setBackRoute(url);

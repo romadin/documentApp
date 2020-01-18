@@ -21,7 +21,7 @@ export class UsersListComponent implements OnInit {
 
     constructor(private userService: UserService, private activatedRoute: ActivatedRoute, private mailService: MailService) {
         this.projectId = parseInt(location.pathname.split('/')[2], 10);
-        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.organisation = <Organisation>this.activatedRoute.parent.snapshot.data.organisation;
     }
 
     @Input()

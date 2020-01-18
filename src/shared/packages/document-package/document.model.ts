@@ -1,14 +1,13 @@
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export class Document {
     private _id: number;
     private _originalName: string;
     private _name: string;
     private _content: string;
-    private _parentFolders: number[];
     private _order: number;
     private _fromTemplate: boolean;
-    private _documents: BehaviorSubject<Document[]>;
+    private _documents: Observable<Document[]>;
 
     constructor() {}
 
@@ -44,19 +43,11 @@ export class Document {
         this._content = value;
     }
 
-    get parentFolders(): number[] {
-        return this._parentFolders;
-    }
-
-    set parentFolders(value: number[]) {
-        this._parentFolders = value;
-    }
-
-    get documents(): BehaviorSubject<Document[]> {
+    get documents(): Observable<Document[]> {
         return this._documents;
     }
 
-    set documents(value: BehaviorSubject<Document[]>) {
+    set documents(value: Observable<Document[]>) {
         this._documents = value;
     }
 
@@ -74,12 +65,6 @@ export class Document {
 
     set fromTemplate(value: boolean) {
         this._fromTemplate = value;
-    }
-
-    addDocuments(newDocuments: Document[]) {
-        let documents = this.documents.getValue();
-        documents = documents.concat(newDocuments);
-        this.documents.next(documents);
     }
 
     getName(): string {

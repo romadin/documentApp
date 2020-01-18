@@ -21,6 +21,7 @@ import {
 } from '@angular/animations';
 import { initialAnimation, scaleDownAnimation } from '../../../shared/animations';
 import { editArray } from '../../../shared/helpers/global-functions';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-work-function-list',
@@ -64,13 +65,13 @@ import { editArray } from '../../../shared/helpers/global-functions';
         ])
     ]
 })
-export class WorkFunctionListComponent  implements OnInit, OnDestroy {
+export class WorkFunctionListComponent implements OnInit, OnDestroy {
     currentUser: User;
-    folderUrlToRedirect: string;
     project: Project;
     showFunctionDetail = false;
     workFunctionToEdit: WorkFunction;
     workFunctions: WorkFunction[];
+    private subscriptionHolder: Subscription[] = [];
 
     constructor(private activatedRoute: ActivatedRoute,
                 private workFunctionService: WorkFunctionService,
@@ -79,32 +80,28 @@ export class WorkFunctionListComponent  implements OnInit, OnDestroy {
                 private routerService: RouterService,
                 private communicationService: ProjectCommunicationService,
                 private headerCommunicationService: HeaderWithFolderCommunicationService) {
-        this.folderUrlToRedirect = 'workFunction/';
     }
 
     ngOnInit() {
         this.project = this.activatedRoute.parent.parent.parent.snapshot.data.project;
-        this.userService.getCurrentUser().subscribe((user: User) => {
-            this.currentUser = user;
-        });
-
         this.headerCommunicationService.headerTitle.next(this.project.name);
-
-        this.communicationService.triggerAddWorkFunction.subscribe(show => {
+    
+        this.subscriptionHolder.push(this.userService.getCurrentUser().subscribe((user: User) => {
+            this.currentUser = user;
+        }));
+    
+        this.subscriptionHolder.push(this.communicationService.triggerAddWorkFunction.subscribe(show => {
             this.showFunctionDetail = show;
-        });
+        }));
 
-        this.project.workFunctions.subscribe((workFunctions: WorkFunction[]) => {
-            if (!this.workFunctions) {
-                this.workFunctions = workFunctions;
-            } else {
-                this.changeList(workFunctions);
-            }
-        });
+        this.subscriptionHolder.push(this.project.workFunctions.subscribe((workFunctions: WorkFunction[]) => {
+            !this.workFunctions ? this.workFunctions = workFunctions : this.changeList(workFunctions);
+        }));
     }
 
     ngOnDestroy() {
         this.communicationService.triggerAddWorkFunction.next(false);
+        this.subscriptionHolder.map(s => s.unsubscribe());
     }
     onCloseItemView() {
         this.showFunctionDetail = false;

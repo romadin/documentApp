@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
 import { combineLatest, EMPTY, forkJoin, Observable, of } from 'rxjs';
-import { map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { first, map, mergeMap, switchMap, take } from 'rxjs/operators';
 import { Company } from '../../shared/packages/company-package/company.model';
 
 import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
@@ -21,7 +21,7 @@ export interface ChildItemPackage {
 @Injectable({
   providedIn: 'root'
 })
-export class WorkFunctionPackageResolverService implements Resolve<Observable<ChildItemPackage> | Observable<never>> {
+export class WorkFunctionPackageResolverService implements Resolve<Observable<ChildItemPackage> | Observable<never> | WorkFunction[]> {
 
     constructor(
         private projectService: ProjectService,
@@ -31,30 +31,41 @@ export class WorkFunctionPackageResolverService implements Resolve<Observable<Ch
         private headerCommunicationService: HeaderWithFolderCommunicationService,
     ) { }
 
-    resolve(route: ActivatedRouteSnapshot): Observable<ChildItemPackage | never> {
+    resolve(route: ActivatedRouteSnapshot) {
         const workFunctionId: number = parseInt(
             route.paramMap.get('id') !== null ? route.paramMap.get('id') : route.parent.paramMap.get('id'),
             10
         );
-        const projectId: number = parseInt(location.pathname.split('/')[2], 10);
+        const project: Project = route.parent.parent.parent.data.project;
         const organisation: Organisation = route.parent.data.organisation;
         const functionPackage: ChildItemPackage = { currentUser: null, mainFunction: null, parent: null};
 
-        return this.projectService.getProject(projectId, organisation).pipe(
-            mergeMap( (project: Project) => {
-                if (!project) {
+        return project.workFunctions.pipe(first(v => v !== undefined)).pipe(
+            map( workFunctions => {
+                if (workFunctions) {
+                    return workFunctions;
+                } else { // no project
                     this.router.navigate(['not-found/organisation']);
                     return EMPTY;
                 }
-
-                return project.workFunctions.pipe(mergeMap((workFunctions) => {
-                    (<WorkFunction>functionPackage.parent) = workFunctions.find(w => w.id === workFunctionId);
-                    functionPackage.mainFunction = workFunctions.find(w => w.isMainFunction);
-                    functionPackage.currentUser = this.userService.getCurrentUser().getValue();
-                    this.headerCommunicationService.headerTitle.next(functionPackage.parent.name);
-                    return of(functionPackage);
-                }), take(1));
             })
         );
+
+        // return this.projectService.getProject(projectId, organisation).pipe(
+        //     mergeMap( (project: Project) => {
+        //         if (!project) {
+        //             this.router.navigate(['not-found/organisation']);
+        //             return EMPTY;
+        //         }
+        //
+        //         return project.workFunctions.pipe(mergeMap((workFunctions) => {
+        //             (<WorkFunction>functionPackage.parent) = workFunctions.find(w => w.id === workFunctionId);
+        //             functionPackage.mainFunction = workFunctions.find(w => w.isMainFunction);
+        //             functionPackage.currentUser = this.userService.getCurrentUser().getValue();
+        //             this.headerCommunicationService.headerTitle.next(functionPackage.parent.name);
+        //             return of(functionPackage);
+        //         }), take(1));
+        //     })
+        // );
     }
 }

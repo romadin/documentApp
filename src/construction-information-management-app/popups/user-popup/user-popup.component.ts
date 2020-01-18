@@ -19,7 +19,7 @@ import { MailService } from '../../../shared/service/mail.service';
 import { duplicateValidator } from '../../../shared/form-validator/custom-validators';
 import { ToastService } from '../../../shared/toast.service';
 import { ErrorMessage } from '../../../shared/type-guard/error-message';
-import { objectIsEmpty } from '../../../shared/helpers/practice-functions';
+import { objectIsEmpty } from '../../../shared/helpers/practical-functions';
 
 export interface SelectedProject {
     [id: number]: Project;

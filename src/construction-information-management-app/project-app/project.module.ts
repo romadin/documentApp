@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
-import { getBreadcrumbNameProject } from '../../shared/helpers/practice-functions';
+import { getBreadcrumbNameProject } from '../../shared/helpers/practical-functions';
 import { ProjectResolver } from '../../shared/packages/project-package/project.resolver';
 import { ProjectRouterComponent } from './project-router/project-router.component';
 import { ProjectComponent } from './project/project.component';

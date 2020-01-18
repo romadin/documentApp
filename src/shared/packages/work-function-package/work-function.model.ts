@@ -99,11 +99,4 @@ export class WorkFunction {
     set companies(value: Company[]) {
         this._companies = value;
     }
-
-    addDocuments(newDocuments: Document[]) {
-        console.log('fix add documents');
-        // let documents = this.documents.getValue();
-        // documents = documents.concat(newDocuments);
-        // this.documents.next(documents);
-    }
 }

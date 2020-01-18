@@ -90,7 +90,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.organisation = <Organisation>this.activatedRoute.parent.snapshot.data.organisation;
         this.userForm.controls.email.setValidators([Validators.email]);
 
         this.getProjectsAndCompanies();

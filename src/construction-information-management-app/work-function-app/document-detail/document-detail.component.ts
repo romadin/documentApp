@@ -14,6 +14,7 @@ import { ContextMenuService } from '../../../shared/packages/context-menu/contex
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { ToastService } from '../../../shared/toast.service';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
+
 import { User } from '../../../shared/packages/user-package/user.model';
 import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { DocGetParam, DocPostData } from '../../../shared/packages/document-package/api-document.interface';
@@ -95,7 +96,6 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
             } else {
                 this.documentService.postDocument(postData, param).subscribe((document) => {
                     if ( document ) {
-                        this.parent.addDocuments([document]);
                         this.document = document;
                         this.closeEditForm.emit(true);
                         this.toast.showSuccess('Hoofdstuk: ' + document.getName() + ' is toegevoegd', 'Toegevoegd');
