@@ -29,7 +29,8 @@ export class ItemReadComponent implements OnInit, OnDestroy {
                 private activatedRoute: ActivatedRoute,
                 private folderCommunication: HeaderWithFolderCommunicationService
                 ) {
-        this.organisation = this.activatedRoute.snapshot.data.organisation ? this.activatedRoute.snapshot.data.organisation : this.activatedRoute.snapshot.parent.parent.data;
+        this.organisation = this.activatedRoute.snapshot.data.organisation ? this.activatedRoute.snapshot.data.organisation :
+            this.activatedRoute.snapshot.parent.parent.data;
         const projectId = parseInt(this.router.url.split('/')[2], 10);
 
         this.projectService.getProject(projectId, this.organisation).subscribe((project: Project) => {

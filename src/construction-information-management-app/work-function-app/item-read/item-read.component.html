@@ -11,7 +11,7 @@
                 <div *ngFor="let item of items;">
                     <h3> {{ item.getName() }} </h3>
                     <div #dataContentDocument>{{ setContent(item, dataContentDocument) }}</div>
-                    <div *ngFor="let subDocument of item.documents.getValue()">
+                    <div *ngFor="let subDocument of item.documents | async">
                         <h4> {{ subDocument.getName() }} </h4>
                         <div #dataContentSubDocument >{{ setContent(subDocument, dataContentSubDocument) }}</div>
                     </div>
