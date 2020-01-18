@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
-import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { CanActivateLoggedIn } from '../../can-activate/CanActivateLoggedIn';
-import {
-    getBreadcrumbNameParent,
-    getBreadcrumbNameProject,
-    getBreadcrumbNameWorkFunctions
-} from '../../shared/helpers/practical-functions';
+import { getBreadcrumbNameParent, } from '../../shared/helpers/practical-functions';
 import { SharedWorkFunctionModule } from '../../shared/shared-work-function.module';
 import { CompanyPackageResolverService } from './company/company-package-resolver.service';
 import { CompanyComponent } from './company/company.component';
@@ -21,6 +17,7 @@ import { CompanyDetailComponent } from './company/company-right-side/company-det
 import { WorkFunctionListComponent } from './work-function-list/work-function-list.component';
 import { ProjectWorkFunctionComponent } from '../project-app/project/project-detail/project-work-function/project-work-function.component';
 import { SharedProjectModule } from '../project-app/shared-project.module';
+import { WorkFunctionItemsRouterComponent } from './work-function-items-router/work-function-items-router.component';
 
 const routes: Routes = [
     {
@@ -29,38 +26,37 @@ const routes: Routes = [
         children: [
             {
                 path: ':id',
-                component: ItemsOverviewComponent,
+                component: WorkFunctionItemsRouterComponent,
                 canActivate: [ CanActivateLoggedIn ],
-                data: { parentUrl: 'projecten/:id/functies', breadcrumb: getBreadcrumbNameWorkFunctions },
                 resolve: {
-                    workFunctions: WorkFunctionPackageResolverService,
+                    parent: WorkFunctionPackageResolverService
                 },
                 children: [
                     {
                         path: 'bedrijven',
+                        component: CompanyComponent,
                         canActivate: [ CanActivateLoggedIn ],
-                        data: { breadcrumb: 'Bedrijven' },
-                        resolve: {
-                            functionPackage: WorkFunctionPackageResolverService
-                        },
-                        children: [
-                            {
-                                path: ':id',
-                                component: ItemsOverviewComponent,
-                                canActivate: [ CanActivateLoggedIn ],
-                                data: { breadcrumb: getBreadcrumbNameParent },
-                                resolve: {
-                                    functionPackage: CompanyPackageResolverService
-                                }
-                            },
-                            {
-                                path: '',
-                                component: CompanyComponent,
-                                canActivate: [ CanActivateLoggedIn ],
-                            }
-                        ]
+                        data: { breadcrumb: 'Bedrijven', component: 'company' },
                     },
-                ]
+                    {
+                        path: 'bedrijven/:id',
+                        component: ItemsOverviewComponent,
+                        canActivate: [ CanActivateLoggedIn ],
+                        data: { breadcrumb: getBreadcrumbNameParent },
+                        resolve: {
+                            parent: CompanyPackageResolverService
+                        }
+                    },
+                    {
+                        path: '',
+                        component: ItemsOverviewComponent,
+                        canActivate: [ CanActivateLoggedIn ],
+                        data: {
+                            parentUrl: 'projecten/:id/functies',
+                            breadcrumb: getBreadcrumbNameParent,
+                        },
+                    }
+                ],
             },
             {
                 path: '',
@@ -86,6 +82,7 @@ const routes: Routes = [
         CompanyDetailComponent,
         WorkFunctionListComponent,
         ProjectWorkFunctionComponent,
+        WorkFunctionItemsRouterComponent,
     ],
     providers: [
         WorkFunctionPackageResolverService,

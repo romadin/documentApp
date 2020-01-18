@@ -12,6 +12,8 @@ import { HeaderWithFolderCommunicationService } from '../../../shared/service/co
 import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { RouterService } from '../../../shared/service/router.service';
 import { ChildItemPackage } from '../work-function-package-resolver.service';
+import { Subscription } from 'rxjs';
+import { UserService } from '../../../shared/packages/user-package/user.service';
 
 export interface CompanyRightSidePackage {
     workFunction: WorkFunction;
@@ -92,20 +94,22 @@ export interface CompanyRightSidePackage {
 })
 export class CompanyComponent implements OnInit, OnDestroy {
     workFunction: WorkFunction;
-    mainFunction: WorkFunction;
     currentUser: User;
     companiesLinkedToProject: Company[];
     rightSidePackage: CompanyRightSidePackage = {workFunction: null};
     rightSideActive: boolean;
     showWarningBox: boolean;
     warningMessage = 'Er zijn geen bedrijven gekoppeld aan het project.';
+
     private allCompanies: Company[];
     private addedCompanyByUser = false;
+    private subscriptions: Subscription[] = [];
 
     constructor(
         private companyService: CompanyService,
         private userCommunicationService: UsersCommunicationService,
         private headerCommunicationService: HeaderWithFolderCommunicationService,
+        private userService: UserService,
         private routerService: RouterService,
         private activatedRoute: ActivatedRoute,
         private loadingService: LoadingService,
@@ -185,11 +189,9 @@ export class CompanyComponent implements OnInit, OnDestroy {
     }
 
     private setInitialValues(): void {
-        const functionPackage: ChildItemPackage = this.activatedRoute.snapshot.data.functionPackage;
-        this.rightSidePackage.workFunction = this.workFunction = <WorkFunction>functionPackage.parent;
-        this.currentUser = functionPackage.currentUser;
-        this.mainFunction = functionPackage.mainFunction;
-        this.routerService.setBackRoute('/projecten/' + this.workFunction.parent.id);
+        this.workFunction = this.rightSidePackage.workFunction =  this.activatedRoute.parent.snapshot.data.parent;
+        this.subscriptions.push(this.userService.getCurrentUser().subscribe(user => this.currentUser = user));
+        this.routerService.setBackRoute('/projecten/' + this.workFunction.parent.id + 'functies');
     }
     private filterCompanies(): void {
         this.companiesLinkedToProject = this.allCompanies.filter(c => !this.workFunction.companies.find(wc => wc.id === c.id));

@@ -11,8 +11,8 @@ import { HeaderWithFolderCommunicationService } from '../../../shared/service/co
 import { RouterService } from '../../../shared/service/router.service';
 import { ToItemsOverview } from '../document-row/document-row.component';
 import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
-import { ChildItemPackage } from '../work-function-package-resolver.service';
 import { UserService } from '../../../shared/packages/user-package/user.service';
+import { Project } from '../../../shared/packages/project-package/project.model';
 
 @Component({
   selector: 'cim-items-overview',
@@ -29,7 +29,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     showReadModeAnimation: boolean;
     errorMessage = 'deze functie';
 
-    private workFunctions: WorkFunction[];
     private subscriptions: Subscription[] = [];
 
     constructor(
@@ -41,12 +40,12 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     ) { }
 
     ngOnInit() {
-        this.workFunctions = this.activatedRoute.snapshot.data.workFunctions;
-        this.userService.getCurrentUser().subscribe(user => this.currentUser = user);
-
-        const currentWorkFunctionId = parseInt(this.activatedRoute.snapshot.params.id, 10);
-        this.parent = this.workFunctions.find(w => w.id === currentWorkFunctionId);
-        this.mainFunction = this.workFunctions.find(w => w.isMainFunction);
+        this.subscriptions.push(this.userService.getCurrentUser().subscribe(user => this.currentUser = user));
+        this.parent = this.activatedRoute.snapshot.data.parent;
+        const project = isWorkFunction(this.parent) ? (<Project>this.parent.parent) : this.parent.parent.parent;
+        (<Project>project).workFunctions.subscribe((workFunctions) => {
+            this.mainFunction = workFunctions.find(w => w.isMainFunction);
+        });
 
         // setting the documents.
         this.subscriptions.push(this.parent.documents.subscribe((items: Document[]) => {
@@ -121,7 +120,7 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
 
     private setInitialValues(): void {
         if (this.activatedRoute.snapshot.data.parentUrl) {
-            const url = <string>(this.activatedRoute.snapshot.data.parentUrl).replace(':id', this.mainFunction.parent.id);
+            const url = <string>(this.activatedRoute.snapshot.data.parentUrl).replace(':id', this.parent.parent.id.toString(10));
             this.routerService.setBackRoute(url);
         } else {
             this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute);

@@ -85,11 +85,11 @@ export class WorkFunctionListComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.project = this.activatedRoute.parent.parent.parent.snapshot.data.project;
         this.headerCommunicationService.headerTitle.next(this.project.name);
-    
+
         this.subscriptionHolder.push(this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
         }));
-    
+
         this.subscriptionHolder.push(this.communicationService.triggerAddWorkFunction.subscribe(show => {
             this.showFunctionDetail = show;
         }));

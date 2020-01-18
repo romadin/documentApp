@@ -7,7 +7,7 @@ export class Company {
     private _name: string;
     private _documents: {[workFunctionId: number]: BehaviorSubject<Document[]>} = {};
     private _items: BehaviorSubject<Document[]>;
-    private _parent: WorkFunction|null;
+    private _parent: WorkFunction | null;
 
     constructor() {}
 

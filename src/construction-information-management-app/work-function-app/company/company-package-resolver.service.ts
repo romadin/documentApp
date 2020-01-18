@@ -4,14 +4,12 @@ import { EMPTY, Observable, of } from 'rxjs';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { UserService } from '../../../shared/packages/user-package/user.service';
-import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
-import { ChildItemPackage } from '../work-function-package-resolver.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CompanyPackageResolverService implements Resolve<Observable<ChildItemPackage> | Observable<never>> {
+export class CompanyPackageResolverService implements Resolve<Observable<Company> | Observable<never>> {
 
     constructor(
         private projectService: ProjectService,
@@ -21,19 +19,16 @@ export class CompanyPackageResolverService implements Resolve<Observable<ChildIt
         private headerCommunicationService: HeaderWithFolderCommunicationService,
     ) { }
 
-    resolve(route: ActivatedRouteSnapshot): Observable<ChildItemPackage | never> {
-        const companyId: number = parseInt(route.paramMap.get('id'), 10 );
-        const parentPackage: ChildItemPackage = route.parent.data.functionPackage;
+    resolve(route: ActivatedRouteSnapshot): Observable<Company | never> {
+        const workFunction = route.parent.data.parent;
 
-        const currentCompany: Company = (<WorkFunction>parentPackage.parent).companies.find(c => c.id === companyId);
+        const companyId: number = parseInt(route.paramMap.get('id'), 10 );
+        const currentCompany: Company = workFunction.companies.find(c => c.id === companyId);
+
         if (currentCompany) {
             this.headerCommunicationService.headerTitle.next(currentCompany.name);
 
-            return of({
-                currentUser: parentPackage.currentUser,
-                mainFunction: parentPackage.mainFunction,
-                parent: currentCompany
-            });
+            return of(currentCompany);
         } else { // no organisation
             this.router.navigate(['not-found/organisation']);
             return EMPTY;
