@@ -1,5 +1,5 @@
 <mat-expansion-panel class="card expansion-panel" *ngIf="!parentIsDocument()" [disabled]="!subDocuments || subDocuments.length === 0" (click)="editDocument($event, true)">
-    <mat-expansion-panel-header [collapsedHeight]="'58px'">
+    <mat-expansion-panel-header [collapsedHeight]="'58px'" [ngClass]="{'disabled': !subDocuments || subDocuments.length === 0}">
         <mat-panel-title class="toggleTitle" [ngClass]="{'disabled': !subDocuments || subDocuments.length === 0}">
             <div class="rowTitle">
                 <i class="material-icons"> {{ !subDocuments || subDocuments.length === 0 ? 'description' : 'folder_open' }}</i>

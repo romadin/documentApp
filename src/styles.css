@@ -21,6 +21,9 @@ mat-sidenav-content.mat-drawer-content {
 mat-card-header {
     color: var(--primary-color);
 }
+mat-expansion-panel-header.disabled + div.mat-expansion-panel-content {
+    height: 0;
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
