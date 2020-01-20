@@ -189,7 +189,7 @@ export class CompanyComponent implements OnInit, OnDestroy {
     }
 
     private setInitialValues(): void {
-        this.workFunction = this.rightSidePackage.workFunction =  this.activatedRoute.parent.snapshot.data.parent;
+        this.workFunction = this.rightSidePackage.workFunction =  this.activatedRoute.parent.parent.snapshot.data.parent;
         this.subscriptions.push(this.userService.getCurrentUser().subscribe(user => this.currentUser = user));
         this.routerService.setBackRoute('/projecten/' + this.workFunction.parent.id + 'functies');
     }

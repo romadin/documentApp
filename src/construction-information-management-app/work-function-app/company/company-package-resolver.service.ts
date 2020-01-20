@@ -20,7 +20,7 @@ export class CompanyPackageResolverService implements Resolve<Observable<Company
     ) { }
 
     resolve(route: ActivatedRouteSnapshot): Observable<Company | never> {
-        const workFunction = route.parent.data.parent;
+        const workFunction = route.parent.parent.data.parent;
 
         const companyId: number = parseInt(route.paramMap.get('id'), 10 );
         const currentCompany: Company = workFunction.companies.find(c => c.id === companyId);

@@ -34,7 +34,11 @@ export class ItemListComponent implements OnInit {
         return this._parent;
     }
 
-    constructor(private workFunctionService: WorkFunctionService, private companyService: CompanyService, private documentService: DocumentService) { }
+    constructor(
+        private workFunctionService: WorkFunctionService,
+        private companyService: CompanyService,
+        private documentService: DocumentService
+    ) { }
 
     ngOnInit() {
         this.getAvailableItems();
@@ -53,16 +57,10 @@ export class ItemListComponent implements OnInit {
             if (isWorkFunction(this.parent)) {
                 this.documentService.postDocuments(<any>this.getPostData(), { workFunctionId: this.parent.id }).subscribe();
             } else {
-                const postData = this.getPostData();
                 const workFunctionId = this.parent.parent.id;
                 const param = { workFunctionId: workFunctionId, companyId: this.parent.id};
 
-                this.documentService.postDocuments(<any>postData, param).subscribe((v) => console.log(v));
-
-                // this.companyService.updateCompany(<Company>this.parent, postData , [this.mainWorkFunction.parent.id])
-                //     .subscribe(parent => {
-                //         this.saveItemsDone.emit(parent);
-                //     });
+                this.documentService.postDocuments(<any>this.getPostData(), param).subscribe();
             }
         }
     }

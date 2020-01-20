@@ -34,19 +34,27 @@ const routes: Routes = [
                 children: [
                     {
                         path: 'bedrijven',
-                        component: CompanyComponent,
+                        component: WorkFunctionItemsRouterComponent,
                         canActivate: [ CanActivateLoggedIn ],
-                        data: { breadcrumb: 'Bedrijven', component: 'company' },
+                        data: { breadcrumb: 'Bedrijven' },
+                        children: [
+                            {
+                                path: ':id',
+                                component: ItemsOverviewComponent,
+                                canActivate: [ CanActivateLoggedIn ],
+                                data: { breadcrumb: getBreadcrumbNameParent },
+                                resolve: {
+                                    parent: CompanyPackageResolverService
+                                }
+                            },
+                            {
+                                path: '',
+                                component: CompanyComponent,
+                                canActivate: [ CanActivateLoggedIn ],
+                            }
+                        ]
                     },
-                    {
-                        path: 'bedrijven/:id',
-                        component: ItemsOverviewComponent,
-                        canActivate: [ CanActivateLoggedIn ],
-                        data: { breadcrumb: getBreadcrumbNameParent },
-                        resolve: {
-                            parent: CompanyPackageResolverService
-                        }
-                    },
+
                     {
                         path: '',
                         component: ItemsOverviewComponent,
