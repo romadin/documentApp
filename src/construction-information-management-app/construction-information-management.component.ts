@@ -70,7 +70,7 @@ export class ConstructionInformationManagementComponent implements OnInit {
         this.defineSideMenuActions();
         this.organisationService.getOrganisation().subscribe(organisation => {
             this.organisation = organisation;
-    
+
             if (organisation) {
                 document.documentElement.style.setProperty('--primary-color', organisation.primaryColor);
                 document.documentElement.style.setProperty('--secondary-color', organisation.secondaryColor);
@@ -91,7 +91,7 @@ export class ConstructionInformationManagementComponent implements OnInit {
             .pipe(distinctUntilChanged())
             .pipe(map(event => this.buildBreadCrumb(this.activatedRoute.root))).subscribe(breadcrumbs => this.breadcrumbs = breadcrumbs);
     }
-    
+
     prepareRoute(outlet: RouterOutlet) {
         return outlet && outlet.activatedRouteData && outlet.activatedRouteData['animation'];
     }
@@ -100,7 +100,7 @@ export class ConstructionInformationManagementComponent implements OnInit {
         // If no routeConfig is available we are on the root path
         let name = route.routeConfig && route.routeConfig.data ? route.routeConfig.data[ 'breadcrumb' ] : '';
         let path = route.routeConfig ? route.routeConfig.path : '';
-    
+
         // If no name is available we don't want to make an breadcrumb of this.
         if (name === undefined) {
             return;
@@ -127,6 +127,7 @@ export class ConstructionInformationManagementComponent implements OnInit {
         }
         return newBreadcrumbs;
     }
+
     private determineActions(url: string): void {
         if ( url !== '/login' ) {
             this.userService.getCurrentUser().subscribe((user: User) => {

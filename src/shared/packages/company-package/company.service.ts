@@ -38,17 +38,6 @@ export class CompanyService {
         private dialog: MatDialog,
     ) {}
 
-    makeCompany(data: CompanyApiResponseInterface, parent: WorkFunction = null): Company {
-        const company = new Company();
-        company.id = data.id;
-        company.name = data.name;
-        company.parent = parent;
-        if (parent) {
-            company.documents = this.documentService.getDocumentsByCompany(company);
-        }
-        return company;
-    }
-
     getCompaniesByProject(project: Project, workFunction?: WorkFunction): BehaviorSubject<Company[]> {
         if (this.companiesByProjectCache[project.id] && !this.updateCacheObject) {
             if (workFunction) {
@@ -74,16 +63,6 @@ export class CompanyService {
         );
         this.companiesByProjectCache[project.id] = newSubject;
         return this.companiesByProjectCache[project.id];
-    }
-
-    getCompanyById(id: number): BehaviorSubject<Company> {
-        if (this.companiesByIdCache[id]) {
-            return this.companiesByIdCache[id];
-        }
-        const newSubject: BehaviorSubject<Company> = new BehaviorSubject<Company>(null);
-        this.apiService.get(this.path + '/' + id , {}).subscribe(result => newSubject.next(this.makeCompany(result)));
-        this.companiesByIdCache[id] = newSubject;
-        return this.companiesByIdCache[id];
     }
 
     createCompany(body: CompanyApiPostData, projectsId: number[], workFunction?: WorkFunction): Observable<Company> {
@@ -127,6 +106,16 @@ export class CompanyService {
         }));
     }
 
+    makeCompany(data: CompanyApiResponseInterface, parent: WorkFunction = null): Company {
+        const company = new Company();
+        company.id = data.id;
+        company.name = data.name;
+        company.parent = parent;
+        if (parent) {
+            company.documents = this.documentService.getDocumentsByCompany(company);
+        }
+        return company;
+    }
     private updateCache(company: Company, projectsId: number[]): void {
         projectsId.forEach((projectId) => {
             if (this.companiesByProjectCache[projectId]) {

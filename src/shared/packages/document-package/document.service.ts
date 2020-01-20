@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { BehaviorSubject, combineLatest, merge, Observable, of, Subject, timer } from 'rxjs';
-import { map, mergeMap, shareReplay, switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
+import { map, mergeMap, shareReplay, take } from 'rxjs/operators';
 import {
     ConfirmPopupComponent,
     ConfirmPopupData
@@ -14,19 +14,11 @@ import { Document } from './document.model';
 import { ApiDocResponse, DocGetParam, DocPostData, ParamDelete } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
 
-interface DocumentsCacheObservable {
-    [companyId: number]: BehaviorSubject<Document[]>;
-}
-interface DocumentsCacheByWorkFunction {
-    [workFunctionId: number]: DocumentsCacheObservable;
-}
 export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
 
 @Injectable()
 export class DocumentService {
     private path = '/documents';
-
-    private documentsByCompanyCache: DocumentsCacheByWorkFunction = {};
     private documentCache: {[id: number]: Document} = {};
 
     private documentsWorkFunctionCache$: Observable<Document[]>[] = [];
