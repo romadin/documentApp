@@ -35,6 +35,10 @@ export class DocumentService {
     private subDocumentsCache$: Observable<Document[]>[] = [];
     private updateSubDocumentsCache$: Subject<void> = new Subject<void>();
 
+    private documentsCompanyCache$: Observable<Document[]>[][] = [];
+    private updateDocumentsCompanyCache$: Subject<void> = new Subject<void>();
+
+
     constructor(private apiService: ApiService, private dialog: MatDialog, private toast: ToastService) { }
 
     getDocumentsByWorkFunction(workFunction: WorkFunction): Observable<Document[]> {
@@ -59,23 +63,24 @@ export class DocumentService {
         );
     }
 
-    getDocumentsByCompany(company: Company): BehaviorSubject<Document[]> {
+    getDocumentsByCompany(company: Company): Observable<Document[]> {
         if (!company.parent) {
             throw Error('company does not have a parent');
         }
+        const id = company.id;
 
-        if (this.documentsByCompanyCache[company.parent.id] && this.documentsByCompanyCache[company.parent.id][company.id]) {
-            return this.documentsByCompanyCache[company.parent.id][company.id];
+        if (!this.documentsCompanyCache$[id]) {
+            this.documentsCompanyCache$[id] = [];
         }
-        const param = {companyId: company.id, workFunctionId: company.parent.id};
-        const documentsContainer: BehaviorSubject<Document[]> = new BehaviorSubject<Document[]>([]);
+        if (this.documentsCompanyCache$[id] && !this.documentsCompanyCache$[id][company.parent.id]) {
+            const param = {companyId: id, workFunctionId: company.parent.id};
+            const initialDocuments$ = this.getDataOnce(param);
+            const updates$ = this.updateDocumentsCompanyCache$.pipe(mergeMap(() => this.getDataOnce(param)));
 
-        this.apiService.get(this.path, param).subscribe((result: ApiDocResponse[]) => {
-            documentsContainer.next(result.map(response => this.makeDocument(response, true)));
-        });
+            this.documentsCompanyCache$[id][company.parent.id] = merge(initialDocuments$, updates$).pipe(shareReplay(1));
+        }
 
-        this.documentsByCompanyCache[company.parent.id] = {[company.id] : documentsContainer};
-        return this.documentsByCompanyCache[company.parent.id][company.id];
+        return this.documentsCompanyCache$[company.id][company.parent.id];
     }
 
     getSubDocuments(parentDocument: Document): Observable<Document[]> {
@@ -102,9 +107,9 @@ export class DocumentService {
     /**
      * Link existing documents in a batch to the work function.
      */
-    postDocuments(postData: {documents: number[]}, param: {workFunctionId: number}): Observable<string> {
+    postDocuments(postData: {documents: number[]}, param: DocGetParam): Observable<string> {
         return this.apiService.post(this.path, postData, param).pipe(map((response: string) => {
-            this.updateDocumentsCache$.next();
+            param.companyId ? this.updateDocumentsCompanyCache$.next() : this.updateDocumentsCache$.next();
             return response;
         }));
     }
@@ -133,7 +138,10 @@ export class DocumentService {
         return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action) => {
             if (action) {
                 return this.apiService.delete(this.path + '/' + document.id, paramDelete).pipe(map(() => {
-                    paramDelete.documentId ? this.updateSubDocumentsCache$.next() : this.updateDocumentsCache$.next();
+                    paramDelete.documentId ? this.updateSubDocumentsCache$.next()
+                        : paramDelete.companyId && paramDelete.workFunctionId ? this.updateDocumentsCompanyCache$.next()
+                        : this.updateDocumentsCache$.next();
+
                     this.toast.showSuccess('Document: ' + document.getName() + ' is verwijderd', 'Verwijderd');
                     return true;
                 }));
