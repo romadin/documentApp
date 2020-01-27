@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatButtonToggleChange } from '@angular/material';
 
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
@@ -19,6 +18,7 @@ export type AddType = 'new' | 'exist';
 export class ChapterDetailComponent {
     @Input() parent: WorkFunction | Chapter;
     @Input() chapter: Chapter;
+    @Input() mainWorkFunction: WorkFunction;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
     view: AddType = 'exist';
 

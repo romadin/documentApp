@@ -71,6 +71,8 @@ export class TemplateComponent implements OnInit {
     workFunctionToEdit: WorkFunction;
     showWorkFunctionDetail: boolean;
     itemsContainer: ItemsContainer = {};
+    workFunctions: WorkFunction[];
+    mainWorkFunction: WorkFunction;
 
     constructor(private dialog: MatDialog,
                 private workFunctionService: WorkFunctionService,
@@ -78,7 +80,10 @@ export class TemplateComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        // this.template.workFunctions.forEach((workFunction) => this.setItemsInContainer(workFunction));
+        this.template.workFunctions.subscribe((workFunctions) => {
+            this.workFunctions = workFunctions;
+            this.mainWorkFunction = workFunctions.find(w => w.isMainFunction);
+        });
     }
 
     @Input()

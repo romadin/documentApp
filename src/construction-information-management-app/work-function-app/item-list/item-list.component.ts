@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { combineLatest } from 'rxjs';
-import { CompanyApiUpdateData } from '../../../shared/packages/company-package/interface/company-api-response.interface';
 import { Company } from '../../../shared/packages/company-package/company.model';
 import { CompanyService } from '../../../shared/packages/company-package/company.service';
 

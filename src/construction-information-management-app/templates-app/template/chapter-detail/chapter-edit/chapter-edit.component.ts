@@ -3,13 +3,13 @@ import { WorkFunction } from '../../../../../shared/packages/work-function-packa
 import { Chapter } from '../../../../../shared/packages/chapter-package/chapter.model';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
-import {
-    ChapterParam,
-    ChapterPostBody,
-} from '../../../../../shared/packages/chapter-package/interface/chapter-api-response.interface';
-import { isWorkFunction } from '../../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { ChapterService } from '../../../../../shared/packages/chapter-package/chapter.service';
 import { ToastService } from '../../../../../shared/toast.service';
+import {
+    ChapterParam,
+    ChapterPostBody
+} from '../../../../../shared/packages/chapter-package/interface/chapter-api-response.interface';
+import { isWorkFunction } from '../../../../../shared/packages/work-function-package/interface/work-function.interface';
 
 @Component({
   selector: 'cim-chapter-edit',
@@ -54,29 +54,21 @@ export class ChapterEditComponent implements AfterViewInit {
 
     onSubmit(e: Event): void {
         if (this.chapterForm.valid && this.formHasChanged) {
-            // const chapters: Chapter[] = this.parent.chapters.getValue();
-            // const params: ChapterParam = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : {};
-            // const body: ChapterPostBody = {
-            //     name: this.chapterForm.controls.name.value,
-            //     content: this.content
-            // };
-            // if (this.chapter) {
-            //     this.chapterService.updateChapter(this.chapter, body, params, this.parent).subscribe(chapter => {
-            //         this.chapter = chapter;
-            //         const index = chapters.findIndex(c => c.id === chapter.id);
-            //         chapters[index] = chapter;
-            //         // this.parent.chapters.next(chapters);
-            //         this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is bewerkt', 'Bewerkt');
-            //     });
-            // } else {
-            //     body.parentChapterId = isWorkFunction(this.parent) ? null : this.parent.id;
-            //     this.chapterService.createChapter(body, params, this.parent).subscribe(chapter => {
-            //         chapters.push(chapter);
-            //         this.parent.chapters.next(chapters);
-            //         this.onCloseView(e);
-            //         this.toast.showSuccess('Hoofdstuk: ' + chapter.name + 'is toegevoegd', 'Toegevoegd');
-            //     });
-            // }
+            const params: ChapterParam = isWorkFunction(this.parent) ? {workFunctionId: this.parent.id} : {};
+            const body: ChapterPostBody = {
+                name: this.chapterForm.controls.name.value,
+                content: this.content
+            };
+            if (this.chapter) {
+                this.chapterService.updateChapter(this.chapter, body, params, this.parent).subscribe(chapter => {
+                    this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is bewerkt', 'Bewerkt');
+                });
+            } else {
+                body.parentChapterId = isWorkFunction(this.parent) ? null : this.parent.id;
+                this.chapterService.createChapter(body, params, this.parent).subscribe(chapter => {
+                    this.toast.showSuccess('Hoofdstuk: ' + chapter.name + 'is toegevoegd', 'Toegevoegd');
+                });
+            }
         }
     }
 

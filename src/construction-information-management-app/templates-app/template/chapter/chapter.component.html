@@ -1,4 +1,4 @@
-<mat-expansion-panel class="card expansion-panel" *ngIf="!chapter.parentChapterId" [disabled]="!subChapters || subChapters.length === 0" (click)="onChapterClick($event, true)">
+<mat-expansion-panel class="card expansion-panel" *ngIf="parentIsWorkFunction()" [disabled]="!subChapters || subChapters.length === 0" (click)="onChapterClick($event, true)">
     <mat-expansion-panel-header>
         <mat-panel-title class="toggleTitle" [ngClass]="{'noSubs' : !subChapters || subChapters.length === 0}">
             <div class="rowTitle">
@@ -35,7 +35,7 @@
 
 </mat-expansion-panel>
 
-<div *ngIf="chapter.parentChapterId" class="chapterWrapper card" (click)="onChapterClick($event)">
+<div *ngIf="!parentIsWorkFunction()" class="chapterWrapper card" (click)="onChapterClick($event)">
     <div class="header">
         <i class="material-icons"> description </i>
         <h3> {{ chapter.name }}</h3>

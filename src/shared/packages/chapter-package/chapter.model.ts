@@ -1,11 +1,12 @@
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { WorkFunction } from '../work-function-package/work-function.model';
 
 export class Chapter {
     private _id: number;
     private _name: string;
     private _content: string;
-    private _parentChapterId: number;
-    private _chapters: BehaviorSubject<Chapter[]>;
+    private _parent: Chapter | WorkFunction;
+    private _chapters: Observable<Chapter[]>;
     private _order: number;
 
     constructor() {}
@@ -34,21 +35,22 @@ export class Chapter {
         this._content = value;
     }
 
-    get parentChapterId(): number {
-        return this._parentChapterId;
+    get parent(): Chapter | WorkFunction {
+        return this._parent;
     }
 
-    set parentChapterId(value: number) {
-        this._parentChapterId = value;
+    set parent(value: Chapter | WorkFunction) {
+        this._parent = value;
     }
 
-    get chapters(): BehaviorSubject<Chapter[]> {
+    get chapters(): Observable<Chapter[]> {
         return this._chapters;
     }
 
-    set chapters(value: BehaviorSubject<Chapter[]>) {
+    set chapters(value: Observable<Chapter[]>) {
         this._chapters = value;
     }
+
     get order(): number {
         return this._order;
     }

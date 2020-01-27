@@ -6,6 +6,7 @@
     </cim-chapter-edit>
     <cim-chapter-list *ngIf="!chapter && checkParentIsWorkFunction() && !checkParentIsWorkFunction().isMainFunction"
                       [parent]="parent"
+                      [mainWorkFunction]="mainWorkFunction"
                       (closeView)="onCloseView($event)">
     </cim-chapter-list>
 </div>

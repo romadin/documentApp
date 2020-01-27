@@ -8,6 +8,7 @@ import { WorkFunction } from '../../../../shared/packages/work-function-package/
 import { isWorkFunction } from '../../../../shared/packages/work-function-package/interface/work-function.interface';
 import { Chapter } from '../../../../shared/packages/chapter-package/chapter.model';
 import { ChapterService } from '../../../../shared/packages/chapter-package/chapter.service';
+import { of, Subscription } from 'rxjs';
 
 @Component({
   selector: 'cim-chapter',
@@ -20,11 +21,12 @@ export class ChapterComponent implements OnInit {
     @Output() editChapter: EventEmitter<ChapterPackage> = new EventEmitter<ChapterPackage>();
     @Output() addChapter: EventEmitter<Chapter> = new EventEmitter<Chapter>();
     subChapters: Chapter[];
+    subscription: Subscription;
 
     constructor(private dialog: MatDialog, private chapterService: ChapterService, private toast: ToastService) { }
 
     ngOnInit() {
-        this.chapter.chapters.subscribe((c) => this.subChapters = c);
+        this.subscription = this.chapter.chapters.subscribe((c) => this.subChapters = c);
     }
 
     onAddChapter(e: Event) {
@@ -60,11 +62,16 @@ export class ChapterComponent implements OnInit {
         };
         this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().subscribe((action) => {
             if (action) {
-                const params = isWorkFunction(this.parentItem) ? {workFunctionId: this.parentItem.id} : {};
+                let params;
+                if (isWorkFunction(this.parentItem)) {
+                    params = {workFunctionId: this.parentItem.id};
+                    this.chapter.chapters = of();
+                } else {
+                    params = {chapterId: this.parentItem.id};
+                }
+                this.subscription.unsubscribe();
+
                 this.chapterService.deleteChapter(this.chapter, params).subscribe(message => {
-                    // const chapters: Chapter[] = this.parentItem.chapters.getValue();
-                    // chapters.splice(chapters.findIndex(c => c.id === this.chapter.id), 1);
-                    // this.parentItem.chapters.next(chapters);
                     this.toast.showSuccess('Hoofdstuk: ' + this.chapter.name + ' is verwijderd', 'Verwijderd');
                 });
             }
@@ -80,5 +87,9 @@ export class ChapterComponent implements OnInit {
         this.chapterService.updateChapter(chapter, body, {}, parentChapter).subscribe((value) => {
             event.item.data = value;
         });
+    }
+
+    parentIsWorkFunction(): boolean {
+        return isWorkFunction(this.chapter.parent)
     }
 }

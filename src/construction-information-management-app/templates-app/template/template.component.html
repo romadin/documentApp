@@ -1,7 +1,7 @@
 <div class="content-row">
     <div  class="container" [@resizeWidth]="showChapterDetail || showWorkFunctionDetail ? 'smallWidth' : 'fullWidth'">
         <mat-accordion cdkDropList (cdkDropListDropped)="dropItem($event)">
-            <mat-expansion-panel *ngFor="let workFunction of template.workFunctions" class="card expansion-panel dragItem"  cdkDrag [cdkDragData]="workFunction">
+            <mat-expansion-panel *ngFor="let workFunction of workFunctions" class="card expansion-panel dragItem"  cdkDrag [cdkDragData]="workFunction">
                 <mat-expansion-panel-header>
                     <mat-panel-title class="toggleTitle">
                         <div class="rowTitle">
@@ -25,9 +25,9 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <mat-accordion [displayMode]="flat">
+                <mat-accordion [displayMode]="'flat'">
                     <div cdkDropList class="dragList" (cdkDropListDropped)="dropItem($event)" [cdkDropListData]="workFunction" *ngIf="itemsContainer">
-                        <div class="dragItem" *ngFor="let item of itemsContainer[workFunction.id]" cdkDrag [cdkDragData]="item">
+                        <div class="dragItem" *ngFor="let item of workFunction.chapters | async " cdkDrag [cdkDragData]="item">
                             <cim-chapter [chapter]="item"
                                          [parentItem]="workFunction"
                                          (editChapter)="onChapterClick($event)" (addChapter)="addChapter($event)">
@@ -42,6 +42,7 @@
         <cim-chapter-detail
                 [chapter]="chapterToEdit"
                 [parent]="chapterParent"
+                [mainWorkFunction]="mainWorkFunction"
                 (closeView)="onCloseItemView()">
         </cim-chapter-detail>
     </div>
