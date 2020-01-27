@@ -11,6 +11,7 @@
     <div class="userDetail" *ngIf="rightSideActive" [@toggleInView]="rightSideActive ? 'open' : 'close'">
         <cim-user-detail [currentUser]="currentUser"
                          [user]="userToEdit"
+                         [allUsers]="users"
                          (closeDetailView)="closeUserDetailView($event)">
         </cim-user-detail>
     </div>

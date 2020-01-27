@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, shareReplay, take } from 'rxjs/operators';
 
 import { AppTokenParams, OrganisationCacheObservable } from './interface/organisation-additional.interface';
 import { isOrganisationApi, OrganisationApi } from './interface/organisation-api.interface';
@@ -18,30 +18,24 @@ export class OrganisationService {
 
     constructor(private apiService: ApiService, private moduleService: ModuleService) {  }
 
-    getOrganisation(): BehaviorSubject<Organisation> {
+    getOrganisation(): Observable<Organisation> {
         const organisationName: string = location.host.split('.')[0];
 
-        if (this.organisationByNameCache[organisationName]) {
-            return this.organisationByNameCache[organisationName];
+        if (!this.organisationByNameCache[organisationName]) {
+            this.params.name = organisationName;
+
+            this.organisationByNameCache[organisationName] = this.apiService.noTokenGet(this.path, this.params).pipe(
+                map(response => isOrganisationApi(response) ? this.makeOrganisation(response) : null),
+                take(1),
+                shareReplay(1),
+            );
         }
 
-        this.params.name = organisationName;
-        const newSubject: BehaviorSubject<Organisation> = new BehaviorSubject<Organisation>(undefined);
-
-        this.apiService.noTokenGet(this.path, this.params).pipe(take(1)).subscribe(response => {
-            const organisation = isOrganisationApi(response) ? this.makeOrganisation(response) : null;
-            newSubject.next(organisation);
-        });
-
-        this.organisationByNameCache[organisationName] = newSubject;
         return this.organisationByNameCache[organisationName];
     }
 
     updateOrganisation(body: FormData, organisation: Organisation): Observable<Organisation> {
-        return this.apiService.post(this.path + '/' +  organisation.id, body).pipe(map(result => {
-            this.updateCache(organisation);
-            return organisation;
-        }));
+        return this.apiService.post(this.path + '/' +  organisation.id, body).pipe(map(result => organisation));
     }
 
     private makeOrganisation(data: OrganisationApi): Organisation {
@@ -72,12 +66,5 @@ export class OrganisationService {
         });
 
         return subject;
-    }
-
-    private updateCache(organisation: Organisation): void {
-        const name = organisation.name.toLowerCase();
-        if (this.organisationByNameCache[name]) {
-            this.organisationByNameCache[name].next(organisation);
-        }
     }
 }

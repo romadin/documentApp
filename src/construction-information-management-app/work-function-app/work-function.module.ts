@@ -18,6 +18,7 @@ import { WorkFunctionListComponent } from './work-function-list/work-function-li
 import { ProjectWorkFunctionComponent } from '../project-app/project/project-detail/project-work-function/project-work-function.component';
 import { SharedProjectModule } from '../project-app/shared-project.module';
 import { WorkFunctionItemsRouterComponent } from './work-function-items-router/work-function-items-router.component';
+import { CanActivateCompanyModule } from '../../can-activate/CanActivateCompanyModule';
 
 const routes: Routes = [
     {
@@ -27,7 +28,6 @@ const routes: Routes = [
             {
                 path: ':id',
                 component: WorkFunctionItemsRouterComponent,
-                canActivate: [ CanActivateLoggedIn ],
                 resolve: {
                     parent: WorkFunctionPackageResolverService
                 },
@@ -35,13 +35,12 @@ const routes: Routes = [
                     {
                         path: 'bedrijven',
                         component: WorkFunctionItemsRouterComponent,
-                        canActivate: [ CanActivateLoggedIn ],
+                        canActivate: [ CanActivateCompanyModule ],
                         data: { breadcrumb: 'Bedrijven' },
                         children: [
                             {
                                 path: ':id',
                                 component: ItemsOverviewComponent,
-                                canActivate: [ CanActivateLoggedIn ],
                                 data: { breadcrumb: getBreadcrumbNameParent },
                                 resolve: {
                                     parent: CompanyPackageResolverService
@@ -50,15 +49,12 @@ const routes: Routes = [
                             {
                                 path: '',
                                 component: CompanyComponent,
-                                canActivate: [ CanActivateLoggedIn ],
                             }
                         ]
                     },
-
                     {
                         path: '',
                         component: ItemsOverviewComponent,
-                        canActivate: [ CanActivateLoggedIn ],
                         data: {
                             parentUrl: 'projecten/:id/functies',
                             breadcrumb: getBreadcrumbNameParent,
@@ -94,7 +90,8 @@ const routes: Routes = [
     ],
     providers: [
         WorkFunctionPackageResolverService,
-        CompanyPackageResolverService
+        CompanyPackageResolverService,
+        CanActivateCompanyModule
     ],
 })
 

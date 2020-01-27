@@ -4,6 +4,7 @@ import { Organisation } from '../../../../shared/packages/organisation-package/o
 import { User } from '../../../../shared/packages/user-package/user.model';
 import { UserService } from '../../../../shared/packages/user-package/user.service';
 import { MailService } from '../../../../shared/service/mail.service';
+import { OrganisationService } from '../../../../shared/packages/organisation-package/organisation.service';
 
 @Component({
   selector: 'cim-users-list',
@@ -16,12 +17,20 @@ export class UsersListComponent implements OnInit {
     usersSelected: User[];
 
     private allUsers: User[];
-    readonly organisation: Organisation;
+    private organisation: Organisation;
     readonly projectId: number;
 
-    constructor(private userService: UserService, private activatedRoute: ActivatedRoute, private mailService: MailService) {
+    constructor(
+        private userService: UserService,
+        private activatedRoute: ActivatedRoute,
+        private mailService: MailService,
+        private organisationService: OrganisationService
+    ) {
         this.projectId = parseInt(location.pathname.split('/')[2], 10);
-        this.organisation = <Organisation>this.activatedRoute.parent.snapshot.data.organisation;
+
+        this.activatedRoute.parent ?
+            this.organisation = this.activatedRoute.parent.parent.snapshot.data.organisation :
+            this.organisationService.getOrganisation().subscribe(org => this.organisation = org);
     }
 
     @Input()

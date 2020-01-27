@@ -93,6 +93,9 @@ export class UserPopupComponent {
             if ( objectIsEmpty(this.selectedProjects) ) {
                 return alert('Er is geen projectId gekozen!');
             }
+            if ( this.allUsers.length === this.data.organisation.maxUser ) {
+                return alert('De maximale aantal gebruikers zijn al bereikt');
+            }
             this.loadingService.isLoading.next(true);
 
             const data = new FormData();

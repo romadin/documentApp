@@ -21,31 +21,26 @@ const routes: Routes = [
                 path: ':id',
                 resolve: { project: ProjectResolver },
                 component: ProjectComponent,
-                canActivate: [ CanActivateLoggedIn ],
                 data: { breadcrumb: getBreadcrumbNameProject  },
                 children: [
                     {
                         path: 'functies',
                         loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
-                        canActivate: [ CanActivateLoggedIn ],
                         resolve: { organisation: OrganisationResolver },
                         data: { breadcrumb: 'Functies' },
                     },
                     {
                         path: 'acties',
                         loadChildren: '../action-list-app/action-list.module#ActionListModule',
-                        canActivate: [ CanActivateLoggedIn ],
                         resolve: { organisation: OrganisationResolver }
                     },
                     {
                         path: 'agenda',
                         loadChildren: '../agenda-app/agenda.module#AgendaModule',
-                        canActivate: [ CanActivateLoggedIn ]
                     },
                     {
                         path: '',
                         loadChildren: './project/project-detail/project-detail.module#ProjectDetailModule',
-                        canActivate: [ CanActivateLoggedIn ]
                     }
                 ],
             },

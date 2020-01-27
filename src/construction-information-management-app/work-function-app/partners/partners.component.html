@@ -24,6 +24,7 @@
         <cim-user-detail *ngIf="rightSide === 'new'"
                 [currentUser]="currentUser"
                 [user]="userToEdit"
+                [allUsers]="allUsers"
                 (closeDetailView)="closeUserDetailView($event)">
         </cim-user-detail>
         <cim-users-list *ngIf="rightSide === 'list'"

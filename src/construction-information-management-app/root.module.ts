@@ -60,6 +60,7 @@ import { ChapterService } from '../shared/packages/chapter-package/chapter.servi
 import { CacheService } from '../shared/service/cache.service';
 import { BreadCrumbComponent } from './bread-crumb/bread-crumb.component';
 import { ContextMenuComponent } from './context-menu/context-menu.component';
+import { CanActivateTemplateModule } from '../can-activate/CanActivateTemplateModule';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -79,7 +80,7 @@ const appRoutes: Routes = [
     {
         path: 'templates',
         loadChildren: './templates-app/templates.module#TemplatesModule',
-        canActivate: [ CanActivateAdminUser ],
+        canActivate: [ CanActivateAdminUser, CanActivateTemplateModule ],
         data: { breadcrumb: 'Templates'},
         resolve: { organisation: OrganisationResolver }
     },
@@ -165,7 +166,7 @@ const appRoutes: Routes = [
         OrganisationService,
         OrganisationResolver,
         ProjectResolver,
-        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation, CanActivateAdminUser
+        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation, CanActivateAdminUser, CanActivateTemplateModule
     ],
     entryComponents: [
         UserPopupComponent,

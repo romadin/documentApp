@@ -32,6 +32,7 @@ export interface CompanyByProjectId {
 })
 export class UserDetailComponent implements OnInit, AfterViewInit {
     @Input() currentUser: User;
+    @Input() allUsers: User[];
     @Output() closeDetailView: EventEmitter<boolean> = new EventEmitter<boolean>();
     projects: Project[];
     userForm: FormGroup = new FormGroup({
@@ -90,7 +91,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        this.organisation = <Organisation>this.activatedRoute.parent.snapshot.data.organisation;
+        this.organisation = <Organisation>this.activatedRoute.snapshot.root.children[0].data.organisation;
         this.userForm.controls.email.setValidators([Validators.email]);
 
         this.getProjectsAndCompanies();
@@ -153,6 +154,9 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
                         }
                     });
                 } else {
+                    if ( this.allUsers.length === this.organisation.maxUser ) {
+                        return alert('De maximale aantal gebruikers zijn al bereikt');
+                    }
                     this.userService.postUser(data, {organisationId: this.organisation.id }).subscribe((user: User | ErrorMessage) => {
                         this.loadingService.isLoading.next(false);
                         if (user instanceof User) {

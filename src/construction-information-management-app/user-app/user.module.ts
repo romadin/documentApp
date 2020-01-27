@@ -6,7 +6,6 @@ import { SharedModule } from '../../shared/shared.module';
 import { ActivateUserComponent } from './activate-user/activate-user.component';
 import { UserResolver } from '../../shared/packages/user-package/user.resolver';
 import { CanActivateAdminUser } from '../../can-activate/CanActivateAdminUser';
-import { UsersListComponent } from './users/users-list/users-list.component';
 
 const routes: Routes = [
     {

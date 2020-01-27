@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
-import { map, mergeMap, shareReplay, take } from 'rxjs/operators';
+import { map, mergeMap, shareReplay, take, takeUntil } from 'rxjs/operators';
 import {
     ConfirmPopupComponent,
     ConfirmPopupData
@@ -26,6 +26,7 @@ export class DocumentService {
 
     private subDocumentsCache$: Observable<Document[]>[] = [];
     private updateSubDocumentsCache$: Subject<void> = new Subject<void>();
+    private endSubDocumentsStream$: Subject<void>[] = [];
 
     private documentsCompanyCache$: Observable<Document[]>[][] = [];
     private updateDocumentsCompanyCache$: Subject<void> = new Subject<void>();
@@ -77,11 +78,15 @@ export class DocumentService {
 
     getSubDocuments(parentDocument: Document): Observable<Document[]> {
         if ( ! this.subDocumentsCache$[parentDocument.id]) {
+            this.endSubDocumentsStream$[parentDocument.id] = new Subject<void>();
             const param: DocGetParam = {documentId: parentDocument.id};
             const initialDocuments$ = this.getDataOnce(param, false);
             const updates$ = this.updateSubDocumentsCache$.pipe(mergeMap(() => this.getDataOnce(param, false)));
 
-            this.subDocumentsCache$[parentDocument.id] = merge(initialDocuments$, updates$).pipe(shareReplay(1));
+            this.subDocumentsCache$[parentDocument.id] = merge(initialDocuments$, updates$).pipe(
+                takeUntil(this.endSubDocumentsStream$[parentDocument.id]),
+                shareReplay(1)
+            );
         }
 
         return this.subDocumentsCache$[parentDocument.id];
@@ -130,9 +135,19 @@ export class DocumentService {
         return this.dialog.open(ConfirmPopupComponent, {width: '400px', data: popupData}).afterClosed().pipe(mergeMap((action) => {
             if (action) {
                 return this.apiService.delete(this.path + '/' + document.id, paramDelete).pipe(map(() => {
-                    paramDelete.documentId ? this.updateSubDocumentsCache$.next()
-                        : paramDelete.companyId && paramDelete.workFunctionId ? this.updateDocumentsCompanyCache$.next()
-                        : this.updateDocumentsCache$.next();
+                    if (paramDelete.documentId) {
+                        // Sub document has been deleted.
+                        this.updateSubDocumentsCache$.next();
+                    } else if (paramDelete.companyId && paramDelete.workFunctionId ) {
+                        // Document from company has been deleted.
+                        this.updateDocumentsCompanyCache$.next();
+                    } else {
+                        // Document from the main plan has been deleted.
+                        // End stream of his subDocuments.
+                        this.endSubDocumentsStream$[document.id].next();
+                        // Update whole cache.
+                        this.updateDocumentsCache$.next();
+                    }
 
                     this.toast.showSuccess('Document: ' + document.getName() + ' is verwijderd', 'Verwijderd');
                     return true;

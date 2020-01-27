@@ -1,4 +1,4 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Organisation } from '../organisation.model';
 
 export interface AppTokenParams {
@@ -11,5 +11,5 @@ export interface OrganisationCache {
 }
 
 export interface OrganisationCacheObservable {
-    [name: string]: BehaviorSubject<Organisation>;
+    [name: string]: Observable<Organisation>;
 }
