@@ -27,7 +27,7 @@
 
                 <mat-accordion [displayMode]="'flat'">
                     <div cdkDropList class="dragList" (cdkDropListDropped)="dropItem($event)" [cdkDropListData]="workFunction" *ngIf="itemsContainer">
-                        <div class="dragItem" *ngFor="let item of workFunction.chapters | async " cdkDrag [cdkDragData]="item">
+                        <div class="dragItem" *ngFor="let item of itemsContainer[workFunction.id] " cdkDrag [cdkDragData]="item">
                             <cim-chapter [chapter]="item"
                                          [parentItem]="workFunction"
                                          (editChapter)="onChapterClick($event)" (addChapter)="addChapter($event)">

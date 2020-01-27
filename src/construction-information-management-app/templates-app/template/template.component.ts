@@ -11,6 +11,7 @@ import { Chapter } from '../../../shared/packages/chapter-package/chapter.model'
 import { WorkFunctionService } from '../../../shared/packages/work-function-package/work-function.service';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
+import { map } from 'rxjs/operators';
 
 interface ItemsContainer {
     [workFunctionId: number]: Chapter[];
@@ -80,7 +81,12 @@ export class TemplateComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        this.template.workFunctions.subscribe((workFunctions) => {
+        this.template.workFunctions.pipe(map(workFunctions => {
+            return workFunctions.map(workFunction => {
+                workFunction.chapters.subscribe(chapters => this.itemsContainer[workFunction.id] = chapters);
+                return workFunction;
+            });
+        })).subscribe((workFunctions) => {
             this.workFunctions = workFunctions;
             this.mainWorkFunction = workFunctions.find(w => w.isMainFunction);
         });
@@ -148,7 +154,7 @@ export class TemplateComponent implements OnInit {
         const body: any  = {order: event.currentIndex + 1};
 
         if (isWorkFunction(item)) {
-            // moveItemInArray(this.template.workFunctions, event.previousIndex, event.currentIndex);
+            moveItemInArray(this.workFunctions, event.previousIndex, event.currentIndex);
             this.workFunctionService.updateWorkFunction(item, body).subscribe((value) => {
                 event.item.data = value;
             });
@@ -164,7 +170,7 @@ export class TemplateComponent implements OnInit {
         workFunction.chapters.subscribe(chapters => {
             this.itemsContainer[workFunction.id] = chapters;
             this.itemsContainer[workFunction.id].sort((a: Chapter, b: Chapter ) => a.order - b.order);
-            // this.template.workFunctions[this.template.workFunctions.findIndex(w => w.id === workFunction.id)] = workFunction;
+            this.template.workFunctions[this.workFunctions.findIndex(w => w.id === workFunction.id)] = workFunction;
         });
     }
 
