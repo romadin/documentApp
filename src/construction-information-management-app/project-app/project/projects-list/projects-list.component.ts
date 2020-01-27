@@ -8,7 +8,7 @@ import { HeaderWithFolderCommunicationService } from '../../../../shared/service
 import {
     animateChild,
     query,
-    stagger, style,
+    stagger,
     transition,
     trigger, useAnimation
 } from '@angular/animations';
@@ -59,6 +59,7 @@ export class ProjectsListComponent implements OnInit {
             // project has been added
             if (this.projects.length === 0 ) {
                 this.projects.push(newProjects[0]);
+                return;
             }
 
             this.projects.push(editArray(newProjects, this.projects, 'add'));
@@ -66,6 +67,7 @@ export class ProjectsListComponent implements OnInit {
             // project has been removed
             if (newProjects.length === 0 ) {
                this.projects.splice(0, 1);
+               return;
             }
 
             this.projects.splice(editArray(this.projects, newProjects, 'delete'), 1);
