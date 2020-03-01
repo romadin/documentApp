@@ -61,6 +61,8 @@ import { CacheService } from '../shared/service/cache.service';
 import { BreadCrumbComponent } from './bread-crumb/bread-crumb.component';
 import { ContextMenuComponent } from './context-menu/context-menu.component';
 import { CanActivateTemplateModule } from '../can-activate/CanActivateTemplateModule';
+import { DemoExpiredComponent } from './demo-expired/demo-expired.component';
+import { CanActivateDemoPeriodExpired } from '../can-activate/CanActivateDemoPeriodExpired';
 
 registerLocaleData(localeNl, 'nl');
 
@@ -107,6 +109,11 @@ const appRoutes: Routes = [
         component: OrganisationNotFoundComponent,
         canActivate: [ CanActivateNoOrganisation ],
     },
+    {
+        path: 'demo-expired',
+        component: DemoExpiredComponent,
+        canActivate: [ CanActivateDemoPeriodExpired ]
+    },
     { path: '**', redirectTo: 'not-found/organisation'}
 ];
 
@@ -120,6 +127,7 @@ const appRoutes: Routes = [
         OrganisationNotFoundComponent,
         BreadCrumbComponent,
         ContextMenuComponent,
+        DemoExpiredComponent,
     ],
     imports: [
         BrowserModule,
@@ -166,7 +174,8 @@ const appRoutes: Routes = [
         OrganisationService,
         OrganisationResolver,
         ProjectResolver,
-        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation, CanActivateAdminUser, CanActivateTemplateModule
+        CanActivateLoggedIn, CanActivateAlreadyLoggedIn, CanActivateNoOrganisation,
+        CanActivateAdminUser, CanActivateTemplateModule, CanActivateDemoPeriodExpired
     ],
     entryComponents: [
         UserPopupComponent,
