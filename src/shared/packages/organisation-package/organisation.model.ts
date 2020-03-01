@@ -9,6 +9,7 @@ export class Organisation {
     private _maxUser: number;
     private _logo: Subject<Blob>;
     private _modules: Module[];
+    private _demoPeriod: Date | null;
 
     constructor() {}
 
@@ -66,5 +67,13 @@ export class Organisation {
 
     set modules(value: Module[]) {
         this._modules = value;
+    }
+
+    get demoPeriod(): Date | null {
+        return this._demoPeriod;
+    }
+
+    set demoPeriod(period: Date | null) {
+        this._demoPeriod = period;
     }
 }
