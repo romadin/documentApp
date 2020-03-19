@@ -14,6 +14,7 @@ import {
 } from '@angular/animations';
 import { initialAnimation, scaleDownAnimation } from '../../../../shared/animations';
 import { editArray } from '../../../../shared/helpers/global-functions';
+import { ProjectCommunicationService } from '../../../../shared/service/communication/project.communication.service';
 
 @Component({
     selector: 'cim-projecten',
@@ -42,7 +43,8 @@ export class ProjectsListComponent implements OnInit {
         private projectService: ProjectService,
         private activatedRoute: ActivatedRoute,
         private loadingService: LoadingService,
-        private headerCommunicationService: HeaderWithFolderCommunicationService
+        private headerCommunicationService: HeaderWithFolderCommunicationService,
+        private projectCommunicationService: ProjectCommunicationService,
     ) {
     }
 
@@ -50,6 +52,7 @@ export class ProjectsListComponent implements OnInit {
         const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.projectService.getProjects(organisation).subscribe((projects: Project[]) => {
             !this.projects ? this.projects = projects : this.changeList(projects);
+            this.projectCommunicationService.showAddProjectButton.next(!(this.projects.length === 1 && organisation.isDemo));
         });
         this.headerCommunicationService.headerTitle.next('Projecten');
     }

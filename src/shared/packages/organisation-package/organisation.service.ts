@@ -46,7 +46,7 @@ export class OrganisationService {
         organisation.primaryColor = data.primaryColor;
         organisation.secondaryColor = data.secondaryColor;
         organisation.maxUser = data.maxUsers;
-        organisation.demoPeriod = data.demoPeriod ? new Date(data.demoPeriod.date) : null;
+        organisation.isDemo = data.isDemo;
 
         const modules = [];
         data.modules.forEach(module => {

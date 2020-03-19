@@ -1,6 +1,7 @@
 <div class="main-container" *ngIf="organisation !== undefined">
     <cim-header [sideNavigation]="sideMenu"
-                [OnResetActions]="resetHeaderAction">
+                [OnResetActions]="resetHeaderAction"
+                [organisation]="organisation">
     </cim-header>
     <div class="spinnerContainer" [ngClass]="showIsLoading ? 'showLoad' : 'hideLoad'">
         <mat-spinner></mat-spinner>

@@ -40,6 +40,7 @@ type UrlGroup = '/projecten' | '/projecten/:id/functies' | '/projecten/:id/funct
 })
 export class HeaderComponent implements OnInit {
     @Input() sideNavigation: MatSidenav;
+    @Input() organisation: Organisation;
     actions: MenuAction[] = [];
     actionBack: MenuAction;
     actionMenu: MenuAction;
@@ -49,7 +50,6 @@ export class HeaderComponent implements OnInit {
 
     private backRoute: string;
     private routeHistory: NavigationEnd[] = [];
-    private currentOrganisation: Organisation;
 
     @Input()
     set OnResetActions(reset: boolean) {
@@ -94,6 +94,10 @@ export class HeaderComponent implements OnInit {
             this.backRoute = backRoute;
         });
 
+        this.projectCommunicationService.showAddProjectButton.subscribe((show: boolean) => {
+            this.actions.find((action) => action.name === 'Project toevoegen').show = show;
+        });
+
         this.folderCommunicationService.headerTitle.subscribe(title => {
             if (title) {
                 this.headerTitle = title;
@@ -130,25 +134,20 @@ export class HeaderComponent implements OnInit {
             }
         });
 
-        this.organisationService.getOrganisation().subscribe((currentOrganisation) => {
-            if (currentOrganisation) {
-                this.currentOrganisation = currentOrganisation;
-                if (this.currentOrganisation.logo) {
-                    this.currentOrganisation.logo.subscribe((blobValue) => {
-                        if (blobValue && blobValue.size > 4) {
-                            const fileReader = new FileReader();
+        if (this.organisation.logo) {
+            this.organisation.logo.subscribe((blobValue) => {
+                if (blobValue && blobValue.size > 4) {
+                    const fileReader = new FileReader();
 
-                            fileReader.addEventListener('loadend', () => {
-                                this.logoSrc = this.sanitizer.bypassSecurityTrustUrl(<string>fileReader.result);
-                            }, false);
-                            fileReader.readAsDataURL(blobValue);
-                        } else {
-                            this.logoSrc = '/assets/images/logoBimUvp.png';
-                        }
-                    });
+                    fileReader.addEventListener('loadend', () => {
+                        this.logoSrc = this.sanitizer.bypassSecurityTrustUrl(<string>fileReader.result);
+                    }, false);
+                    fileReader.readAsDataURL(blobValue);
+                } else {
+                    this.logoSrc = '/assets/images/logoBimUvp.png';
                 }
-            }
-        });
+            });
+        }
     }
 
     private defineActions(): void {
@@ -322,7 +321,7 @@ export class HeaderComponent implements OnInit {
             title: 'Voeg een project toe',
             placeholder: 'Project naam',
             submitButton: 'Voeg toe',
-            organisation: this.currentOrganisation
+            organisation: this.organisation
         };
         this.dialog.open(ProjectPopupComponent, {
             width: '400px',
@@ -340,7 +339,7 @@ export class HeaderComponent implements OnInit {
             title: 'Voeg een gebruiker toe',
             placeholder: 'Gebruiker',
             submitButton: 'Voeg toe',
-            organisation: this.currentOrganisation,
+            organisation: this.organisation,
         };
         const dialogRef = this.dialog.open(UserPopupComponent, {
             width: '600px',

@@ -9,7 +9,7 @@ export class Organisation {
     private _maxUser: number;
     private _logo: Subject<Blob>;
     private _modules: Module[];
-    private _demoPeriod: Date | null;
+    private _isDemo: boolean;
 
     constructor() {}
 
@@ -69,11 +69,11 @@ export class Organisation {
         this._modules = value;
     }
 
-    get demoPeriod(): Date | null {
-        return this._demoPeriod;
+    get isDemo(): boolean {
+        return this._isDemo;
     }
 
-    set demoPeriod(period: Date | null) {
-        this._demoPeriod = period;
+    set isDemo(period: boolean) {
+        this._isDemo = period;
     }
 }

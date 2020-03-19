@@ -8,7 +8,7 @@ export interface OrganisationApi {
     maxUsers: number;
     hasLogo: boolean;
     modules: ModuleApiResponseInterface[];
-    demoPeriod: {date: string, timezone_type: number, timezone: string};
+    isDemo: boolean;
 }
 
 export function isOrganisationApi(obj: any): obj is OrganisationApi {
