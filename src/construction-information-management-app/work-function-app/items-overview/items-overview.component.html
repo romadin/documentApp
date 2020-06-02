@@ -32,6 +32,7 @@
     <div class="readeModeContainer" [ngClass]="{'animateDiv': showReadModeAnimation}">
         <cim-item-read *ngIf="showReadMode"
                        [items]="items"
+                       [parent]="parent"
                        (closeReadMode)="onCloseReadMode($event)">
         </cim-item-read>
     </div>

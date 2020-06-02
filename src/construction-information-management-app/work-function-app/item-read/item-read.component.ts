@@ -1,12 +1,13 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 import { Project } from '../../../shared/packages/project-package/project.model';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { Document } from '../../../shared/packages/document-package/document.model';
+import { DocumentService } from '../../../shared/packages/document-package/document.service';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
+import { Company } from '../../../shared/packages/company-package/company.model';
+import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { Subscription } from 'rxjs';
 
@@ -19,18 +20,20 @@ export class ItemReadComponent implements OnInit, OnDestroy {
     @ViewChild('fullDocument') documentPlan: any;
     @ViewChild('content') documentContent: any;
     @Input() items: Document[];
+    @Input() parent: WorkFunction | Company;
     @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
     project: Project;
     private organisation: Organisation;
     private subscriptions: Subscription[] = [];
 
     constructor(private router: Router,
-                private projectService: ProjectService,
                 private activatedRoute: ActivatedRoute,
+                private projectService: ProjectService,
+                private documentService: DocumentService,
                 private folderCommunication: HeaderWithFolderCommunicationService
                 ) {
         this.organisation = this.activatedRoute.snapshot.data.organisation ? this.activatedRoute.snapshot.data.organisation :
-            this.activatedRoute.snapshot.parent.parent.data;
+            this.activatedRoute.snapshot.parent.parent.data.organisation;
         const projectId = parseInt(this.router.url.split('/')[2], 10);
 
         this.projectService.getProject(projectId, this.organisation).subscribe((project: Project) => {
@@ -44,7 +47,7 @@ export class ItemReadComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.folderCommunication.showDocumentToPdfButton.next(true);
+        this.folderCommunication.showDocumentToPdfButton.next(!this.organisation.isDemo);
     }
 
     ngOnDestroy() {
@@ -63,30 +66,26 @@ export class ItemReadComponent implements OnInit, OnDestroy {
     }
 
     private exportDocumentToPdf(): void {
-
-        const HTML_Width = this.documentContent.nativeElement.offsetWidth;
-        const HTML_Height = this.documentContent.nativeElement.scrollHeight;
-        const top_left_margin = 15;
-        const PDF_Width = HTML_Width + (top_left_margin * 2);
-        const PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
-        const canvas_image_width = HTML_Width;
-        const canvas_image_height = HTML_Height;
-        const totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
-
-        html2canvas(this.documentContent.nativeElement, {allowTaint: true, height: HTML_Height}).then(function(canvas) {
-            canvas.getContext('2d');
-
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
-            const pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
-            pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
-
-            for (let i = 1; i <= totalPDFPages; i++) {
-                pdf.addPage(PDF_Width, PDF_Height);
-                pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+        this.subscriptions.push(this.documentService.exportPdf(this.parent, this.organisation).subscribe((value) => {
+            const file = new Blob([value], {type: 'application/pdf'});
+            if (window.navigator.msSaveOrOpenBlob) {
+                // IE10+
+                window.navigator.msSaveOrOpenBlob(file, 'BIM-uitvoeringsplan');
+            } else { // Others
+                // create e temporary a href element so we can fake the download click.
+                const a = document.createElement('a');
+                const url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = 'BIM-uitvoeringsplan';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    // remove the a href element.
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
             }
-
-            pdf.save('BIMPlan.pdf');
-        });
+        }));
     }
 
 }

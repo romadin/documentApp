@@ -13,6 +13,7 @@ import { WorkFunction } from '../work-function-package/work-function.model';
 import { Document } from './document.model';
 import { ApiDocResponse, DocGetParam, DocPostData, ParamDelete } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
+import { Organisation } from '../organisation-package/organisation.model';
 
 export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
 
@@ -90,6 +91,13 @@ export class DocumentService {
         }
 
         return this.subDocumentsCache$[parentDocument.id];
+    }
+
+    exportPdf(parent: WorkFunction | Company, organisation: Organisation) {
+        return this.apiService.getBlob('/pdf/' + parent.id + '/' + organisation.id, {}).pipe(map((response) => {
+            // check if we need to update the cache for the sub documents.
+            return response;
+        }));
     }
 
     postDocument(postData: DocPostData, param: DocGetParam): Observable<Document> {

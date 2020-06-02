@@ -5,7 +5,6 @@ import { MatTable } from '@angular/material';
 import { trigger, style, animate, transition, keyframes } from '@angular/animations';
 import { Subscription } from 'rxjs';
 
-import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 import { ActionService } from '../../shared/packages/action-package/action.service';
@@ -144,18 +143,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
     }
 
     private exportActionListToPdf(): void {
-        html2canvas(this.list.nativeElement).then( canvas => {
-            const imgWidth = 218;
-            const pageHeight = 295;
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-            const heightLeft = imgHeight;
-
-            const contentDatatUrl = canvas.toDataURL('image/png');
-            const pdf = new jsPDF();
-            const position = 0;
-            pdf.addImage(contentDatatUrl, 'PNG', 0, position, imgWidth, imgHeight);
-            pdf.save('ActieLijst.pdf');
-        });
+        console.log('fix new pdf export trough api');
     }
 
     private resetRightSide(): void {
