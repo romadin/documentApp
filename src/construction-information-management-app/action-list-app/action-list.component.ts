@@ -14,6 +14,7 @@ import { RouterService } from '../../shared/service/router.service';
 import { ActionCommunicationService } from '../../shared/service/communication/action.communication.service';
 import { ToastService } from '../../shared/toast.service';
 import { LoadingService } from '../../shared/loading.service';
+import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
 
 @Component({
     selector: 'cim-action-list',
@@ -48,6 +49,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
 
     private timerId: number;
     private subscriptions: Subscription[] = [];
+    private organisation: Organisation;
 
     constructor(private actionService: ActionService,
                 private activatedRoute: ActivatedRoute,
@@ -59,6 +61,7 @@ export class ActionListComponent implements OnInit, OnDestroy {
     }
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.parent.parent.snapshot.paramMap.get('id'), 10);
+        this.organisation = this.activatedRoute.parent.snapshot.data.organisation;
         this.loadingService.isLoading.next(true);
         this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
             this.loadingService.isLoading.next(false);
@@ -143,7 +146,51 @@ export class ActionListComponent implements OnInit, OnDestroy {
     }
 
     private exportActionListToPdf(): void {
-        console.log('fix new pdf export trough api');
+        const pdfName = 'aktie lijst.pdf';
+
+        this.actionService.createActionPDF(this.convertActionsToPlainHtmlString(), this.organisation, pdfName).subscribe((blob) => {
+            const file = new Blob([blob], {type: 'application/pdf'});
+            if (window.navigator.msSaveOrOpenBlob) {
+                // IE10+
+                window.navigator.msSaveOrOpenBlob(file, 'BIM-uitvoeringsplan');
+            } else { // Others
+                // create e temporary a href element so we can fake the download click.
+                const a = document.createElement('a');
+                const url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = pdfName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    // remove the a href element.
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+            }
+        });
+    }
+
+    /**
+     * We converting the actions to plain html so that we can make an pdf export from it.
+     */
+    private convertActionsToPlainHtmlString(): string {
+        let html = '<h1> Acties </h1> <table border="1" cellpadding="5">';
+
+        html += `<tr align="center" style="font-weight: bold;">
+                    <th>Actie code</th> <th>Omschrijving</th> <th>Actie houder</th> <th>Week</th> <th>Klaar</th> <th>Opmerking</th>
+                </tr>`;
+
+        this.actions.forEach((action) => {
+            html += `<tr ><td>${action.code}</td>
+                     <td>${action.description}</td>
+                     <td>${action.actionHolder ? action.actionHolder.getFullName() : ''}</td>
+                     <td>${action.week}</td>
+                     <td>${action.isDone ? 'ja' : 'nee'}</td>
+                     <td>${action.comments}</td></tr>`;
+        });
+        html += '</table>';
+
+        return html;
     }
 
     private resetRightSide(): void {

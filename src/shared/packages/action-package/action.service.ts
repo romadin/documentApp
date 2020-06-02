@@ -5,6 +5,7 @@ import { ApiService } from '../../service/api.service';
 import { Action } from './action.model';
 import { ActionUpdate, ApiActionEditPostData, ApiActionNewPostData, ApiActionResponse } from './api-action.interface';
 import { UserService } from '../user-package/user.service';
+import { Organisation } from '../organisation-package/organisation.model';
 
 interface ActionCache {
     [id: number]: Action;
@@ -85,6 +86,10 @@ export class ActionService {
             throw error.error;
         });
         return action;
+    }
+
+    public createActionPDF(content: string, organisation: Organisation, pdfName: string) {
+        return this.apiService.getBlob('/pdf/' + organisation.id, {pdfName: pdfName, content: content} );
     }
 
     private makeAction(data: ApiActionResponse): Action {

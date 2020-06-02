@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -76,7 +76,9 @@ export class ApiService {
     }
 
     public getBlob(path: string, params: any): Observable<any> {
-        return this.http.get(this.API_URL + path, { params: { token: this.token.token, format: 'json'}, responseType: 'blob' } );
+        const paramObject =  { token: this.token.token };
+        Object.assign( paramObject, params );
+        return this.http.get(this.API_URL + path, { params: paramObject, responseType: 'blob' } );
     }
 
     public delete(path: string, params: any): Observable<any> {
