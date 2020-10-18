@@ -10,6 +10,7 @@ import { Company } from '../../../shared/packages/company-package/company.model'
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { Subscription } from 'rxjs';
+import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
 
 @Component({
   selector: 'cim-item-read',
@@ -22,9 +23,9 @@ export class ItemReadComponent implements OnInit, OnDestroy {
     @Input() items: Document[];
     @Input() parent: WorkFunction | Company;
     @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
-    project: Project;
+    public project: Project;
     private organisation: Organisation;
-    private subscriptions: Subscription[] = [];
+    private subscriptions: Subscription = new Subscription();
 
     constructor(private router: Router,
                 private activatedRoute: ActivatedRoute,
@@ -32,14 +33,14 @@ export class ItemReadComponent implements OnInit, OnDestroy {
                 private documentService: DocumentService,
                 private folderCommunication: HeaderWithFolderCommunicationService
                 ) {
-        this.organisation = this.activatedRoute.snapshot.data.organisation ? this.activatedRoute.snapshot.data.organisation :
-            this.activatedRoute.snapshot.parent.parent.data.organisation;
+        this.organisation = this.getOrganisation();
+
         const projectId = parseInt(this.router.url.split('/')[2], 10);
 
         this.projectService.getProject(projectId, this.organisation).subscribe((project: Project) => {
             this.project = project;
         });
-        this.subscriptions.push(this.folderCommunication.exportToPdf.subscribe(exportToPdf => {
+        this.subscriptions.add(this.folderCommunication.exportToPdf.subscribe(exportToPdf => {
             if (exportToPdf && this.project) {
                 this.exportDocumentToPdf();
             }
@@ -52,7 +53,7 @@ export class ItemReadComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.folderCommunication.showDocumentToPdfButton.next(false);
-        this.subscriptions.map(s => s.unsubscribe());
+        this.subscriptions.unsubscribe();
     }
 
     close(e: Event) {
@@ -65,8 +66,25 @@ export class ItemReadComponent implements OnInit, OnDestroy {
         element.innerHTML = item.content;
     }
 
+    private getOrganisation(): Organisation {
+        let routeParent = this.activatedRoute.snapshot;
+        let organisation: Organisation;
+        while (!organisation) {
+            organisation = routeParent.data.organisation;
+            routeParent = routeParent.parent;
+        }
+        return organisation;
+    }
+
     private exportDocumentToPdf(): void {
-        this.subscriptions.push(this.documentService.exportPdf(this.parent, this.organisation).subscribe((value) => {
+        let url = '/pdf/';
+        if (isWorkFunction(this.parent)) {
+            url += this.parent.id + '/' + this.organisation.id;
+        } else {
+            url += this.parent.parent.id + '/' + this.organisation.id + '/' + this.parent.id;
+        }
+
+        this.subscriptions.add(this.documentService.exportPdf(url).subscribe((value) => {
             const file = new Blob([value], {type: 'application/pdf'});
             if (window.navigator.msSaveOrOpenBlob) {
                 // IE10+

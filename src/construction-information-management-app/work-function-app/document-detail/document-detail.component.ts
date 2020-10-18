@@ -127,7 +127,7 @@ export class DocumentDetailComponent implements AfterViewInit, OnDestroy {
     }
     onRightClick(e: MouseEvent) {
         const selection = getSelection();
-        const node = selection.baseNode;
+        const node = selection.anchorNode;
         if (node.nodeName === 'TABLE' || node.nodeName === 'TBODY' || node.nodeName === 'TR' || node.nodeName === 'TD') {
             e.preventDefault();
             e.stopImmediatePropagation();

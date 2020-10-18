@@ -11,7 +11,7 @@ import { initialAnimation, scaleDownAnimation } from '../../../../shared/animati
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
-import { find, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'cim-project-detail',

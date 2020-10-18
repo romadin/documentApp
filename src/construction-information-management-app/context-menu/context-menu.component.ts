@@ -24,15 +24,17 @@ export class ContextMenuComponent implements OnInit {
 
     ngOnInit() {
         this.contextMenuService.toggleMenu.subscribe(toggle => {
-            const position = this.contextMenuService.position;
-            if (position) {
-                this.contextMenu.nativeElement.style.top = `${position.top}px`;
-                this.contextMenu.nativeElement.style.left = `${position.left}px`;
+            if (this.contextMenu) {
+                const position = this.contextMenuService.position;
+                if (position) {
+                    this.contextMenu.nativeElement.style.top = `${position.top}px`;
+                    this.contextMenu.nativeElement.style.left = `${position.left}px`;
+                }
+                this.contextMenu.nativeElement.style.display = toggle ? 'block' : 'none';
             }
-            this.contextMenu.nativeElement.style.display = toggle ? 'block' : 'none';
         });
     }
-    
+
     onDelete(e: MouseEvent) {
         e.stopPropagation();
         this.contextMenuService.delete.next(true);

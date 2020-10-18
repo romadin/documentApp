@@ -30,8 +30,8 @@ export interface MenuAction {
 }
 
 type UrlGroup = '/projecten' | '/projecten/:id/functies' | '/projecten/:id/functies/:id' | '/projecten/:id/functies/:id/bedrijven' |
-    '/projecten/:id/functies/:id/bedrijven/:id' | '/projecten/:id/acties'| '/projecten/:id/agenda' |
-    '/templates' | '/gebruikers';
+    '/projecten/:id/functies/:id/bedrijven/:id' | '/projecten/:id/acties'| '/projecten/:id/agenda'
+    | '/projecten/:id/bim-uitvoeringsplan/:id' | '/templates' | '/gebruikers';
 
 @Component({
   selector: 'cim-header',
@@ -104,7 +104,9 @@ export class HeaderComponent implements OnInit {
             }
         });
         this.folderCommunicationService.showAddUserButton.subscribe((show: boolean) => {
-            this.actions.find((action) => action.name === 'Gebruiker toevoegen').show = show && this.currentUser && this.currentUser.isAdmin();
+            this.actions.find(
+                (action) => action.name === 'Gebruiker toevoegen'
+            ).show = show && this.currentUser && this.currentUser.isAdmin();
         });
 
         this.folderCommunicationService.showDocumentToPdfButton.subscribe((show: boolean) => {
@@ -188,7 +190,7 @@ export class HeaderComponent implements OnInit {
             name: 'Boek modus',
             show: true,
             needsAdmin: false,
-            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
+            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id', '/projecten/:id/bim-uitvoeringsplan/:id'],
         };
         const documentToPdf: MenuAction = {
             onClick: () => { this.folderCommunicationService.exportToPdf.next(true); },
@@ -196,7 +198,7 @@ export class HeaderComponent implements OnInit {
             name: 'Exporteer naar pdf',
             show: false,
             needsAdmin: false,
-            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id'],
+            urlGroup: ['/projecten/:id/functies/:id', '/projecten/:id/functies/:id/bedrijven/:id', '/projecten/:id/bim-uitvoeringsplan/:id'],
         };
         const addCompanies: MenuAction = {
             onClick: () => { this.folderCommunicationService.addCompanyButton.next({trigger: true}); },

@@ -93,8 +93,8 @@ export class DocumentService {
         return this.subDocumentsCache$[parentDocument.id];
     }
 
-    exportPdf(parent: WorkFunction | Company, organisation: Organisation) {
-        return this.apiService.getBlob('/pdf/' + parent.id + '/' + organisation.id, {}).pipe(map((response) => {
+    exportPdf(url: string) {
+        return this.apiService.getBlob(url, {}).pipe(map((response) => {
             // check if we need to update the cache for the sub documents.
             return response;
         }));
