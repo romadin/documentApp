@@ -22,7 +22,7 @@ import {
 import { initialAnimation, scaleDownAnimation } from '../../../shared/animations';
 import { editArray } from '../../../shared/helpers/global-functions';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-work-function-list',
