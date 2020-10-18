@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
-import { combineLatest, EMPTY, forkJoin, Observable, of } from 'rxjs';
-import { first, map, mergeMap, switchMap, take } from 'rxjs/operators';
+import { EMPTY, Observable, } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 import { Company } from '../../shared/packages/company-package/company.model';
 
-import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
 import { ProjectService } from '../../shared/packages/project-package/project.service';
 import { WorkFunction } from '../../shared/packages/work-function-package/work-function.model';
 import { UserService } from '../../shared/packages/user-package/user.service';

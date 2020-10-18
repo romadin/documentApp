@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { MatTable } from '@angular/material';
+import { MatTable } from '@angular/material/table';
+
 import { Action } from '../../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../../shared/packages/action-package/api-action.interface';
 import { ActionService } from '../../../shared/packages/action-package/action.service';

@@ -1,11 +1,9 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute,  } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatTable } from '@angular/material';
+import { MatTable } from '@angular/material/table';
 import { trigger, style, animate, transition, keyframes } from '@angular/animations';
 import { Subscription } from 'rxjs';
-
-import html2canvas from 'html2canvas';
 
 import { ActionService } from '../../shared/packages/action-package/action.service';
 import { Action } from '../../shared/packages/action-package/action.model';

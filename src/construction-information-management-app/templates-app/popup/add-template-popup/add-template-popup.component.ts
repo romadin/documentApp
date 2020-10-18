@@ -1,8 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+
 import { DefaultPopupData } from '../../../popups/project-popup/project-popup.component';
 import { TemplateService } from '../../../../shared/packages/template-package/template.service';
-import { FormControl, FormGroup } from '@angular/forms';
 import { TemplatePostData } from '../../../../shared/packages/template-package/interface/template-api-response.interface';
 import { ToastService } from '../../../../shared/toast.service';
 

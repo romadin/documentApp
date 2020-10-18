@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, merge, Observable, of, Subject } from 'rxjs';
 import { map, mergeMap, shareReplay, take, takeUntil } from 'rxjs/operators';
 import {
@@ -13,7 +13,6 @@ import { WorkFunction } from '../work-function-package/work-function.model';
 import { Document } from './document.model';
 import { ApiDocResponse, DocGetParam, DocPostData, ParamDelete } from './api-document.interface';
 import { ApiService } from '../../service/api.service';
-import { Organisation } from '../organisation-package/organisation.model';
 
 export type DocumentParentUrl = '/folders/' | '/workFunctions/' | '/companies/';
 

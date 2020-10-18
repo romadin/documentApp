@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
@@ -8,7 +8,6 @@ import { ToastService } from '../../../shared/toast.service';
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
 import { ProjectPostDataInterface } from '../../../shared/packages/project-package/api-project.interface';
-import { merge } from 'rxjs';
 
 export interface DefaultPopupData {
     title: string;
@@ -68,7 +67,7 @@ export class ProjectPopupComponent {
                     organisationId: this.data.organisation.id
                 };
 
-                
+
                 this.projectService.postProjectWithDefaultTemplate(data, this.data.organisation)
                     .subscribe((value) => {
                         this.toastService.showSuccess('Project: ' + projectName + ' is toegevoegd', 'Toegevoegd');

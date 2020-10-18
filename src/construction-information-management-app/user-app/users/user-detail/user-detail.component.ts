@@ -2,7 +2,8 @@ import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog, MatListOption } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatListOption } from '@angular/material/list';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 

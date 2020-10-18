@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationEnd, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatDialog, MatSidenav } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSidenav } from '@angular/material/sidenav';
 import { filter } from 'rxjs/operators';
 
 import { UserService } from '../../shared/packages/user-package/user.service';

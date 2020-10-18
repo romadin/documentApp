@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatButtonToggleChange } from '@angular/material';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { ActivatedRoute } from '@angular/router';
 import { animate, keyframes, style, transition, trigger } from '@angular/animations';
 
