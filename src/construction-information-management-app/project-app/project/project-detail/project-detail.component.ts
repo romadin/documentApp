@@ -8,6 +8,10 @@ import {
 } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { initialAnimation, scaleDownAnimation } from '../../../../shared/animations';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
+import { find, map } from 'rxjs/operators';
 
 @Component({
     selector: 'cim-project-detail',
@@ -31,8 +35,14 @@ import { initialAnimation, scaleDownAnimation } from '../../../../shared/animati
 })
 
 export class ProjectDetailComponent implements OnInit {
-    constructor() { }
-    
+    public workFunction$: Observable<WorkFunction>;
+    constructor(private route: ActivatedRoute) { }
+
     ngOnInit() {
+        this.workFunction$ = this.route.parent.snapshot.data.project.workFunctions.pipe(
+            map((ws: WorkFunction[] ) =>  {
+                return ws.find(w => w.isMainFunction);
+            }),
+        );
     }
 }

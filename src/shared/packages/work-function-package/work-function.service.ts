@@ -52,7 +52,6 @@ export class WorkFunctionService {
         return this.workFunctionsTemplateCache$[parent.id];
     }
 
-
     getWorkFunctionsByProject(params: WorkFunctionGetParam, parent: Project): Observable<WorkFunction[]> {
         if (!this.workFunctionsProjectCache$[parent.id]) {
             const initialWorkFunctions$ = this.getDataOnce(params, parent);

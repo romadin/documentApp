@@ -22,6 +22,7 @@ import {
 import { initialAnimation, scaleDownAnimation } from '../../../shared/animations';
 import { editArray } from '../../../shared/helpers/global-functions';
 import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-work-function-list',
@@ -71,7 +72,7 @@ export class WorkFunctionListComponent implements OnInit, OnDestroy {
     showFunctionDetail = false;
     workFunctionToEdit: WorkFunction;
     workFunctions: WorkFunction[];
-    private subscriptionHolder: Subscription[] = [];
+    private subscriptionHolder: Subscription = new Subscription();
 
     constructor(private activatedRoute: ActivatedRoute,
                 private workFunctionService: WorkFunctionService,
@@ -86,22 +87,23 @@ export class WorkFunctionListComponent implements OnInit, OnDestroy {
         this.project = this.activatedRoute.parent.parent.parent.snapshot.data.project;
         this.headerCommunicationService.headerTitle.next(this.project.name);
 
-        this.subscriptionHolder.push(this.userService.getCurrentUser().subscribe((user: User) => {
+        this.subscriptionHolder.add(this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
         }));
 
-        this.subscriptionHolder.push(this.communicationService.triggerAddWorkFunction.subscribe(show => {
+        this.subscriptionHolder.add(this.communicationService.triggerAddWorkFunction.subscribe(show => {
             this.showFunctionDetail = show;
         }));
 
-        this.subscriptionHolder.push(this.project.workFunctions.subscribe((workFunctions: WorkFunction[]) => {
-            !this.workFunctions ? this.workFunctions = workFunctions : this.changeList(workFunctions);
+        this.subscriptionHolder.add(this.project.workFunctions.pipe( map( workFunctions => workFunctions.filter(w => !w.isMainFunction) ))
+            .subscribe((workFunctions: WorkFunction[]) => {
+                !this.workFunctions ? this.workFunctions = workFunctions : this.changeList(workFunctions);
         }));
     }
 
     ngOnDestroy() {
         this.communicationService.triggerAddWorkFunction.next(false);
-        this.subscriptionHolder.map(s => s.unsubscribe());
+        this.subscriptionHolder.unsubscribe();
     }
     onCloseItemView() {
         this.showFunctionDetail = false;

@@ -52,7 +52,7 @@ export class ProjectsListComponent implements OnInit {
         const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
         this.projectService.getProjects(organisation).subscribe((projects: Project[]) => {
             !this.projects ? this.projects = projects : this.changeList(projects);
-            this.projectCommunicationService.showAddProjectButton.next(!(this.projects.length === 1 && organisation.isDemo));
+            this.projectCommunicationService.showAddProjectButton.next(!organisation.isDemo);
         });
         this.headerCommunicationService.headerTitle.next('Projecten');
     }

@@ -10,6 +10,9 @@ import { ProjectsListComponent } from './project/projects-list/projects-list.com
 import { SharedModule } from '../../shared/shared.module';
 import { ProjectRowComponent } from './project/projects-list/project-row/project-row.component';
 import { OrganisationResolver } from '../../shared/packages/organisation-package/organisation.resolver';
+import { ItemsOverviewComponent } from '../work-function-app/items-overview/items-overview.component';
+import { SharedWorkFunctionModule } from '../../shared/shared-work-function.module';
+import { WorkFunctionPackageResolverService } from '../work-function-app/work-function-package-resolver.service';
 
 const routes: Routes = [
     {
@@ -23,6 +26,12 @@ const routes: Routes = [
                 component: ProjectComponent,
                 data: { breadcrumb: getBreadcrumbNameProject  },
                 children: [
+                    {
+                        path: 'bim-uitvoeringsplan/:id',
+                        component: ItemsOverviewComponent,
+                        resolve: { organisation: OrganisationResolver, parent: WorkFunctionPackageResolverService },
+                        data: { breadcrumb: 'BIM-uitvoeringsplan' },
+                    },
                     {
                         path: 'functies',
                         loadChildren: '../work-function-app/work-function.module#WorkFunctionModule',
@@ -57,13 +66,14 @@ const routes: Routes = [
 @NgModule({
     imports: [
         SharedModule,
+        SharedWorkFunctionModule,
         RouterModule.forChild(routes),
     ],
     declarations: [
         ProjectsListComponent,
         ProjectComponent,
         ProjectRowComponent,
-        ProjectRouterComponent
+        ProjectRouterComponent,
     ],
     exports: [RouterModule]
 })

@@ -32,7 +32,12 @@ export class WorkFunctionPackageResolverService implements Resolve<WorkFunction 
     ) { }
 
     resolve(route: ActivatedRouteSnapshot) {
-        const project: Project = route.parent.parent.parent.data.project;
+        let routeParent = route.parent;
+        let project: Project;
+        while (!project) {
+            project = routeParent.data.project;
+            routeParent = routeParent.parent;
+        }
         const currentWorkFunctionId = parseInt(route.params.id, 10);
 
         return project.workFunctions.pipe(first(v => v !== undefined)).pipe(

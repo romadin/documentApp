@@ -1,12 +1,13 @@
 .container {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     padding-top: 8%;
 }
 .container > .card {
     height: 200px;
     width: 250px;
-    margin: 0 12px;
+    margin: 0 12px 16px;
     justify-content: flex-end;
     align-items: center;
     cursor: pointer;
