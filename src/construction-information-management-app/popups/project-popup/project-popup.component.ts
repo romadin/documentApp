@@ -15,6 +15,7 @@ export interface DefaultPopupData {
     submitButton: string;
     id?: number;
     organisation?: Organisation;
+    item?: any;
 }
 
 @Component({

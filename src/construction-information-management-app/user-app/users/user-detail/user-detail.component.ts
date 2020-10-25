@@ -170,6 +170,7 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
                         } else {
                             this.showErrorMessage(<ErrorMessage>user);
                         }
+                        this.onCloseDetailView();
                     });
                 }
             });

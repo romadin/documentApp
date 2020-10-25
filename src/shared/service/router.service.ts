@@ -1,21 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router, UrlSegment } from '@angular/router';
+import { filter, map, take } from 'rxjs/operators';
+import { MenuAction } from '../../construction-information-management-app/header/header.component';
+import { UserService } from '../packages/user-package/user.service';
+
 
 @Injectable()
 export class RouterService {
+    public headerActions$: ReplaySubject<MenuAction[]> = new ReplaySubject<MenuAction[]>();
     private _backRoute: Subject<string> = new Subject();
 
-    get backRoute(): Subject<string> {
+    constructor(private readonly activatedRoute: ActivatedRoute,
+                private readonly router: Router,
+                private readonly userService: UserService,
+                ) {
+    }
+
+    public setHeaderAction(actions: MenuAction[]): void {
+        this.userService.getCurrentUser().pipe(filter(user => !!user), take(1))
+            .subscribe((currentUser) => {
+                this.headerActions$.next(actions.filter(a => a.needsAdmin && currentUser.isAdmin() || !a.needsAdmin));
+            });
+    }
+
+    public get backRoute(): Subject<string> {
         return this._backRoute;
     }
 
-    setBackRoute(route: string) {
+    public setBackRoute(route: string) {
         this._backRoute.next(route);
     }
 
-    setBackRouteParentFromActivatedRoute(parent: ActivatedRoute): void {
-
+    public setBackRouteParentFromActivatedRoute(parent: ActivatedRoute): void {
         parent.url.subscribe((urlSegments: UrlSegment[]) => {
             let urlToRemove = '';
             urlSegments.forEach((segment, index) => {

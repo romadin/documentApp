@@ -4,7 +4,6 @@ import { MatTable } from '@angular/material/table';
 import { Action } from '../../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../../shared/packages/action-package/api-action.interface';
 import { ActionService } from '../../../shared/packages/action-package/action.service';
-import { ActionCommunicationService } from '../../../shared/service/communication/action.communication.service';
 import { ToastService } from '../../../shared/toast.service';
 
 @Component({
@@ -21,9 +20,10 @@ export class ActionsArchivedComponent {
 
     private timerId: number;
 
-    constructor(private actionService: ActionService,
-                private toastService: ToastService,
-                private actionCommunication: ActionCommunicationService) { }
+    constructor(
+        private actionService: ActionService,
+        private toastService: ToastService,
+    ) { }
 
     changeActionStatus(e: MouseEvent, actionEdited: Action): void {
         e.preventDefault();
@@ -43,7 +43,6 @@ export class ActionsArchivedComponent {
             this.toastService.showSuccess('Actie: ' + actionEdited.code + ' is gedearchiveerd', 'Gedearchiveerd');
             this.archivedActions.renderRows();
             if (this.actions.length === 0 ) {
-                this.actionCommunication.showArchivedActionsButton.next(false);
                 this.onCloseView();
             }
         }, 500);

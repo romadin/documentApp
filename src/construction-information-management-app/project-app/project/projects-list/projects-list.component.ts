@@ -14,7 +14,10 @@ import {
 } from '@angular/animations';
 import { initialAnimation, scaleDownAnimation } from '../../../../shared/animations';
 import { editArray } from '../../../../shared/helpers/global-functions';
-import { ProjectCommunicationService } from '../../../../shared/service/communication/project.communication.service';
+import { RouterService } from '../../../../shared/service/router.service';
+import { DefaultPopupData, ProjectPopupComponent } from '../../../popups/project-popup/project-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MenuAction } from '../../../header/header.component';
 
 @Component({
     selector: 'cim-projecten',
@@ -38,21 +41,31 @@ import { ProjectCommunicationService } from '../../../../shared/service/communic
 })
 export class ProjectsListComponent implements OnInit {
     projects: Project[];
+    private organisation: Organisation;
 
     constructor(
+        public dialog: MatDialog,
         private projectService: ProjectService,
         private activatedRoute: ActivatedRoute,
         private loadingService: LoadingService,
         private headerCommunicationService: HeaderWithFolderCommunicationService,
-        private projectCommunicationService: ProjectCommunicationService,
+        private routerService: RouterService,
     ) {
     }
 
     ngOnInit() {
-        const organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
-        this.projectService.getProjects(organisation).subscribe((projects: Project[]) => {
+        const action: MenuAction = {
+            onClick: this.addProject.bind(this),
+            iconName: 'add',
+            name: 'Project toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten'],
+        };
+        this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+        this.projectService.getProjects(this.organisation).subscribe((projects: Project[]) => {
             !this.projects ? this.projects = projects : this.changeList(projects);
-            this.projectCommunicationService.showAddProjectButton.next(!organisation.isDemo);
+            this.routerService.setHeaderAction(this.organisation.isDemo && projects.length > 0 ? [] : [action]);
         });
         this.headerCommunicationService.headerTitle.next('Projecten');
     }
@@ -75,5 +88,18 @@ export class ProjectsListComponent implements OnInit {
 
             this.projects.splice(editArray(this.projects, newProjects, 'delete'), 1);
         }
+    }
+
+    private addProject(): void {
+        const data: DefaultPopupData =  {
+            title: 'Voeg een project toe',
+            placeholder: 'Project naam',
+            submitButton: 'Voeg toe',
+            organisation: this.organisation
+        };
+        this.dialog.open(ProjectPopupComponent, {
+            width: '400px',
+            data: data,
+        });
     }
 }

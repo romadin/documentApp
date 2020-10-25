@@ -7,9 +7,11 @@ import { Organisation } from '../../../shared/packages/organisation-package/orga
 import { TemplateService } from '../../../shared/packages/template-package/template.service';
 import { Template } from '../../../shared/packages/template-package/template.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
-import { TemplateCommunicationService } from '../../../shared/service/communication/template.communication.service';
 import { DefaultPopupData } from '../../popups/project-popup/project-popup.component';
 import { AddTemplatePopupComponent } from '../popup/add-template-popup/add-template-popup.component';
+import { RouterService } from '../../../shared/service/router.service';
+import { getDataFromRoute } from '../../../shared/helpers/global-functions';
+import { MenuAction } from '../../header/header.component';
 
 @Component({
     selector: 'cim-templates-overview',
@@ -59,26 +61,23 @@ export class TemplatesOverviewComponent implements OnInit {
     templateToEdit: Template;
     showAddWorkFunction: boolean;
     addNewFunction = false;
-    readonly organisation: Organisation;
+    private organisation: Organisation;
 
     constructor(
         public dialog: MatDialog,
-        private templateService: TemplateService,
-        private route: ActivatedRoute,
-        private templateCommunication: TemplateCommunicationService,
-        private headerCommunication: HeaderWithFolderCommunicationService,
+        private readonly templateService: TemplateService,
+        private readonly route: ActivatedRoute,
+        private readonly headerCommunication: HeaderWithFolderCommunicationService,
+        private readonly routerService: RouterService,
     ) {
-        this.organisation = <Organisation>this.route.snapshot.data.organisation;
-        this.headerCommunication.headerTitle.next('Template beheer');
-        this.templateService.getTemplates(this.organisation).subscribe(templates => this.templates = templates);
-        this.templateCommunication.triggerAddTemplate.subscribe(onAddTemplateClicked => {
-            if (onAddTemplateClicked) {
-                this.showAddTemplateView();
-            }
-        });
+
     }
 
     ngOnInit() {
+        this.routerService.setHeaderAction(this.setHeaderAction());
+        this.organisation = getDataFromRoute('organisation', this.route.snapshot) as Organisation;
+        this.headerCommunication.headerTitle.next('Template beheer');
+        this.templateService.getTemplates(this.organisation).subscribe(templates => this.templates = templates);
     }
 
     backToListView(event: Event): void {
@@ -100,6 +99,14 @@ export class TemplatesOverviewComponent implements OnInit {
 
     editTemplate(template: Template): void {
         this.templateToEdit = template;
+        const data: DefaultPopupData = {
+            title: 'Wijzig template ' + template.name,
+            placeholder: 'Template naam',
+            submitButton: 'Wijzigen',
+            organisation: this.organisation,
+            item: template
+        };
+        this.templateDialog(data);
     }
 
     OnCloseTemplateEdit(close: boolean): void {
@@ -122,22 +129,35 @@ export class TemplatesOverviewComponent implements OnInit {
         this.addNewFunction = true;
     }
 
-    private showAddTemplateView(): void {
+    private setHeaderAction(): MenuAction[] {
+        const addTemplate: MenuAction = {
+            onClick: this.templateDialog.bind(this),
+            iconName: 'add',
+            name: 'Template toevoegen',
+            show: false,
+            needsAdmin: true,
+        };
+
+        return [addTemplate];
+    }
+
+    private templateDialog(data: DefaultPopupData = {
+        title: 'Voeg een template toe',
+        placeholder: 'Template naam',
+        submitButton: 'Voeg toe',
+        organisation: this.organisation
+    }): void {
         this.showAddWorkFunction = false;
         this.templateToShow = undefined;
-        const data: DefaultPopupData = {
-            title: 'Voeg een template toe',
-            placeholder: 'Template naam',
-            submitButton: 'Voeg toe',
-            organisation: this.organisation
-        };
+
         const dialogRef = this.dialog.open(AddTemplatePopupComponent, {
             width: '400px',
-            data: data,
+            data,
         });
-        dialogRef.afterClosed().subscribe((newTemplate?: Template) => {
-            this.templateCommunication.triggerAddTemplate.next(false);
-            if (newTemplate) {
+        dialogRef.afterClosed().subscribe((newTemplate: Template) => {
+            if (this.templateToEdit) {
+                this.templateToEdit = newTemplate;
+            } else {
                 this.templates.push(newTemplate);
             }
         });

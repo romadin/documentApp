@@ -9,9 +9,11 @@
         </div>
     </div>
     <div class="detailView" [ngClass]="rightSideActive ? 'show' : ''">
-        <cim-event-detail [event]="eventToEdit"
-                          [user]="currentUser"
-                          (closeView)="onCloseRightSide($event)">
+        <cim-event-detail
+            [event]="eventToEdit"
+            [user]="currentUser"
+            (closeView)="onCloseRightSide()"
+            (saveEvent)="onSaveEvent($event)">
         </cim-event-detail>
     </div>
 </div>

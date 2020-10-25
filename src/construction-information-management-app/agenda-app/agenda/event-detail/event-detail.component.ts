@@ -12,10 +12,7 @@ export class EventDetailComponent  {
     @Input() event: Event;
     @Input() user: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() saveEvent: EventEmitter<Event> = new EventEmitter<Event>();
 
     constructor() { }
-
-    onCloseView() {
-        this.closeView.emit(true);
-    }
 }

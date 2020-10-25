@@ -2,7 +2,6 @@ import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { EventCommunicationService } from '../../../../../shared/service/communication/event.communication.service';
 import { User } from '../../../../../shared/packages/user-package/user.model';
 import { ToastService } from '../../../../../shared/toast.service';
 import { Event } from '../../../../../shared/packages/agenda-package/event.model';
@@ -15,8 +14,12 @@ import { EventService } from '../../../../../shared/packages/agenda-package/even
 })
 export class AdminComponent implements AfterViewInit {
     @Input() user: User;
+
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
-    eventForm: FormGroup = new FormGroup({
+    @Output() saveEvent: EventEmitter<Event> = new EventEmitter<Event>();
+
+    public readonly projectId: number;
+    public eventForm: FormGroup = new FormGroup({
         subject: new FormControl(''),
         description: new FormControl(''),
         startDate: new FormControl(''),
@@ -28,17 +31,7 @@ export class AdminComponent implements AfterViewInit {
     });
     private _event: Event;
     private formHasChanged = false;
-    readonly projectId: number;
 
-    constructor(
-        private eventCommunication: EventCommunicationService,
-        private eventService: EventService,
-        private datePipe: DatePipe,
-        private router: Router,
-        private toast: ToastService,
-    ) {
-        this.projectId = parseInt(this.router.url.split('/')[2], 10);
-    }
     @Input()
     set event(event: Event | undefined) {
         this._event = event;
@@ -51,6 +44,14 @@ export class AdminComponent implements AfterViewInit {
     get event(): Event {
         return this._event;
     }
+    constructor(
+        private eventService: EventService,
+        private datePipe: DatePipe,
+        private router: Router,
+        private toast: ToastService,
+    ) {
+        this.projectId = parseInt(this.router.url.split('/')[2], 10);
+    }
 
     ngAfterViewInit() {
         this.onFormChanges();
@@ -59,13 +60,14 @@ export class AdminComponent implements AfterViewInit {
         if (this.eventForm.valid && this.formHasChanged) {
             this.updateOrMakeEvent();
             if (this.event.id) {
-                this.eventService.editEvent(this.event).subscribe(() => {});
+                this.eventService.editEvent(this.event).subscribe(() => this.saveEvent.emit(this.event));
                 this.toast.showSuccess('Activiteit: ' + this.event.name + ' is gewijziged', 'Wijzigen');
             } else {
                 this.eventService.createEvent(this.event).subscribe(event => {
                     this.toast.showSuccess('Activiteit: ' + event.name + ' toegevoegd', 'Toegevoegd');
                     this.event = event;
-                    this.eventCommunication.eventAdded.next(event);
+                    this.saveEvent.emit(event);
+                    this.resetForm();
                 });
             }
         }

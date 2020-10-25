@@ -29,7 +29,7 @@ const routes: Routes = [
                     {
                         path: 'bim-uitvoeringsplan/:id',
                         component: ItemsOverviewComponent,
-                        resolve: { organisation: OrganisationResolver, parent: WorkFunctionPackageResolverService },
+                        resolve: { parent: WorkFunctionPackageResolverService },
                         data: { breadcrumb: 'BIM-uitvoeringsplan' },
                     },
                     {

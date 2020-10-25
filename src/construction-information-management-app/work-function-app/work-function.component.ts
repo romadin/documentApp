@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterService } from '../../shared/service/router.service';
 import { ActivatedRoute } from '@angular/router';
+import { MenuAction } from '../header/header.component';
 
 @Component({
   selector: 'cim-work-function',

@@ -7,7 +7,6 @@ import { WorkFunctionService } from '../../../shared/packages/work-function-pack
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { ProjectService } from '../../../shared/packages/project-package/project.service';
 import { RouterService } from '../../../shared/service/router.service';
-import { ProjectCommunicationService } from '../../../shared/service/communication/project.communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import {
     animate, animateChild,
@@ -23,6 +22,7 @@ import { initialAnimation, scaleDownAnimation } from '../../../shared/animations
 import { editArray } from '../../../shared/helpers/global-functions';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MenuAction } from '../../header/header.component';
 
 @Component({
     selector: 'app-work-function-list',
@@ -79,20 +79,24 @@ export class WorkFunctionListComponent implements OnInit, OnDestroy {
                 private userService: UserService,
                 private projectService: ProjectService,
                 private routerService: RouterService,
-                private communicationService: ProjectCommunicationService,
                 private headerCommunicationService: HeaderWithFolderCommunicationService) {
     }
 
     ngOnInit() {
+        const addWorkFunction: MenuAction = {
+            onClick: () => { this.showFunctionDetail = true; },
+            iconName: 'add',
+            name: 'Functie toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten/:id/functies'],
+        };
+        this.routerService.setHeaderAction([addWorkFunction]);
         this.project = this.activatedRoute.parent.parent.parent.snapshot.data.project;
         this.headerCommunicationService.headerTitle.next(this.project.name);
 
         this.subscriptionHolder.add(this.userService.getCurrentUser().subscribe((user: User) => {
             this.currentUser = user;
-        }));
-
-        this.subscriptionHolder.add(this.communicationService.triggerAddWorkFunction.subscribe(show => {
-            this.showFunctionDetail = show;
         }));
 
         this.subscriptionHolder.add(this.project.workFunctions.pipe( map( workFunctions => workFunctions.filter(w => !w.isMainFunction) ))
@@ -102,13 +106,13 @@ export class WorkFunctionListComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.communicationService.triggerAddWorkFunction.next(false);
         this.subscriptionHolder.unsubscribe();
     }
+
     onCloseItemView() {
         this.showFunctionDetail = false;
-        this.communicationService.triggerAddWorkFunction.next(false);
     }
+
     onEditWorkFunction(workFunction: WorkFunction) {
         this.onCloseItemView();
         setTimeout(() => {

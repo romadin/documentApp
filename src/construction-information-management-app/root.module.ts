@@ -27,13 +27,10 @@ import { RoleService } from '../shared/packages/role-package/role.service';
 import { DocumentService } from '../shared/packages/document-package/document.service';
 import { DocumentIconService } from '../shared/packages/document-package/document-icon.service';
 import { ActionService } from '../shared/packages/action-package/action.service';
-import { ProjectCommunicationService } from '../shared/service/communication/project.communication.service';
 import { ScrollingService } from '../shared/service/scrolling.service';
 import { RouterService } from '../shared/service/router.service';
 import { HeaderWithFolderCommunicationService } from '../shared/service/communication/HeaderWithFolder.communication.service';
 import { FolderCommunicationService } from '../shared/service/communication/Folder.communication.service';
-import { ActionCommunicationService } from '../shared/service/communication/action.communication.service';
-import { EventCommunicationService } from '../shared/service/communication/event.communication.service';
 
 // popup components
 import { ProjectPopupComponent } from './popups/project-popup/project-popup.component';
@@ -52,9 +49,7 @@ import { ConfirmPopupComponent } from './popups/confirm-popup/confirm-popup.comp
 import { MailService } from '../shared/service/mail.service';
 import { OrganisationNotFoundComponent } from './not-found/organisation-not-found/organisation-not-found.component';
 import { CanActivateNoOrganisation } from '../can-activate/CanActivateNoOrganisation';
-import { UsersCommunicationService } from '../shared/service/communication/users-communication.service';
 import { TemplateService } from '../shared/packages/template-package/template.service';
-import { TemplateCommunicationService } from '../shared/service/communication/template.communication.service';
 import { WorkFunctionService } from '../shared/packages/work-function-package/work-function.service';
 import { ChapterService } from '../shared/packages/chapter-package/chapter.service';
 import { CacheService } from '../shared/service/cache.service';
@@ -147,13 +142,8 @@ const appRoutes: Routes = [
         CompanyService,
         ChapterService,
 
-        EventCommunicationService,
-        ActionCommunicationService,
         FolderCommunicationService,
         HeaderWithFolderCommunicationService,
-        UsersCommunicationService,
-        TemplateCommunicationService,
-        ProjectCommunicationService,
 
         DocumentService,
         DocumentIconService,

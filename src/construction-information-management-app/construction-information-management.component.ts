@@ -13,6 +13,7 @@ import { MenuAction } from './header/header.component';
 import { LoadingService } from '../shared/loading.service';
 import { animate, animateChild, group, query, style, transition, trigger } from '@angular/animations';
 import { Breadcrumb } from './bread-crumb/bread-crumb.component';
+import { RouterService } from '../shared/service/router.service';
 
 export type ModuleName = 'Templates' | 'Assign chapter company' | 'Branding' | 'Basic ILS';
 

@@ -11,15 +11,19 @@ import {
     useAnimation
 } from '@angular/animations';
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
 import { LoadingService } from '../../../shared/loading.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
-import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { initialAnimation, scaleDownAnimation } from '../../../shared/animations';
+import { MenuAction } from '../../header/header.component';
+import { RouterService } from '../../../shared/service/router.service';
+import { DefaultPopupData } from '../../popups/project-popup/project-popup.component';
+import { UserPopupComponent } from '../../popups/user-popup/user-popup.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
     selector: 'cim-users-overview',
@@ -90,28 +94,30 @@ export class UsersOverviewComponent {
     organisation: Organisation;
     rightSideActive: boolean;
 
-    constructor(private userService: UserService,
-                private activatedRoute: ActivatedRoute,
-                private loadingService: LoadingService,
-                private usersCommunication: UsersCommunicationService,
-                private headerCommunication: HeaderWithFolderCommunicationService,
+    constructor(
+        public dialog: MatDialog,
+        private userService: UserService,
+        private activatedRoute: ActivatedRoute,
+        private loadingService: LoadingService,
+        private headerCommunication: HeaderWithFolderCommunicationService,
+        private readonly router: Router,
+        private readonly routerService: RouterService,
     ) {
+        const addUser: MenuAction = {
+            onClick: this.openDialogAddUser.bind(this),
+            iconName: 'person_add',
+            name: 'Gebruiker toevoegen',
+            show: false,
+            needsAdmin: true,
+        };
+        this.routerService.setHeaderAction([addUser]);
         this.loadingService.isLoading.next(true);
         this.headerCommunication.headerTitle.next('Gebruikers beheer');
         this.organisation = <Organisation>this.activatedRoute.snapshot.data.organisation;
+
         this.userService.getUsers({organisationId: this.organisation.id}).subscribe((users) => {
             this.loadingService.isLoading.next(false);
             this.users = users;
-        });
-
-        this.headerCommunication.showAddUserButton.next(true);
-        this.usersCommunication.addUserInUserComponent.subscribe(addUser => {
-            const timer = this.rightSideActive ? UsersOverviewComponent.animationDelay : 0;
-            this.userToEdit = undefined;
-            this.rightSideActive = false;
-            setTimeout(() => {
-                this.rightSideActive = addUser;
-            }, timer);
         });
 
         this.currentUser = this.userService.getCurrentUser().getValue();
@@ -132,5 +138,32 @@ export class UsersOverviewComponent {
     closeUserDetailView(close: boolean): void {
         this.userToEdit = undefined;
         this.rightSideActive = false;
+    }
+
+    private addUserInUserComponent(addUser: boolean): void {
+        this.userToEdit = undefined;
+        this.rightSideActive = false;
+        setTimeout(() => {
+            this.rightSideActive = addUser;
+        }, this.rightSideActive ? UsersOverviewComponent.animationDelay : 0);
+    }
+
+    private openDialogAddUser(): void {
+        const url = this.router.url;
+        if (url === '/gebruikers' || url === '/projecten/') {
+            this.addUserInUserComponent(true);
+            return;
+        }
+        const data: DefaultPopupData = {
+            title: 'Voeg een gebruiker toe',
+            placeholder: 'Gebruiker',
+            submitButton: 'Voeg toe',
+            organisation: this.organisation,
+        };
+        const dialogRef = this.dialog.open(UserPopupComponent, {
+            width: '600px',
+            data: data,
+        });
+        dialogRef.afterClosed().subscribe();
     }
 }

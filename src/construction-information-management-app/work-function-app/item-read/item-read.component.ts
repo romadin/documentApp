@@ -11,6 +11,9 @@ import { WorkFunction } from '../../../shared/packages/work-function-package/wor
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
 import { Subscription } from 'rxjs';
 import { isWorkFunction } from '../../../shared/packages/work-function-package/interface/work-function.interface';
+import { MenuAction } from '../../header/header.component';
+import { RouterService } from '../../../shared/service/router.service';
+import { getDataFromRoute } from '../../../shared/helpers/global-functions';
 
 @Component({
   selector: 'cim-item-read',
@@ -20,9 +23,12 @@ import { isWorkFunction } from '../../../shared/packages/work-function-package/i
 export class ItemReadComponent implements OnInit, OnDestroy {
     @ViewChild('fullDocument') documentPlan: any;
     @ViewChild('content') documentContent: any;
+
+    @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     @Input() items: Document[];
     @Input() parent: WorkFunction | Company;
-    @Output() closeReadMode: EventEmitter<boolean> = new EventEmitter<boolean>();
+
     public project: Project;
     private organisation: Organisation;
     private subscriptions: Subscription = new Subscription();
@@ -31,28 +37,29 @@ export class ItemReadComponent implements OnInit, OnDestroy {
                 private activatedRoute: ActivatedRoute,
                 private projectService: ProjectService,
                 private documentService: DocumentService,
-                private folderCommunication: HeaderWithFolderCommunicationService
+                private folderCommunication: HeaderWithFolderCommunicationService,
+                private readonly routerService: RouterService,
                 ) {
-        this.organisation = this.getOrganisation();
-
+        this.organisation = getDataFromRoute('organisation', this.activatedRoute.snapshot) as Organisation;
         const projectId = parseInt(this.router.url.split('/')[2], 10);
 
         this.projectService.getProject(projectId, this.organisation).subscribe((project: Project) => {
             this.project = project;
         });
-        this.subscriptions.add(this.folderCommunication.exportToPdf.subscribe(exportToPdf => {
-            if (exportToPdf && this.project) {
-                this.exportDocumentToPdf();
-            }
-        }));
     }
 
     ngOnInit() {
-        this.folderCommunication.showDocumentToPdfButton.next(!this.organisation.isDemo);
+        const documentToPdfAction: MenuAction = {
+            onClick: this.exportDocumentToPdf.bind(this),
+            iconName: 'picture_as_pdf',
+            name: 'Exporteer naar pdf',
+            show: false,
+            needsAdmin: false,
+        };
+        this.routerService.setHeaderAction(this.organisation.isDemo ? [] : [documentToPdfAction]);
     }
 
     ngOnDestroy() {
-        this.folderCommunication.showDocumentToPdfButton.next(false);
         this.subscriptions.unsubscribe();
     }
 
@@ -64,16 +71,6 @@ export class ItemReadComponent implements OnInit, OnDestroy {
 
     setContent(item: Document, element): void {
         element.innerHTML = item.content;
-    }
-
-    private getOrganisation(): Organisation {
-        let routeParent = this.activatedRoute.snapshot;
-        let organisation: Organisation;
-        while (!organisation) {
-            organisation = routeParent.data.organisation;
-            routeParent = routeParent.parent;
-        }
-        return organisation;
     }
 
     private exportDocumentToPdf(): void {

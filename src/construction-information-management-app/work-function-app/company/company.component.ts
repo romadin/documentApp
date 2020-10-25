@@ -9,11 +9,15 @@ import { Project } from '../../../shared/packages/project-package/project.model'
 import { User } from '../../../shared/packages/user-package/user.model';
 import { WorkFunction } from '../../../shared/packages/work-function-package/work-function.model';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
-import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { RouterService } from '../../../shared/service/router.service';
-import { ChildItemPackage } from '../work-function-package-resolver.service';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../../shared/packages/user-package/user.service';
+import { MenuAction } from '../../header/header.component';
+import { DefaultPopupData } from '../../popups/project-popup/project-popup.component';
+import { UserPopupComponent } from '../../popups/user-popup/user-popup.component';
+import { MatDialog } from '@angular/material/dialog';
+import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
+import { getDataFromRoute } from '../../../shared/helpers/global-functions';
 
 export interface CompanyRightSidePackage {
     workFunction: WorkFunction;
@@ -92,7 +96,7 @@ export interface CompanyRightSidePackage {
         ])
     ]
 })
-export class CompanyComponent implements OnInit, OnDestroy {
+export class CompanyComponent implements OnInit {
     workFunction: WorkFunction;
     currentUser: User;
     companiesLinkedToProject: Company[];
@@ -104,10 +108,11 @@ export class CompanyComponent implements OnInit, OnDestroy {
     private allCompanies: Company[];
     private addedCompanyByUser = false;
     private subscriptions: Subscription[] = [];
+    private organisation: Organisation;
 
     constructor(
+        public dialog: MatDialog,
         private companyService: CompanyService,
-        private userCommunicationService: UsersCommunicationService,
         private headerCommunicationService: HeaderWithFolderCommunicationService,
         private userService: UserService,
         private routerService: RouterService,
@@ -119,13 +124,31 @@ export class CompanyComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.setInitialValues();
+        this.organisation = getDataFromRoute('organisation', this.activatedRoute.snapshot) as Organisation;
         let streamCounter = 0;
+        const addCompanies: MenuAction = {
+            onClick: () => {
+                this.addedCompanyByUser = false;
+                this.filterCompanies();
+                this.resetView();
+                setTimeout(() => {
+                    this.companiesLinkedToProject.length === 0 ? this.showWarningBox = true : this.rightSideActive = true;
+                }, 200);
+                this.warningMessage = 'Alle bedrijven voor dit project zijn toegevoegd.';
+                this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
+            },
+            iconName: 'business',
+            name: 'Bedrijf toevoegen',
+            show: false,
+            needsAdmin: true,
+            urlGroup: ['/projecten/:id/functies/:id/bedrijven'],
+        };
+        this.routerService.setHeaderAction([addCompanies]);
 
         this.companyService.getCompaniesByProject(<Project>this.workFunction.parent, this.workFunction).subscribe(companies => {
             if (companies) {
                 this.allCompanies = companies;
                 this.filterCompanies();
-                this.headerCommunicationService.addCompanyButton.next({show: true});
                 streamCounter++;
 
                 if (this.addedCompanyByUser) {
@@ -143,27 +166,11 @@ export class CompanyComponent implements OnInit, OnDestroy {
                 this.loadingService.isLoading.next(false);
             }
         });
-        this.headerCommunicationService.addCompanyButton.subscribe(buttonOptions => {
-            if (buttonOptions && buttonOptions.trigger) {
-                this.addedCompanyByUser = false;
-                this.filterCompanies();
-                this.resetView();
-                setTimeout(() => {
-                    this.companiesLinkedToProject.length === 0 ? this.showWarningBox = true : this.rightSideActive = true;
-                }, 200);
-                this.warningMessage = 'Alle bedrijven voor dit project zijn toegevoegd.';
-                this.rightSidePackage.companiesLinkedToProject = this.companiesLinkedToProject;
-            }
-        });
-    }
-
-    ngOnDestroy() {
-        this.headerCommunicationService.addCompanyButton.next({show: false});
     }
 
     addUser(e: Event): void {
         e.preventDefault();
-        this.userCommunicationService.triggerAddUserPopup.next(true);
+        this.addUserDialog();
         this.addedCompanyByUser = true;
     }
 
@@ -203,5 +210,18 @@ export class CompanyComponent implements OnInit, OnDestroy {
         this.showWarningBox = this.companiesLinkedToProject.length === 0 && this.workFunction.companies.length === 0 && this.currentUser.isAdmin();
     }
 
+    private addUserDialog(): void {
+        const data: DefaultPopupData = {
+            title: 'Voeg een gebruiker toe',
+            placeholder: 'Gebruiker',
+            submitButton: 'Voeg toe',
+            organisation: this.organisation,
+        };
+        const dialogRef = this.dialog.open(UserPopupComponent, {
+            width: '600px',
+            data: data,
+        });
+        dialogRef.afterClosed().subscribe();
+    }
 
 }

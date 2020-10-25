@@ -1,13 +1,16 @@
 <div class="detail">
-    <cim-event-detail-public *ngIf=" event && !user.isAdmin()"
-                             [event]="event"
-                             [user]="user"
-                             (closeView)=onCloseView($event)>
+    <cim-event-detail-public
+        *ngIf=" event && !user.isAdmin()"
+         [event]="event"
+         [user]="user"
+         (closeView)="closeView.emit($event)">
     </cim-event-detail-public>
-    <cim-event-detail-admin *ngIf="user.isAdmin()"
-                            [event]="event"
-                            [user]="user"
-                            (closeView)="onCloseView($event)">
+    <cim-event-detail-admin
+        *ngIf="user.isAdmin()"
+        [event]="event"
+        [user]="user"
+        (closeView)="closeView.emit($event)"
+        (saveEvent)="saveEvent.emit($event)">
     </cim-event-detail-admin>
 </div>
 

@@ -13,14 +13,12 @@
     </span>
     <span> {{ headerTitle }}</span>
     <div class="actions">
-        <ng-template ngFor let-action [ngForOf]="actions">
-            <button mat-raised-button color="primary" *ngIf="action.show && currentUser" (click)="action.onClick()">
-                <mat-icon aria-label="Icon">
-                    {{ action.iconName }}
-                </mat-icon>
-                <span class="actionText"> {{ action.name }}</span>
-            </button>
-        </ng-template>
+        <button mat-raised-button color="primary" *ngFor="let action of headerAction$ | async;" (click)="action.onClick()">
+            <mat-icon aria-label="Icon">
+                {{ action.iconName }}
+            </mat-icon>
+            <span class="actionText"> {{ action.name }}</span>
+        </button>
         <img *ngIf="logoSrc" class="logo" [src]="logoSrc" alt="logo">
     </div>
 </mat-toolbar>

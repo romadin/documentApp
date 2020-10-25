@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { WorkFunction } from '../../../../shared/packages/work-function-package/work-function.model';
 import { map } from 'rxjs/operators';
+import { RouterService } from '../../../../shared/service/router.service';
 
 @Component({
     selector: 'cim-project-detail',
@@ -36,9 +37,10 @@ import { map } from 'rxjs/operators';
 
 export class ProjectDetailComponent implements OnInit {
     public workFunction$: Observable<WorkFunction>;
-    constructor(private route: ActivatedRoute) { }
+    constructor(private route: ActivatedRoute, private routerService: RouterService) { }
 
     ngOnInit() {
+        this.routerService.setHeaderAction([]);
         this.workFunction$ = this.route.parent.snapshot.data.project.workFunctions.pipe(
             map((ws: WorkFunction[] ) =>  {
                 return ws.find(w => w.isMainFunction);

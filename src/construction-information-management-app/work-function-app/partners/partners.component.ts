@@ -6,8 +6,11 @@ import { animate, keyframes, style, transition, trigger } from '@angular/animati
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { User } from '../../../shared/packages/user-package/user.model';
 import { Organisation } from '../../../shared/packages/organisation-package/organisation.model';
-import { UsersCommunicationService } from '../../../shared/service/communication/users-communication.service';
 import { HeaderWithFolderCommunicationService } from '../../../shared/service/communication/HeaderWithFolder.communication.service';
+import { RouterService } from '../../../shared/service/router.service';
+import { MenuAction } from '../../header/header.component';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export type RightSideView = 'new' | 'list';
 @Component({
@@ -28,41 +31,42 @@ export type RightSideView = 'new' | 'list';
         ]),
     ]
 })
-export class PartnersComponent implements OnInit, OnDestroy {
+export class PartnersComponent implements OnInit {
     @Input() public projectId: number;
     @Input() currentUser: User;
     @Output() closeView: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    users: User[];
-    allUsers: User[];
-    userToEdit: User;
-    organisation: Organisation;
-    rightSide: RightSideView = 'new';
+    public users$: Observable<User[]>;
+    public userToEdit: User;
+    public organisation: Organisation;
+    public rightSide: RightSideView = 'new';
 
     constructor(private userService: UserService,
-                private usersCommunicationService: UsersCommunicationService,
                 private activatedRoute: ActivatedRoute,
                 private headerCommunicationService: HeaderWithFolderCommunicationService,
+                private readonly routerService: RouterService
     ) { }
 
     ngOnInit() {
+        const addUser: MenuAction = {
+            onClick: this.addUser.bind(this),
+            iconName: 'person_add',
+            name: 'Gebruiker toevoegen',
+            show: false,
+            needsAdmin: true,
+        };
+        this.routerService.setHeaderAction([addUser]);
         this.organisation = <Organisation>this.activatedRoute.parent.parent.snapshot.data.organisation;
-        this.userService.getUsers({organisationId: this.organisation.id}).subscribe((users) => {
-            this.allUsers = users;
-            this.users = users.map(user => user);
-            this.users = this.users.filter((user) => user.projectsId.find((id) => id === this.projectId));
-        });
-        this.headerCommunicationService.showAddUserButton.next(true);
-        this.usersCommunicationService.addUserInUserComponent.subscribe(addUser => {
-            this.userToEdit = null;
-        });
-    }
-    ngOnDestroy() {
-        this.headerCommunicationService.showAddUserButton.next(false);
+
+        this.users$ = this.userService.getUsers({organisationId: this.organisation.id}).pipe(
+            map(users => users.filter(user => user.projectsId.find((id) => id === this.projectId)))
+        );
     }
 
-    addUser(e: Event): void {
-        e.preventDefault();
+    addUser(e?: Event): void {
+        if (e) {
+            e.preventDefault();
+        }
         this.rightSide = 'new';
         this.userToEdit = null;
     }

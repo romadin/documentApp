@@ -9,10 +9,11 @@ import { ActionService } from '../../shared/packages/action-package/action.servi
 import { Action } from '../../shared/packages/action-package/action.model';
 import { ApiActionEditPostData } from '../../shared/packages/action-package/api-action.interface';
 import { RouterService } from '../../shared/service/router.service';
-import { ActionCommunicationService } from '../../shared/service/communication/action.communication.service';
 import { ToastService } from '../../shared/toast.service';
 import { LoadingService } from '../../shared/loading.service';
 import { Organisation } from '../../shared/packages/organisation-package/organisation.model';
+import { MenuAction } from '../header/header.component';
+import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
 
 @Component({
     selector: 'cim-action-list',
@@ -46,22 +47,23 @@ export class ActionListComponent implements OnInit, OnDestroy {
     public selection = new SelectionModel<Action>(true, []);
 
     private timerId: number;
-    private subscriptions: Subscription[] = [];
+    private subscriptions: Subscription = new Subscription();
     private organisation: Organisation;
 
     constructor(private actionService: ActionService,
                 private activatedRoute: ActivatedRoute,
                 private routerService: RouterService,
                 private toastService: ToastService,
-                private actionCommunication: ActionCommunicationService,
-                private loadingService: LoadingService
+                private loadingService: LoadingService,
+                private headerService: HeaderWithFolderCommunicationService
                ) {
     }
     ngOnInit() {
         this.projectId = parseInt(this.activatedRoute.parent.parent.snapshot.paramMap.get('id'), 10);
+        this.headerService.headerTitle.next('Acties');
         this.organisation = this.activatedRoute.parent.snapshot.data.organisation;
         this.loadingService.isLoading.next(true);
-        this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
+        this.subscriptions.add(this.actionService.getActionsByProject(this.projectId).subscribe((actions) => {
             this.loadingService.isLoading.next(false);
             if (this.actions && this.actions.length > 0 && this.table) {
                 this.table.renderRows();
@@ -70,35 +72,15 @@ export class ActionListComponent implements OnInit, OnDestroy {
 
             // remove the already done actions and set in separate array.
             this.setActionsDone();
-        });
 
-        this.subscriptions.push(this.actionCommunication.triggerAddAction.subscribe((addAction: boolean) => {
-            if ( !this.showItemDetail || this.actionToEdit !== null) {
-                this.resetRightSide();
-                this.rightSideView = addAction;
-                setTimeout(() => { this.actionToEdit = null; this.showItemDetail = addAction; }, 250);
-            }
-        }));
-
-        this.subscriptions.push(this.actionCommunication.showArchivedActions.subscribe((show: boolean) => {
-            this.resetRightSide();
-            this.rightSideView = show;
-            setTimeout(() => { this.showArchivedActions = show; }, 250);
-        }));
-
-        this.subscriptions.push(this.actionCommunication.exportToPdf.subscribe(exportToPdf => {
-            if (exportToPdf) {
-                this.exportActionListToPdf();
-            }
+            this.routerService.setHeaderAction(this.getHeaderActions());
         }));
 
         this.routerService.setBackRouteParentFromActivatedRoute(this.activatedRoute.parent);
     }
 
     ngOnDestroy() {
-        this.actionCommunication.triggerAddAction.next(false);
-        this.actionCommunication.showArchivedActions.next(false);
-        this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+        this.subscriptions.unsubscribe();
         this.resetRightSide();
     }
 
@@ -139,12 +121,22 @@ export class ActionListComponent implements OnInit, OnDestroy {
             this.actionsDone = actionsDoneContainer;
             this.table.renderRows();
             this.toastService.showSuccess('Actie: ' + actionEdited.code + ' is gearchiveerd', 'Gearchiveerd');
-            this.actionCommunication.showArchivedActionsButton.next(this.actionsDone.length > 0);
         }, 500);
     }
 
+    private addAction(add: boolean): void {
+        if ( !this.showItemDetail || this.actionToEdit !== null) {
+            this.resetRightSide();
+            this.rightSideView = add;
+            setTimeout(() => {
+                this.actionToEdit = null;
+                this.showItemDetail = add;
+            }, 250);
+        }
+    }
+
     private exportActionListToPdf(): void {
-        const pdfName = 'aktie lijst.pdf';
+        const pdfName = 'Actielijst.pdf';
 
         this.actionService.createActionPDF(this.convertActionsToPlainHtmlString(), this.organisation, pdfName).subscribe((blob) => {
             const file = new Blob([blob], {type: 'application/pdf'});
@@ -205,6 +197,37 @@ export class ActionListComponent implements OnInit, OnDestroy {
         this.actionsDone.forEach((actionDone) => {
             this.actions.splice(this.actions.findIndex(action => action === actionDone), 1);
         });
-        this.actionCommunication.showArchivedActionsButton.next(this.actionsDone.length > 0);
+    }
+
+    private getHeaderActions(): MenuAction[] {
+        const addAction: MenuAction = {
+            onClick: () => { this.addAction(true); },
+            iconName: 'add',
+            name: 'Actie toevoegen',
+            show: false,
+            needsAdmin: true,
+        };
+        const showArchivedActions: MenuAction = {
+            onClick: () => {
+                this.resetRightSide();
+                this.rightSideView = true;
+                setTimeout(() => {
+                    this.showArchivedActions = true;
+                }, 250);
+            },
+            iconName: 'archive',
+            name: 'Gearchiveerde acties',
+            show: false,
+            needsAdmin: true,
+        };
+        const actionsToPdf: MenuAction = {
+            onClick: () => { this.exportActionListToPdf(); },
+            iconName: 'picture_as_pdf',
+            name: 'Exporteer naar pdf',
+            show: false,
+            needsAdmin: false,
+        };
+
+        return this.actionsDone.length > 0 ? [ addAction, showArchivedActions, actionsToPdf ] : [ addAction, actionsToPdf ];
     }
 }

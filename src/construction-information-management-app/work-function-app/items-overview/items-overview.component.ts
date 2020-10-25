@@ -13,6 +13,8 @@ import { ToItemsOverview } from '../document-row/document-row.component';
 import { ActiveItemPackage } from '../folder-detail/folder-detail.component';
 import { UserService } from '../../../shared/packages/user-package/user.service';
 import { Project } from '../../../shared/packages/project-package/project.model';
+import { MenuAction } from '../../header/header.component';
+import { getDataFromRoute } from '../../../shared/helpers/global-functions';
 
 @Component({
   selector: 'cim-items-overview',
@@ -40,10 +42,13 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     ) { }
 
     ngOnInit() {
+        this.routerService.setHeaderAction(this.getHeaderActions());
         this.subscriptions.push(this.userService.getCurrentUser().subscribe(user => this.currentUser = user));
-        this.parent = this.activatedRoute.snapshot.data.parent;
-        const project = isWorkFunction(this.parent) ? (<Project>this.parent.parent) : this.parent.parent.parent;
-        (<Project>project).workFunctions.subscribe((workFunctions) => {
+
+        this.parent = getDataFromRoute('parent', this.activatedRoute.snapshot) as WorkFunction | Company;
+        const project: Project = isWorkFunction(this.parent) ? this.parent.parent as Project : this.parent.parent.parent as Project;
+
+        project.workFunctions.subscribe((workFunctions) => {
             this.mainFunction = workFunctions.find(w => w.isMainFunction);
         });
 
@@ -52,27 +57,12 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
             this.items = items;
         }));
 
-        this.subscriptions.push(this.headerCommunicationService.triggerReadMode.subscribe((read: boolean) => {
-            if (read && !this.showReadMode) {
-                this.resetView();
-                this.showReadMode = this.showReadModeAnimation = read;
-            }
-        }));
-        this.subscriptions.push(this.headerCommunicationService.triggerAddItem.subscribe((trigger: boolean) => {
-            if (trigger) {
-                this.addItem();
-            }
-        }));
-
         this.resetView();
         this.setInitialValues();
-        this.headerCommunicationService.showAddUserButton.next(false);
         this.errorMessage = isWorkFunction(this.parent) ? 'deze functie' : 'dit bedrijf';
     }
 
     ngOnDestroy() {
-        this.headerCommunicationService.triggerAddItem.next(false);
-        this.headerCommunicationService.triggerReadMode.next(false);
         this.subscriptions.map(s => s.unsubscribe());
     }
 
@@ -96,10 +86,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         this.resetView();
     }
 
-    onItemsAdded(item: WorkFunction | Document): void {
-        this.headerCommunicationService.triggerAddItem.next(false);
-    }
-
     addItem(parent: WorkFunction | Document | null = null) {
         this.resetView();
         if (isWorkFunction(this.parent) && this.parent.isMainFunction) {
@@ -118,6 +104,25 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
         }
     }
 
+    private getHeaderActions(): MenuAction[] {
+        const addItemToFolder: MenuAction = {
+            onClick: this.addItem.bind(this),
+            iconName: 'add',
+            name: 'Hoofdstuk toevoegen',
+            show: false,
+            needsAdmin: true,
+        };
+
+        const readMode: MenuAction = {
+            onClick: () => { this.resetView(); this.showReadMode = this.showReadModeAnimation = true; },
+            iconName: 'book',
+            name: 'Boek modus',
+            show: true,
+            needsAdmin: false,
+        };
+        return [addItemToFolder, readMode];
+    }
+
     private setInitialValues(): void {
         if (this.activatedRoute.snapshot.data.parentUrl) {
             const url = <string>(this.activatedRoute.snapshot.data.parentUrl).replace(':id', this.parent.parent.id.toString(10));
@@ -130,6 +135,6 @@ export class ItemsOverviewComponent implements OnInit, OnDestroy  {
     private resetView(): void {
         this.activeItem = undefined;
         this.showReadMode = false;
-        this.headerCommunicationService.showDocumentToPdfButton.next(false);
+        this.routerService.setHeaderAction(this.getHeaderActions());
     }
 }

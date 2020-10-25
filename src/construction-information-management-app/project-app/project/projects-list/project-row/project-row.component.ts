@@ -39,7 +39,7 @@ export class ProjectRowComponent implements OnInit {
         event.preventDefault();
         event.stopPropagation();
         const data: DefaultPopupData = {
-            title: 'Wijzig projectId ' + this.project.name,
+            title: 'Wijzig project ' + this.project.name,
             placeholder: this.project.name,
             submitButton: 'Wijzigen',
             id: id,

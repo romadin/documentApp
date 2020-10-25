@@ -4,11 +4,11 @@
             <button mat-button (click)="onCloseView($event)" > <i class="material-icons"> close </i> </button>
             <h3 class="title"> Partners </h3>
         </div>
-        <button class="addUserButton" *ngIf="currentUser.isAdmin() && users && users.length === 0" mat-raised-button color="primary" (click)="addUser($event)">
+        <button class="addUserButton" *ngIf="currentUser.isAdmin() && (users$ | async) && (users$ | async).length === 0" mat-raised-button color="primary" (click)="addUser($event)">
             <span> Voeg partners toe </span>
             <i class="material-icons"> add </i>
         </button>
-        <cim-user-row *ngFor="let user of users"
+        <cim-user-row *ngFor="let user of users$ | async"
                       [organisation]="organisation"
                       [currentUser]="currentUser"
                       [projectId]="projectId"
@@ -24,11 +24,11 @@
         <cim-user-detail *ngIf="rightSide === 'new'"
                 [currentUser]="currentUser"
                 [user]="userToEdit"
-                [allUsers]="allUsers"
+                [allUsers]="users$ | async"
                 (closeDetailView)="closeUserDetailView($event)">
         </cim-user-detail>
         <cim-users-list *ngIf="rightSide === 'list'"
-                [users]="allUsers"
+                [users]="users$ | async"
                 (closeList)="closeUserDetailView($event)">
         </cim-users-list>
     </div>

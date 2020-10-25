@@ -10,6 +10,7 @@ import { UserService } from '../../shared/packages/user-package/user.service';
 import { User } from '../../shared/packages/user-package/user.model';
 import { HeaderWithFolderCommunicationService } from '../../shared/service/communication/HeaderWithFolder.communication.service';
 import { Project } from '../../shared/packages/project-package/project.model';
+import { getDataFromRoute } from '../../shared/helpers/global-functions';
 
 export interface ChildItemPackage {
     currentUser: User;
@@ -31,12 +32,7 @@ export class WorkFunctionPackageResolverService implements Resolve<WorkFunction 
     ) { }
 
     resolve(route: ActivatedRouteSnapshot) {
-        let routeParent = route.parent;
-        let project: Project;
-        while (!project) {
-            project = routeParent.data.project;
-            routeParent = routeParent.parent;
-        }
+        const project: Project = getDataFromRoute('project', route) as Project;
         const currentWorkFunctionId = parseInt(route.params.id, 10);
 
         return project.workFunctions.pipe(first(v => v !== undefined)).pipe(
